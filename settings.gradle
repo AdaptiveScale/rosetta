@@ -1,2 +1,8 @@
 rootProject.name = 'rosetta'
 
+include 'source'
+include 'translator'
+include 'ddl'
+include 'cli'
+include 'common'
+

@@ -1,0 +1,33 @@
+{
+  "version": "0.0.1",
+  "translates": [
+    {
+      "targetTypeName": "int",
+      "compatibleTypes": [
+        {
+          "typeName": "smallserial"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "varchar",
+      "length": 15,
+      "compatibleTypes": [
+        {
+          "typeName": "varchar"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "number",
+      "compatibleTypes": [
+        {
+          "typeName": "int4"
+        },
+        {
+          "typeName": "serial"
+        }
+      ]
+    }
+  ]
+}
