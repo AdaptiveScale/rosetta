@@ -16,7 +16,7 @@ public class DefaultGenerator implements Generator<Database, Target> {
     private final TableExtractor<Collection<Table>, Target, Connection> tableExtractor;
     private final ColumnExtractor<Connection, Collection<Table>> columnsExtractor;
 
-    public DefaultGenerator(TableExtractor<Collection<Table>, Target, Connection> tableExtractor,
+     DefaultGenerator(TableExtractor<Collection<Table>, Target, Connection> tableExtractor,
                             ColumnExtractor<Connection, Collection<Table>> columnsExtractor) {
         this.tableExtractor = tableExtractor;
         this.columnsExtractor = columnsExtractor;

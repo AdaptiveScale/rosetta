@@ -11,6 +11,7 @@ import com.adaptivescale.rosetta.translator.Translator;
 import com.adaptivescale.rosetta.translator.TranslatorFactory;
 import com.adataptivescale.rosetta.source.core.ColumnsExtractor;
 import com.adataptivescale.rosetta.source.core.DefaultGenerator;
+import com.adataptivescale.rosetta.source.core.SourceGeneratorFactory;
 import com.adataptivescale.rosetta.source.core.TablesExtractor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -56,10 +57,9 @@ class Cli implements Callable<Void> {
 
         TablesExtractor tablesExtractor = new TablesExtractor();
         ColumnsExtractor columnsExtractor = new ColumnsExtractor(source.get());
-        Database result = new DefaultGenerator(tablesExtractor, columnsExtractor).generate(source.get());
+        Database result = SourceGeneratorFactory.sourceGenerator(source.get()).generate(source.get());
 
         new YamlModelOutput(MODEL_INPUT_NAME, outputDirectory.get()).write(result);
-
 
         if (!targetName.isPresent()) {
             return;

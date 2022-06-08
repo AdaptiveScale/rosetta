@@ -29,12 +29,7 @@ public class ColumnsExtractor implements ColumnExtractor<Connection, Collection<
 
             while (resultSet.next()) {
                 Column column = new Column();
-                column.setName(resultSet.getString("column_name".toUpperCase()));
-                column.setAutoincrement(resultSet.getBoolean("is_autoincrement".toUpperCase()));
-                column.setJdbcDataType(String.valueOf(resultSet.getInt("data_type".toUpperCase())));
-                column.setTypeName(String.valueOf(resultSet.getString("type_name".toUpperCase())));
-                column.setNullable(resultSet.getBoolean("is_nullable".toUpperCase()));
-                column.setColumnDisplaySize(resultSet.getInt("column_size".toUpperCase()));
+                extract(resultSet, column);
                 if (primaryKeysData.containsKey(column.getName())) {
                     column.setPrimaryKey(true);
                     column.setPrimaryKeySequenceId(primaryKeysData.get(column.getName()));
@@ -50,6 +45,15 @@ public class ColumnsExtractor implements ColumnExtractor<Connection, Collection<
                 resultSet.close();
             }
         }
+    }
+
+    protected void extract(ResultSet resultSet, Column column) throws SQLException {
+        column.setName(resultSet.getString("column_name".toUpperCase()));
+        column.setAutoincrement(resultSet.getBoolean("is_autoincrement".toUpperCase()));
+        column.setJdbcDataType(String.valueOf(resultSet.getInt("data_type".toUpperCase())));
+        column.setTypeName(String.valueOf(resultSet.getString("type_name".toUpperCase())));
+        column.setNullable(resultSet.getBoolean("is_nullable".toUpperCase()));
+        column.setColumnDisplaySize(resultSet.getInt("column_size".toUpperCase()));
     }
 
     private Map<String, List<ForeignKey>> extractForeignKeys(Connection connection, Table table) throws SQLException {
