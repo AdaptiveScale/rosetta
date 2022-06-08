@@ -6,6 +6,7 @@ public class Database {
 
     private Collection<Table> tables;
     private String databaseProductName;
+    private String databaseType;
 
     public Collection<Table> getTables() {
         return tables;
@@ -25,5 +26,13 @@ public class Database {
 
     public void setDatabaseProductName(String databaseProductName) {
         this.databaseProductName = databaseProductName;
+    }
+
+    public String getDatabaseType() {
+        return databaseType;
+    }
+
+    public void setDatabaseType(String databaseType) {
+        this.databaseType = databaseType;
     }
 }

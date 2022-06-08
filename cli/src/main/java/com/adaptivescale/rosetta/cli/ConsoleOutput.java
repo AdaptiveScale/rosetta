@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
-public class ConsoleOutput implements Output {
+public class ConsoleOutput implements Output<Database> {
 
     @Override
     public void write(Database database) throws JsonProcessingException {

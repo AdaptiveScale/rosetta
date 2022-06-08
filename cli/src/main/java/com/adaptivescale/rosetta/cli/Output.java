@@ -4,7 +4,7 @@ import com.adaptivescale.rosetta.common.models.Database;
 
 import java.io.IOException;
 
-public interface Output {
+public interface Output<T> {
 
-    void write(Database database) throws  Exception;
+    void write(T model) throws  Exception;
 }

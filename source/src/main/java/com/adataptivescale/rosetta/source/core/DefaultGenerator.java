@@ -24,7 +24,6 @@ public class DefaultGenerator implements Generator<Database, Target> {
 
     @Override
     public Database generate(Target target) throws Exception {
-        System.out.println(target.getDatabaseName());
         Driver driver = DriverManager.getDriver(target.getUrl());
         Connection connect = driver.connect(target.getUrl(), new Properties());
 
@@ -34,6 +33,7 @@ public class DefaultGenerator implements Generator<Database, Target> {
         Database database = new Database();
         database.setName(connect.getMetaData().getDatabaseProductName());
         database.setTables(tables);
+        database.setDatabaseType(target.getDbType());
         connect.close();
         return database;
     }
