@@ -15,7 +15,7 @@ public class TablesExtractor implements TableExtractor<Collection<Table>, Target
     @Override
     public Collection<Table> extract(Target target, Connection connection) throws SQLException {
         DatabaseMetaData metaData = connection.getMetaData();
-        ResultSet resultSet = metaData.getTables(null, target.getSchemaName(), null, new String[]{"TABLE"});
+        ResultSet resultSet = metaData.getTables(target.getDatabaseName(), target.getSchemaName(), null, new String[]{"TABLE"});
 
         Collection<Table> tables = new ArrayList<>();
 

@@ -32,6 +32,54 @@
           "typeName": "FLOAT64"
         }
       ]
+    },
+    {
+      "targetTypeName": "ARRAY",
+      "compatibleTypes": [
+        {
+          "typeName": "ARRAY"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "DATE",
+      "compatibleTypes": [
+        {
+          "typeName": "DATE"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "DATETIME",
+      "compatibleTypes": [
+        {
+          "typeName": "DATETIME"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "BOOLEAN",
+      "compatibleTypes": [
+        {
+          "typeName": "BOOLEAN"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "TIME",
+      "compatibleTypes": [
+        {
+          "typeName": "TIME"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "GEOGRAPHY",
+      "compatibleTypes": [
+        {
+          "typeName": "GEOGRAPHY"
+        }
+      ]
     }
   ]
 }

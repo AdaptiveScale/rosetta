@@ -55,10 +55,7 @@ class Cli implements Callable<Void> {
             throw new RuntimeException("Output directory is null");
         }
 
-        TablesExtractor tablesExtractor = new TablesExtractor();
-        ColumnsExtractor columnsExtractor = new ColumnsExtractor(source.get());
         Database result = SourceGeneratorFactory.sourceGenerator(source.get()).generate(source.get());
-
         new YamlModelOutput(MODEL_INPUT_NAME, outputDirectory.get()).write(result);
 
         if (!targetName.isPresent()) {

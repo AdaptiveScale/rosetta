@@ -14,9 +14,11 @@ import java.util.stream.Collectors;
 public class DefaultTranslator implements Translator<Database, Database> {
 
     private final TranslateInfo translateInfo;
+    private final String targetDatabaseName;
 
-    public DefaultTranslator(TranslateInfo translateInfo) {
+    public DefaultTranslator(TranslateInfo translateInfo, String targetDatabaseName) {
         this.translateInfo = translateInfo;
+        this.targetDatabaseName = targetDatabaseName;
     }
 
     @Override
@@ -24,6 +26,7 @@ public class DefaultTranslator implements Translator<Database, Database> {
         Database result = new Database();
         result.setName(input.getDatabaseProductName());
         result.setTables(input.getTables().stream().map(this::translateTable).collect(Collectors.toList()));
+        result.setDatabaseType(targetDatabaseName);
         return result;
     }
 
