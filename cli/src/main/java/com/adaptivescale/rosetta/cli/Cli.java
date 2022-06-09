@@ -9,17 +9,17 @@ import com.adaptivescale.rosetta.ddl.DDL;
 import com.adaptivescale.rosetta.ddl.DDLFactory;
 import com.adaptivescale.rosetta.translator.Translator;
 import com.adaptivescale.rosetta.translator.TranslatorFactory;
-import com.adataptivescale.rosetta.source.core.ColumnsExtractor;
-import com.adataptivescale.rosetta.source.core.DefaultGenerator;
 import com.adataptivescale.rosetta.source.core.SourceGeneratorFactory;
-import com.adataptivescale.rosetta.source.core.TablesExtractor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import picocli.CommandLine;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 
@@ -105,5 +105,12 @@ class Cli implements Callable<Void> {
         DDL ddl = DDLFactory.ddlForDatabaseType(target.get().getDbType());
         String ddlDataBase = ddl.createDataBase(translatedInput);
         new StringOutput("ddl.sql", modelDirectory).write(ddlDataBase);
+    }
+
+    @CommandLine.Command(name = "init", description = "Create main.config example")
+    private void init() throws IOException {
+        Path fileName = Paths.get("template_main.yaml");
+        InputStream resourceAsStream = getClass().getResourceAsStream("/template_main.yaml");
+        Files.copy(resourceAsStream, fileName);
     }
 }
