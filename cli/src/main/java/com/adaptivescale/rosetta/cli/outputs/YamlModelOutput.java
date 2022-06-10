@@ -11,8 +11,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class YamlModelOutput implements Output<Database> {
-
     private final Path filePath;
+
+    public Path getFilePath() {
+        return filePath;
+    }
 
     public YamlModelOutput(String fileName, Path directory) throws IOException {
         Path modelDirectory = directory.resolve(Constants.MODEL_DIRECTORY_NAME);

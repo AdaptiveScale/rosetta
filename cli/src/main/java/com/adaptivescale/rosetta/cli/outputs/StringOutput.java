@@ -5,8 +5,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class StringOutput implements Output<String> {
-
     private final Path filePath;
+
+    public Path getFilePath() {
+        return filePath;
+    }
 
     public StringOutput(String fileName, Path directory) {
         this.filePath = directory.resolve(fileName);

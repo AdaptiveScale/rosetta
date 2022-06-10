@@ -13,6 +13,7 @@ import com.adataptivescale.rosetta.source.core.SourceGeneratorFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import lombok.extern.slf4j.Slf4j;
 import picocli.CommandLine;
 
 import java.io.IOException;
@@ -22,27 +23,30 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.concurrent.Callable;
-import java.util.function.Supplier;
 
 import static com.adaptivescale.rosetta.cli.Constants.*;
 
-@CommandLine.Command(name = "cli", mixinStandardHelpOptions = true, version = "checksum 4.0",
-        description = "todo"
+@Slf4j
+@CommandLine.Command(name = "cli", mixinStandardHelpOptions = true, version = "rosetta 0.0.1",
+        description = "Declarative Database Management - DDL Transpiler"
 )
 class Cli implements Callable<Void> {
+    @CommandLine.Spec
+    CommandLine.Model.CommandSpec spec;
 
     @CommandLine.Option(names = {"-c", "--config"},
             converter = ConfigYmlConverter.class,
-            defaultValue = CONFIG_NAME)
+            defaultValue = CONFIG_NAME,
+            description = "YAML config file. If none is supplied it will use main.conf in the current directory if it exists.")
     private Config config;
 
     @Override
     public Void call() {
-        return null;
+        throw new CommandLine.ParameterException(spec.commandLine(), "Missing required subcommand");
     }
 
-    @CommandLine.Command(name = "extract")
-    private void extract(@CommandLine.Option(names = {"-s", "--source"}) String sourceName,
+    @CommandLine.Command(name = "extract", description = "Extract schema chosen from connection config.")
+    private void extract(@CommandLine.Option(names = {"-s", "--source"}, required = true) String sourceName,
                          @CommandLine.Option(names = {"-t", "--convert-to"}) Optional<String> targetName,
                          @CommandLine.Option(names = {"-o", "--output-dir"},
                                  defaultValue = "./") Optional<Path> outputDirectory
@@ -58,7 +62,9 @@ class Cli implements Callable<Void> {
         }
 
         Database result = SourceGeneratorFactory.sourceGenerator(source.get()).generate(source.get());
-        new YamlModelOutput(MODEL_INPUT_NAME, outputDirectory.get()).write(result);
+        YamlModelOutput yamlInputModel = new YamlModelOutput(MODEL_INPUT_NAME, outputDirectory.get());
+        yamlInputModel.write(result);
+        log.info("Successfully written input database yaml ({}).", yamlInputModel.getFilePath());
 
         if (!targetName.isPresent()) {
             return;
@@ -73,11 +79,13 @@ class Cli implements Callable<Void> {
                 target.get().getDbType());
         result = translator.translate(result);
 
-        new YamlModelOutput(MODEL_OUTPUT_NAME, outputDirectory.get()).write(result);
+        YamlModelOutput yamlOutputModel = new YamlModelOutput(MODEL_OUTPUT_NAME, outputDirectory.get());
+        yamlOutputModel.write(result);
+        log.info("Successfully written output database yaml ({}).", yamlOutputModel.getFilePath());
     }
 
     @CommandLine.Command(name = "compile", description = "Generate DDL for target Database [bigquery, snowflake, …]")
-    private void compile(@CommandLine.Option(names = {"-t", "--target"}) String targetName,
+    private void compile(@CommandLine.Option(names = {"-t", "--target"}, required = true) String targetName,
                          @CommandLine.Option(names = {"-i", "--input-dir"}, defaultValue = "./") Optional<Path> inputDirectory
     ) throws Exception {
         requireConfig(config);
@@ -108,14 +116,17 @@ class Cli implements Callable<Void> {
 
         DDL ddl = DDLFactory.ddlForDatabaseType(target.get().getDbType());
         String ddlDataBase = ddl.createDataBase(translatedInput);
-        new StringOutput("ddl.sql", modelDirectory).write(ddlDataBase);
+        StringOutput stringOutput = new StringOutput("ddl.sql", modelDirectory);
+        stringOutput.write(ddlDataBase);
+        log.info("Successfully written ddl ({}).", stringOutput.getFilePath());
     }
 
-    @CommandLine.Command(name = "init", description = "Create main.config example")
+    @CommandLine.Command(name = "init", description = "Creates a sample config (main.conf).")
     private void init() throws IOException {
         Path fileName = Paths.get(CONFIG_NAME);
         InputStream resourceAsStream = getClass().getResourceAsStream("/" + TEMPLATE_CONFIG_NAME);
         Files.copy(resourceAsStream, fileName);
+        log.info("Successfully created sample config ({}).", CONFIG_NAME);
     }
 
     private void requireConfig(Config config) {
