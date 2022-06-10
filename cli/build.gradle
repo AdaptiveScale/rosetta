@@ -21,10 +21,6 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.12'
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
 
-    runtimeOnly fileTree('/Users/ardiansaidi/Workspace/adaptivescale/proedms/data/allDrivers')
-    runtimeOnly fileTree('/Users/ardiansaidi/Workspace/adaptivescale/rosetta/lib/GoogleBigQueryJDBC42')
-    implementation 'com.google.cloud:google-cloud-bigquery:2.1.2'
-
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
 }

@@ -64,15 +64,17 @@ public class SnowflakeDDLGenerator implements DDL {
                 .map(this::createTable)
                 .collect(Collectors.joining("\r\r")));
 
-        Optional<String> foreignKeys = Optional.of(database
+        String foreignKeys = database
                 .getTables()
                 .stream()
                 .map(this::foreignKeys)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .collect(Collectors.joining(";")));
+                .collect(Collectors.joining(";"));
 
-        foreignKeys.ifPresent(s -> stringBuilder.append("\r").append(s).append(";\r"));
+        if(foreignKeys.isEmpty()){
+            stringBuilder.append("\r").append(foreignKeys).append(";\r");
+        }
 
         return stringBuilder.toString();
     }
