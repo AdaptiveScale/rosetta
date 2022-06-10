@@ -1,19 +1,18 @@
 package com.adataptivescale.rosetta.source.core;
 
 import com.adaptivescale.rosetta.common.models.Table;
-import com.adaptivescale.rosetta.common.models.input.Target;
+import com.adaptivescale.rosetta.common.models.input.Connection;
 import com.adataptivescale.rosetta.source.core.interfaces.TableExtractor;
 
-import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class TablesExtractor implements TableExtractor<Collection<Table>, Target, Connection> {
+public class TablesExtractor implements TableExtractor<Collection<Table>, Connection, java.sql.Connection> {
     @Override
-    public Collection<Table> extract(Target target, Connection connection) throws SQLException {
+    public Collection<Table> extract(Connection target, java.sql.Connection connection) throws SQLException {
         DatabaseMetaData metaData = connection.getMetaData();
         ResultSet resultSet = metaData.getTables(target.getDatabaseName(), target.getSchemaName(), null, new String[]{"TABLE"});
 

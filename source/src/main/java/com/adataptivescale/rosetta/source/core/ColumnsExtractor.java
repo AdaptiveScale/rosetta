@@ -3,29 +3,28 @@ package com.adataptivescale.rosetta.source.core;
 import com.adaptivescale.rosetta.common.models.Column;
 import com.adaptivescale.rosetta.common.models.ForeignKey;
 import com.adaptivescale.rosetta.common.models.Table;
-import com.adaptivescale.rosetta.common.models.input.Target;
+import com.adaptivescale.rosetta.common.models.input.Connection;
 import com.adataptivescale.rosetta.source.core.interfaces.ColumnExtractor;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
-public class ColumnsExtractor implements ColumnExtractor<Connection, Collection<Table>> {
+public class ColumnsExtractor implements ColumnExtractor<java.sql.Connection, Collection<Table>> {
 
-    private final Target target;
+    private final Connection connection;
 
-    public ColumnsExtractor(Target target) {
-        this.target = target;
+    public ColumnsExtractor(Connection connection) {
+        this.connection = connection;
     }
 
     @Override
-    public void extract(Connection connection, Collection<Table> tables) throws Exception {
+    public void extract(java.sql.Connection connection, Collection<Table> tables) throws Exception {
         for (Table table : tables) {
             Collection<Column> columns = new ArrayList<>();
             Map<String, Integer> primaryKeysData = extractPrimaryKeys(connection, table);
             Map<String, List<ForeignKey>> foreignKeys = extractForeignKeys(connection, table);
-            ResultSet resultSet = connection.getMetaData().getColumns(target.getDatabaseName(), table.getSchema(), table.getName(), null);
+            ResultSet resultSet = connection.getMetaData().getColumns(this.connection.getDatabaseName(), table.getSchema(), table.getName(), null);
 
             while (resultSet.next()) {
                 Column column = new Column();
@@ -57,7 +56,7 @@ public class ColumnsExtractor implements ColumnExtractor<Connection, Collection<
         column.setPrecision(resultSet.getInt("COLUMN_SIZE"));
     }
 
-    private Map<String, List<ForeignKey>> extractForeignKeys(Connection connection, Table table) throws SQLException {
+    private Map<String, List<ForeignKey>> extractForeignKeys(java.sql.Connection connection, Table table) throws SQLException {
         ResultSet exportedKeys = connection.getMetaData().getImportedKeys(null, table.getSchema(), table.getName());
         Map<String, List<ForeignKey>> result = new HashMap<>();
 
@@ -80,7 +79,7 @@ public class ColumnsExtractor implements ColumnExtractor<Connection, Collection<
         return result;
     }
 
-    private Map<String, Integer> extractPrimaryKeys(Connection connection, Table table) throws SQLException {
+    private Map<String, Integer> extractPrimaryKeys(java.sql.Connection connection, Table table) throws SQLException {
         Map<String, Integer> result = new HashMap<>();
         ResultSet primaryKeys = connection.getMetaData().getPrimaryKeys(null, table.getSchema(), table.getName());
         while (primaryKeys.next()) {

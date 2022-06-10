@@ -1,23 +1,22 @@
 package com.adaptivescale.rosetta.cli.model;
 
-import com.adaptivescale.rosetta.common.models.input.Target;
+import com.adaptivescale.rosetta.common.models.input.Connection;
 
 import java.util.List;
 import java.util.Optional;
 
-
 public class Config {
-    private List<Target> targets;
+    private List<Connection> connections;
 
-    public List<Target> getTargets() {
-        return targets;
+    public List<Connection> getConnections() {
+        return connections;
     }
 
-    public void setTargets(List<Target> target) {
-        this.targets = target;
+    public void setConnections(List<Connection> connection) {
+        this.connections = connection;
     }
 
-    public Optional<Target> getTarget(String name) {
-        return targets.stream().filter(target -> target.getTargetName().equals(name)).findFirst();
+    public Optional<Connection> getConnection(String name) {
+        return connections.stream().filter(target -> target.getName().equals(name)).findFirst();
     }
 }

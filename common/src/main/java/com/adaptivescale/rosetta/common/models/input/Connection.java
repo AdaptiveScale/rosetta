@@ -1,8 +1,8 @@
 package com.adaptivescale.rosetta.common.models.input;
 
-public class Target {
+public class Connection {
 
-    private String targetName;
+    private String name;
     private String databaseName;
     private String schemaName;
     private String dbType;
@@ -10,7 +10,7 @@ public class Target {
     private String userName;
     private String password;
 
-    public Target() {
+    public Connection() {
     }
 
     public String getDatabaseName() {
@@ -61,11 +61,11 @@ public class Target {
         this.schemaName = schemaName;
     }
 
-    public String getTargetName() {
-        return targetName;
+    public String getName() {
+        return name;
     }
 
-    public void setTargetName(String targetName) {
-        this.targetName = targetName;
+    public void setName(String name) {
+        this.name = name;
     }
 }

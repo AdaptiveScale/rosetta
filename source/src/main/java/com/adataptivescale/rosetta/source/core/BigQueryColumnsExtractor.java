@@ -1,20 +1,14 @@
 package com.adataptivescale.rosetta.source.core;
 
 import com.adaptivescale.rosetta.common.models.Column;
-import com.adaptivescale.rosetta.common.models.ForeignKey;
-import com.adaptivescale.rosetta.common.models.Table;
-import com.adaptivescale.rosetta.common.models.input.Target;
-import com.adataptivescale.rosetta.source.core.interfaces.ColumnExtractor;
-
-import java.sql.Connection;
+import com.adaptivescale.rosetta.common.models.input.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
 
 public class BigQueryColumnsExtractor extends ColumnsExtractor {
 
-    public BigQueryColumnsExtractor(Target target) {
-        super(target);
+    public BigQueryColumnsExtractor(Connection connection) {
+        super(connection);
     }
 
     // is_autoincrement => is returned true always by bigquery jdbc driver

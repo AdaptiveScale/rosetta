@@ -4,7 +4,7 @@ import com.adaptivescale.rosetta.cli.model.Config;
 import com.adaptivescale.rosetta.cli.outputs.StringOutput;
 import com.adaptivescale.rosetta.cli.outputs.YamlModelOutput;
 import com.adaptivescale.rosetta.common.models.Database;
-import com.adaptivescale.rosetta.common.models.input.Target;
+import com.adaptivescale.rosetta.common.models.input.Connection;
 import com.adaptivescale.rosetta.ddl.DDL;
 import com.adaptivescale.rosetta.ddl.DDLFactory;
 import com.adaptivescale.rosetta.translator.Translator;
@@ -52,7 +52,7 @@ class Cli implements Callable<Void> {
                                  defaultValue = "./") Optional<Path> outputDirectory
     ) throws Exception {
         requireConfig(config);
-        Optional<Target> source = config.getTarget(sourceName);
+        Optional<Connection> source = config.getConnection(sourceName);
         if (!source.isPresent()) {
             throw new RuntimeException("Can not find source with name: " + sourceName + " configured in config.");
         }
@@ -70,7 +70,7 @@ class Cli implements Callable<Void> {
             return;
         }
 
-        Optional<Target> target = config.getTarget(targetName.get());
+        Optional<Connection> target = config.getConnection(targetName.get());
         if (!target.isPresent()) {
             throw new RuntimeException("Can not find target with name: " + targetName.orElse(null) + " configured in config.");
         }
@@ -89,7 +89,7 @@ class Cli implements Callable<Void> {
                          @CommandLine.Option(names = {"-i", "--input-dir"}, defaultValue = "./") Optional<Path> inputDirectory
     ) throws Exception {
         requireConfig(config);
-        Optional<Target> target = config.getTarget(targetName);
+        Optional<Connection> target = config.getConnection(targetName);
         if (!target.isPresent()) {
             throw new RuntimeException("Can not find target with name: " + targetName + " configured in config.");
         }
