@@ -15,6 +15,9 @@ public class Column {
     private boolean isPrimaryKey;
     private int primaryKeySequenceId;
     private int columnDisplaySize;
+    private int scale;
+    private int precision;
+
     private List<ForeignKey> foreignKeys;
 
     public Column() {
@@ -114,5 +117,21 @@ public class Column {
 
     public List<ForeignKey> getForeignKeys() {
         return foreignKeys;
+    }
+
+    public int getScale() {
+        return scale;
+    }
+
+    public void setScale(int scale) {
+        this.scale = scale;
+    }
+
+    public int getPrecision() {
+        return precision;
+    }
+
+    public void setPrecision(int precision) {
+        this.precision = precision;
     }
 }

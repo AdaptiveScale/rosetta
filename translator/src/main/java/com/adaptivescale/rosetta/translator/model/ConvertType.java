@@ -2,10 +2,13 @@ package com.adaptivescale.rosetta.translator.model;
 
 import java.util.Collection;
 
-public class Translate {
+public class ConvertType {
 
     private String targetTypeName;
     private int length;
+    private double precision;
+    private double scale;
+
     private Collection<CompatibleType> compatibleTypes;
 
     public Collection<CompatibleType> getCompatibleTypes() {
@@ -30,5 +33,21 @@ public class Translate {
 
     public void setLength(int length) {
         this.length = length;
+    }
+
+    public double getPrecision() {
+        return precision;
+    }
+
+    public void setPrecision(double precision) {
+        this.precision = precision;
+    }
+
+    public double getScale() {
+        return scale;
+    }
+
+    public void setScale(double scale) {
+        this.scale = scale;
     }
 }

@@ -4,14 +4,14 @@ import java.util.Collection;
 
 public class TranslateInfo {
     private String version;
-    private Collection<Translate> translates;
+    private Collection<ConvertType> converters;
 
     public String getVersion() {
         return version;
     }
 
-    public Collection<Translate> getTranslates() {
-        return translates;
+    public Collection<ConvertType> getConverters() {
+        return converters;
     }
 
 }

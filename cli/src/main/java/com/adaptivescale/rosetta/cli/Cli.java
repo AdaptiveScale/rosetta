@@ -22,6 +22,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 
 import static com.adaptivescale.rosetta.cli.Constants.*;
 
@@ -30,10 +31,9 @@ import static com.adaptivescale.rosetta.cli.Constants.*;
 )
 class Cli implements Callable<Void> {
 
-    @CommandLine.Option(names = {"-i", "--input-config"},
+    @CommandLine.Option(names = {"-c", "--config"},
             converter = ConfigYmlConverter.class,
-            required = true,
-            defaultValue = "main.yaml")
+            defaultValue = CONFIG_NAME)
     private Config config;
 
     @Override
@@ -44,8 +44,10 @@ class Cli implements Callable<Void> {
     @CommandLine.Command(name = "extract")
     private void extract(@CommandLine.Option(names = {"-s", "--source"}) String sourceName,
                          @CommandLine.Option(names = {"-t", "--convert-to"}) Optional<String> targetName,
-                         @CommandLine.Option(names = {"-o", "--output-dir"}, defaultValue = "./") Optional<Path> outputDirectory
+                         @CommandLine.Option(names = {"-o", "--output-dir"},
+                                 defaultValue = "./") Optional<Path> outputDirectory
     ) throws Exception {
+        requireConfig(config);
         Optional<Target> source = config.getTarget(sourceName);
         if (!source.isPresent()) {
             throw new RuntimeException("Can not find source with name: " + sourceName + " configured in config.");
@@ -76,7 +78,9 @@ class Cli implements Callable<Void> {
 
     @CommandLine.Command(name = "compile", description = "Generate DDL for target Database [bigquery, snowflake, …]")
     private void compile(@CommandLine.Option(names = {"-t", "--target"}) String targetName,
-                         @CommandLine.Option(names = {"-i", "--input-dir"}, defaultValue = "./") Optional<Path> inputDirectory) throws Exception {
+                         @CommandLine.Option(names = {"-i", "--input-dir"}, defaultValue = "./") Optional<Path> inputDirectory
+    ) throws Exception {
+        requireConfig(config);
         Optional<Target> target = config.getTarget(targetName);
         if (!target.isPresent()) {
             throw new RuntimeException("Can not find target with name: " + targetName + " configured in config.");
@@ -109,8 +113,14 @@ class Cli implements Callable<Void> {
 
     @CommandLine.Command(name = "init", description = "Create main.config example")
     private void init() throws IOException {
-        Path fileName = Paths.get("template_main.yaml");
-        InputStream resourceAsStream = getClass().getResourceAsStream("/template_main.yaml");
+        Path fileName = Paths.get(CONFIG_NAME);
+        InputStream resourceAsStream = getClass().getResourceAsStream("/" + TEMPLATE_CONFIG_NAME);
         Files.copy(resourceAsStream, fileName);
+    }
+
+    private void requireConfig(Config config) {
+        if (config == null) {
+            throw new RuntimeException("Config file is required.");
+        }
     }
 }

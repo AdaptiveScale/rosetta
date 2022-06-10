@@ -16,9 +16,11 @@ import java.util.stream.Collectors;
 
 public class SnowflakeDDLGenerator implements DDL {
 
-    private final ColumnSQLDecoratorFactory columnSQLDecoratorFactory = column ->
-            new DefaultSnowflakeColumnSQLDecorator(column, new ColumnDataTypeName() {
-            });
+    private final ColumnSQLDecoratorFactory columnSQLDecoratorFactory;
+
+    public SnowflakeDDLGenerator() {
+        columnSQLDecoratorFactory = new SnowflakeColumnDecoratorFactory();
+    }
 
     @Override
     public String createColumn(Column column) {

@@ -20,11 +20,13 @@ public class BigQueryColumnsExtractor extends ColumnsExtractor {
     // is_autoincrement => is returned true always by bigquery jdbc driver
     @Override
     protected void extract(ResultSet resultSet, Column column) throws SQLException {
-        column.setName(resultSet.getString("column_name".toUpperCase()));
-        column.setJdbcDataType(String.valueOf(resultSet.getInt("data_type".toUpperCase())));
-        column.setTypeName(String.valueOf(resultSet.getString("type_name".toUpperCase())));
-        column.setNullable(resultSet.getBoolean("is_nullable".toUpperCase()));
-        column.setColumnDisplaySize(resultSet.getInt("column_size".toUpperCase()));
+        column.setName(resultSet.getString("COLUMN_NAME"));
+        column.setJdbcDataType(String.valueOf(resultSet.getInt("DATA_TYPE")));
+        column.setTypeName(String.valueOf(resultSet.getString("TYPE_NAME")));
+        column.setNullable(resultSet.getBoolean("IS_NULLABLE"));
+        column.setColumnDisplaySize(resultSet.getInt("COLUMN_SIZE"));
+        column.setScale(resultSet.getInt("DECIMAL_DIGITS"));
+        column.setPrecision(resultSet.getInt("COLUMN_SIZE"));
     }
 
 }

@@ -3,7 +3,7 @@ package com.adaptivescale.rosetta.translator;
 import com.adaptivescale.rosetta.common.models.Column;
 import com.adaptivescale.rosetta.common.models.Database;
 import com.adaptivescale.rosetta.common.models.Table;
-import com.adaptivescale.rosetta.translator.model.Translate;
+import com.adaptivescale.rosetta.translator.model.ConvertType;
 import com.adaptivescale.rosetta.translator.model.TranslateInfo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -47,9 +47,9 @@ public class DefaultTranslator implements Translator<Database, Database> {
     private Column translateColumn(Column column) {
         String sourceName = column.getTypeName();
         //find in which target this source name is there
-        Optional<Translate> match = translateInfo.getTranslates().stream()
-                .filter(translate ->
-                        translate.getCompatibleTypes()
+        Optional<ConvertType> match = translateInfo.getConverters().stream()
+                .filter(convertType ->
+                        convertType.getCompatibleTypes()
                                 .stream()
                                 .anyMatch(compatibleType
                                         -> compatibleType.getTypeName()

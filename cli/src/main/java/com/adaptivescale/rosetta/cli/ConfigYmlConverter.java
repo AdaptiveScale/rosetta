@@ -12,6 +12,9 @@ public class ConfigYmlConverter implements CommandLine.ITypeConverter<Config> {
     @Override
     public Config convert(String value) throws Exception {
         File file = new File(value);
+        if(!file.exists()){
+            return null;
+        }
         return new ObjectMapper(new YAMLFactory()).readValue(file, Config.class);
     }
 }

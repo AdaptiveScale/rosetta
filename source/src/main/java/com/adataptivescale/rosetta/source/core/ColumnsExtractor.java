@@ -48,12 +48,13 @@ public class ColumnsExtractor implements ColumnExtractor<Connection, Collection<
     }
 
     protected void extract(ResultSet resultSet, Column column) throws SQLException {
-        column.setName(resultSet.getString("column_name".toUpperCase()));
-        column.setAutoincrement(resultSet.getBoolean("is_autoincrement".toUpperCase()));
-        column.setJdbcDataType(String.valueOf(resultSet.getInt("data_type".toUpperCase())));
-        column.setTypeName(String.valueOf(resultSet.getString("type_name".toUpperCase())));
-        column.setNullable(resultSet.getBoolean("is_nullable".toUpperCase()));
-        column.setColumnDisplaySize(resultSet.getInt("column_size".toUpperCase()));
+        column.setName(resultSet.getString("COLUMN_NAME"));
+        column.setJdbcDataType(String.valueOf(resultSet.getInt("DATA_TYPE")));
+        column.setTypeName(String.valueOf(resultSet.getString("TYPE_NAME")));
+        column.setNullable(resultSet.getBoolean("IS_NULLABLE"));
+        column.setColumnDisplaySize(resultSet.getInt("COLUMN_SIZE"));
+        column.setScale(resultSet.getInt("DECIMAL_DIGITS"));
+        column.setPrecision(resultSet.getInt("COLUMN_SIZE"));
     }
 
     private Map<String, List<ForeignKey>> extractForeignKeys(Connection connection, Table table) throws SQLException {

@@ -1,6 +1,6 @@
 {
   "version": "0.0.1",
-  "translates": [
+  "converters": [
     {
       "targetTypeName": "STRING",
       "compatibleTypes": [
@@ -78,6 +78,38 @@
       "compatibleTypes": [
         {
           "typeName": "GEOGRAPHY"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "NUMERIC",
+      "compatibleTypes": [
+        {
+          "typeName": "NUMERIC"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "NUMBER",
+      "compatibleTypes": [
+        {
+          "typeName": "BIGNUMERIC"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "BINARY",
+      "compatibleTypes": [
+        {
+          "typeName": "BYTES"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "OBJECT",
+      "compatibleTypes": [
+        {
+          "typeName": "STRUCT"
         }
       ]
     }
