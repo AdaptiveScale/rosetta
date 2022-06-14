@@ -74,7 +74,7 @@ public class SnowflakeDDLGenerator implements DDL {
                 .map(Optional::get)
                 .collect(Collectors.joining(";"));
 
-        if(foreignKeys.isEmpty()){
+        if(!foreignKeys.isEmpty()){
             stringBuilder.append("\r").append(foreignKeys).append(";\r");
         }
 
