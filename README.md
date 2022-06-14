@@ -50,7 +50,7 @@ MySQL | Snowflake | In Progress
 First, we need to download the cli jar file in order to get started. This can be achieved by downloading the latest release from [releases page](https://github.com/AdaptiveScale/rosetta/releases).
 After we have downloaded the jar file, we need to specify where our JDBC drivers(directory) are located. We are going to create an alias command in order to not specify the same command multiple times.
 ```bash
-alias rosetta='java -cp <path_to_our_cli_dir>/cli-0.0.1.jar:<path_to_our_drivers> com.adaptivescale.rosetta.cli.Main'
+alias rosetta='java -cp <path_to_our_cli_dir>/rosetta-0.0.1.jar:<path_to_our_drivers> com.adaptivescale.rosetta.cli.Main'
 ```
 
 After setting an alias command we are ready to use our cli.
