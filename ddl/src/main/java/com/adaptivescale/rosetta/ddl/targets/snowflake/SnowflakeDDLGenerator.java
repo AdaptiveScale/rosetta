@@ -12,6 +12,7 @@ import java.sql.DatabaseMetaData;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class SnowflakeDDLGenerator implements DDL {
@@ -36,7 +37,7 @@ public class SnowflakeDDLGenerator implements DDL {
         String definitionAsString = String.join(" , ", definitions);
 
         return "CREATE TABLE "
-                + ((table.getSchema() != null && table.getSchema().isEmpty()) ? "" : table.getSchema() + ".")
+                + ((table.getSchema() == null || table.getSchema().isEmpty()) ? "" : table.getSchema() + ".")
                 + table.getName()
                 + "("
                 + definitionAsString
@@ -47,7 +48,8 @@ public class SnowflakeDDLGenerator implements DDL {
     public String createDataBase(Database database) {
         StringBuilder stringBuilder = new StringBuilder();
 
-        Set<String> schemas = database.getTables().stream().map(Table::getSchema).collect(Collectors.toSet());
+        Set<String> schemas = database.getTables().stream().map(Table::getSchema)
+                .filter(s -> s != null && !s.isEmpty()).collect(Collectors.toSet());
         if (!schemas.isEmpty()) {
             stringBuilder.append(
                     schemas
