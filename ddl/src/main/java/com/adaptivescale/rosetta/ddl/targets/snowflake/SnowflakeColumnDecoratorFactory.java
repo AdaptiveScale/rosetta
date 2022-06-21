@@ -4,8 +4,7 @@ import com.adaptivescale.rosetta.common.models.Column;
 import com.adaptivescale.rosetta.ddl.targets.ColumnDataTypeName;
 import com.adaptivescale.rosetta.ddl.targets.ColumnSQLDecorator;
 import com.adaptivescale.rosetta.ddl.targets.ColumnSQLDecoratorFactory;
-import com.adaptivescale.rosetta.ddl.targets.mysql.decorators.DefaultMySQLColumnSQLDecorator;
-import com.adaptivescale.rosetta.ddl.targets.mysql.decorators.MySqlVarcharColumnName;
+import com.adaptivescale.rosetta.ddl.targets.snowflake.decorators.DefaultSnowflakeColumnSQLDecorator;
 import com.adaptivescale.rosetta.ddl.targets.snowflake.decorators.SnowflakeNumericColumnSQLDecorator;
 
 public class SnowflakeColumnDecoratorFactory implements ColumnSQLDecoratorFactory {
@@ -20,6 +19,6 @@ public class SnowflakeColumnDecoratorFactory implements ColumnSQLDecoratorFactor
             columnDataTypeName = new ColumnDataTypeName() {
             };
         }
-        return new DefaultMySQLColumnSQLDecorator(column, columnDataTypeName);
+        return new DefaultSnowflakeColumnSQLDecorator(column, columnDataTypeName);
     }
 }
