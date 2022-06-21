@@ -86,7 +86,8 @@ class Cli implements Callable<Void> {
 
     @CommandLine.Command(name = "compile", description = "Generate DDL for target Database [bigquery, snowflake, …]", mixinStandardHelpOptions = true)
     private void compile(@CommandLine.Option(names = {"-t", "--target"}, required = true) String targetName,
-                         @CommandLine.Option(names = {"-i", "--input-dir"}, defaultValue = "./") Optional<Path> inputDirectory
+                         @CommandLine.Option(names = {"-i", "--input-dir"}, defaultValue = "./") Optional<Path> inputDirectory,
+                         @CommandLine.Option(names = {"-ddl", "--ddl-only"}) boolean ddlOnly
     ) throws Exception {
         requireConfig(config);
         Optional<Connection> target = config.getConnection(targetName);
@@ -103,19 +104,31 @@ class Cli implements Callable<Void> {
             throw new RuntimeException("Can not find model directory");
         }
 
-        Path inputDatabasePath = modelDirectory.resolve(MODEL_INPUT_NAME);
-        if (!Files.exists(inputDatabasePath)) {
-            throw new RuntimeException("Can not locate " + MODEL_INPUT_NAME + " in directory: " + modelDirectory.toAbsolutePath());
+        Database translatedDB;
+
+        if (!ddlOnly) {
+            Path inputDatabasePath = modelDirectory.resolve(MODEL_INPUT_NAME);
+            if (!Files.exists(inputDatabasePath)) {
+                throw new RuntimeException("Can not locate " + MODEL_INPUT_NAME + " in directory: " + modelDirectory.toAbsolutePath());
+            }
+
+            Database input = new ObjectMapper(new YAMLFactory()).readValue(inputDatabasePath.toFile(), Database.class);
+            Translator<Database, Database> translator = TranslatorFactory.translator(input.getDatabaseType(), target.get().getDbType());
+            translatedDB = translator.translate(input);
+
+            new YamlModelOutput(MODEL_OUTPUT_NAME, inputDirectory.get()).write(translatedDB);
+        } else {
+            Path outputDatabasePath = modelDirectory.resolve(MODEL_OUTPUT_NAME);
+            if (!Files.exists(outputDatabasePath)) {
+                throw new RuntimeException("Can not locate " + MODEL_OUTPUT_NAME + " in directory: " + modelDirectory.toAbsolutePath());
+            }
+
+            translatedDB = new ObjectMapper(new YAMLFactory()).readValue(outputDatabasePath.toFile(), Database.class);
         }
 
-        Database input = new ObjectMapper(new YAMLFactory()).readValue(inputDatabasePath.toFile(), Database.class);
-        Translator<Database, Database> translator = TranslatorFactory.translator(input.getDatabaseType(), target.get().getDbType());
-        Database translatedInput = translator.translate(input);
-
-        new YamlModelOutput(MODEL_OUTPUT_NAME, inputDirectory.get()).write(translatedInput);
 
         DDL ddl = DDLFactory.ddlForDatabaseType(target.get().getDbType());
-        String ddlDataBase = ddl.createDataBase(translatedInput);
+        String ddlDataBase = ddl.createDataBase(translatedDB);
         StringOutput stringOutput = new StringOutput("ddl.sql", modelDirectory);
         stringOutput.write(ddlDataBase);
         log.info("Successfully written ddl ({}).", stringOutput.getFilePath());
