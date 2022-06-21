@@ -1,0 +1,207 @@
+{
+  "version": "0.0.1",
+  "converters": [
+    {
+      "targetTypeName": "BIGNUMERIC",
+      "compatibleTypes": [
+        {
+          "typeName": "NUMBER"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "DECIMAL",
+      "compatibleTypes": [
+        {
+          "typeName": "DECIMAL"
+        },
+        {
+          "typeName": "DOUBLE"
+        },
+        {
+          "typeName": "DOUBLE PRECISION"
+        },
+        {
+          "typeName": "REAL"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "NUMERIC",
+      "compatibleTypes": [
+        {
+          "typeName": "NUMERIC"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "INT",
+      "compatibleTypes": [
+        {
+          "typeName": "INT"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "INTEGER",
+      "compatibleTypes": [
+        {
+          "typeName": "INTEGER"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "BIGINT",
+      "compatibleTypes": [
+        {
+          "typeName": "BIGINT"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "SMALLINT",
+      "compatibleTypes": [
+        {
+          "typeName": "SMALLINT"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "TINYINT",
+      "compatibleTypes": [
+        {
+          "typeName": "TINYINT"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "BYTEINT",
+      "compatibleTypes": [
+        {
+          "typeName": "BYTEINT"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "FLOAT64",
+      "compatibleTypes": [
+        {
+          "typeName": "FLOAT"
+        },
+        {
+          "typeName": "FLOAT4"
+        },
+        {
+          "typeName": "FLOAT8"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "STRING",
+      "compatibleTypes": [
+        {
+          "typeName": "VARCHAR"
+        },
+        {
+          "typeName": "CHAR"
+        },
+        {
+          "typeName": "CHARACTER"
+        },
+        {
+          "typeName": "STRING"
+        },
+        {
+          "typeName": "TEXT"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "BYTES",
+      "compatibleTypes": [
+        {
+          "typeName": "BINARY"
+        },
+        {
+          "typeName": "VARBINARY"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "BOOL",
+      "compatibleTypes": [
+        {
+          "typeName": "BOOLEAN"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "DATE",
+      "compatibleTypes": [
+        {
+          "typeName": "DATE"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "DATETIME",
+      "compatibleTypes": [
+        {
+          "typeName": "DATETIME"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "TIME",
+      "compatibleTypes": [
+        {
+          "typeName": "TIME"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "TIMESTAMP",
+      "compatibleTypes": [
+        {
+          "typeName": "TIMESTAMP"
+        },
+        {
+          "typeName": "TIMESTAMPLTZ"
+        },
+        {
+          "typeName": "TIMESTAMPNTZ"
+        },
+        {
+          "typeName": "TIMESTAMPTZ"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "JSON",
+      "compatibleTypes": [
+        {
+          "typeName": "OBJECT"
+        },
+        {
+          "typeName": "VARIANT"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "ARRAY",
+      "compatibleTypes": [
+        {
+          "typeName": "ARRAY"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "GEOGRAPHY",
+      "compatibleTypes": [
+        {
+          "typeName": "GEOGRAPHY"
+        }
+      ]
+    }
+  ]
+}
