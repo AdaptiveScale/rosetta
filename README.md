@@ -90,9 +90,13 @@ connections:
 Rosetta supports the following subcommands:
 
 #### init
-This command will generate a default configuration file located in the current directory with example connections for `bigquery` and `snowflake`.
+This command will generate a project (directory) if specified, a default configuration file located in the current directory with example connections for `bigquery` and `snowflake`, and the model directory.
 
-`usage: rosetta init`
+`usage: rosetta init [PROJECT_NAME]`
+
+Parameter | Description
+--- | ---
+(Optional) PROJECT_NAME | Project name (directory) where the configuration file and model directory will be created.
 
 Example:
 ```yaml
