@@ -85,15 +85,11 @@ class Cli implements Callable<Void> {
     }
 
     @CommandLine.Command(name = "compile", description = "Generate DDL for target Database [bigquery, snowflake, …]", mixinStandardHelpOptions = true)
-    private void compile(@CommandLine.Option(names = {"-t", "--target"}, required = true) String targetName,
+    private void compile(@CommandLine.Option(names = {"-t", "--target"}) String targetName,
                          @CommandLine.Option(names = {"-i", "--input-dir"}, defaultValue = "./") Optional<Path> inputDirectory,
                          @CommandLine.Option(names = {"-ddl", "--ddl-only"}) boolean ddlOnly
     ) throws Exception {
         requireConfig(config);
-        Optional<Connection> target = config.getConnection(targetName);
-        if (!target.isPresent()) {
-            throw new RuntimeException("Can not find target with name: " + targetName + " configured in config.");
-        }
 
         if (!inputDirectory.isPresent()) {
             throw new RuntimeException("Input directory is null");
@@ -107,6 +103,11 @@ class Cli implements Callable<Void> {
         Database translatedDB;
 
         if (!ddlOnly) {
+            Optional<Connection> target = config.getConnection(targetName);
+            if (!target.isPresent()) {
+                throw new RuntimeException("Can not find target with name: " + targetName + " configured in config.");
+            }
+
             Path inputDatabasePath = modelDirectory.resolve(MODEL_INPUT_NAME);
             if (!Files.exists(inputDatabasePath)) {
                 throw new RuntimeException("Can not locate " + MODEL_INPUT_NAME + " in directory: " + modelDirectory.toAbsolutePath());
@@ -126,8 +127,7 @@ class Cli implements Callable<Void> {
             translatedDB = new ObjectMapper(new YAMLFactory()).readValue(outputDatabasePath.toFile(), Database.class);
         }
 
-
-        DDL ddl = DDLFactory.ddlForDatabaseType(target.get().getDbType());
+        DDL ddl = DDLFactory.ddlForDatabaseType(translatedDB.getDatabaseType());
         String ddlDataBase = ddl.createDataBase(translatedDB);
         StringOutput stringOutput = new StringOutput("ddl.sql", modelDirectory);
         stringOutput.write(ddlDataBase);
