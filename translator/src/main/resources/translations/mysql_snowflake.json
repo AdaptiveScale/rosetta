@@ -1,0 +1,196 @@
+{
+  "version": "0.0.1",
+  "converters": [
+    {
+      "targetTypeName": "CHAR",
+      "compatibleTypes": [
+        {
+          "typeName": "CHAR"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "VARCHAR",
+      "compatibleTypes": [
+        {
+          "typeName": "VARCHAR"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "TEXT",
+      "compatibleTypes": [
+        {
+          "typeName": "TINYTEXT"
+        },
+        {
+          "typeName": "TEXT"
+        },
+        {
+          "typeName": "LONGTEXT"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "BINARY",
+      "compatibleTypes": [
+        {
+          "typeName": "BINARY"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "VARBINARY",
+      "compatibleTypes": [
+        {
+          "typeName": "VARBINARY"
+        },
+        {
+          "typeName": "BLOB"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "BOOLEAN",
+      "compatibleTypes": [
+        {
+          "typeName": "BOOLEAN"
+        },
+        {
+          "typeName": "BIT"
+        },
+        {
+          "typeName": "BOOL"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "INTEGER",
+      "compatibleTypes": [
+        {
+          "typeName": "INT"
+        },
+        {
+          "typeName": "INTEGER"
+        },
+        {
+          "typeName": "MEDIUMINT"
+        },
+        {
+          "typeName": "MEDIUMINT UNSIGNED"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "TINYINT",
+      "compatibleTypes": [
+        {
+          "typeName": "TINYINT"
+        },
+        {
+          "typeName": "TINYINT UNSIGNED"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "SMALLINT",
+      "compatibleTypes": [
+        {
+          "typeName": "SMALLINT"
+        },
+        {
+          "typeName": "SMALLINT UNSIGNED"
+        },
+        {
+          "typeName": "YEAR"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "BIGINT",
+      "compatibleTypes": [
+        {
+          "typeName": "BIGINT"
+        },
+        {
+          "typeName": "BIGINT UNSIGNED"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "FLOAT",
+      "compatibleTypes": [
+        {
+          "typeName": "FLOAT"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "DOUBLE",
+      "compatibleTypes": [
+        {
+          "typeName": "DOUBLE"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "DOUBLE PRECISION",
+      "compatibleTypes": [
+        {
+          "typeName": "DOUBLE PRECISION"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "DECIMAL",
+      "compatibleTypes": [
+        {
+          "typeName": "DECIMAL"
+        },
+        {
+          "typeName": "DEC"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "TIMESTAMP",
+      "compatibleTypes": [
+        {
+          "typeName": "TIMESTAMP"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "DATE",
+      "compatibleTypes": [
+        {
+          "typeName": "DATE"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "DATETIME",
+      "compatibleTypes": [
+        {
+          "typeName": "DATETIME"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "TIME",
+      "compatibleTypes": [
+        {
+          "typeName": "TIME"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "GEOGRAPHY",
+      "compatibleTypes": [
+        {
+          "typeName": "GEOMETRY"
+        }
+      ]
+    }
+  ]
+}
