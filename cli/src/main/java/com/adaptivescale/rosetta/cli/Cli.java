@@ -45,7 +45,7 @@ class Cli implements Callable<Void> {
         throw new CommandLine.ParameterException(spec.commandLine(), "Missing required subcommand");
     }
 
-    @CommandLine.Command(name = "extract", description = "Extract schema chosen from connection config.")
+    @CommandLine.Command(name = "extract", description = "Extract schema chosen from connection config.", mixinStandardHelpOptions = true)
     private void extract(@CommandLine.Option(names = {"-s", "--source"}, required = true) String sourceName,
                          @CommandLine.Option(names = {"-t", "--convert-to"}) Optional<String> targetName,
                          @CommandLine.Option(names = {"-o", "--output-dir"},
@@ -84,15 +84,12 @@ class Cli implements Callable<Void> {
         log.info("Successfully written output database yaml ({}).", yamlOutputModel.getFilePath());
     }
 
-    @CommandLine.Command(name = "compile", description = "Generate DDL for target Database [bigquery, snowflake, …]")
-    private void compile(@CommandLine.Option(names = {"-t", "--target"}, required = true) String targetName,
-                         @CommandLine.Option(names = {"-i", "--input-dir"}, defaultValue = "./") Optional<Path> inputDirectory
+    @CommandLine.Command(name = "compile", description = "Generate DDL for target Database [bigquery, snowflake, …]", mixinStandardHelpOptions = true)
+    private void compile(@CommandLine.Option(names = {"-t", "--target"}) String targetName,
+                         @CommandLine.Option(names = {"-i", "--input-dir"}, defaultValue = "./") Optional<Path> inputDirectory,
+                         @CommandLine.Option(names = {"-ddl", "--ddl-only"}) boolean ddlOnly
     ) throws Exception {
         requireConfig(config);
-        Optional<Connection> target = config.getConnection(targetName);
-        if (!target.isPresent()) {
-            throw new RuntimeException("Can not find target with name: " + targetName + " configured in config.");
-        }
 
         if (!inputDirectory.isPresent()) {
             throw new RuntimeException("Input directory is null");
@@ -103,30 +100,59 @@ class Cli implements Callable<Void> {
             throw new RuntimeException("Can not find model directory");
         }
 
-        Path inputDatabasePath = modelDirectory.resolve(MODEL_INPUT_NAME);
-        if (!Files.exists(inputDatabasePath)) {
-            throw new RuntimeException("Can not locate " + MODEL_INPUT_NAME + " in directory: " + modelDirectory.toAbsolutePath());
+        Database translatedDB;
+
+        if (!ddlOnly) {
+            Optional<Connection> target = config.getConnection(targetName);
+            if (!target.isPresent()) {
+                throw new RuntimeException("Can not find target with name: " + targetName + " configured in config.");
+            }
+
+            Path inputDatabasePath = modelDirectory.resolve(MODEL_INPUT_NAME);
+            if (!Files.exists(inputDatabasePath)) {
+                throw new RuntimeException("Can not locate " + MODEL_INPUT_NAME + " in directory: " + modelDirectory.toAbsolutePath());
+            }
+
+            Database input = new ObjectMapper(new YAMLFactory()).readValue(inputDatabasePath.toFile(), Database.class);
+            Translator<Database, Database> translator = TranslatorFactory.translator(input.getDatabaseType(), target.get().getDbType());
+            translatedDB = translator.translate(input);
+
+            new YamlModelOutput(MODEL_OUTPUT_NAME, inputDirectory.get()).write(translatedDB);
+        } else {
+            Path outputDatabasePath = modelDirectory.resolve(MODEL_OUTPUT_NAME);
+            if (!Files.exists(outputDatabasePath)) {
+                throw new RuntimeException("Can not locate " + MODEL_OUTPUT_NAME + " in directory: " + modelDirectory.toAbsolutePath());
+            }
+
+            translatedDB = new ObjectMapper(new YAMLFactory()).readValue(outputDatabasePath.toFile(), Database.class);
         }
 
-        Database input = new ObjectMapper(new YAMLFactory()).readValue(inputDatabasePath.toFile(), Database.class);
-        Translator<Database, Database> translator = TranslatorFactory.translator(input.getDatabaseType(), target.get().getDbType());
-        Database translatedInput = translator.translate(input);
-
-        new YamlModelOutput(MODEL_OUTPUT_NAME, inputDirectory.get()).write(translatedInput);
-
-        DDL ddl = DDLFactory.ddlForDatabaseType(target.get().getDbType());
-        String ddlDataBase = ddl.createDataBase(translatedInput);
+        DDL ddl = DDLFactory.ddlForDatabaseType(translatedDB.getDatabaseType());
+        String ddlDataBase = ddl.createDataBase(translatedDB);
         StringOutput stringOutput = new StringOutput("ddl.sql", modelDirectory);
         stringOutput.write(ddlDataBase);
         log.info("Successfully written ddl ({}).", stringOutput.getFilePath());
     }
 
-    @CommandLine.Command(name = "init", description = "Creates a sample config (main.conf).")
-    private void init() throws IOException {
-        Path fileName = Paths.get(CONFIG_NAME);
+    @CommandLine.Command(name = "init", description = "Creates a sample config (main.conf) and model directory.", mixinStandardHelpOptions = true)
+    private void init(@CommandLine.Parameters(index = "0", description = "Project name.", defaultValue = "")
+                          String projectName) throws IOException {
+        Path fileName = Paths.get(projectName, CONFIG_NAME);
+        Path modelDirectory = Paths.get(projectName, MODEL_DIRECTORY_NAME);
         InputStream resourceAsStream = getClass().getResourceAsStream("/" + TEMPLATE_CONFIG_NAME);
+        Path projectDirectory = Path.of(projectName);
+        if (!projectName.isEmpty() && Files.isDirectory(projectDirectory)) {
+            throw new RuntimeException(String.format("Project (%s) already exists.", projectName));
+        }
+        if (Files.exists(fileName)) {
+            throw new RuntimeException("A configuration for this directory already exists.");
+        }
+        Files.createDirectories(modelDirectory);
         Files.copy(resourceAsStream, fileName);
-        log.info("Successfully created sample config ({}).", CONFIG_NAME);
+        log.info("Successfully created project with a sample config ({}) and model directory ({}).", fileName, modelDirectory);
+        if (!projectName.isEmpty()) {
+            log.info("In order to start using the newly created project please change your working directory.");
+        }
     }
 
     private void requireConfig(Config config) {

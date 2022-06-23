@@ -2,16 +2,149 @@
   "version": "0.0.1",
   "converters": [
     {
-      "targetTypeName": "int",
+      "targetTypeName": "timestamp",
       "compatibleTypes": [
+        {
+          "typeName": "timestamp"
+        },
+        {
+          "typeName": "timestamptz"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "smallint",
+      "compatibleTypes": [
+        {
+          "typeName": "int2"
+        },
         {
           "typeName": "smallserial"
         }
       ]
     },
     {
+      "targetTypeName": "boolean",
+      "compatibleTypes": [
+        {
+          "typeName": "bool"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "date",
+      "compatibleTypes": [
+        {
+          "typeName": "date"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "time",
+      "compatibleTypes": [
+        {
+          "typeName": "time"
+        },
+        {
+          "typeName": "timetz"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "string",
+      "compatibleTypes": [
+        {
+          "typeName": "uuid"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "char",
+      "compatibleTypes": [
+        {
+          "typeName": "bpchar"
+        },
+        {
+          "typeName": "char"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "binary",
+      "compatibleTypes": [
+        {
+          "typeName": "bit"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "varbinary",
+      "compatibleTypes": [
+        {
+          "typeName": "varbit"
+        },
+        {
+          "typeName": "bytea"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "float4",
+      "compatibleTypes": [
+        {
+          "typeName": "float4"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "float8",
+      "compatibleTypes": [
+        {
+          "typeName": "float8"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "text",
+      "compatibleTypes": [
+        {
+          "typeName": "macaddr"
+        },
+        {
+          "typeName": "macaddr8"
+        },
+        {
+          "typeName": "cidr"
+        },
+        {
+          "typeName": "text"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "bigint",
+      "compatibleTypes": [
+        {
+          "typeName": "bigserial"
+        },
+        {
+          "typeName": "int8"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "numeric",
+      "compatibleTypes": [
+        {
+          "typeName": "numeric"
+        },
+        {
+          "typeName": "money"
+        }
+      ]
+    },
+    {
       "targetTypeName": "varchar",
-      "length": 15,
       "compatibleTypes": [
         {
           "typeName": "varchar"
@@ -19,13 +152,169 @@
       ]
     },
     {
-      "targetTypeName": "number",
+      "targetTypeName": "variant",
+      "compatibleTypes": [
+        {
+          "typeName": "json"
+        },
+        {
+          "typeName": "jsonb"
+        },
+        {
+          "typeName": "xml"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "integer",
       "compatibleTypes": [
         {
           "typeName": "int4"
         },
         {
           "typeName": "serial"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "geography",
+      "compatibleTypes": [
+        {
+          "typeName": "box"
+        },
+        {
+          "typeName": "circle"
+        },
+        {
+          "typeName": "line"
+        },
+        {
+          "typeName": "lseg"
+        },
+        {
+          "typeName": "path"
+        },
+        {
+          "typeName": "point"
+        },
+        {
+          "typeName": "polygon"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "array",
+      "compatibleTypes": [
+        {
+          "typeName": "_text"
+        },
+        {
+          "typeName": "_bool"
+        },
+        {
+          "typeName": "_bit"
+        },
+        {
+          "typeName": "_box"
+        },
+        {
+          "typeName": "_bpchar"
+        },
+        {
+          "typeName": "_bytea"
+        },
+        {
+          "typeName": "_char"
+        },
+        {
+          "typeName": "_cidr"
+        },
+        {
+          "typeName": "_circle"
+        },
+        {
+          "typeName": "_date"
+        },
+        {
+          "typeName": "_float4"
+        },
+        {
+          "typeName": "_float8"
+        },
+        {
+          "typeName": "_int2"
+        },
+        {
+          "typeName": "_int4"
+        },
+        {
+          "typeName": "_int8"
+        },
+        {
+          "typeName": "_interval"
+        },
+        {
+          "typeName": "_json"
+        },
+        {
+          "typeName": "_jsonb"
+        },
+        {
+          "typeName": "_line"
+        },
+        {
+          "typeName": "_lseg"
+        },
+        {
+          "typeName": "_macaddr"
+        },
+        {
+          "typeName": "_macaddr8"
+        },
+        {
+          "typeName": "_money"
+        },
+        {
+          "typeName": "_numeric"
+        },
+        {
+          "typeName": "_pg_lsn"
+        },
+        {
+          "typeName": "_point"
+        },
+        {
+          "typeName": "_polygon"
+        },
+        {
+          "typeName": "_time"
+        },
+        {
+          "typeName": "_uuid"
+        },
+        {
+          "typeName": "_varbit"
+        },
+        {
+          "typeName": "_varchar"
+        },
+        {
+          "typeName": "_xml"
+        },
+        {
+          "typeName": "_timestamp"
+        },
+        {
+          "typeName": "_path"
+        },
+        {
+          "typeName": "_tsquery"
+        },
+        {
+          "typeName": "_tsvector"
+        },
+        {
+          "typeName": "_txid_snapshot"
         }
       ]
     }
