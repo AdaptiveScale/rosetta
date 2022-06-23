@@ -18,20 +18,6 @@
       ]
     },
     {
-      "targetTypeName": "STRING",
-      "compatibleTypes": [
-        {
-          "typeName": "TINYTEXT"
-        },
-        {
-          "typeName": "TEXT"
-        },
-        {
-          "typeName": "LONGTEXT"
-        }
-      ]
-    },
-    {
       "targetTypeName": "TEXT",
       "compatibleTypes": [
         {
