@@ -28,12 +28,6 @@
         },
         {
           "typeName": "LONGTEXT"
-        },
-        {
-          "typeName": "ENUM"
-        },
-        {
-          "typeName": "SET"
         }
       ]
     },
