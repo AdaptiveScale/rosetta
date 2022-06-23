@@ -15,6 +15,8 @@ public class SourceGeneratorFactory {
         ColumnExtractor<java.sql.Connection, Collection<Table>> columnsExtractor = null;
         if ("bigquery".equals(connection.getDbType())) {
             columnsExtractor = new BigQueryColumnsExtractor(connection);
+        } else if ("mysql".equals(connection.getDbType())) {
+            columnsExtractor = new MySQLColumnsExtractor(connection);
         } else {
             columnsExtractor = new ColumnsExtractor(connection);
         }

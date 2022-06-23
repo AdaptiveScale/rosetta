@@ -108,9 +108,11 @@ public class SnowflakeDDLGenerator implements DDL {
     //ALTER TABLE rosetta.contacts ADD CONSTRAINT contacts_fk FOREIGN KEY (contact_id) REFERENCES rosetta."user"(user_id);
     private String foreignKey(Column column) {
         return column.getForeignKeys().stream().map(foreignKey ->
-                "ALTER TABLE " + foreignKey.getSchema() + "." + foreignKey.getTableName() + " ADD CONSTRAINT "
+                "ALTER TABLE " + ((foreignKey.getSchema() == null || foreignKey.getSchema().isEmpty()) ? "" : foreignKey.getSchema() + ".")
+                        + foreignKey.getTableName() + " ADD CONSTRAINT "
                         + foreignKey.getName() + " FOREIGN KEY (" + foreignKey.getColumnName() + ") REFERENCES "
-                        + foreignKey.getPrimaryTableSchema() + "." + foreignKey.getPrimaryTableName()
+                        + ((foreignKey.getPrimaryTableSchema() == null || foreignKey.getPrimaryTableSchema().isEmpty()) ? "" : foreignKey.getPrimaryTableSchema() + ".")
+                        + foreignKey.getPrimaryTableName()
                         + "(" + foreignKey.getPrimaryColumnName() + ")"
                         + foreignKeyDeleteRuleSanitation(foreignKeyDeleteRule(foreignKey))
 
