@@ -1,4 +1,4 @@
-package com.adaptivescale.rosetta.ddl.targets.snowflake;
+package com.adaptivescale.rosetta.ddl.targets.snowflake.decorators;
 
 import com.adaptivescale.rosetta.common.models.Column;
 import com.adaptivescale.rosetta.ddl.targets.ColumnDataTypeName;
