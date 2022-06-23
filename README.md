@@ -50,7 +50,7 @@ MySQL | Snowflake | In Progress
 First, we need to download the cli jar file in order to get started. This can be achieved by downloading the latest release from [releases page](https://github.com/AdaptiveScale/rosetta/releases).
 After we have downloaded the jar file, we need to specify where our JDBC drivers(directory) are located. We are going to create an alias command in order to not specify the same command multiple times.
 ```bash
-alias rosetta='java -cp <path_to_our_cli_dir>/rosetta-0.0.1.jar:<path_to_our_drivers> com.adaptivescale.rosetta.cli.Main'
+alias rosetta='java -cp "<path_to_our_cli_dir>/rosetta-0.0.1.jar:<path_to_our_drivers>" com.adaptivescale.rosetta.cli.Main'
 ```
 
 After setting an alias command we are ready to use our cli.
@@ -100,7 +100,7 @@ Parameter | Description
 
 Example:
 ```yaml
-#example with 4 connections
+#example with 2 connections
 connections:
   - name: snowflake_weather_prod
     databaseName: SNOWFLAKE_SAMPLE_DATA
@@ -109,22 +109,8 @@ connections:
     url: jdbc:snowflake://<account_identifier>.snowflakecomputing.com/?<connection_params>
     userName: bob
     password: bobPassword
-  - name: snowflake_weather_dev
-    databaseName: SNOWFLAKE_SAMPLE_DATA
-    schemaName: TPCH_SF1
-    dbType: snowflake
-    url: jdbc:snowflake://<account_identifier>.snowflakecomputing.com/?<connection_params>
-    userName: bob
-    password: bobPassword
   - name: bigquery_prod
     databaseName: bigquery-public-data
-    schemaName: breathe
-    dbType: bigquery
-    url: jdbc:bigquery://[Host]:[Port];ProjectId=[Project];OAuthType= [AuthValue];[Property1]=[Value1];[Property2]=[Value2];...
-    userName: user
-    password: password
-  - name: bigquery_dev
-    databaseName: bigquery-public-data-local
     schemaName: breathe
     dbType: bigquery
     url: jdbc:bigquery://[Host]:[Port];ProjectId=[Project];OAuthType= [AuthValue];[Property1]=[Value1];[Property2]=[Value2];...
