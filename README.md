@@ -39,10 +39,12 @@ This module will read structure provided as in the format in the source module. 
 
 Currently supported databases are shown below on the table.
 
-Source db | Target db | Status 
----|---|---
-BigQuery | Snowflake | Completed
-MySQL | Snowflake | In Progress
+|         | BigQuery | Snowflake |  MySQL  | Postgres |
+|---------|:--------:|:--------:|:-------:|:--------:|
+| BigQuery |    ❌     |     ✅     |         |          |
+| Snowflake |    ✅     |     ❌     |         |          |
+| MySQL   |          |     ✅     |    ❌    |          |
+| Postgres |          |     ✅     |    ✅    |    ❌     |
 
 ## Usage
 
