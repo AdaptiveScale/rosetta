@@ -71,6 +71,9 @@
           "typeName": "INT"
         },
         {
+          "typeName": "INT UNSIGNED"
+        },
+        {
           "typeName": "INTEGER"
         },
         {
