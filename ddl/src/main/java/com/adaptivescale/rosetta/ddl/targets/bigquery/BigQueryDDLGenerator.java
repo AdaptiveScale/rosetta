@@ -25,7 +25,7 @@ public class BigQueryDDLGenerator implements DDL {
     @Override
     public String createTable(Table table) {
         List<String> definitions = table.getColumns().stream().map(this::createColumn).collect(Collectors.toList());
-        String definitionAsString = String.join(" , ", definitions);
+        String definitionAsString = String.join(", ", definitions);
         return "CREATE TABLE "
                 + ((table.getSchema() == null || table.getSchema().isEmpty()) ? "" : table.getSchema() + ".")
                 + table.getName()

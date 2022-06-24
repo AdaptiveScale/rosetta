@@ -28,7 +28,7 @@ public class MySqlDDLGenerator implements DDL {
 
         Optional<String> primaryKeysForTable = createPrimaryKeysForTable(table);
         primaryKeysForTable.ifPresent(definitions::add);
-        String definitionAsString = String.join(" , ", definitions);
+        String definitionAsString = String.join(", ", definitions);
 
         return "CREATE TABLE "
                 + ((table.getSchema() != null && table.getSchema().isEmpty()) ? "" : "`" + table.getSchema() + "`.")
@@ -65,10 +65,10 @@ public class MySqlDDLGenerator implements DDL {
                 .map(this::foreignKeys)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .collect(Collectors.joining(";"));
+                .collect(Collectors.joining());
 
         if (!foreignKeys.isEmpty()) {
-           stringBuilder.append("\r").append(foreignKeys).append(";\r");
+           stringBuilder.append("\r").append(foreignKeys).append("\r");
         }
         return stringBuilder.toString();
     }
@@ -92,7 +92,7 @@ public class MySqlDDLGenerator implements DDL {
     private Optional<String> foreignKeys(Table table) {
         String result = table.getColumns().stream()
                 .filter(column -> column.getForeignKeys() != null && !column.getForeignKeys().isEmpty())
-                .map(this::foreignKey).collect(Collectors.joining(";\r"));
+                .map(this::foreignKey).collect(Collectors.joining());
 
         return result.isEmpty() ? Optional.empty() : Optional.of(result);
     }
@@ -104,9 +104,9 @@ public class MySqlDDLGenerator implements DDL {
                         + foreignKey.getName() + " FOREIGN KEY (" + foreignKey.getColumnName() + ") REFERENCES "
                         + "`" + foreignKey.getPrimaryTableSchema() + "`.`" + foreignKey.getPrimaryTableName() + "`"
                         + "(" + foreignKey.getPrimaryColumnName() + ")"
-                        + foreignKeyDeleteRuleSanitation(foreignKeyDeleteRule(foreignKey))
+                        + foreignKeyDeleteRuleSanitation(foreignKeyDeleteRule(foreignKey)) + ";\r"
 
-        ).collect(Collectors.joining(";\r"));
+        ).collect(Collectors.joining());
     }
 
     private String foreignKeyDeleteRuleSanitation(String deleteRule) {
