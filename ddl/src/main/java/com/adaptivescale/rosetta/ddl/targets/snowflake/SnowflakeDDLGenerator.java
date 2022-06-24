@@ -14,6 +14,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class SnowflakeDDLGenerator implements DDL {
 
@@ -34,7 +35,7 @@ public class SnowflakeDDLGenerator implements DDL {
 
         Optional<String> primaryKeysForTable = createPrimaryKeysForTable(table);
         primaryKeysForTable.ifPresent(definitions::add);
-        String definitionAsString = String.join(" , ", definitions);
+        String definitionAsString = String.join(", ", definitions);
 
         return "CREATE TABLE "
                 + ((table.getSchema() == null || table.getSchema().isEmpty()) ? "" : table.getSchema() + ".")
@@ -72,10 +73,10 @@ public class SnowflakeDDLGenerator implements DDL {
                 .map(this::foreignKeys)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .collect(Collectors.joining(";"));
+                .collect(Collectors.joining("\r"));
 
         if(!foreignKeys.isEmpty()){
-            stringBuilder.append("\r").append(foreignKeys).append(";\r");
+            stringBuilder.append("\r").append(foreignKeys).append("\r");
         }
 
         return stringBuilder.toString();
@@ -100,7 +101,7 @@ public class SnowflakeDDLGenerator implements DDL {
     private Optional<String> foreignKeys(Table table) {
         String result = table.getColumns().stream()
                 .filter(column -> column.getForeignKeys() != null && !column.getForeignKeys().isEmpty())
-                .map(this::foreignKey).collect(Collectors.joining(";\r"));
+                .map(this::foreignKey).collect(Collectors.joining());
 
         return result.isEmpty() ? Optional.empty() : Optional.of(result);
     }
@@ -114,9 +115,8 @@ public class SnowflakeDDLGenerator implements DDL {
                         + ((foreignKey.getPrimaryTableSchema() == null || foreignKey.getPrimaryTableSchema().isEmpty()) ? "" : foreignKey.getPrimaryTableSchema() + ".")
                         + foreignKey.getPrimaryTableName()
                         + "(" + foreignKey.getPrimaryColumnName() + ")"
-                        + foreignKeyDeleteRuleSanitation(foreignKeyDeleteRule(foreignKey))
-
-        ).collect(Collectors.joining(";\r"));
+                        + foreignKeyDeleteRuleSanitation(foreignKeyDeleteRule(foreignKey)) + ";\r"
+                ).collect(Collectors.joining());
     }
 
     private String foreignKeyDeleteRuleSanitation(String deleteRule) {
