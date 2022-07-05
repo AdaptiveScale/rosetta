@@ -49,7 +49,6 @@ public class ColumnsExtractor implements ColumnExtractor<java.sql.Connection, Co
 
     protected void extract(ResultSet resultSet, Column column) throws SQLException {
         column.setName(resultSet.getString("COLUMN_NAME"));
-        column.setJdbcDataType(String.valueOf(resultSet.getInt("DATA_TYPE")));
         column.setTypeName(String.valueOf(resultSet.getString("TYPE_NAME")));
         column.setNullable(resultSet.getBoolean("IS_NULLABLE"));
         column.setColumnDisplaySize(resultSet.getInt("COLUMN_SIZE"));

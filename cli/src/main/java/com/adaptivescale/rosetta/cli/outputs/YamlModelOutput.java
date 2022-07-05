@@ -3,6 +3,7 @@ package com.adaptivescale.rosetta.cli.outputs;
 import com.adaptivescale.rosetta.cli.Constants;
 import com.adaptivescale.rosetta.cli.Output;
 import com.adaptivescale.rosetta.common.models.Database;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
@@ -25,6 +26,6 @@ public class YamlModelOutput implements Output<Database> {
 
     @Override
     public void write(Database database) throws Exception {
-        new ObjectMapper(new YAMLFactory()).writeValue(filePath.toFile(), database);
+        new ObjectMapper(new YAMLFactory()).setSerializationInclusion(JsonInclude.Include.NON_NULL).writeValue(filePath.toFile(), database);
     }
 }
