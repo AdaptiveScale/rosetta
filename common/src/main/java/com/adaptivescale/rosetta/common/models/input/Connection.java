@@ -1,5 +1,8 @@
 package com.adaptivescale.rosetta.common.models.input;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 public class Connection {
 
     private String name;
@@ -9,6 +12,7 @@ public class Connection {
     private String url;
     private String userName;
     private String password;
+    private Collection<String> tables = new ArrayList<>();
 
     public Connection() {
     }
@@ -67,5 +71,13 @@ public class Connection {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Collection<String> getTables() {
+        return tables;
+    }
+
+    public void setTables(Collection<String> tables) {
+        this.tables = tables;
     }
 }
