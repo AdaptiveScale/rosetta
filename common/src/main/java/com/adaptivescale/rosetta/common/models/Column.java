@@ -8,7 +8,6 @@ public class Column {
     private String label;
     private String description;
     private String typeName;
-    private String jdbcDataType;
     private int ordinalPosition;
     private boolean isAutoincrement;
     private boolean isNullable;
@@ -93,14 +92,6 @@ public class Column {
 
     public void setPrimaryKeySequenceId(int primaryKeySequenceId) {
         this.primaryKeySequenceId = primaryKeySequenceId;
-    }
-
-    public String getJdbcDataType() {
-        return jdbcDataType;
-    }
-
-    public void setJdbcDataType(String jdbcDataType) {
-        this.jdbcDataType = jdbcDataType;
     }
 
     public int getColumnDisplaySize() {
