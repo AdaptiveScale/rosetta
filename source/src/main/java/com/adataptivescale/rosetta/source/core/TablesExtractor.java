@@ -19,6 +19,9 @@ public class TablesExtractor implements TableExtractor<Collection<Table>, Connec
         Collection<Table> tables = new ArrayList<>();
 
         while (resultSet.next()) {
+            if (!target.getTables().isEmpty() &&
+                !target.getTables().contains(resultSet.getString("TABLE_NAME"))) continue;
+
             Table table = new Table();
             table.setName(resultSet.getString("TABLE_NAME"));
             table.setType(resultSet.getString("TABLE_TYPE"));
