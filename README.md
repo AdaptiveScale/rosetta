@@ -39,12 +39,12 @@ This module will read structure provided as in the format in the source module. 
 
 Currently supported databases are shown below on the table.
 
-|         | BigQuery | Snowflake |  MySQL  | Postgres |
+|         | **BigQuery** | **Snowflake** |  **MySQL**  | **Postgres** |
 |---------|:--------:|:--------:|:-------:|:--------:|
-| BigQuery |    ❌     |     ✅     |         |          |
-| Snowflake |    ✅     |     ❌     |         |          |
-| MySQL   |          |     ✅     |    ❌    |          |
-| Postgres |          |     ✅     |    ✅    |    ❌     |
+| **BigQuery** |    ❌     |     ✅     |         |          |
+| **Snowflake** |    ✅     |     ❌     |         |          |
+| **MySQL**   |          |     ✅     |    ❌    |          |
+| **Postgres** |          |     ✅     |    ✅    |    ❌     |
 
 ## Usage
 
@@ -85,6 +85,11 @@ connections:
 
     # The password of the database user
     password: password
+
+    # The name of tables to include which is optional
+    tables:
+      - table_one
+      - table_two
 ```
 
 ### Command Line Arguments
@@ -118,6 +123,8 @@ connections:
     url: jdbc:bigquery://[Host]:[Port];ProjectId=[Project];OAuthType= [AuthValue];[Property1]=[Value1];[Property2]=[Value2];...
     userName: user
     password: password
+    tables:
+      - bigquery_table
 ```
 
 #### extract
@@ -142,8 +149,6 @@ tables:
   schema: "breathe"
   columns:
   - name: "id"
-    label: null
-    description: null
     typeName: "INT64"
     jdbcDataType: "4"
     ordinalPosition: 0
@@ -151,13 +156,10 @@ tables:
     columnDisplaySize: 10
     scale: 0
     precision: 10
-    foreignKeys: null
     primaryKey: false
     nullable: false
     autoincrement: true
   - name: "name"
-    label: null
-    description: null
     typeName: "STRING"
     jdbcDataType: "12"
     ordinalPosition: 0
@@ -165,7 +167,6 @@ tables:
     columnDisplaySize: 255
     scale: 0
     precision: 255
-    foreignKeys: null
     primaryKey: false
     nullable: false
     autoincrement: false
@@ -186,7 +187,7 @@ Parameter | Description
 Example:
 ```yaml
 CREATE SCHEMA breathe;
-CREATE TABLE breathe.profiles(id INTEGER not null AUTO_INCREMENT , name STRING not null);
+CREATE TABLE breathe.profiles(id INTEGER not null AUTO_INCREMENT, name STRING not null);
 ```
 
 ## Copyright and License Information
