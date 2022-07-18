@@ -1,0 +1,175 @@
+{
+  "version": "0.0.1",
+  "converters": [
+    {
+      "targetTypeName": "numeric",
+      "compatibleTypes": [
+        {
+          "typeName": "number"
+        },
+        {
+          "typeName": "numeric"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "decimal",
+      "compatibleTypes": [
+        {
+          "typeName": "decimal"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "integer",
+      "compatibleTypes": [
+        {
+          "typeName": "int"
+        },
+        {
+          "typeName": "integer"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "bigint",
+      "compatibleTypes": [
+        {
+          "typeName": "bigint"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "smallint",
+      "compatibleTypes": [
+        {
+          "typeName": "smallint"
+        },
+        {
+          "typeName": "tinyint"
+        },
+        {
+          "typeName": "byteint"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "real",
+      "compatibleTypes": [
+        {
+          "typeName": "float"
+        },
+        {
+          "typeName": "float4"
+        },
+        {
+          "typeName": "float8"
+        },
+        {
+          "typeName": "real"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "double precision",
+      "compatibleTypes": [
+        {
+          "typeName": "double precision"
+        },
+        {
+          "typeName": "double"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "character varying",
+      "compatibleTypes": [
+        {
+          "typeName": "varchar"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "character",
+      "compatibleTypes": [
+        {
+          "typeName": "character"
+        },
+        {
+          "typeName": "char"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "text",
+      "compatibleTypes": [
+        {
+          "typeName": "string"
+        },
+        {
+          "typeName": "text"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "bytea",
+      "compatibleTypes": [
+        {
+          "typeName": "binary"
+        },
+        {
+          "typeName": "varbinary"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "date",
+      "compatibleTypes": [
+        {
+          "typeName": "date"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "time",
+      "compatibleTypes": [
+        {
+          "typeName": "time"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "timestamp",
+      "compatibleTypes": [
+        {
+          "typeName": "datetime"
+        },
+        {
+          "typeName": "timestamp"
+        },
+        {
+          "typeName": "timestampNTZ"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "timestampTZ",
+      "compatibleTypes": [
+        {
+          "typeName": "timestampLTZ"
+        },
+        {
+          "typeName": "timestampTZ"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "boolean",
+      "compatibleTypes": [
+        {
+          "typeName": "boolean"
+        }
+      ]
+    }
+  ]
+}
