@@ -1,0 +1,137 @@
+{
+  "version": "0.0.1",
+  "converters": [
+    {
+      "targetTypeName": "character varying",
+      "compatibleTypes": [
+        {
+          "typeName": "string"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "bigint",
+      "compatibleTypes": [
+        {
+          "typeName": "int64"
+        },
+        {
+          "typeName": "bigint"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "array",
+      "compatibleTypes": [
+        {
+          "typeName": "array"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "date",
+      "compatibleTypes": [
+        {
+         "typeName": "date"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "boolean",
+      "compatibleTypes": [
+        {
+          "typeName": "boolean"
+        },
+        {
+          "typeName": "bool"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "time",
+      "compatibleTypes": [
+        {
+          "typeName": "time"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "json",
+      "compatibleTypes": [
+        {
+          "typeName": "json"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "bytea",
+      "compatibleTypes": [
+        {
+          "typeName": "bytes"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "numeric",
+      "compatibleTypes": [
+        {
+          "typeName": "numeric"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "interval",
+      "compatibleTypes": [
+        {
+          "typeName": "interval"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "integer",
+      "compatibleTypes": [
+        {
+          "typeName": "int"
+        },
+        {
+          "typeName": "integer"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "smallint",
+      "compatibleTypes": [
+        {
+          "typeName": "tinyint"
+        },
+        {
+          "typeName": "byteint"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "decimal",
+      "compatibleTypes": [
+        {
+          "typeName": "decimal"
+        },
+        {
+
+          "typeName": "float64"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "timestamp",
+      "compatibleTypes": [
+        {
+          "typeName": "timestamp"
+        },
+        {
+
+          "typeName": "datetime"
+        }
+      ]
+    }
+  ]
+}
