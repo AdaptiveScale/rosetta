@@ -1,9 +1,12 @@
 package com.adaptivescale.rosetta.cli;
 
 import com.adaptivescale.rosetta.cli.model.Config;
+import com.adaptivescale.rosetta.cli.outputs.DbtSqlModelOutput;
+import com.adaptivescale.rosetta.cli.outputs.DbtYamlModelOutput;
 import com.adaptivescale.rosetta.cli.outputs.StringOutput;
 import com.adaptivescale.rosetta.cli.outputs.YamlModelOutput;
 import com.adaptivescale.rosetta.common.models.Database;
+import com.adaptivescale.rosetta.common.models.dbt.DbtModel;
 import com.adaptivescale.rosetta.common.models.input.Connection;
 import com.adaptivescale.rosetta.ddl.DDL;
 import com.adaptivescale.rosetta.ddl.DDLFactory;
@@ -11,6 +14,7 @@ import com.adaptivescale.rosetta.translator.Translator;
 import com.adaptivescale.rosetta.translator.TranslatorFactory;
 import com.adataptivescale.rosetta.source.core.SourceGeneratorFactory;
 
+import com.adataptivescale.rosetta.source.dbt.DbtModelGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +29,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.AbstractMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 
@@ -154,6 +159,10 @@ class Cli implements Callable<Void> {
 
         StringOutput stringOutput = new StringOutput("ddl.sql", targetWorkspace);
         stringOutput.write(ddl);
+
+        // generate dbt models
+        extractDbtModels(targetWorkspace);
+
         log.info("Successfully written ddl ({}).", stringOutput.getFilePath());
     }
 
@@ -175,6 +184,41 @@ class Cli implements Callable<Void> {
         if (!projectName.isEmpty()) {
             log.info("In order to start using the newly created project please change your working directory.");
         }
+    }
+
+    @CommandLine.Command(name = "dbt", description = "Extract dbt models chosen from connection config.", mixinStandardHelpOptions = true)
+    private void dbt(@CommandLine.Option(names = {"-s", "--source"}, required = true) String sourceName) throws Exception {
+        requireConfig(config);
+        Optional<Connection> source = config.getConnection(sourceName);
+        if (source.isEmpty()) {
+            throw new RuntimeException("Can not find source with name: " + sourceName + " configured in config.");
+        }
+
+        Path sourceWorkspace = Paths.get("./", sourceName);
+        if (!Files.isDirectory(sourceWorkspace)) {
+            throw new RuntimeException(String.format("Can not find directory: %s for source name: %s to find models" +
+                                                       " for dbt model generation", sourceWorkspace, sourceName));
+        }
+
+        extractDbtModels(sourceWorkspace);
+    }
+
+    private void extractDbtModels(Path sourceWorkspace) throws IOException {
+        // create dbt directories if they dont exist
+        Path dbtWorkspace = sourceWorkspace.resolve("dbt");
+        Files.createDirectories(dbtWorkspace.resolve("model"));
+
+        List<Database> databases = getDatabases(sourceWorkspace).map(AbstractMap.SimpleImmutableEntry::getValue).collect(Collectors.toList());
+
+        DbtModel dbtModel = DbtModelGenerator.dbtModelGenerator(databases);
+        DbtYamlModelOutput dbtYamlModelOutput = new DbtYamlModelOutput("model.yaml", dbtWorkspace);
+        dbtYamlModelOutput.write(dbtModel);
+
+        Map<String, String> dbtSQLTables = DbtModelGenerator.dbtSQLGenerator(dbtModel);
+        DbtSqlModelOutput dbtSqlModelOutput = new DbtSqlModelOutput(dbtWorkspace);
+        dbtSqlModelOutput.write(dbtSQLTables);
+
+        log.info("Successfully written dbt models for database yaml ({}).", dbtYamlModelOutput.getFilePath());
     }
 
     private void requireConfig(Config config) {
