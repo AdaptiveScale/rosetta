@@ -2,8 +2,6 @@ plugins {
     id 'java'
 }
 
-group 'org.example'
-version '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
@@ -12,7 +10,6 @@ repositories {
 dependencies {
 
     implementation project(':common')
-
 
     testImplementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.3'
     testImplementation project(':translator')
