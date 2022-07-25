@@ -161,7 +161,7 @@ class Cli implements Callable<Void> {
         stringOutput.write(ddl);
 
         // generate dbt models
-        extractDbtModels(targetWorkspace);
+        extractDbtModels(target.get(), targetWorkspace);
 
         log.info("Successfully written ddl ({}).", stringOutput.getFilePath());
     }
@@ -200,17 +200,17 @@ class Cli implements Callable<Void> {
                                                        " for dbt model generation", sourceWorkspace, sourceName));
         }
 
-        extractDbtModels(sourceWorkspace);
+        extractDbtModels(source.get(), sourceWorkspace);
     }
 
-    private void extractDbtModels(Path sourceWorkspace) throws IOException {
+    private void extractDbtModels(Connection connection, Path sourceWorkspace) throws IOException {
         // create dbt directories if they dont exist
         Path dbtWorkspace = sourceWorkspace.resolve("dbt");
         Files.createDirectories(dbtWorkspace.resolve("model"));
 
         List<Database> databases = getDatabases(sourceWorkspace).map(AbstractMap.SimpleImmutableEntry::getValue).collect(Collectors.toList());
 
-        DbtModel dbtModel = DbtModelGenerator.dbtModelGenerator(databases);
+        DbtModel dbtModel = DbtModelGenerator.dbtModelGenerator(connection, databases);
         DbtYamlModelOutput dbtYamlModelOutput = new DbtYamlModelOutput("model.yaml", dbtWorkspace);
         dbtYamlModelOutput.write(dbtModel);
 

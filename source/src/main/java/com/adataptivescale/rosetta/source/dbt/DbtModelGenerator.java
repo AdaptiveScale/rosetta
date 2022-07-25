@@ -5,6 +5,7 @@ import com.adaptivescale.rosetta.common.models.dbt.DbtColumn;
 import com.adaptivescale.rosetta.common.models.dbt.DbtModel;
 import com.adaptivescale.rosetta.common.models.dbt.DbtSource;
 import com.adaptivescale.rosetta.common.models.dbt.DbtTable;
+import com.adaptivescale.rosetta.common.models.input.Connection;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,30 +15,20 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class DbtModelGenerator {
-  public static DbtModel dbtModelGenerator(Database database) {
-    DbtModel dbtModel = new DbtModel();
-    dbtModel.setVersion(2);
-    Collection<DbtSource> dbtSources = new ArrayList<>();
-
-    prepareDbtSource(dbtSources, database);
-    dbtModel.setSources(dbtSources);
-    return dbtModel;
-  }
-
-  public static DbtModel dbtModelGenerator(List<Database> databases) {
+  public static DbtModel dbtModelGenerator(Connection connection, List<Database> databases) {
     DbtModel dbtModel = new DbtModel();
     dbtModel.setVersion(2);
     Collection<DbtSource> dbtSources = new ArrayList<>();
     databases.forEach(database -> {
-      prepareDbtSource(dbtSources, database);
+      prepareDbtSource(connection, dbtSources, database);
     });
     dbtModel.setSources(dbtSources);
     return dbtModel;
   }
 
-  private static void prepareDbtSource(Collection<DbtSource> dbtSources, Database database) {
+  private static void prepareDbtSource(Connection connection, Collection<DbtSource> dbtSources, Database database) {
     DbtSource dbtSource = new DbtSource();
-    dbtSource.setName(database.getDatabaseProductName());
+    dbtSource.setName(connection.getSchemaName());
     dbtSource.setDescription(database.getDatabaseType());
 
     Collection<DbtTable> dbtTables = new ArrayList<>();
