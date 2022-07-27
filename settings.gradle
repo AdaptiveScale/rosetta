@@ -5,4 +5,5 @@ include 'translator'
 include 'ddl'
 include 'cli'
 include 'common'
+include 'test'
 
