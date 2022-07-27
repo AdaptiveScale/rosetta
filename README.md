@@ -190,6 +190,28 @@ CREATE SCHEMA breathe;
 CREATE TABLE breathe.profiles(id INTEGER not null AUTO_INCREMENT, name STRING not null);
 ```
 
+#### diff 
+Show difference between local model and database. Check if any table is removed, added or any columns has changed.
+
+`usage: rosetta [-c, --config CONFIG_FILE] diff [-h, --help] [-s, --source CONNECTION_NAME]`
+
+Parameter | Description
+--- | ---
+-h, --help | Show the help message and exit.
+-c, --config CONFIG_FILE | YAML config file.  If none is supplied it will use main.conf in the current directory if it exists.
+-s, --source CONNECTION_NAME | The source connection is used to specify which models and connection to use.
+
+Example:
+```
+There are changes between local model and targeted source
+Table Changed: Table 'actor' columns changed
+Column Changed: Column 'actor_id' in table 'actor' changed 'Precision'. Old value: '1', new value: '5'
+Column Changed: Column 'actor_id' in table 'actor' changed 'Autoincrement'. Old value: 'true', new value: 'false'
+Column Changed: Column 'actor_id' in table 'actor' changed 'Primary key'. Old value: 'false', new value: 'true'
+Column Changed: Column 'actor_id' in table 'actor' changed 'Nullable'. Old value: 'true', new value: 'false'
+Table Added: Table 'address'
+```
+
 ## Copyright and License Information
 Unless otherwise specified, all content, including all source code files and documentation files in this repository are:
 
