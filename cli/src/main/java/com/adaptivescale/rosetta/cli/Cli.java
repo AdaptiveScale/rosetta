@@ -7,6 +7,10 @@ import com.adaptivescale.rosetta.common.models.Database;
 import com.adaptivescale.rosetta.common.models.input.Connection;
 import com.adaptivescale.rosetta.ddl.DDL;
 import com.adaptivescale.rosetta.ddl.DDLFactory;
+import com.adaptivescale.rosetta.test.assertion.*;
+import com.adaptivescale.rosetta.test.assertion.AssertionSqlGenerator;
+import com.adaptivescale.rosetta.test.assertion.generator.AssertionSqlGeneratorFactory;
+import com.adaptivescale.rosetta.test.assertion.DefaultSqlExecution;
 import com.adaptivescale.rosetta.translator.Translator;
 import com.adaptivescale.rosetta.translator.TranslatorFactory;
 import com.adataptivescale.rosetta.source.core.SourceGeneratorFactory;
@@ -157,6 +161,29 @@ class Cli implements Callable<Void> {
         log.info("Successfully written ddl ({}).", stringOutput.getFilePath());
     }
 
+    @CommandLine.Command(name = "test", description = "Generate DDL for target Database [bigquery, snowflake, …]", mixinStandardHelpOptions = true)
+    private void test(@CommandLine.Option(names = {"-s", "--source"}) String sourceName) throws Exception {
+        requireConfig(config);
+
+        Optional<Connection> source = config.getConnection(sourceName);
+        if (source.isEmpty()) {
+            throw new RuntimeException("Can not find source with name: " + sourceName + " configured in config.");
+        }
+        Path sourceWorkspace = Paths.get("./", sourceName);
+
+        if (!Files.isDirectory(sourceWorkspace)) {
+            throw new RuntimeException(String.format("Can not find directory: %s for source name: %s to find" +
+                    " models for translation", sourceWorkspace, sourceName));
+        }
+
+        List<Database> collect = getDatabases(sourceWorkspace).map(AbstractMap.SimpleImmutableEntry::getValue).collect(Collectors.toList());
+        for (Database database : collect) {
+            AssertionSqlGenerator translator = AssertionSqlGeneratorFactory.generatorFor(source.get());
+            DefaultSqlExecution defaultSqlExecution = new DefaultSqlExecution(source.get());
+            new DefaultAssertTestEngine(translator, defaultSqlExecution).run(source.get(),database);
+        }
+    }
+
     @CommandLine.Command(name = "init", description = "Creates a sample config (main.conf) and model directory.", mixinStandardHelpOptions = true)
     private void init(@CommandLine.Parameters(index = "0", description = "Project name.", defaultValue = "")
                               String projectName) throws IOException {
@@ -176,6 +203,7 @@ class Cli implements Callable<Void> {
             log.info("In order to start using the newly created project please change your working directory.");
         }
     }
+
 
     private void requireConfig(Config config) {
         if (config == null) {
