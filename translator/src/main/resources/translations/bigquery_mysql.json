@@ -1,0 +1,160 @@
+{
+  "version": "0.0.1",
+  "converters": [
+    {
+      "targetTypeName": "text",
+      "compatibleTypes": [
+        {
+          "typeName": "string"
+        },
+        {
+          "typeName": "bytes"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "decimal",
+      "compatibleTypes": [
+        {
+          "typeName": "decimal"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "varchar",
+      "length": 38,
+      "compatibleTypes": [
+        {
+          "typeName": "bigdecimal"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "date",
+      "compatibleTypes": [
+        {
+          "typeName": "date"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "datetime",
+      "compatibleTypes": [
+        {
+          "typeName": "datetime"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "float",
+      "compatibleTypes": [
+        {
+          "typeName": "float64"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "numeric",
+      "compatibleTypes": [
+        {
+          "typeName": "numeric"
+        },
+        {
+          "typeName": "bignumeric"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "bool",
+      "compatibleTypes": [
+        {
+          "typeName": "boolean"
+        },
+        {
+          "typeName": "bool"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "json",
+      "compatibleTypes": [
+        {
+          "typeName": "json"
+        },
+        {
+          "typeName": "array"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "timestamp",
+      "compatibleTypes": [
+        {
+          "typeName": "timestamp"
+        },
+        {
+          "typeName": "interval"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "time",
+      "compatibleTypes": [
+        {
+          "typeName": "time"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "integer",
+      "compatibleTypes": [
+        {
+          "typeName": "int64"
+        },
+        {
+          "typeName": "integer"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "bigint",
+      "compatibleTypes": [
+        {
+          "typeName": "bigint"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "smallint",
+      "compatibleTypes": [
+        {
+          "typeName": "smallint"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "tinyint",
+      "compatibleTypes": [
+        {
+          "typeName": "tinyint"
+        },
+        {
+          "typeName": "byteint"
+        }
+      ]
+    }
+  ]
+}
