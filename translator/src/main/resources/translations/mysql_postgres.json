@@ -1,0 +1,193 @@
+{
+  "version": "0.0.1",
+  "converters": [
+    {
+      "targetTypeName": "bit",
+      "compatibleTypes": [
+        {
+          "typeName": "bit"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "tinyint",
+      "compatibleTypes": [
+        {
+          "typeName": "smallint"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "boolean",
+      "compatibleTypes": [
+        {
+          "typeName": "bool"
+        },
+        {
+          "typeName": "boolean"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "smallint",
+      "compatibleTypes": [
+        {
+          "typeName": "smallint"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "bigint",
+      "compatibleTypes": [
+        {
+          "typeName": "bigint"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "integer",
+      "compatibleTypes": [
+        {
+          "typeName": "mediumint"
+        },
+        {
+          "typeName": "int"
+        },
+        {
+          "typeName": "integer"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "real",
+      "compatibleTypes": [
+        {
+          "typeName": "float"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "decimal",
+      "compatibleTypes": [
+        {
+          "typeName": "double"
+        },
+        {
+          "typeName": "decimal"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "double precision",
+      "compatibleTypes": [
+        {
+          "typeName": "double precision"
+        }
+      ]
+    },
+
+
+
+    {
+      "targetTypeName": "character varying",
+      "compatibleTypes": [
+        {
+          "typeName": "varchar"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "character",
+      "compatibleTypes": [
+        {
+          "typeName": "char"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "text",
+      "compatibleTypes": [
+        {
+          "typeName": "tinytext"
+        },
+        {
+          "typeName": "text"
+        },
+        {
+          "typeName": "mediumtext"
+        }
+      ]
+    },
+
+
+
+    {
+      "targetTypeName": "bytea",
+      "compatibleTypes": [
+        {
+          "typeName": "tinyblob"
+        },
+        {
+          "typeName": "blob"
+        },
+        {
+          "typeName": "mediumblob"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "enum",
+      "compatibleTypes": [
+        {
+          "typeName":"enum"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "set",
+      "compatibleTypes": [
+        {
+          "typeName":"set"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "date",
+      "compatibleTypes": [
+        {
+          "typeName": "date"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "timestamp",
+      "compatibleTypes": [
+        {
+          "typeName": "datetime"
+        },
+        {
+          "typeName": "timestamp"
+        },
+        {
+          "typeName": "time"
+        }
+      ]
+    }
+
+
+  ]
+}
