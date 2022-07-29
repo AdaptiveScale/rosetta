@@ -1,0 +1,139 @@
+{
+  "version": "0.0.1",
+  "converters": [
+    {
+      "targetTypeName": "int64",
+      "compatibleTypes": [
+        {
+          "typeName": "bigint"
+        },
+        {
+          "typeName": "bigserial"
+        },
+        {
+          "typeName": "cidr"
+        },
+        {
+          "typeName": "inet"
+        },
+        {
+          "typeName": "integer"
+        },
+        {
+          "typeName": "smallint"
+        },
+        {
+          "typeName": "smallserial"
+        },
+        {
+          "typeName": "serial"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "bytes",
+      "compatibleTypes": [
+        {
+          "typeName": "bit"
+        },
+        {
+          "typeName": "bit varying"
+        },
+        {
+          "typeName": "bytea"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "bool",
+      "compatibleTypes": [
+        {
+          "typeName": "boolean"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "string",
+      "compatibleTypes": [
+        {
+          "typeName": "character"
+        },
+        {
+          "typeName": "character varying"
+        },
+        {
+          "typeName": "macaddr"
+        },
+        {
+          "typeName": "macaddr8"
+        },
+        {
+          "typeName": "text"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "date",
+      "compatibleTypes": [
+        {
+          "typeName": "date"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "float64",
+      "compatibleTypes": [
+        {
+          "typeName": "double precision"
+        },
+        {
+          "typeName": "money"
+        },
+        {
+          "typeName": "real"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "json",
+      "compatibleTypes": [
+        {
+          "typeName": "json"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "timestamp",
+      "compatibleTypes": [
+        {
+          "typeName": "interval"
+        },
+        {
+          "typeName": "timestamp"
+        },
+        {
+          "typeName": "timestampTZ"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "time",
+      "compatibleTypes": [
+        {
+          "typeName": "timeTZ"
+        },
+        {
+          "typeName": "time"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "numeric",
+      "compatibleTypes": [
+        {
+          "typeName": "numeric"
+        }
+      ]
+    }
+  ]
+}
