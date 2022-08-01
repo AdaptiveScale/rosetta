@@ -67,4 +67,9 @@ gradle/wrapper
 ###########################
 ## ROSETTA
 ##########################
+.vscode
+
+###########################
+## ROSETTA
+##########################
 cli/src/main/resources/main.yaml
