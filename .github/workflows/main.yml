@@ -27,7 +27,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASS }}
 
       - name: Build binaries
-        run: gradle binary:runtime --debug
+        run: gradle binary:runtimeZip
 
       - name: Build docker image
         run: './docker.sh'
