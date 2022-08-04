@@ -8,7 +8,7 @@ repositories {
 
 allprojects {
     group = 'com.adaptivescale'
-    version = '0.0.3'
+    version = '0.0.1'
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
 }

@@ -36,7 +36,7 @@ update_version() {
     git add build.gradle
     git commit -m "Version bump: ${BUILD_VERSION} to ${VERSION_BUMP}"
     git push --set-upstream origin $BRANCH_NAME
-    BUILD_VERSION=$VERSION_BUMP
+    APP_VERSION=$VERSION_BUMP
 }
 
 # Set default version to develop
