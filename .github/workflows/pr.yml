@@ -21,4 +21,4 @@ jobs:
           gradle-version: 7.5
 
       - name: Build binaries
-        run: ./gradlew binary:runtimeZip
+        run: gradle binary:runtimeZip
