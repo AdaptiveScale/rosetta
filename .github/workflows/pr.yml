@@ -13,8 +13,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: temurin
-          java-version: 11
-          cache: 'gradle'
+          java-version: 11.0.11
 
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
@@ -22,4 +21,4 @@ jobs:
           gradle-version: 7.5
 
       - name: Build binaries
-        run: ./gradlew binary:runtimeZip
+        run: gradle binary:runtimeZip
