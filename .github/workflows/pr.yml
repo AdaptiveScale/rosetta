@@ -1,4 +1,4 @@
-name: PR
+name: pr
 
 on:
   pull_request:
@@ -20,5 +20,5 @@ jobs:
         with:
           gradle-version: 7.5
 
-      - name: Execute Gradle build
-        run: gradle binary:runtimeZip --stacktrace
+      - name: Build binaries
+        run: gradle binary:runtimeZip

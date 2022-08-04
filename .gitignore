@@ -62,8 +62,6 @@ nb-configuration.xml
 api/ui/*
 .gradle
 gradle/wrapper
-gradlew
-
 
 ###########################
 ## ROSETTA
