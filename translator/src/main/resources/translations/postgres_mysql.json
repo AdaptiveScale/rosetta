@@ -2,27 +2,221 @@
   "version": "0.0.1",
   "converters": [
     {
-      "targetTypeName": "serial",
+      "targetTypeName": "VARBINARY",
       "compatibleTypes": [
         {
-          "typeName": "smallserial"
+          "typeName": "bytea"
         }
       ]
     },
+
     {
-      "targetTypeName": "varchar",
-      "length": 15,
+      "targetTypeName": "VARCHAR",
+      "length": 30,
       "compatibleTypes": [
         {
-          "typeName": "varchar"
+          "typeName": "macaddr8"
+        }
+      ]
+
+    },
+
+    {
+      "targetTypeName": "FLOAT",
+      "compatibleTypes": [
+        {
+          "typeName": "money"
         }
       ]
     },
+
     {
-      "targetTypeName": "serial",
+      "targetTypeName": "NUMERIC",
+      "compatibleType": [
+        {
+          "typeName": "numeric"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "INT UNSIGNED",
       "compatibleTypes": [
         {
-          "typeName": "int4"
+          "typeName": "inet"
+        }
+      ]
+
+    },
+
+    {
+      "targetTypeName": "REAL",
+      "compatibleTypes": [
+        {
+          "typeName": "real"
+        }
+      ]
+
+    },
+
+    {
+      "targetTypeName": "SMALLINT",
+      "compatibleTypes": [
+        {
+          "typeName": "smallint"
+        },
+        {
+          "typeName": "small serial"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "TEXT",
+      "compatibleTypes": [
+        {
+          "typeName": "text"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "TIME",
+      "compatibleTypes": [
+        {
+          "typeName": "time"
+        }
+      ]
+
+    },
+    {
+      "targetTypeName": "TIMESTAMP",
+      "compatibleTypes": [
+        {
+          "typeName": "timestamp"
+        },
+        {
+          "typeName": "interval"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "INT",
+      "compatibleTypes": [
+        {
+          "typeName": "integer"
+        },
+        {
+          "typeName": "serial"
+        }
+      ]
+
+    },
+
+    {
+      "targetTypeName": "CHAR",
+      "compatibleTypes": [
+        {
+          "typeName": "character"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "VARCHAR",
+      "compatibleTypes": [
+        {
+          "typeName": "character varying"
+        }
+      ]
+
+    },
+
+    {
+      "targetTypeName": "BIGINT UNSIGNED",
+      "compatibleTypes": [
+        {
+          "typeName": "cidr"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "JSON",
+      "compatibleTypes": [
+        {
+          "typeName": "json"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "DATE",
+      "compatibleTypes": [
+        {
+          "typeName": "date"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "DOUBLE PRECISION",
+      "compatibleTypes": [
+        {
+          "typeName": "double precision"
+        }
+      ]
+
+    },
+
+    {
+    "targetTypeName": "BOOL",
+    "compatibleTypes": [
+      {
+        "typeName": "boolean"
+      }
+    ]
+    },
+
+    {
+      "targetTypeName": "VARCHAR",
+      "length": 17,
+      "compatibleTypes": [
+        {
+          "typeName": "macaddr"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName":"BIGINT",
+      "compatibleTypes": [
+        {
+          "typeName": "bigint"
+        },
+        {
+          "typeName":"big serial"
+
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "VARBINARY",
+      "compatibleTypes": [
+        {
+          "typeName": "bytea"
+
+         }
+       ]
+    },
+
+    {
+      "targetTypeName": "LONGBLOB",
+      "compatibleTypes": [
+        {
+          "typeName": "jsonb"
         }
       ]
     }

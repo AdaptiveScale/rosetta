@@ -1,9 +1,12 @@
 package com.adaptivescale.rosetta.cli;
 
 import com.adaptivescale.rosetta.cli.model.Config;
+import com.adaptivescale.rosetta.cli.outputs.DbtSqlModelOutput;
+import com.adaptivescale.rosetta.cli.outputs.DbtYamlModelOutput;
 import com.adaptivescale.rosetta.cli.outputs.StringOutput;
 import com.adaptivescale.rosetta.cli.outputs.YamlModelOutput;
 import com.adaptivescale.rosetta.common.models.Database;
+import com.adaptivescale.rosetta.common.models.dbt.DbtModel;
 import com.adaptivescale.rosetta.common.models.input.Connection;
 import com.adaptivescale.rosetta.ddl.DDL;
 import com.adaptivescale.rosetta.ddl.DDLFactory;
@@ -11,10 +14,13 @@ import com.adaptivescale.rosetta.test.assertion.*;
 import com.adaptivescale.rosetta.test.assertion.AssertionSqlGenerator;
 import com.adaptivescale.rosetta.test.assertion.generator.AssertionSqlGeneratorFactory;
 import com.adaptivescale.rosetta.test.assertion.DefaultSqlExecution;
+import com.adaptivescale.rosetta.diff.DiffFactory;
+import com.adaptivescale.rosetta.diff.Diff;
 import com.adaptivescale.rosetta.translator.Translator;
 import com.adaptivescale.rosetta.translator.TranslatorFactory;
 import com.adataptivescale.rosetta.source.core.SourceGeneratorFactory;
 
+import com.adataptivescale.rosetta.source.dbt.DbtModelGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +35,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.AbstractMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 
@@ -81,14 +88,11 @@ class Cli implements Callable<Void> {
             return;
         }
 
-        Optional<Connection> target = config.getConnection(targetName);
-        if (target.isEmpty()) {
-            throw new RuntimeException("Can not find target with name: " + Optional.of(targetName).orElse(null) + " configured in config.");
-        }
+        Connection target = getTargetConnection(targetName);
 
         // no need to read source workspace because we already have model to be translated
         Translator<Database, Database> translator = TranslatorFactory.translator(source.get().getDbType(),
-                target.get().getDbType());
+                target.getDbType());
         result = translator.translate(result);
 
         Path targetWorkspace = Paths.get("./", targetName);
@@ -106,10 +110,7 @@ class Cli implements Callable<Void> {
     ) throws Exception {
         requireConfig(config);
 
-        Optional<Connection> target = config.getConnection(targetName);
-        if (target.isEmpty()) {
-            throw new RuntimeException("Can not find target with name: " + Optional.ofNullable(targetName).orElse(null) + " configured in config.");
-        }
+        Connection target = getTargetConnection(targetName);
 
         Path targetWorkspace = Paths.get("./", targetName);
         List<FileNameAndDatabasePair> translatedModels;
@@ -126,11 +127,7 @@ class Cli implements Callable<Void> {
                         " Use extract command to generate models.");
             }
         } else {
-            Optional<Connection> source = config.getConnection(sourceName);
-            if (source.isEmpty()) {
-                throw new RuntimeException(String.format("Can not find source with name: %s configured in config.",
-                        sourceName));
-            }
+            Connection source = getSourceConnection(sourceName);
             Path sourceWorkspace = Paths.get("./", sourceName);
 
             if (!Files.isDirectory(sourceWorkspace)) {
@@ -142,7 +139,7 @@ class Cli implements Callable<Void> {
             Files.createDirectory(targetWorkspace);
 
             Translator<Database, Database> translator = TranslatorFactory
-                    .translator(source.get().getDbType(), target.get().getDbType());
+                    .translator(source.getDbType(), target.getDbType());
 
             translatedModels = getDatabases(sourceWorkspace)
                     .map(translateDatabases(translator))
@@ -158,6 +155,10 @@ class Cli implements Callable<Void> {
 
         StringOutput stringOutput = new StringOutput("ddl.sql", targetWorkspace);
         stringOutput.write(ddl);
+
+        // generate dbt models
+        extractDbtModels(target, targetWorkspace);
+
         log.info("Successfully written ddl ({}).", stringOutput.getFilePath());
     }
 
@@ -204,12 +205,95 @@ class Cli implements Callable<Void> {
         }
     }
 
+    @CommandLine.Command(name = "dbt", description = "Extract dbt models chosen from connection config.", mixinStandardHelpOptions = true)
+    private void dbt(@CommandLine.Option(names = {"-s", "--source"}, required = true) String sourceName) throws Exception {
+        requireConfig(config);
+        Connection source = getSourceConnection(sourceName);
+
+        Path sourceWorkspace = Paths.get("./", sourceName);
+        if (!Files.isDirectory(sourceWorkspace)) {
+            throw new RuntimeException(String.format("Can not find directory: %s for source name: %s to find models" +
+                    " for dbt model generation", sourceWorkspace, sourceName));
+        }
+
+        extractDbtModels(source, sourceWorkspace);
+    }
+
+    private void extractDbtModels(Connection connection, Path sourceWorkspace) throws IOException {
+        // create dbt directories if they dont exist
+        Path dbtWorkspace = sourceWorkspace.resolve("dbt");
+        Files.createDirectories(dbtWorkspace.resolve("model"));
+
+        List<Database> databases = getDatabases(sourceWorkspace).map(AbstractMap.SimpleImmutableEntry::getValue).collect(Collectors.toList());
+
+        DbtModel dbtModel = DbtModelGenerator.dbtModelGenerator(connection, databases);
+        DbtYamlModelOutput dbtYamlModelOutput = new DbtYamlModelOutput("model.yaml", dbtWorkspace);
+        dbtYamlModelOutput.write(dbtModel);
+
+        Map<String, String> dbtSQLTables = DbtModelGenerator.dbtSQLGenerator(dbtModel);
+        DbtSqlModelOutput dbtSqlModelOutput = new DbtSqlModelOutput(dbtWorkspace);
+        dbtSqlModelOutput.write(dbtSQLTables);
+
+        log.info("Successfully written dbt models for database yaml ({}).", dbtYamlModelOutput.getFilePath());
+    }
+
+    @CommandLine.Command(name = "diff", description = "Show difference between local model and database", mixinStandardHelpOptions = true)
+    private void diff(@CommandLine.Option(names = {"-s", "--source"}) String sourceName) throws Exception {
+        requireConfig(config);
+        Connection sourceConnection = getSourceConnection(sourceName);
+
+        Path sourceWorkspace = Paths.get("./", sourceName);
+        if (!Files.isDirectory(sourceWorkspace)) {
+            throw new RuntimeException(String.format("Can not find directory: %s for source name: %s to find" +
+                    " models for translation", sourceWorkspace, sourceName));
+        }
+
+        List<Database> databases = getDatabases(sourceWorkspace)
+                .map(AbstractMap.SimpleImmutableEntry::getValue)
+                .collect(Collectors.toList());
+
+        if(databases.size() != 1){
+            throw new RuntimeException(String.format("For comparisons we need exactly one model. Found  %d models in" +
+                    " directory %s", databases.size(), sourceWorkspace));
+        }
+
+        Database localDatabase = databases.get(0);
+        Database targetDatabase = SourceGeneratorFactory.sourceGenerator(sourceConnection).generate(sourceConnection);
+
+        Diff<List<String>, Database, Database> tester = DiffFactory.diff();
+
+        List<String> changeList = tester.find(localDatabase, targetDatabase);
+        if (changeList.size() > 0) {
+            System.out.println("There are changes between local model and targeted source");
+            changeList.forEach(System.out::println);
+        }else{
+            System.out.println("There are no changes");
+        }
+    }
 
     private void requireConfig(Config config) {
         if (config == null) {
             throw new RuntimeException("Config file is required.");
         }
     }
+
+    private Connection getSourceConnection(String sourceName) {
+        Optional<Connection> source = config.getConnection(sourceName);
+        if (source.isEmpty()) {
+            throw new RuntimeException(String.format("Can not find source with name: %s configured in config.",
+                    sourceName));
+        }
+        return source.get();
+    }
+
+    private Connection getTargetConnection(String targetName) {
+        Optional<Connection> target = config.getConnection(targetName);
+        if (target.isEmpty()) {
+            throw new RuntimeException("Can not find target with name: " + targetName + " configured in config.");
+        }
+        return target.get();
+    }
+
 
     /**
      * @param directory directory same as connection name
