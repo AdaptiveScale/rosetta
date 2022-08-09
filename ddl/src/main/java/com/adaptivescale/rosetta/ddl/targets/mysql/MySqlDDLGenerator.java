@@ -31,7 +31,7 @@ public class MySqlDDLGenerator implements DDL {
         String definitionAsString = String.join(", ", definitions);
 
         return "CREATE TABLE "
-                + ((table.getSchema() == null || table.getSchema().isEmpty()) ? "" : "`" + table.getSchema() + "`.")
+                + handleNullSchema(table.getSchema(), table.getName())
                 + "`" + table.getName() + "`"
                 + "("
                 + definitionAsString
@@ -42,7 +42,7 @@ public class MySqlDDLGenerator implements DDL {
     public String createDataBase(Database database) {
         StringBuilder stringBuilder = new StringBuilder();
 
-        Set<String> schemas = database.getTables().stream().map(Table::getSchema).collect(Collectors.toSet());
+        Set<String> schemas = database.getTables().stream().map(Table::getSchema).filter(s -> s != null && !s.isEmpty()).collect(Collectors.toSet());
         if (!schemas.isEmpty()) {
             stringBuilder.append(
                     schemas
@@ -68,7 +68,7 @@ public class MySqlDDLGenerator implements DDL {
                 .collect(Collectors.joining());
 
         if (!foreignKeys.isEmpty()) {
-           stringBuilder.append("\r").append(foreignKeys).append("\r");
+            stringBuilder.append("\r").append(foreignKeys).append("\r");
         }
         return stringBuilder.toString();
     }
@@ -100,13 +100,17 @@ public class MySqlDDLGenerator implements DDL {
     //ALTER TABLE rosetta.contacts ADD CONSTRAINT contacts_fk FOREIGN KEY (contact_id) REFERENCES rosetta."user"(user_id);
     private String foreignKey(Column column) {
         return column.getForeignKeys().stream().map(foreignKey ->
-                "ALTER TABLE `" + foreignKey.getSchema() + "`.`" + foreignKey.getTableName() + "` ADD CONSTRAINT "
+                "ALTER TABLE" + handleNullSchema(foreignKey.getSchema(), foreignKey.getTableName()) + " ADD CONSTRAINT "
                         + foreignKey.getName() + " FOREIGN KEY (" + foreignKey.getColumnName() + ") REFERENCES "
-                        + "`" + foreignKey.getPrimaryTableSchema() + "`.`" + foreignKey.getPrimaryTableName() + "`"
+                        + handleNullSchema(foreignKey.getPrimaryTableSchema(), foreignKey.getPrimaryTableName())
                         + "(" + foreignKey.getPrimaryColumnName() + ")"
                         + foreignKeyDeleteRuleSanitation(foreignKeyDeleteRule(foreignKey)) + ";\r"
 
         ).collect(Collectors.joining());
+    }
+
+    private String handleNullSchema(String schema, String tableName) {
+        return ((schema == null || schema.isEmpty()) ? " " : (" `" + schema + "`.")) + "`" + tableName + "`";
     }
 
     private String foreignKeyDeleteRuleSanitation(String deleteRule) {
