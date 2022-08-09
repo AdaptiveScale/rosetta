@@ -31,7 +31,7 @@ public class MySqlDDLGenerator implements DDL {
         String definitionAsString = String.join(", ", definitions);
 
         return "CREATE TABLE "
-                + ((table.getSchema() != null && table.getSchema().isEmpty()) ? "" : "`" + table.getSchema() + "`.")
+                + ((table.getSchema() == null || table.getSchema().isEmpty()) ? "" : "`" + table.getSchema() + "`.")
                 + "`" + table.getName() + "`"
                 + "("
                 + definitionAsString
