@@ -6,4 +6,5 @@ include 'ddl'
 include 'cli'
 include 'common'
 include 'binary'
+include 'diff'
 
