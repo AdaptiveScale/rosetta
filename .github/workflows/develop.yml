@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - develop
-  schedule:
-    - cron: '*/5 * * * *'
 
 jobs:
   build:
@@ -24,7 +22,3 @@ jobs:
 
       - name: Build binaries
         run: gradle binary:runtimeZip
-
-      - name: Build docker image
-        run: './docker.sh'
-        shell: bash

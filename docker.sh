@@ -8,6 +8,6 @@ source $(dirname "$0")/version.sh
 read_version
 echo "Version: $APP_VERSION"
 
-docker build -t ailegion/rosetta:latest -t ailegion/rosetta:$APP_VERSION -f Dockerfile
-docker push ailegion/rosetta:latest
-docker push ailegion/rosetta:$APP_VERSION
+docker build -t adaptivescale/rosetta:latest -t adaptivescale/rosetta:$APP_VERSION -f Dockerfile
+docker push adaptivescale/rosetta:latest
+docker push adaptivescale/rosetta:$APP_VERSION
