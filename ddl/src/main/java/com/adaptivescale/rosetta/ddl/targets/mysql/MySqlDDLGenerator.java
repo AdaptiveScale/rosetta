@@ -32,7 +32,6 @@ public class MySqlDDLGenerator implements DDL {
 
         return "CREATE TABLE "
                 + handleNullSchema(table.getSchema(), table.getName())
-                + "`" + table.getName() + "`"
                 + "("
                 + definitionAsString
                 + ");";
@@ -79,7 +78,7 @@ public class MySqlDDLGenerator implements DDL {
                 .stream()
                 .filter(Column::isPrimaryKey)
                 .sorted((o1, o2) -> o1.getPrimaryKeySequenceId() < o2.getPrimaryKeySequenceId() ? -1 : 1)
-                .map(Column::getName)
+                .map(pk -> String.format("`%s`", pk.getName()))
                 .collect(Collectors.toList());
 
         if (primaryKeys.isEmpty()) {
@@ -101,9 +100,9 @@ public class MySqlDDLGenerator implements DDL {
     private String foreignKey(Column column) {
         return column.getForeignKeys().stream().map(foreignKey ->
                 "ALTER TABLE" + handleNullSchema(foreignKey.getSchema(), foreignKey.getTableName()) + " ADD CONSTRAINT "
-                        + foreignKey.getName() + " FOREIGN KEY (" + foreignKey.getColumnName() + ") REFERENCES "
+                        + foreignKey.getName() + " FOREIGN KEY (`" + foreignKey.getColumnName() + "`) REFERENCES "
                         + handleNullSchema(foreignKey.getPrimaryTableSchema(), foreignKey.getPrimaryTableName())
-                        + "(" + foreignKey.getPrimaryColumnName() + ")"
+                        + "(`" + foreignKey.getPrimaryColumnName() + "`)"
                         + foreignKeyDeleteRuleSanitation(foreignKeyDeleteRule(foreignKey)) + ";\r"
 
         ).collect(Collectors.joining());
@@ -120,7 +119,7 @@ public class MySqlDDLGenerator implements DDL {
         return " " + deleteRule + " ";
     }
 
-    protected String foreignKeyDeleteRule(ForeignKey foreignKey) {
+    private String foreignKeyDeleteRule(ForeignKey foreignKey) {
         if (foreignKey.getDeleteRule() == null || foreignKey.getDeleteRule().isEmpty()) {
             return "";
         }
