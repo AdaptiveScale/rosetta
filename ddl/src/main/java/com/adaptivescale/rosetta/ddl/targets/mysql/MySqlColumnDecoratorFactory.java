@@ -12,7 +12,7 @@ public class MySqlColumnDecoratorFactory implements ColumnSQLDecoratorFactory {
     @Override
     public ColumnSQLDecorator decoratorFor(Column column) {
         ColumnDataTypeName columnDataTypeName;
-        if (column.getTypeName().equals("varchar")) {
+        if ("VARCHAR".equalsIgnoreCase(column.getTypeName())) {
             columnDataTypeName = new MySqlVarcharColumnName();
         } else {
             columnDataTypeName = new ColumnDataTypeName() {
