@@ -102,7 +102,8 @@ class Cli implements Callable<Void> {
 
     @CommandLine.Command(name = "compile", description = "Generate DDL for target Database [bigquery, snowflake, …]", mixinStandardHelpOptions = true)
     private void compile(@CommandLine.Option(names = {"-s", "--source"}) String sourceName,
-                         @CommandLine.Option(names = {"-t", "--target"}, required = true) String targetName
+                         @CommandLine.Option(names = {"-t", "--target"}, required = true) String targetName,
+                         @CommandLine.Option(names = {"-d", "--with_drop"}) boolean dropIfExist
     ) throws Exception {
         requireConfig(config);
 
@@ -146,7 +147,7 @@ class Cli implements Callable<Void> {
 
         String ddl = translatedModels.stream().map(stringDatabaseEntry -> {
             DDL modelDDL = DDLFactory.ddlForDatabaseType(stringDatabaseEntry.getValue().getDatabaseType());
-            return modelDDL.createDataBase(stringDatabaseEntry.getValue());
+            return modelDDL.createDataBase(stringDatabaseEntry.getValue(), dropIfExist);
         }).reduce("", (s, s2) -> s.concat("\n\n\n").stripLeading().concat(s2));
 
         StringOutput stringOutput = new StringOutput("ddl.sql", targetWorkspace);
@@ -225,7 +226,7 @@ class Cli implements Callable<Void> {
                 .map(AbstractMap.SimpleImmutableEntry::getValue)
                 .collect(Collectors.toList());
 
-        if(databases.size() != 1){
+        if (databases.size() != 1) {
             throw new RuntimeException(String.format("For comparisons we need exactly one model. Found  %d models in" +
                     " directory %s", databases.size(), sourceWorkspace));
         }
@@ -239,7 +240,7 @@ class Cli implements Callable<Void> {
         if (changeList.size() > 0) {
             System.out.println("There are changes between local model and targeted source");
             changeList.forEach(System.out::println);
-        }else{
+        } else {
             System.out.println("There are no changes");
         }
     }

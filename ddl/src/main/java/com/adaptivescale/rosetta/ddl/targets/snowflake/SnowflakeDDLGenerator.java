@@ -5,16 +5,13 @@ import com.adaptivescale.rosetta.common.models.Database;
 import com.adaptivescale.rosetta.common.models.ForeignKey;
 import com.adaptivescale.rosetta.common.models.Table;
 import com.adaptivescale.rosetta.ddl.DDL;
-import com.adaptivescale.rosetta.ddl.targets.ColumnDataTypeName;
 import com.adaptivescale.rosetta.ddl.targets.ColumnSQLDecoratorFactory;
 
 import java.sql.DatabaseMetaData;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class SnowflakeDDLGenerator implements DDL {
 
@@ -30,23 +27,40 @@ public class SnowflakeDDLGenerator implements DDL {
     }
 
     @Override
-    public String createTable(Table table) {
+    public String createTable(Table table, boolean dropTableIfExists) {
         List<String> definitions = table.getColumns().stream().map(this::createColumn).collect(Collectors.toList());
 
         Optional<String> primaryKeysForTable = createPrimaryKeysForTable(table);
         primaryKeysForTable.ifPresent(definitions::add);
         String definitionAsString = String.join(", ", definitions);
 
-        return "CREATE TABLE "
-                + ((table.getSchema() == null || table.getSchema().isEmpty()) ? "" : table.getSchema() + ".")
-                + table.getName()
-                + "("
-                + definitionAsString
-                + ");";
+        StringBuilder builder = new StringBuilder();
+
+        if (dropTableIfExists) {
+            builder.append("DROP TABLE IF EXISTS ");
+            if (table.getSchema() != null && !table.getSchema().isBlank()) {
+                builder.append(table.getSchema()).append(".");
+            }
+            builder.append(table.getName()).append("; \n");
+        }
+        builder.append("CREATE TABLE ");
+
+
+        if (table.getSchema() != null && !table.getSchema().isBlank()) {
+            builder.append(table.getSchema())
+                    .append(".");
+        }
+
+        builder.append(table.getName())
+                .append("(")
+                .append(definitionAsString)
+                .append(");");
+
+        return builder.toString();
     }
 
     @Override
-    public String createDataBase(Database database) {
+    public String createDataBase(Database database, boolean dropTableIfExists) {
         StringBuilder stringBuilder = new StringBuilder();
 
         Set<String> schemas = database.getTables().stream().map(Table::getSchema)
@@ -64,7 +78,7 @@ public class SnowflakeDDLGenerator implements DDL {
 
         stringBuilder.append(database.getTables()
                 .stream()
-                .map(this::createTable)
+                .map(table -> createTable(table, true))
                 .collect(Collectors.joining("\r\r")));
 
         String foreignKeys = database
@@ -75,7 +89,7 @@ public class SnowflakeDDLGenerator implements DDL {
                 .map(Optional::get)
                 .collect(Collectors.joining("\r"));
 
-        if(!foreignKeys.isEmpty()){
+        if (!foreignKeys.isEmpty()) {
             stringBuilder.append("\r").append(foreignKeys).append("\r");
         }
 
@@ -116,7 +130,7 @@ public class SnowflakeDDLGenerator implements DDL {
                         + foreignKey.getPrimaryTableName()
                         + "(" + foreignKey.getPrimaryColumnName() + ")"
                         + foreignKeyDeleteRuleSanitation(foreignKeyDeleteRule(foreignKey)) + ";\r"
-                ).collect(Collectors.joining());
+        ).collect(Collectors.joining());
     }
 
     private String foreignKeyDeleteRuleSanitation(String deleteRule) {

@@ -23,7 +23,7 @@ public class MySqlDDLGenerator implements DDL {
     }
 
     @Override
-    public String createTable(Table table) {
+    public String createTable(Table table, boolean dropTableIfExists) {
         List<String> definitions = table.getColumns().stream().map(this::createColumn).collect(Collectors.toList());
 
         Optional<String> primaryKeysForTable = createPrimaryKeysForTable(table);
@@ -39,7 +39,7 @@ public class MySqlDDLGenerator implements DDL {
     }
 
     @Override
-    public String createDataBase(Database database) {
+    public String createDataBase(Database database, boolean dropTableIfExists) {
         StringBuilder stringBuilder = new StringBuilder();
 
         Set<String> schemas = database.getTables().stream().map(Table::getSchema).filter(s -> s != null && !s.isEmpty()).collect(Collectors.toSet());
@@ -56,7 +56,7 @@ public class MySqlDDLGenerator implements DDL {
 
         stringBuilder.append(database.getTables()
                 .stream()
-                .map(this::createTable)
+                .map(table -> createTable(table, true ))
                 .collect(Collectors.joining("\r\r")));
 
         String foreignKeys = database
