@@ -1,9 +1,6 @@
-name: dev
+name: dev-nightly
 
 on:
-  push:
-    branches:
-      - develop
   schedule:
     - cron: '*/5 * * * *'
 
@@ -26,5 +23,5 @@ jobs:
         run: gradle binary:runtimeZip
 
       - name: Build docker image
-        run: './docker.sh'
+        run: './docker-nightly.sh'
         shell: bash

@@ -1,6 +1,13 @@
 #!/bin/bash
 
 set -e
-#gradle build cli:jar
 
-docker build -t ailegion/rosetta:latest -t ailegion/rosetta:0.0.1 -f Dockerfile
+source $(dirname "$0")/version.sh
+
+# Trigger read version
+read_version
+echo "Version: $APP_VERSION"
+
+docker build -t ailegion/rosetta:latest -t ailegion/rosetta:$APP_VERSION -f Dockerfile
+docker push ailegion/rosetta:latest
+docker push ailegion/rosetta:$APP_VERSION
