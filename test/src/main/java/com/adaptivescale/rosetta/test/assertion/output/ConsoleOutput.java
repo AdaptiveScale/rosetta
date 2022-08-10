@@ -44,7 +44,7 @@ public class ConsoleOutput implements Output {
         print("");
     }
 
-    void print(String msg) {
+    public void print(String msg) {
         System.out.printf("%s  %s%n", SIMPLE_DATE_FORMAT.format(new Date()), msg);
     }
 

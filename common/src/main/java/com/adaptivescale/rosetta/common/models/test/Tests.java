@@ -3,7 +3,6 @@ package com.adaptivescale.rosetta.common.models.test;
 import com.adaptivescale.rosetta.common.models.AssertTest;
 import java.util.Collection;
 
-//todo rename
 public class Tests {
     private Collection<AssertTest> assertion;
 

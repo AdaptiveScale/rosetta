@@ -16,11 +16,10 @@ public class SnowflakeAssertionSqlGenerator extends BaseAssertionSqlGenerator {
     }
 
     /**
-     * Use BigQuery function CAST ( x as y) to cast data types
-     *
+     * Wrap value with single quote
      * @param value  to cast
      * @param column model column
-     * @return quoted value
+     * @return single quoted value
      */
      String castValue(Object value, Column column) {
         return value == null ? null : "'" + value + "'";

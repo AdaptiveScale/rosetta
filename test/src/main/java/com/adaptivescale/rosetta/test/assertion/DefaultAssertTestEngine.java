@@ -16,12 +16,12 @@ import java.util.stream.Collectors;
 @Slf4j
 public class DefaultAssertTestEngine implements AssertTestEngine {
 
-    private final AssertionSqlGenerator translator;
+    private final AssertionSqlGenerator sqlGenerator;
     private final SqlExecution sqlExecution;
     private final Output output;
 
-    public DefaultAssertTestEngine(AssertionSqlGenerator translator, SqlExecution sqlExecution) {
-        this.translator = translator;
+    public DefaultAssertTestEngine(AssertionSqlGenerator sqlGenerator, SqlExecution sqlExecution) {
+        this.sqlGenerator = sqlGenerator;
         this.sqlExecution = sqlExecution;
         output = new ConsoleOutput();
     }
@@ -50,7 +50,7 @@ public class DefaultAssertTestEngine implements AssertTestEngine {
                 }
                 for (AssertTest assertion : assertions) {
                     long startTime = output.printStartTest(assertion, column);
-                    String sql = translator.generateSql(connection, table, column, assertion);
+                    String sql = sqlGenerator.generateSql(connection, table, column, assertion);
                     String result = sqlExecution.execute(sql);
                     boolean pass = Objects.equals(assertion.getExpected(), result);
                     output.printEndTest(assertion, column, startTime, pass, result);
