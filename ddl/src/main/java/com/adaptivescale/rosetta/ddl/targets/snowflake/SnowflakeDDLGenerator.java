@@ -69,7 +69,7 @@ public class SnowflakeDDLGenerator implements DDL {
             stringBuilder.append(
                     schemas
                             .stream()
-                            .map(schema -> "create schema " + schema)
+                            .map(schema -> "CREATE SCHEMA IF NOT EXISTS " + schema)
                             .collect(Collectors.joining(";\r\r"))
 
             );
@@ -78,7 +78,7 @@ public class SnowflakeDDLGenerator implements DDL {
 
         stringBuilder.append(database.getTables()
                 .stream()
-                .map(table -> createTable(table, true))
+                .map(table -> createTable(table, dropTableIfExists))
                 .collect(Collectors.joining("\r\r")));
 
         String foreignKeys = database

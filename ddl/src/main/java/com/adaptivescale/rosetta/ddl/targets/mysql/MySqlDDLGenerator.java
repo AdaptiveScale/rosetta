@@ -30,11 +30,25 @@ public class MySqlDDLGenerator implements DDL {
         primaryKeysForTable.ifPresent(definitions::add);
         String definitionAsString = String.join(", ", definitions);
 
-        return "CREATE TABLE "
-                + handleNullSchema(table.getSchema(), table.getName())
-                + "("
-                + definitionAsString
-                + ");";
+        StringBuilder stringBuilder = new StringBuilder();
+        if (dropTableIfExists) {
+            stringBuilder.append("DROP TABLE IF EXISTS ");
+            if (table.getSchema() != null && !table.getSchema().isBlank()) {
+                stringBuilder.append("`").append(table.getSchema()).append("`.");
+            }
+            stringBuilder.append("`").append(table.getName()).append("`").append("; \n");
+        }
+
+        stringBuilder.append("CREATE TABLE ");
+
+        if (table.getSchema() != null && !table.getSchema().isBlank()) {
+            stringBuilder.append("`")
+                    .append(table.getSchema())
+                    .append("`.");
+        }
+
+        stringBuilder.append("`").append(table.getName()).append("`").append("(").append(definitionAsString).append(");");
+        return stringBuilder.toString();
     }
 
     @Override
@@ -46,7 +60,7 @@ public class MySqlDDLGenerator implements DDL {
             stringBuilder.append(
                     schemas
                             .stream()
-                            .map(schema -> "create schema `" + schema + "`")
+                            .map(schema -> "CREATE SCHEMA IF NOT EXISTS `" + schema + "`")
                             .collect(Collectors.joining(";\r\r"))
 
             );
@@ -55,7 +69,7 @@ public class MySqlDDLGenerator implements DDL {
 
         stringBuilder.append(database.getTables()
                 .stream()
-                .map(table -> createTable(table, true ))
+                .map(table -> createTable(table, dropTableIfExists))
                 .collect(Collectors.joining("\r\r")));
 
         String foreignKeys = database

@@ -103,7 +103,7 @@ class Cli implements Callable<Void> {
     @CommandLine.Command(name = "compile", description = "Generate DDL for target Database [bigquery, snowflake, …]", mixinStandardHelpOptions = true)
     private void compile(@CommandLine.Option(names = {"-s", "--source"}) String sourceName,
                          @CommandLine.Option(names = {"-t", "--target"}, required = true) String targetName,
-                         @CommandLine.Option(names = {"-d", "--with_drop"}) boolean dropIfExist
+                         @CommandLine.Option(names = {"-d", "--with-drop"}) boolean dropIfExist
     ) throws Exception {
         requireConfig(config);
 

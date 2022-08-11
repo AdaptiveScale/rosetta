@@ -65,7 +65,7 @@ public class BigQueryDDLGenerator implements DDL {
             stringBuilder.append(
                     schemas
                             .stream()
-                            .map(schema -> "create schema " + schema)
+                            .map(schema -> "CREATE SCHEMA IF NOT EXISTS " + schema)
                             .collect(Collectors.joining(";\r\r"))
 
             );
