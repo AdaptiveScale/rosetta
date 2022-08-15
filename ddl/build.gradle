@@ -14,9 +14,6 @@ dependencies {
     testImplementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.3'
     testImplementation project(':translator')
     testImplementation project(':source')
-    testImplementation files("/Users/ardiansaidi/Workspace/adaptivescale/proedms/data/allDrivers/snowflake-jdbc-3.13.15.jar")
-    testImplementation files("/Users/ardiansaidi/Workspace/adaptivescale/proedms/data/allDrivers/postgresql-42.2.22.jar")
-    testImplementation files("/Users/ardiansaidi/Workspace/adaptivescale/proedms/data/allDrivers/GoogleBigQueryJDBC42.jar")
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
