@@ -17,6 +17,8 @@ public class SourceGeneratorFactory {
             columnsExtractor = new BigQueryColumnsExtractor(connection);
         } else if ("mysql".equals(connection.getDbType())) {
             columnsExtractor = new MySQLColumnsExtractor(connection);
+        } else if ("snowflake".equals(connection.getDbType())) {
+            columnsExtractor = new SnowflakeColumnsExtractor(connection);
         } else {
             columnsExtractor = new ColumnsExtractor(connection);
         }
