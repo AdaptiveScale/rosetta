@@ -183,6 +183,7 @@ Parameter | Description
 -c, --config CONFIG_FILE | YAML config file.  If none is supplied it will use main.conf in the current directory if it exists.
 -s, --source CONNECTION_NAME (Optional) | The source connection name where models are generated.
 -t, --target CONNECTION_NAME | The target connection name in which source DBML converts to.
+-d, --with-drop | Add query to drop tables when generating ddl.
 
 Example:
 ```yaml
