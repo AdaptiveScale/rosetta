@@ -5,6 +5,8 @@ import com.adaptivescale.rosetta.common.models.Database;
 import com.adaptivescale.rosetta.common.models.ForeignKey;
 import com.adaptivescale.rosetta.common.models.Table;
 import com.adaptivescale.rosetta.ddl.DDL;
+import com.adaptivescale.rosetta.ddl.change.model.ColumnChange;
+import com.adaptivescale.rosetta.ddl.change.model.ForeignKeyChange;
 import com.adaptivescale.rosetta.ddl.targets.ColumnSQLDecoratorFactory;
 
 import java.sql.DatabaseMetaData;
@@ -38,7 +40,7 @@ public class MySqlDDLGenerator implements DDL {
     }
 
     @Override
-    public String createDataBase(Database database) {
+    public String createDatabase(Database database) {
         StringBuilder stringBuilder = new StringBuilder();
 
         Set<String> schemas = database.getTables().stream().map(Table::getSchema).filter(s -> s != null && !s.isEmpty()).collect(Collectors.toSet());
@@ -70,6 +72,42 @@ public class MySqlDDLGenerator implements DDL {
             stringBuilder.append("\r").append(foreignKeys).append("\r");
         }
         return stringBuilder.toString();
+    }
+
+    @Override
+    public String createForeignKey(ForeignKey foreignKey) {
+        return null;
+    }
+
+    @Override
+    public String alterColumn(ColumnChange change) {
+        return null;
+    }
+
+    @Override
+    public String dropColumn(ColumnChange change) {
+        return null;
+    }
+
+    @Override
+    public String addColumn(ColumnChange change) {
+        return null;
+    }
+
+
+    @Override
+    public String dropTable(Table actual) {
+        return null;
+    }
+
+    @Override
+    public String alterForeignKey(ForeignKeyChange change) {
+        return null;
+    }
+
+    @Override
+    public String dropForeignKey(ForeignKey actual) {
+        return null;
     }
 
     private Optional<String> createPrimaryKeysForTable(Table table) {

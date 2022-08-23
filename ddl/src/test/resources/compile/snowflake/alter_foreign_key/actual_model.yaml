@@ -1,0 +1,167 @@
+---
+tables:
+  - name: "PLAYER"
+    type: "TABLE"
+    schema: "FBAL"
+    columns:
+      - name: "name"
+        typeName: "VARCHAR"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 100
+        scale: 0
+        precision: 100
+        nullable: true
+        primaryKey: false
+        autoincrement: false
+      - name: "POSITION_ID"
+        typeName: "NUMBER"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 38
+        scale: 0
+        precision: 38
+        foreignKeys:
+          - name: "PLAYER_FK"
+            schema: "FBAL"
+            tableName: "PLAYER"
+            columnName: "POSITION_ID"
+            deleteRule: "3"
+            primaryTableSchema: "FBAL"
+            primaryTableName: "Position"
+            primaryColumnName: "ID"
+        nullable: true
+        primaryKey: false
+        autoincrement: false
+      - name: "ID"
+        typeName: "NUMBER"
+        ordinalPosition: 0
+        primaryKeySequenceId: 1
+        columnDisplaySize: 38
+        scale: 0
+        precision: 38
+        nullable: false
+        primaryKey: true
+        autoincrement: false
+  - name: "Position"
+    type: "TABLE"
+    schema: "FBAL"
+    columns:
+      - name: "ID"
+        typeName: "NUMBER"
+        ordinalPosition: 0
+        primaryKeySequenceId: 1
+        columnDisplaySize: 38
+        scale: 0
+        precision: 38
+        nullable: false
+        primaryKey: true
+        autoincrement: false
+      - name: "DESCRIPTION"
+        typeName: "VARCHAR"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 100
+        scale: 0
+        precision: 100
+        nullable: true
+        primaryKey: false
+        autoincrement: false
+      - name: "Name"
+        typeName: "VARCHAR"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 100
+        scale: 0
+        precision: 100
+        nullable: true
+        primaryKey: false
+        autoincrement: false
+  - name: "TEAM"
+    type: "TABLE"
+    schema: "FBAL"
+    columns:
+      - name: "name"
+        typeName: "VARCHAR"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 100
+        scale: 0
+        precision: 100
+        nullable: true
+        primaryKey: false
+        autoincrement: false
+      - name: "country"
+        typeName: "VARCHAR"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 100
+        scale: 0
+        precision: 100
+        nullable: true
+        primaryKey: false
+        autoincrement: false
+      - name: "ID"
+        typeName: "NUMBER"
+        ordinalPosition: 0
+        primaryKeySequenceId: 1
+        columnDisplaySize: 38
+        scale: 0
+        precision: 38
+        nullable: true
+        primaryKey: true
+        autoincrement: false
+      - name: "POSITION_ID"
+        typeName: "NUMBER"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 38
+        scale: 0
+        precision: 38
+        nullable: true
+        primaryKey: false
+        autoincrement: false
+  - name: "TEAMPLAYERS"
+    type: "TABLE"
+    schema: "FBAL"
+    columns:
+      - name: "TEAMID"
+        typeName: "NUMBER"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 38
+        scale: 0
+        precision: 38
+        foreignKeys:
+          - name: "TEAMPLAYERS_FK_TEAM"
+            schema: "FBAL"
+            tableName: "TEAMPLAYERS"
+            columnName: "TEAMID"
+            deleteRule: "3"
+            primaryTableSchema: "FBAL"
+            primaryTableName: "Position"
+            primaryColumnName: "ID"
+        nullable: true
+        primaryKey: false
+        autoincrement: false
+      - name: "PLAYERID"
+        typeName: "NUMBER"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 38
+        scale: 0
+        precision: 38
+        foreignKeys:
+          - name: "TEAMPLAYERS_FK"
+            schema: "FBAL"
+            tableName: "TEAMPLAYERS"
+            columnName: "PLAYERID"
+            deleteRule: "3"
+            primaryTableSchema: "FBAL"
+            primaryTableName: "PLAYER"
+            primaryColumnName: "ID"
+        nullable: true
+        primaryKey: false
+        autoincrement: false
+databaseProductName: "Snowflake"
+databaseType: "snowflake"

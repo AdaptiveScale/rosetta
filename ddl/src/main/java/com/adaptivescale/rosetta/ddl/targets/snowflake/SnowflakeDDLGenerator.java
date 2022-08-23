@@ -5,16 +5,16 @@ import com.adaptivescale.rosetta.common.models.Database;
 import com.adaptivescale.rosetta.common.models.ForeignKey;
 import com.adaptivescale.rosetta.common.models.Table;
 import com.adaptivescale.rosetta.ddl.DDL;
-import com.adaptivescale.rosetta.ddl.targets.ColumnDataTypeName;
+import com.adaptivescale.rosetta.ddl.change.model.ColumnChange;
+import com.adaptivescale.rosetta.ddl.change.model.ForeignKeyChange;
 import com.adaptivescale.rosetta.ddl.targets.ColumnSQLDecoratorFactory;
 
 import java.sql.DatabaseMetaData;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class SnowflakeDDLGenerator implements DDL {
 
@@ -46,7 +46,7 @@ public class SnowflakeDDLGenerator implements DDL {
     }
 
     @Override
-    public String createDataBase(Database database) {
+    public String createDatabase(Database database) {
         StringBuilder stringBuilder = new StringBuilder();
 
         Set<String> schemas = database.getTables().stream().map(Table::getSchema)
@@ -75,11 +75,80 @@ public class SnowflakeDDLGenerator implements DDL {
                 .map(Optional::get)
                 .collect(Collectors.joining("\r"));
 
-        if(!foreignKeys.isEmpty()){
+        if (!foreignKeys.isEmpty()) {
             stringBuilder.append("\r").append(foreignKeys).append("\r");
         }
 
         return stringBuilder.toString();
+    }
+
+    //for change optimal decision is to drop and create again
+    @Override
+    public String alterForeignKey(ForeignKeyChange change) {
+       return dropForeignKey(change.getActual()) + "\r" + createForeignKey(change.getExpected());
+    }
+
+    @Override
+    public String dropForeignKey(ForeignKey actual) {
+        StringBuilder stringBuilder = new StringBuilder().append("ALTER TABLE ");
+        if (actual.getSchema() != null && !actual.getSchema().isEmpty()) {
+            stringBuilder.append(escapeName(actual.getSchema())).append(".");
+        }
+
+        stringBuilder
+                .append(escapeName(actual.getTableName()))
+                .append(" DROP CONSTRAINT ")
+                .append(escapeName(actual.getName()))
+                .append(";");
+
+        return stringBuilder.toString();
+    }
+
+    @Override
+    public String alterColumn(ColumnChange change) {
+        Column actual = change.getActual();
+        Column expected = change.getExpected();
+
+        if (!Objects.equals(expected.getTypeName(), actual.getTypeName())) {
+            return String.format("ALTER TABLE %s ALTER  \"%s\" SET DATA TYPE %s;",
+                    tableNameWithSchema(change.getTable()),
+                    expected.getName(),
+                    expected.getTypeName());
+        }
+
+        if (!Objects.equals(expected.isNullable(), actual.isNullable())) {
+            if (expected.isNullable()) {
+                return String.format("ALTER TABLE %s ALTER  \"%s\" DROP NOT NULL;",
+                        tableNameWithSchema(change.getTable()),
+                        expected.getName());
+            } else {
+                return String.format("ALTER TABLE %s ALTER  \"%s\" SET NOT NULL;",
+                        tableNameWithSchema(change.getTable()),
+                        expected.getName());
+            }
+        }
+
+
+        //todo what
+        return null;
+    }
+
+    @Override
+    public String dropColumn(ColumnChange change) {
+        return "ALTER TABLE " + tableNameWithSchema(change.getTable()) + " DROP " + escapeName(change.getActual().getName()) + ";";
+    }
+
+    @Override
+    public String addColumn(ColumnChange change) {
+        Table table = change.getTable();
+        String columnNameWithType = columnSQLDecoratorFactory.decoratorFor(change.getExpected()).expressSQl();
+        String tableName = ((table.getSchema() == null || table.getSchema().isEmpty()) ? "" : table.getSchema() + ".") + table.getName();
+        return "Alter table " + tableName + " add " + columnNameWithType;
+    }
+
+    @Override
+    public String dropTable(Table actual) {
+        return "DROP TABLE " + tableNameWithSchema(actual) + ";";
     }
 
     private Optional<String> createPrimaryKeysForTable(Table table) {
@@ -101,34 +170,61 @@ public class SnowflakeDDLGenerator implements DDL {
     private Optional<String> foreignKeys(Table table) {
         String result = table.getColumns().stream()
                 .filter(column -> column.getForeignKeys() != null && !column.getForeignKeys().isEmpty())
-                .map(this::foreignKey).collect(Collectors.joining());
+                .map(this::createForeignKey).collect(Collectors.joining());
 
         return result.isEmpty() ? Optional.empty() : Optional.of(result);
     }
 
-    //ALTER TABLE rosetta.contacts ADD CONSTRAINT contacts_fk FOREIGN KEY (contact_id) REFERENCES rosetta."user"(user_id);
-    private String foreignKey(Column column) {
-        return column.getForeignKeys().stream().map(foreignKey ->
-                "ALTER TABLE " + ((foreignKey.getSchema() == null || foreignKey.getSchema().isEmpty()) ? "" : foreignKey.getSchema() + ".")
-                        + foreignKey.getTableName() + " ADD CONSTRAINT "
-                        + foreignKey.getName() + " FOREIGN KEY (" + foreignKey.getColumnName() + ") REFERENCES "
-                        + ((foreignKey.getPrimaryTableSchema() == null || foreignKey.getPrimaryTableSchema().isEmpty()) ? "" : foreignKey.getPrimaryTableSchema() + ".")
-                        + foreignKey.getPrimaryTableName()
-                        + "(" + foreignKey.getPrimaryColumnName() + ")"
-                        + foreignKeyDeleteRuleSanitation(foreignKeyDeleteRule(foreignKey)) + ";\r"
-                ).collect(Collectors.joining());
+    private String createForeignKey(Column column) {
+        //ALTER TABLE rosetta.contacts ADD CONSTRAINT contacts_fk FOREIGN KEY (contact_id) REFERENCES rosetta."user"(user_id);
+        return column.getForeignKeys().stream().map(this::createForeignKey).collect(Collectors.joining());
     }
 
-    private String foreignKeyDeleteRuleSanitation(String deleteRule) {
-        if (deleteRule == null || deleteRule.isEmpty()) {
-            return "";
+    @Override
+    public String createForeignKey(ForeignKey foreignKey) {
+//   ALTER TABLE "FBAL"."PLAYER" ADD CONSTRAINT "PLAYER_FK" FOREIGN KEY ("POSITION_ID") REFERENCES "FBAL"."Position"(ID) ON DELETE NO ACTION ;
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("ALTER TABLE ");
+
+        if (foreignKey.getSchema() != null && !foreignKey.getSchema().isEmpty()) {
+            stringBuilder.append(escapeName(foreignKey.getSchema())).append(".");
         }
-        return " " + deleteRule + " ";
+
+        stringBuilder
+                .append(escapeName(foreignKey.getTableName()))
+                .append(" ADD CONSTRAINT ")
+                .append(escapeName(foreignKey.getName()))
+                .append(" FOREIGN KEY (")
+                .append(escapeName(foreignKey.getColumnName()))
+                .append(") REFERENCES ");
+
+        if (foreignKey.getPrimaryTableSchema() != null && foreignKey.getPrimaryTableSchema().isEmpty()) {
+            stringBuilder.append("\"").append(foreignKey.getPrimaryTableSchema()).append("\".");
+        }
+
+        stringBuilder
+                .append(escapeName(foreignKey.getPrimaryTableName()))
+                .append("(")
+                .append(escapeName(foreignKey.getPrimaryColumnName()))
+                .append(")");
+
+        String deleteRule = foreignKeyDeleteRule(foreignKey);
+
+        if (deleteRule != null) {
+            stringBuilder.append(" ").append(deleteRule);
+        }
+        stringBuilder.append(";\r");
+
+        return stringBuilder.toString();
+    }
+
+    private String escapeName(String name) {
+        return "\"" + name + "\"";
     }
 
     protected String foreignKeyDeleteRule(ForeignKey foreignKey) {
         if (foreignKey.getDeleteRule() == null || foreignKey.getDeleteRule().isEmpty()) {
-            return "";
+            return null;
         }
         switch (Integer.parseInt(foreignKey.getDeleteRule())) {
             case DatabaseMetaData.importedKeyCascade:
@@ -142,8 +238,18 @@ public class SnowflakeDDLGenerator implements DDL {
             case DatabaseMetaData.importedKeyInitiallyImmediate:
             case DatabaseMetaData.importedKeyNotDeferrable:
             default:
-                //todo add warn log
-                return "";
+                return null;
         }
+    }
+
+    private String tableNameWithSchema(Table table) {
+        StringBuilder builder = new StringBuilder();
+
+        if (table.getSchema() != null && !table.getSchema().isEmpty()) {
+            builder.append("\"").append(table.getSchema()).append("\".");
+        }
+        builder.append("\"").append(table.getName()).append("\"");
+
+        return builder.toString();
     }
 }
