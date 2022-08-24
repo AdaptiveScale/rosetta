@@ -19,14 +19,14 @@ public class BigQueryDDLTest {
     public void createDB() throws IOException {
         String ddl = generateDDL("clean_database");
         Assertions.assertEquals("CREATE SCHEMA IF NOT EXISTS halis;\r" +
-                "CREATE TABLE halis.tableA(columnA STRING, columnB INT64);\r\r" +
-                "CREATE TABLE halis.tableB(columnA STRING, columnB INT64);", ddl);
+                "CREATE TABLE `halis`.tableA(columnA STRING, columnB INT64);\r\r" +
+                "CREATE TABLE `halis`.tableB(columnA STRING, columnB INT64);", ddl);
     }
 
     @Test
     public void addTable() throws IOException {
         String ddl = generateDDL("add_table");
-        Assertions.assertEquals("CREATE TABLE halis.tableB(columnA STRING, columnB INT64);", ddl);
+        Assertions.assertEquals("CREATE TABLE `halis`.tableB(columnA STRING, columnB INT64);", ddl);
     }
 
     @Test

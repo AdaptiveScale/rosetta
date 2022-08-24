@@ -107,7 +107,8 @@ class Cli implements Callable<Void> {
 
     @CommandLine.Command(name = "compile", description = "Generate DDL for target Database [bigquery, snowflake, …]", mixinStandardHelpOptions = true)
     private void compile(@CommandLine.Option(names = {"-s", "--source"}) String sourceName,
-                         @CommandLine.Option(names = {"-t", "--target"}, required = true) String targetName
+                         @CommandLine.Option(names = {"-t", "--target"}, required = true) String targetName,
+                         @CommandLine.Option(names = {"-d", "--with-drop"}) boolean dropIfExist
     ) throws Exception {
         requireConfig(config);
 
@@ -151,7 +152,7 @@ class Cli implements Callable<Void> {
 
         String ddl = translatedModels.stream().map(stringDatabaseEntry -> {
             DDL modelDDL = DDLFactory.ddlForDatabaseType(stringDatabaseEntry.getValue().getDatabaseType());
-            return modelDDL.createDatabase(stringDatabaseEntry.getValue());
+            return modelDDL.createDatabase(stringDatabaseEntry.getValue(), dropIfExist);
         }).reduce("", (s, s2) -> s.concat("\n\n\n").stripLeading().concat(s2));
 
         StringOutput stringOutput = new StringOutput("ddl.sql", targetWorkspace);
@@ -196,7 +197,7 @@ class Cli implements Callable<Void> {
         log.info("Successfully written ddl ({}).", stringOutput.getFilePath());
     }
 
-    @CommandLine.Command(name = "test", description = "Generate DDL for target Database [bigquery, snowflake, …]", mixinStandardHelpOptions = true)
+    @CommandLine.Command(name = "test", description = "Run tests written on columns", mixinStandardHelpOptions = true)
     private void test(@CommandLine.Option(names = {"-s", "--source"}) String sourceName) throws Exception {
         requireConfig(config);
 

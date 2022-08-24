@@ -18,7 +18,7 @@ public class SnowflakeDDLTest {
     @Test
     public void createDB() throws IOException {
         String ddl = generateDDL("clean_database");
-        Assertions.assertEquals("create schema ROSETTA;\r" +
+        Assertions.assertEquals("CREATE SCHEMA IF NOT EXISTS ROSETTA;\r" +
                 "CREATE TABLE ROSETTA.PLAYER(Name VARCHAR, Position VARCHAR, Number NUMBER not null);\r" +
                 "\r" +
                 "CREATE TABLE ROSETTA.USER(USER_ID NUMBER not null, PRIMARY KEY (USER_ID));", ddl);

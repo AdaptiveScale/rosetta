@@ -25,22 +25,36 @@ public class MySqlDDLGenerator implements DDL {
     }
 
     @Override
-    public String createTable(Table table) {
+    public String createTable(Table table, boolean dropTableIfExists) {
         List<String> definitions = table.getColumns().stream().map(this::createColumn).collect(Collectors.toList());
 
         Optional<String> primaryKeysForTable = createPrimaryKeysForTable(table);
         primaryKeysForTable.ifPresent(definitions::add);
         String definitionAsString = String.join(", ", definitions);
 
-        return "CREATE TABLE "
-                + handleNullSchema(table.getSchema(), table.getName())
-                + "("
-                + definitionAsString
-                + ");";
+        StringBuilder stringBuilder = new StringBuilder();
+        if (dropTableIfExists) {
+            stringBuilder.append("DROP TABLE IF EXISTS ");
+            if (table.getSchema() != null && !table.getSchema().isBlank()) {
+                stringBuilder.append("`").append(table.getSchema()).append("`.");
+            }
+            stringBuilder.append("`").append(table.getName()).append("`").append("; \n");
+        }
+
+        stringBuilder.append("CREATE TABLE ");
+
+        if (table.getSchema() != null && !table.getSchema().isBlank()) {
+            stringBuilder.append("`")
+                    .append(table.getSchema())
+                    .append("`.");
+        }
+
+        stringBuilder.append("`").append(table.getName()).append("`").append("(").append(definitionAsString).append(");");
+        return stringBuilder.toString();
     }
 
     @Override
-    public String createDatabase(Database database) {
+    public String createDatabase(Database database, boolean dropTableIfExists) {
         StringBuilder stringBuilder = new StringBuilder();
 
         Set<String> schemas = database.getTables().stream().map(Table::getSchema).filter(s -> s != null && !s.isEmpty()).collect(Collectors.toSet());
@@ -48,7 +62,7 @@ public class MySqlDDLGenerator implements DDL {
             stringBuilder.append(
                     schemas
                             .stream()
-                            .map(schema -> "create schema `" + schema + "`")
+                            .map(schema -> "CREATE SCHEMA IF NOT EXISTS `" + schema + "`")
                             .collect(Collectors.joining(";\r\r"))
 
             );
@@ -57,7 +71,7 @@ public class MySqlDDLGenerator implements DDL {
 
         stringBuilder.append(database.getTables()
                 .stream()
-                .map(this::createTable)
+                .map(table -> createTable(table, dropTableIfExists))
                 .collect(Collectors.joining("\r\r")));
 
         String foreignKeys = database

@@ -7,13 +7,12 @@ import com.adaptivescale.rosetta.common.models.Table;
 import com.adaptivescale.rosetta.ddl.change.model.ColumnChange;
 import com.adaptivescale.rosetta.ddl.change.model.ForeignKeyChange;
 
+
 public interface DDL {
 
     String createColumn(Column column);
-
-    String createTable(Table table);
-
-    String createDatabase(Database database);
+    String createTable(Table table, boolean dropTableIfExists);
+    String createDatabase(Database database, boolean dropTableIfExists);
 
     String createForeignKey(ForeignKey foreignKey);
 

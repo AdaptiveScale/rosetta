@@ -53,7 +53,7 @@ public class ChangeHandlerImplementation implements ChangeHandler{
     public String onDatabaseChange(DatabaseChange databaseChange) {
         switch (databaseChange.getStatus()) {
             case ADD:
-                return ddl.createDatabase(databaseChange.getExpected());
+                return ddl.createDatabase(databaseChange.getExpected(), false);
             case ALTER:
             case DROP:
             default:
@@ -67,7 +67,7 @@ public class ChangeHandlerImplementation implements ChangeHandler{
             case DROP:
                 return ddl.dropTable(change.getActual());
             case ADD:
-                return ddl.createTable(change.getExpected());
+                return ddl.createTable(change.getExpected(), false);
             case ALTER:
             default:
                 throw new RuntimeException("Operation " + change.getStatus() + " for table not supported");

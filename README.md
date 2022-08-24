@@ -183,6 +183,7 @@ Parameter | Description
 -c, --config CONFIG_FILE | YAML config file.  If none is supplied it will use main.conf in the current directory if it exists.
 -s, --source CONNECTION_NAME (Optional) | The source connection name where models are generated.
 -t, --target CONNECTION_NAME | The target connection name in which source DBML converts to.
+-d, --with-drop | Add query to drop tables when generating ddl.
 
 Example:
 ```yaml
@@ -222,6 +223,69 @@ Column Changed: Column 'actor_id' in table 'actor' changed 'Autoincrement'. Old 
 Column Changed: Column 'actor_id' in table 'actor' changed 'Primary key'. Old value: 'false', new value: 'true'
 Column Changed: Column 'actor_id' in table 'actor' changed 'Nullable'. Old value: 'true', new value: 'false'
 Table Added: Table 'address'
+```
+
+#### test
+Runs tests written based on columns as assertions, then they are translated into query commands, executed and compared with expected value. Currently supported assertions are: `equals(=), not equals(!=), less than(<), more than(>), less than or equals(<=), more than or equals(>=), contains(in)`, example are shown below.
+
+`usage: rosetta [-c, --config CONFIG_FILE] test [-h, --help] [-s, --source CONNECTION_NAME]`
+
+Parameter | Description
+--- | ---
+-h, --help | Show the help message and exit.
+-c, --config CONFIG_FILE | YAML config file.  If none is supplied it will use main.conf in the current directory if it exists.
+-s, --source CONNECTION_NAME | The source connection is used to specify which models and connection to use.
+
+Notice: Value for BigQuery Array columns should be comma separated value ('a,b,c,d,e').
+
+Example:
+```yaml
+---
+databaseType: "mysql"
+tables:
+  - name: "actor"
+    type: "TABLE"
+    columns:
+      - name: "actor_id"
+        typeName: "SMALLINT UNSIGNED"
+        ordinalPosition: 0
+        primaryKeySequenceId: 1
+        columnDisplaySize: 5
+        scale: 0
+        precision: 5
+        nullable: false
+        primaryKey: true
+        autoincrement: false
+        tests:
+          assertion:
+            - operator: '='
+              value: 16
+              expected: 1
+      - name: "first_name"
+        typeName: "VARCHAR"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 45
+        scale: 0
+        precision: 45
+        nullable: false
+        primaryKey: false
+        autoincrement: false
+        tests:
+          assertion:
+            - operator: '!='
+              value: 'Michael'
+              expected: 1
+```
+
+Output example:
+```bash
+Running tests for mysql. Found: 2
+
+1 of 2, RUNNING test ('=') on column: 'actor_id'                                                    
+1 of 2, FINISHED test on column: 'actor_id' (expected: '1' - actual: '1')  ......................... [PASS in 0.288s]
+2 of 2, RUNNING test ('!=') on column: 'first_name'                                                 
+2 of 2, FINISHED test on column: 'first_name' (expected: '1' - actual: '219')  ..................... [FAIL in 0.091s]
 ```
 
 ## Copyright and License Information
