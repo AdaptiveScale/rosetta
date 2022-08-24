@@ -1,13 +1,12 @@
 package com.adaptivescale.rosetta.ddl.change;
 
-import com.adaptivescale.rosetta.common.models.Database;
-import com.adaptivescale.rosetta.ddl.change.model.ColumnChange;
-import com.adaptivescale.rosetta.ddl.change.model.DatabaseChange;
-import com.adaptivescale.rosetta.ddl.change.model.ForeignKeyChange;
+import com.adaptivescale.rosetta.ddl.change.model.*;
+
+import java.util.List;
 
 public interface ChangeHandler {
 
-    String createDDLForChanges(Database expected, Database actual);
+    String createDDLForChanges(List<Change<?>> changes);
 
     String onDatabaseChange(DatabaseChange databaseChange);
 

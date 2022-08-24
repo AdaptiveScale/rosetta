@@ -8,10 +8,12 @@ import com.adaptivescale.rosetta.ddl.DDL;
 import com.adaptivescale.rosetta.ddl.change.model.ColumnChange;
 import com.adaptivescale.rosetta.ddl.change.model.ForeignKeyChange;
 import com.adaptivescale.rosetta.ddl.targets.ColumnSQLDecoratorFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class BigQueryDDLGenerator implements DDL {
     private final ColumnSQLDecoratorFactory columnSQLDecoratorFactory;
 
@@ -77,7 +79,7 @@ public class BigQueryDDLGenerator implements DDL {
         stringBuilder.append(database.getTables()
                 .stream()
                 .map(table -> createTable(table, dropTableIfExists))
-                .collect(Collectors.joining("\r\r")));
+                .collect(Collectors.joining("\r")));
 
         return stringBuilder.toString();
     }
@@ -104,10 +106,10 @@ public class BigQueryDDLGenerator implements DDL {
                 throw new RuntimeException("Operation not supported by BigQuery to alter column to not null!");
             }
         }
-
-        //todo throw or log warning
+        log.info("No action taken for changes detected in column: {}.{}.{}", change.getTable().getSchema(),
+                change.getTable().getName(),
+                expected.getName());
         return "";
-
     }
 
     @Override
@@ -140,6 +142,11 @@ public class BigQueryDDLGenerator implements DDL {
 
     @Override
     public String dropForeignKey(ForeignKey actual) {
+        return null;
+    }
+
+    @Override
+    public String alterTable(Table expected, Table actual) {
         return null;
     }
 }

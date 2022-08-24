@@ -1,5 +1,7 @@
 package com.adaptivescale.rosetta.ddl.change.model;
 
+import java.util.Objects;
+
 public class Change<T> {
     //state in model
     private T expected;
@@ -51,5 +53,18 @@ public class Change<T> {
         ALTER,
         DROP,
         ADD
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Change<?> change = (Change<?>) o;
+        return Objects.equals(expected, change.expected) && Objects.equals(actual, change.actual) && status == change.status && type == change.type;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(expected, actual, status, type);
     }
 }

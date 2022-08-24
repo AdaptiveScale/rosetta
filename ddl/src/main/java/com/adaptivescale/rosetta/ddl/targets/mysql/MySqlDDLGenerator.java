@@ -8,13 +8,16 @@ import com.adaptivescale.rosetta.ddl.DDL;
 import com.adaptivescale.rosetta.ddl.change.model.ColumnChange;
 import com.adaptivescale.rosetta.ddl.change.model.ForeignKeyChange;
 import com.adaptivescale.rosetta.ddl.targets.ColumnSQLDecoratorFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.sql.DatabaseMetaData;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class MySqlDDLGenerator implements DDL {
 
     private final ColumnSQLDecoratorFactory columnSQLDecoratorFactory = new MySqlColumnDecoratorFactory();
@@ -90,39 +93,97 @@ public class MySqlDDLGenerator implements DDL {
 
     @Override
     public String createForeignKey(ForeignKey foreignKey) {
-        return null;
+        return "ALTER TABLE" + handleNullSchema(foreignKey.getSchema(), foreignKey.getTableName()) + " ADD CONSTRAINT "
+                + foreignKey.getName() + " FOREIGN KEY (`" + foreignKey.getColumnName() + "`) REFERENCES "
+                + handleNullSchema(foreignKey.getPrimaryTableSchema(), foreignKey.getPrimaryTableName())
+                + "(`" + foreignKey.getPrimaryColumnName() + "`)"
+                + foreignKeyDeleteRuleSanitation(foreignKeyDeleteRule(foreignKey)) + ";\r";
+    }
+
+    //use this to handle primary keys
+    @Override
+    public String alterTable(Table expected, Table actual) {
+
+        boolean doesPKExist = actual.getColumns().stream().map(Column::isPrimaryKey).reduce((aBoolean, aBoolean2) -> aBoolean || aBoolean2).orElse(false);
+        boolean doWeNeedToCreatePk = expected.getColumns().stream().map(Column::isPrimaryKey).reduce((aBoolean, aBoolean2) -> aBoolean || aBoolean2).orElse(false);
+
+        StringBuilder stringBuilder = new StringBuilder("ALTER TABLE")
+                .append(handleNullSchema(expected.getSchema(), expected.getName()));
+
+        if (doesPKExist) {
+            stringBuilder.append(" DROP PRIMARY KEY");
+        }
+
+        if (doWeNeedToCreatePk) {
+            Optional<String> primaryKeysForTable = createPrimaryKeysForTable(expected);
+            if (primaryKeysForTable.isPresent()) {
+                if (doesPKExist) {
+                    stringBuilder.append(",");
+                }
+                stringBuilder.append(" ADD ").append(primaryKeysForTable.get());
+            }
+        }
+
+        stringBuilder.append(";");
+        return stringBuilder.toString();
     }
 
     @Override
     public String alterColumn(ColumnChange change) {
-        return null;
+        Table table = change.getTable();
+        Column actual = change.getActual();
+        Column expected = change.getExpected();
+
+        if (!Objects.equals(expected.getTypeName(), actual.getTypeName())
+                || !Objects.equals(expected.isNullable(), actual.isNullable())) {
+            return String.format("ALTER TABLE%s MODIFY %s;",
+                    handleNullSchema(table.getSchema(), table.getName()),
+                    columnSQLDecoratorFactory.decoratorFor(expected).expressSQl());
+        }
+
+        log.info("No action taken for changes detected in column: {}.{}.{}", change.getTable().getSchema(),
+                change.getTable().getName(),
+                expected.getName());
+        return "";
     }
 
     @Override
     public String dropColumn(ColumnChange change) {
-        return null;
+        Table table = change.getTable();
+        Column actual = change.getActual();
+
+        return "ALTER TABLE" +
+                handleNullSchema(table.getSchema(), table.getName()) + " DROP COLUMN `" +
+                actual.getName() + "`;";
     }
 
     @Override
     public String addColumn(ColumnChange change) {
-        return null;
+        Table table = change.getTable();
+        Column expected = change.getExpected();
+
+        return "ALTER TABLE" +
+                handleNullSchema(table.getSchema(), table.getName()) +
+                " ADD COLUMN " +
+                columnSQLDecoratorFactory.decoratorFor(expected).expressSQl() + ";";
     }
 
 
     @Override
     public String dropTable(Table actual) {
-        return null;
+        return "DROP TABLE" + handleNullSchema(actual.getSchema(), actual.getName()) + ";";
     }
 
     @Override
     public String alterForeignKey(ForeignKeyChange change) {
-        return null;
+        return "";
     }
 
     @Override
     public String dropForeignKey(ForeignKey actual) {
-        return null;
+        return "ALTER TABLE" + handleNullSchema(actual.getSchema(), actual.getTableName()) + " DROP FOREIGN KEY `" + actual.getName() + "`;";
     }
+
 
     private Optional<String> createPrimaryKeysForTable(Table table) {
         List<String> primaryKeys = table
@@ -143,21 +204,14 @@ public class MySqlDDLGenerator implements DDL {
     private Optional<String> foreignKeys(Table table) {
         String result = table.getColumns().stream()
                 .filter(column -> column.getForeignKeys() != null && !column.getForeignKeys().isEmpty())
-                .map(this::foreignKey).collect(Collectors.joining());
+                .map(this::createForeignKeys).collect(Collectors.joining());
 
         return result.isEmpty() ? Optional.empty() : Optional.of(result);
     }
 
     //ALTER TABLE rosetta.contacts ADD CONSTRAINT contacts_fk FOREIGN KEY (contact_id) REFERENCES rosetta."user"(user_id);
-    private String foreignKey(Column column) {
-        return column.getForeignKeys().stream().map(foreignKey ->
-                "ALTER TABLE" + handleNullSchema(foreignKey.getSchema(), foreignKey.getTableName()) + " ADD CONSTRAINT "
-                        + foreignKey.getName() + " FOREIGN KEY (`" + foreignKey.getColumnName() + "`) REFERENCES "
-                        + handleNullSchema(foreignKey.getPrimaryTableSchema(), foreignKey.getPrimaryTableName())
-                        + "(`" + foreignKey.getPrimaryColumnName() + "`)"
-                        + foreignKeyDeleteRuleSanitation(foreignKeyDeleteRule(foreignKey)) + ";\r"
-
-        ).collect(Collectors.joining());
+    private String createForeignKeys(Column column) {
+        return column.getForeignKeys().stream().map(this::createForeignKey).collect(Collectors.joining());
     }
 
     private String handleNullSchema(String schema, String tableName) {

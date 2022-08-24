@@ -2,7 +2,7 @@ package com.adaptivescale.rosetta.ddl.test;
 
 import com.adaptivescale.rosetta.common.models.Database;
 import com.adaptivescale.rosetta.ddl.change.model.Change;
-import com.adaptivescale.rosetta.ddl.change.ChangeFinder;
+import com.adaptivescale.rosetta.ddl.change.DefaultChangeFinder;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-public class ChangeListTest {
+public class DefaultChangeListTest {
 
     private static final Path resourceDirectory = Paths.get("src", "test", "resources", "changes");
 
@@ -74,6 +74,6 @@ public class ChangeListTest {
     private List<Change<?>> findChanges(String testType) throws IOException {
         Database actual = Utils.getDatabase(resourceDirectory.resolve(testType), "actual_model.yaml");
         Database expected = Utils.getDatabase(resourceDirectory.resolve(testType), "expected_model.yaml");
-        return new ChangeFinder().findChanges(expected, actual);
+        return new DefaultChangeFinder().findChanges(expected, actual);
     }
 }

@@ -8,6 +8,7 @@ import com.adaptivescale.rosetta.ddl.DDL;
 import com.adaptivescale.rosetta.ddl.change.model.ColumnChange;
 import com.adaptivescale.rosetta.ddl.change.model.ForeignKeyChange;
 import com.adaptivescale.rosetta.ddl.targets.ColumnSQLDecoratorFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.sql.DatabaseMetaData;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class SnowflakeDDLGenerator implements DDL {
 
     private final ColumnSQLDecoratorFactory columnSQLDecoratorFactory;
@@ -41,20 +43,11 @@ public class SnowflakeDDLGenerator implements DDL {
 
         if (dropTableIfExists) {
             builder.append("DROP TABLE IF EXISTS ");
-            if (table.getSchema() != null && !table.getSchema().isBlank()) {
-                builder.append(table.getSchema()).append(".");
-            }
-            builder.append(table.getName()).append("; \n");
+            builder.append(tableNameWithSchema(table));
+            builder.append("; \n");
         }
         builder.append("CREATE TABLE ");
-
-
-        if (table.getSchema() != null && !table.getSchema().isBlank()) {
-            builder.append(table.getSchema())
-                    .append(".");
-        }
-
-        builder.append(table.getName())
+        builder.append(tableNameWithSchema(table))
                 .append("(")
                 .append(definitionAsString)
                 .append(");");
@@ -102,7 +95,7 @@ public class SnowflakeDDLGenerator implements DDL {
     //for change optimal decision is to drop and create again
     @Override
     public String alterForeignKey(ForeignKeyChange change) {
-       return dropForeignKey(change.getActual()) + "\r" + createForeignKey(change.getExpected());
+        return dropForeignKey(change.getActual()) + "\r" + createForeignKey(change.getExpected());
     }
 
     @Override
@@ -118,6 +111,38 @@ public class SnowflakeDDLGenerator implements DDL {
                 .append(escapeName(actual.getName()))
                 .append(";");
 
+        return stringBuilder.toString();
+    }
+
+    @Override
+    public String alterTable(Table expected, Table actual) {
+        boolean doesPKExist = actual.getColumns().stream().map(Column::isPrimaryKey).reduce((aBoolean, aBoolean2) -> aBoolean || aBoolean2).orElse(false);
+        boolean doWeNeedToCreatePk = expected.getColumns().stream().map(Column::isPrimaryKey).reduce((aBoolean, aBoolean2) -> aBoolean || aBoolean2).orElse(false);
+
+        StringBuilder stringBuilder = new StringBuilder();
+
+
+        if (doesPKExist) {
+            stringBuilder.append("ALTER TABLE ").append(tableNameWithSchema(expected)).append(" DROP PRIMARY KEY;");
+        }
+
+        if (doWeNeedToCreatePk) {
+            Optional<String> primaryKeysForTable = createPrimaryKeysForTable(expected);
+            if (primaryKeysForTable.isPresent()) {
+                if (doesPKExist) {
+                    stringBuilder.append(", ");
+                }
+                if(stringBuilder.length()>0){
+                    stringBuilder.append("\r").append(tableNameWithSchema(expected));
+                }
+                stringBuilder.append("ALTER TABLE ")
+                        .append(tableNameWithSchema(expected))
+                        .append(" ADD ")
+                        .append(primaryKeysForTable.get());
+            }
+        }
+
+        stringBuilder.append(";");
         return stringBuilder.toString();
     }
 
@@ -145,9 +170,10 @@ public class SnowflakeDDLGenerator implements DDL {
             }
         }
 
-
-        //todo what
-        return null;
+        log.info("No action taken for changes detected in column: {}.{}.{}", change.getTable().getSchema(),
+                change.getTable().getName(),
+                expected.getName());
+        return "";
     }
 
     @Override
@@ -159,8 +185,7 @@ public class SnowflakeDDLGenerator implements DDL {
     public String addColumn(ColumnChange change) {
         Table table = change.getTable();
         String columnNameWithType = columnSQLDecoratorFactory.decoratorFor(change.getExpected()).expressSQl();
-        String tableName = ((table.getSchema() == null || table.getSchema().isEmpty()) ? "" : table.getSchema() + ".") + table.getName();
-        return "Alter table " + tableName + " add " + columnNameWithType;
+        return "ALTER TABLE " + tableNameWithSchema(table) + " add " + columnNameWithType + ";";
     }
 
     @Override
@@ -187,19 +212,17 @@ public class SnowflakeDDLGenerator implements DDL {
     private Optional<String> foreignKeys(Table table) {
         String result = table.getColumns().stream()
                 .filter(column -> column.getForeignKeys() != null && !column.getForeignKeys().isEmpty())
-                .map(this::createForeignKey).collect(Collectors.joining());
+                .map(this::createForeignKeys).collect(Collectors.joining());
 
         return result.isEmpty() ? Optional.empty() : Optional.of(result);
     }
 
-    private String createForeignKey(Column column) {
-        //ALTER TABLE rosetta.contacts ADD CONSTRAINT contacts_fk FOREIGN KEY (contact_id) REFERENCES rosetta."user"(user_id);
+    private String createForeignKeys(Column column) {
         return column.getForeignKeys().stream().map(this::createForeignKey).collect(Collectors.joining());
     }
 
     @Override
     public String createForeignKey(ForeignKey foreignKey) {
-//   ALTER TABLE "FBAL"."PLAYER" ADD CONSTRAINT "PLAYER_FK" FOREIGN KEY ("POSITION_ID") REFERENCES "FBAL"."Position"(ID) ON DELETE NO ACTION ;
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("ALTER TABLE ");
 
@@ -215,7 +238,7 @@ public class SnowflakeDDLGenerator implements DDL {
                 .append(escapeName(foreignKey.getColumnName()))
                 .append(") REFERENCES ");
 
-        if (foreignKey.getPrimaryTableSchema() != null && foreignKey.getPrimaryTableSchema().isEmpty()) {
+        if (foreignKey.getPrimaryTableSchema() != null && !foreignKey.getPrimaryTableSchema().isEmpty()) {
             stringBuilder.append("\"").append(foreignKey.getPrimaryTableSchema()).append("\".");
         }
 

@@ -28,4 +28,6 @@ public interface DDL {
     String alterForeignKey(ForeignKeyChange change);
 
     String dropForeignKey(ForeignKey actual);
+
+    String alterTable(Table expected, Table actual);
 }

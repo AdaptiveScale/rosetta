@@ -1,0 +1,120 @@
+---
+tables:
+  - name: "PLAYER"
+    type: "TABLE"
+    columns:
+      - name: "name"
+        typeName: "VARCHAR"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 0
+        scale: 0
+        precision: 0
+        primaryKey: false
+        autoincrement: false
+        nullable: true
+  - name: "Position"
+    type: "TABLE"
+    columns:
+      - name: "ID"
+        typeName: "DECIMAL"
+        ordinalPosition: 0
+        primaryKeySequenceId: 1
+        columnDisplaySize: 10
+        scale: 0
+        precision: 10
+        primaryKey: true
+        autoincrement: false
+        nullable: false
+      - name: "DESCRIPTION"
+        typeName: "VARCHAR"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 0
+        scale: 0
+        precision: 0
+        primaryKey: false
+        autoincrement: false
+        nullable: true
+      - name: "Name"
+        typeName: "VARCHAR"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 0
+        scale: 0
+        precision: 0
+        primaryKey: false
+        autoincrement: false
+        nullable: true
+  - name: "TEAM"
+    type: "TABLE"
+    columns:
+      - name: "name"
+        typeName: "VARCHAR"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 0
+        scale: 0
+        precision: 0
+        primaryKey: false
+        autoincrement: false
+        nullable: true
+      - name: "country"
+        typeName: "VARCHAR"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 0
+        scale: 0
+        precision: 0
+        primaryKey: false
+        autoincrement: false
+        nullable: true
+      - name: "ID"
+        typeName: "DECIMAL"
+        ordinalPosition: 0
+        primaryKeySequenceId: 1
+        columnDisplaySize: 10
+        scale: 0
+        precision: 10
+        primaryKey: true
+        autoincrement: false
+        nullable: false
+  - name: "TEAMPLAYERS"
+    type: "TABLE"
+    columns:
+      - name: "TEAMID"
+        typeName: "DECIMAL"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 10
+        scale: 0
+        precision: 10
+        foreignKeys:
+          - name: "TEAMPLAYERS_FK_TEAM"
+            tableName: "TEAMPLAYERS"
+            columnName: "TEAMID"
+            deleteRule: "1"
+            primaryTableName: "TEAM"
+            primaryColumnName: "ID"
+        primaryKey: false
+        autoincrement: false
+        nullable: true
+      - name: "PLAYERID"
+        typeName: "DECIMAL"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 10
+        scale: 0
+        precision: 10
+        foreignKeys:
+          - name: "TEAMPLAYERS_FK"
+            tableName: "TEAMPLAYERS"
+            columnName: "PLAYERID"
+            deleteRule: "1"
+            primaryTableName: "POSITION"
+            primaryColumnName: "ID"
+        primaryKey: false
+        autoincrement: false
+        nullable: true
+databaseProductName: "MySQL"
+databaseType: "mysql"

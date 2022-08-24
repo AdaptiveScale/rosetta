@@ -1,16 +1,14 @@
 package com.adaptivescale.rosetta.ddl.change;
 
-import com.adaptivescale.rosetta.common.models.Database;
 import com.adaptivescale.rosetta.ddl.DDL;
-import com.adaptivescale.rosetta.ddl.change.model.Change;
-import com.adaptivescale.rosetta.ddl.change.model.ColumnChange;
-import com.adaptivescale.rosetta.ddl.change.model.DatabaseChange;
-import com.adaptivescale.rosetta.ddl.change.model.ForeignKeyChange;
+import com.adaptivescale.rosetta.ddl.change.model.*;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+@Slf4j
 public class ChangeHandlerImplementation implements ChangeHandler{
 
     private final DDL ddl;
@@ -22,9 +20,7 @@ public class ChangeHandlerImplementation implements ChangeHandler{
     }
 
     @Override
-    public String createDDLForChanges(Database expected, Database actual) {
-        List<Change<?>> changes = new ChangeFinder().findChanges(expected, actual);
-
+    public String createDDLForChanges(List<Change<?>> changes) {
         if(changeComparator != null){
             changes.sort(changeComparator);
         }
@@ -69,6 +65,7 @@ public class ChangeHandlerImplementation implements ChangeHandler{
             case ADD:
                 return ddl.createTable(change.getExpected(), false);
             case ALTER:
+                return ddl.alterTable(change.getExpected(), change.getActual());
             default:
                 throw new RuntimeException("Operation " + change.getStatus() + " for table not supported");
         }

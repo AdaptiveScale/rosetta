@@ -4,7 +4,6 @@ import com.adaptivescale.rosetta.common.models.Column;
 import com.adaptivescale.rosetta.common.models.Database;
 import com.adaptivescale.rosetta.common.models.ForeignKey;
 import com.adaptivescale.rosetta.common.models.Table;
-import com.adaptivescale.rosetta.ddl.change.TableChange;
 
 
 public class ChangeFactory {
@@ -21,7 +20,7 @@ public class ChangeFactory {
         return new DatabaseChange(expected, actual, status, Change.Type.DATABASE);
     }
 
-    public static Change<ForeignKey> foreignKeyChange(ForeignKey expected, ForeignKey actual, Change.Status status, Table table, Column column){
-        return new ForeignKeyChange(expected, actual, status, Change.Type.FOREIGN_KEY, column);
+    public static Change<ForeignKey> foreignKeyChange(ForeignKey expected, ForeignKey actual, Change.Status status){
+        return new ForeignKeyChange(expected, actual, status, Change.Type.FOREIGN_KEY);
     }
 }
