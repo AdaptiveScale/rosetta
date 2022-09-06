@@ -165,7 +165,8 @@ class Cli implements Callable<Void> {
         log.info("Successfully written ddl ({}).", stringOutput.getFilePath());
     }
 
-    @CommandLine.Command(name = "apply", description = "Generate DDL for target Database [bigquery, snowflake, …]", mixinStandardHelpOptions = true)
+    @CommandLine.Command(name = "apply", description = "Get current model and compare with state of database," +
+            " generate ddl for changes and apply to database. ", mixinStandardHelpOptions = true)
     private void apply(@CommandLine.Option(names = {"-s", "--source"}, required = true) String sourceName) throws Exception {
         requireConfig(config);
 
