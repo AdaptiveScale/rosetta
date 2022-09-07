@@ -23,31 +23,44 @@ public class MySqlDDLGenerator implements DDL {
     }
 
     @Override
-    public String createTable(Table table) {
+    public String createTable(Table table, boolean dropTableIfExists) {
         List<String> definitions = table.getColumns().stream().map(this::createColumn).collect(Collectors.toList());
 
         Optional<String> primaryKeysForTable = createPrimaryKeysForTable(table);
         primaryKeysForTable.ifPresent(definitions::add);
         String definitionAsString = String.join(", ", definitions);
 
-        return "CREATE TABLE "
-                + ((table.getSchema() != null && table.getSchema().isEmpty()) ? "" : "`" + table.getSchema() + "`.")
-                + "`" + table.getName() + "`"
-                + "("
-                + definitionAsString
-                + ");";
+        StringBuilder stringBuilder = new StringBuilder();
+        if (dropTableIfExists) {
+            stringBuilder.append("DROP TABLE IF EXISTS ");
+            if (table.getSchema() != null && !table.getSchema().isBlank()) {
+                stringBuilder.append("`").append(table.getSchema()).append("`.");
+            }
+            stringBuilder.append("`").append(table.getName()).append("`").append("; \n");
+        }
+
+        stringBuilder.append("CREATE TABLE ");
+
+        if (table.getSchema() != null && !table.getSchema().isBlank()) {
+            stringBuilder.append("`")
+                    .append(table.getSchema())
+                    .append("`.");
+        }
+
+        stringBuilder.append("`").append(table.getName()).append("`").append("(").append(definitionAsString).append(");");
+        return stringBuilder.toString();
     }
 
     @Override
-    public String createDataBase(Database database) {
+    public String createDataBase(Database database, boolean dropTableIfExists) {
         StringBuilder stringBuilder = new StringBuilder();
 
-        Set<String> schemas = database.getTables().stream().map(Table::getSchema).collect(Collectors.toSet());
+        Set<String> schemas = database.getTables().stream().map(Table::getSchema).filter(s -> s != null && !s.isEmpty()).collect(Collectors.toSet());
         if (!schemas.isEmpty()) {
             stringBuilder.append(
                     schemas
                             .stream()
-                            .map(schema -> "create schema `" + schema + "`")
+                            .map(schema -> "CREATE SCHEMA IF NOT EXISTS `" + schema + "`")
                             .collect(Collectors.joining(";\r\r"))
 
             );
@@ -56,7 +69,7 @@ public class MySqlDDLGenerator implements DDL {
 
         stringBuilder.append(database.getTables()
                 .stream()
-                .map(this::createTable)
+                .map(table -> createTable(table, dropTableIfExists))
                 .collect(Collectors.joining("\r\r")));
 
         String foreignKeys = database
@@ -68,7 +81,7 @@ public class MySqlDDLGenerator implements DDL {
                 .collect(Collectors.joining());
 
         if (!foreignKeys.isEmpty()) {
-           stringBuilder.append("\r").append(foreignKeys).append("\r");
+            stringBuilder.append("\r").append(foreignKeys).append("\r");
         }
         return stringBuilder.toString();
     }
@@ -79,7 +92,7 @@ public class MySqlDDLGenerator implements DDL {
                 .stream()
                 .filter(Column::isPrimaryKey)
                 .sorted((o1, o2) -> o1.getPrimaryKeySequenceId() < o2.getPrimaryKeySequenceId() ? -1 : 1)
-                .map(Column::getName)
+                .map(pk -> String.format("`%s`", pk.getName()))
                 .collect(Collectors.toList());
 
         if (primaryKeys.isEmpty()) {
@@ -100,13 +113,17 @@ public class MySqlDDLGenerator implements DDL {
     //ALTER TABLE rosetta.contacts ADD CONSTRAINT contacts_fk FOREIGN KEY (contact_id) REFERENCES rosetta."user"(user_id);
     private String foreignKey(Column column) {
         return column.getForeignKeys().stream().map(foreignKey ->
-                "ALTER TABLE `" + foreignKey.getSchema() + "`.`" + foreignKey.getTableName() + "` ADD CONSTRAINT "
-                        + foreignKey.getName() + " FOREIGN KEY (" + foreignKey.getColumnName() + ") REFERENCES "
-                        + "`" + foreignKey.getPrimaryTableSchema() + "`.`" + foreignKey.getPrimaryTableName() + "`"
-                        + "(" + foreignKey.getPrimaryColumnName() + ")"
+                "ALTER TABLE" + handleNullSchema(foreignKey.getSchema(), foreignKey.getTableName()) + " ADD CONSTRAINT "
+                        + foreignKey.getName() + " FOREIGN KEY (`" + foreignKey.getColumnName() + "`) REFERENCES "
+                        + handleNullSchema(foreignKey.getPrimaryTableSchema(), foreignKey.getPrimaryTableName())
+                        + "(`" + foreignKey.getPrimaryColumnName() + "`)"
                         + foreignKeyDeleteRuleSanitation(foreignKeyDeleteRule(foreignKey)) + ";\r"
 
         ).collect(Collectors.joining());
+    }
+
+    private String handleNullSchema(String schema, String tableName) {
+        return ((schema == null || schema.isEmpty()) ? " " : (" `" + schema + "`.")) + "`" + tableName + "`";
     }
 
     private String foreignKeyDeleteRuleSanitation(String deleteRule) {
@@ -116,7 +133,7 @@ public class MySqlDDLGenerator implements DDL {
         return " " + deleteRule + " ";
     }
 
-    protected String foreignKeyDeleteRule(ForeignKey foreignKey) {
+    private String foreignKeyDeleteRule(ForeignKey foreignKey) {
         if (foreignKey.getDeleteRule() == null || foreignKey.getDeleteRule().isEmpty()) {
             return "";
         }

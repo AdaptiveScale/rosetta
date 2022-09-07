@@ -11,6 +11,8 @@ dependencies {
     implementation project(':source')
     implementation project(':translator')
     implementation project(':ddl')
+    implementation project(':diff')
+    implementation project(':test')
 
     implementation group: 'info.picocli', name: 'picocli', version: '4.6.3'
     implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.30'

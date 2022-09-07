@@ -23,19 +23,40 @@ public class BigQueryDDLGenerator implements DDL {
     }
 
     @Override
-    public String createTable(Table table) {
+    public String createTable(Table table, boolean dropTableIfExists) {
         List<String> definitions = table.getColumns().stream().map(this::createColumn).collect(Collectors.toList());
         String definitionAsString = String.join(", ", definitions);
-        return "CREATE TABLE "
-                + ((table.getSchema() == null || table.getSchema().isEmpty()) ? "" : table.getSchema() + ".")
-                + table.getName()
-                + "("
-                + definitionAsString
-                + ");";
+
+        StringBuilder builder = new StringBuilder();
+
+        if (dropTableIfExists) {
+            builder.append("DROP TABLE IF EXISTS ");
+            if (table.getSchema() != null && !table.getSchema().isBlank()) {
+                builder.append("`")
+                        .append(table.getSchema())
+                        .append("`.");
+            }
+            builder.append("`").append(table.getName()).append("`; \n");
+        }
+
+        builder.append("CREATE TABLE ");
+
+        if (table.getSchema() != null && !table.getSchema().isBlank()) {
+            builder.append("`")
+                    .append(table.getSchema())
+                    .append("`.");
+        }
+
+        builder.append(table.getName())
+                .append("(")
+                .append(definitionAsString)
+                .append(");");
+
+        return builder.toString();
     }
 
     @Override
-    public String createDataBase(Database database) {
+    public String createDataBase(Database database, boolean dropTableIfExists) {
         StringBuilder stringBuilder = new StringBuilder();
 
         Set<String> schemas = database.getTables().stream().map(Table::getSchema)
@@ -44,7 +65,7 @@ public class BigQueryDDLGenerator implements DDL {
             stringBuilder.append(
                     schemas
                             .stream()
-                            .map(schema -> "create schema " + schema)
+                            .map(schema -> "CREATE SCHEMA IF NOT EXISTS " + schema)
                             .collect(Collectors.joining(";\r\r"))
 
             );
@@ -53,7 +74,7 @@ public class BigQueryDDLGenerator implements DDL {
 
         stringBuilder.append(database.getTables()
                 .stream()
-                .map(this::createTable)
+                .map(table -> createTable(table, dropTableIfExists))
                 .collect(Collectors.joining("\r\r")));
 
         return stringBuilder.toString();

@@ -2,22 +2,17 @@ plugins {
     id 'java'
 }
 
+group 'com.adaptivescale'
+version '0.0.1'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-
     implementation project(':common')
-
-    testImplementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.3'
-    testImplementation project(':translator')
-    testImplementation project(':source')
-
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
-
 }
 
 test {

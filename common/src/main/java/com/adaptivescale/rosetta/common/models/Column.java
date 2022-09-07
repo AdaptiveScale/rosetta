@@ -1,5 +1,7 @@
 package com.adaptivescale.rosetta.common.models;
 
+import com.adaptivescale.rosetta.common.models.test.Tests;
+
 import java.util.List;
 
 public class Column {
@@ -16,6 +18,7 @@ public class Column {
     private int columnDisplaySize;
     private int scale;
     private int precision;
+    private Tests tests;
 
     private List<ForeignKey> foreignKeys;
 
@@ -103,7 +106,7 @@ public class Column {
     }
 
     public void setForeignKeys(List<ForeignKey> foreignKeys) {
-        this.foreignKeys=foreignKeys;
+        this.foreignKeys = foreignKeys;
     }
 
     public List<ForeignKey> getForeignKeys() {
@@ -124,5 +127,13 @@ public class Column {
 
     public void setPrecision(int precision) {
         this.precision = precision;
+    }
+
+    public Tests getTests() {
+        return tests;
+    }
+
+    public void setTests(Tests tests) {
+        this.tests = tests;
     }
 }
