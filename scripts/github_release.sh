@@ -1,7 +1,6 @@
 #! /bin/bash
 
 source $(dirname "$0")/version.sh
-
 # Set default version to develop
 APP_VERSION=develop
 
