@@ -20,5 +20,8 @@ jobs:
         with:
           gradle-version: 7.5
 
+      - name: Run tests
+        run: gradle test
+
       - name: Build binaries
         run: gradle binary:runtimeZip

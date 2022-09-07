@@ -25,9 +25,12 @@ jobs:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASS }}
 
+      - name: Run tests
+        run: gradle test
+
       - name: Build binaries
         run: gradle binary:runtimeZip
 
       - name: Build docker image
-        run: 'scripts/docker-nightly.sh'
+        run: 'scripts/docker_nightly.sh'
         shell: bash

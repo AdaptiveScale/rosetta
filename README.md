@@ -48,13 +48,16 @@ Currently, supported databases for translation are shown below in the table.
 ## Usage
 
 ### Setting Up The CLI
-First, we need to download or build from source the **cli** JAR ``cli-1.0.0.jar`` file to get started.
+First, we need to:
+1. download the rosetta binary for the supported OS ([releases page](https://github.com/AdaptiveScale/rosetta/releases)) or,
+2. download the rosetta cli JAR ([releases page](https://github.com/AdaptiveScale/rosetta/releases)) or,
+3. build from source the cli JAR using `gradle binary:runtimeZip`
 
-This can be achieved by downloading the latest release from [releases page](https://github.com/AdaptiveScale/rosetta/releases),
-or by building it manually directly from the source code using `gradle binary:runtimeZip`.
+If we are using option #1, we can run the rosetta cli commands using `./rosetta` from inside the `bin` directory.
+On a first run it will create a directory for storing your JDBC drivers.
 
-After we download the jar file, we need to specify the location of our JDBC drivers (directory).
-We create an alias command to make the usage simpler.
+If we are using the **cli** JAR file, we need to specify the location of our JDBC drivers (directory).
+To make the usage of this simpler we create an alias command.
 
 ```bash
 alias rosetta='java -cp "<path_to_our_cli_jar>:<path_to_our_drivers>" com.adaptivescale.rosetta.cli.Main'
@@ -308,7 +311,7 @@ Running tests for mysql. Found: 2
 #### apply
 Gets current model and compares with state of database, generates ddl for changes and applies to database.
 
-`usage: rosetta [-c, --config CONFIG_FILE] apply [-h, --help] [-s, --source CONNECTION_NAME]`
+    rosetta [-c, --config CONFIG_FILE] apply [-h, --help] [-s, --source CONNECTION_NAME]
 
 Parameter | Description
 --- | ---
