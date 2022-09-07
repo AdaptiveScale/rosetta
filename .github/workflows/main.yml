@@ -38,5 +38,5 @@ jobs:
         shell: bash
 
       - name: GitHub Release
-        run: 'TOKEN=${{ secrets.GITHUBTOKEN }} scripts/github-release.sh'
+        run: 'TOKEN=${{ secrets.GITHUBTOKEN }} scripts/github_release.sh'
         shell: bash
