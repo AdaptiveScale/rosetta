@@ -37,7 +37,8 @@ create_release() {
 upload_custom_release_file() {
     token=$TOKEN
     name=$1
-    file="binary/build/$name"
+    path=$2
+    file="$path$name"
 
     url=`jq -r .upload_url release.json | cut -d{ -f'1'`
     command="\
@@ -62,7 +63,8 @@ upload_custom_release_file() {
 }
 
 create_release
-upload_custom_release_file "rosetta-$APP_VERSION-linux-x64.zip"
-upload_custom_release_file "rosetta-$APP_VERSION-mac_aarch64.zip"
-upload_custom_release_file "rosetta-$APP_VERSION-mac_x64.zip"
-upload_custom_release_file "rosetta-$APP_VERSION-win_x64.zip"
+upload_custom_release_file "rosetta-$APP_VERSION-linux-x64.zip" "binary/build/"
+upload_custom_release_file "rosetta-$APP_VERSION-mac_aarch64.zip" "binary/build/"
+upload_custom_release_file "rosetta-$APP_VERSION-mac_x64.zip" "binary/build/"
+upload_custom_release_file "rosetta-$APP_VERSION-win_x64.zip" "binary/build/"
+upload_custom_release_file "cli-$APP_VERSION.jar" "cli/build/libs/"
