@@ -3,7 +3,8 @@ rootProject.name = 'rosetta'
 include 'source'
 include 'translator'
 include 'ddl'
-include 'cli'
+if (!System.env.JITPACK)
+    include 'cli'
 include 'common'
 if (!System.env.JITPACK)
     include 'binary'
