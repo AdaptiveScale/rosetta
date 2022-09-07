@@ -49,11 +49,11 @@ Currently, supported databases for translation are shown below in the table.
 
 ### Setting Up The CLI
 First, we need to:
-1. download the rosetta binary for your OS ([releases page](https://github.com/AdaptiveScale/rosetta/releases)) or,
+1. download the rosetta binary for the supported OS ([releases page](https://github.com/AdaptiveScale/rosetta/releases)) or,
 2. download the rosetta cli JAR ([releases page](https://github.com/AdaptiveScale/rosetta/releases)) or,
 3. build from source the cli JAR using `gradle binary:runtimeZip`
 
-If we are using option #1, we can run the rosetta cli commands from `./rosetta` from inside the `bin` directory.
+If we are using option #1, we can run the rosetta cli commands using `./rosetta` from inside the `bin` directory.
 On a first run it will create a directory for storing your JDBC drivers.
 
 If we are using the **cli** JAR file, we need to specify the location of our JDBC drivers (directory).
