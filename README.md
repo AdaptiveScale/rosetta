@@ -1,7 +1,5 @@
-# rosetta
+# rosetta - Declarative Database Management - DDL Transpiler
 ![Alt text](./logo.png?raw=true "Rosetta")
-
-## Declarative Database Management - DDL Transpiler
 
 ## Overview
 Rosetta is a declarative data modeler and transpiler that converts database objects from one database to another. Define your database in DBML and rosetta generates the target DDL for you.
