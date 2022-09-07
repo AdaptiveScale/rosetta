@@ -20,6 +20,12 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
 }
 
+jar {
+    from {
+        subprojects.collect { it.sourceSets.main.output }
+    }
+}
+
 test {
     useJUnitPlatform()
 }
