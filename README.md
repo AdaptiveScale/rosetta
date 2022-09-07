@@ -47,10 +47,6 @@ Currently, supported databases for translation are shown below in the table.
 
 ## Usage
 
-### Build from Source Code
-
-    gradle binary:runtimeZip
-
 ### Setting Up The CLI
 First, we need to download or build from source the **cli** JAR ``cli-1.0.0.jar`` file to get started.
 
