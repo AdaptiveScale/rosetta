@@ -5,7 +5,8 @@ include 'translator'
 include 'ddl'
 include 'cli'
 include 'common'
-include 'binary'
+if (!System.env.JITPACK)
+    include 'binary'
 include 'diff'
 include 'test'
 
