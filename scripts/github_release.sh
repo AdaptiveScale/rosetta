@@ -1,7 +1,6 @@
 #! /bin/bash
 
 source $(dirname "$0")/version.sh
-
 # Set default version to develop
 APP_VERSION=develop
 
@@ -20,7 +19,7 @@ create_release() {
          --header 'Accept: application/vnd.github.v3+json' \
          --header 'Authorization: token ${token}' \
          --header 'content-type: application/json' \
-         --data '{\"tag_name\": \"${tag}\", \"name\": \"${tag}\", \"body\":\"Release ${tag}\"}' \
+         --data '{\"tag_name\": \"${tag}\", \"name\": \"${tag}\", \"body\":\"Release ${tag}\", \"target_commitish\":\"main\"}' \
          https://api.github.com/repos/$user/$repo/releases"
     http_code=`eval $command`
     if [ $http_code == "201" ]; then
@@ -63,7 +62,7 @@ upload_custom_release_file() {
 }
 
 create_release
-upload_custom_release_file "rosetta-0.0.1-linux-x64.zip"
-upload_custom_release_file "rosetta-0.0.1-mac_aarch64.zip"
-upload_custom_release_file "rosetta-0.0.1-mac_x64.zip"
-upload_custom_release_file "rosetta-0.0.1-win_x64.zip"
+upload_custom_release_file "rosetta-$APP_VERSION-linux-x64.zip"
+upload_custom_release_file "rosetta-$APP_VERSION-mac_aarch64.zip"
+upload_custom_release_file "rosetta-$APP_VERSION-mac_x64.zip"
+upload_custom_release_file "rosetta-$APP_VERSION-win_x64.zip"
