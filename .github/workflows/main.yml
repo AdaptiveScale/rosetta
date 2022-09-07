@@ -30,13 +30,13 @@ jobs:
         run: gradle binary:runtimeZip
 
       - name: Build docker image
-        run: './docker.sh'
+        run: 'scripts/docker.sh'
         shell: bash
 
       - name: Tag release version
-        run: './tag.sh'
+        run: 'scripts/tag.sh'
         shell: bash
 
       - name: GitHub Release
-        run: 'TOKEN=${{ secrets.GITHUBTOKEN }} ./github-release.sh'
+        run: 'TOKEN=${{ secrets.GITHUBTOKEN }} scripts/github-release.sh'
         shell: bash

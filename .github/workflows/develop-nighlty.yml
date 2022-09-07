@@ -29,5 +29,5 @@ jobs:
         run: gradle binary:runtimeZip
 
       - name: Build docker image
-        run: './docker-nightly.sh'
+        run: 'scripts/docker-nightly.sh'
         shell: bash
