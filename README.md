@@ -308,7 +308,7 @@ Running tests for mysql. Found: 2
 #### apply
 Gets current model and compares with state of database, generates ddl for changes and applies to database.
 
-`usage: rosetta [-c, --config CONFIG_FILE] apply [-h, --help] [-s, --source CONNECTION_NAME]`
+    rosetta [-c, --config CONFIG_FILE] apply [-h, --help] [-s, --source CONNECTION_NAME]
 
 Parameter | Description
 --- | ---
