@@ -1,0 +1,1321 @@
+---
+tables:
+- name: "311"
+  type: "TABLE"
+  schema: "testtypes"
+  columns:
+  - name: "unique_key"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "complaint_description"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "source"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "status"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "status_change_date"
+    typeName: "TIMESTAMP"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 26
+    scale: 6
+    precision: 26
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "created_date"
+    typeName: "TIMESTAMP"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 26
+    scale: 6
+    precision: 26
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "last_update_date"
+    typeName: "TIMESTAMP"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 26
+    scale: 6
+    precision: 26
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "close_date"
+    typeName: "TIMESTAMP"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 26
+    scale: 6
+    precision: 26
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "incident_address"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "street_number"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "street_name"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "city"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "incident_zip"
+    typeName: "INT64"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 19
+    scale: 0
+    precision: 19
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "county"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "state_plane_x_coordinate"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "state_plane_y_coordinate"
+    typeName: "FLOAT64"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 15
+    scale: 0
+    precision: 15
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "latitude"
+    typeName: "FLOAT64"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 15
+    scale: 0
+    precision: 15
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "longitude"
+    typeName: "FLOAT64"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 15
+    scale: 0
+    precision: 15
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "location"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "council_district_code"
+    typeName: "INT64"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 19
+    scale: 0
+    precision: 19
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "map_page"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "map_tile"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+- name: "ArrayTest"
+  type: "TABLE"
+  schema: "testtypes"
+  columns:
+  - name: "field"
+    typeName: "ARRAY"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+    tests:
+      assertion:
+        - operator: 'in'
+          value: ['a']
+          expected: '1'
+- name: "array_of_struct_demo"
+  type: "TABLE"
+  schema: "testtypes"
+  columns:
+  - name: "address_history"
+    typeName: "ARRAY"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+- name: "blocks"
+  type: "TABLE"
+  schema: "testtypes"
+  columns:
+  - name: "block_id"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "previous_block"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "merkle_root"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "timestamp"
+    typeName: "INT64"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 19
+    scale: 0
+    precision: 19
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "difficultyTarget"
+    typeName: "INT64"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 19
+    scale: 0
+    precision: 19
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "nonce"
+    typeName: "INT64"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 19
+    scale: 0
+    precision: 19
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "version"
+    typeName: "INT64"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 19
+    scale: 0
+    precision: 19
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "work_terahash"
+    typeName: "INT64"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 19
+    scale: 0
+    precision: 19
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "work_error"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "transactions"
+    typeName: "ARRAY"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "row_number"
+    typeName: "INT64"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 19
+    scale: 0
+    precision: 19
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+- name: "date"
+  type: "TABLE"
+  schema: "testtypes"
+  columns:
+  - name: "condition_occurrence_id"
+    typeName: "INT64"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 19
+    scale: 0
+    precision: 19
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "person_id"
+    typeName: "INT64"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 19
+    scale: 0
+    precision: 19
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "condition_concept_id"
+    typeName: "INT64"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 19
+    scale: 0
+    precision: 19
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "condition_start_date"
+    typeName: "DATE"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 10
+    scale: 0
+    precision: 10
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "condition_start_datetime"
+    typeName: "DATETIME"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 26
+    scale: 6
+    precision: 26
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "condition_end_date"
+    typeName: "DATE"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 10
+    scale: 0
+    precision: 10
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "condition_end_datetime"
+    typeName: "DATETIME"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 26
+    scale: 6
+    precision: 26
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "condition_type_concept_id"
+    typeName: "INT64"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 19
+    scale: 0
+    precision: 19
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "stop_reason"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "provider_id"
+    typeName: "INT64"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 19
+    scale: 0
+    precision: 19
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "visit_occurrence_id"
+    typeName: "INT64"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 19
+    scale: 0
+    precision: 19
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "visit_detail_id"
+    typeName: "INT64"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 19
+    scale: 0
+    precision: 19
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "condition_source_value"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "condition_source_concept_id"
+    typeName: "INT64"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 19
+    scale: 0
+    precision: 19
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "condition_status_source_value"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "condition_status_concept_id"
+    typeName: "INT64"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 19
+    scale: 0
+    precision: 19
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+- name: "hcpcs"
+  type: "TABLE"
+  schema: "testtypes"
+  columns:
+  - name: "HCPC"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "SEQNUM"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "RECID"
+    typeName: "INT64"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 19
+    scale: 0
+    precision: 19
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "LONG_DESCRIPTION"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "SHORT_DESCRIPTION"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "PRICE1"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "PRICE2"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "PRICE3"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "PRICE4"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "MULT_PI"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "CIM1"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "CIM2"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "CIM3"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "MCM1"
+    typeName: "FLOAT64"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 15
+    scale: 0
+    precision: 15
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "MCM2"
+    typeName: "INT64"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 19
+    scale: 0
+    precision: 19
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "MCM3"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "STATUTE"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "LABCERT1"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "LABCERT2"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "LABCERT3"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "LABCERT4"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "LABCERT5"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "LABCERT6"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "LABCERT7"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "LABCERT8"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "XREF1"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "XREF2"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "XREF3"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "XREF4"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "XREF5"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "COV"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "ASC_GRP"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "ASC_DT"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "OPPS"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "OPPS_PI"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "OPPS_DT"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "PROCNOTE"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "BETOS"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "TOS1"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "TOS2"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "TOS3"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "TOS4"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "TOS5"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "ANEST_BU"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "ADD_DT"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "ACT_EFF_DT"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "TERM_DT"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "ACTION_CD"
+    typeName: "BOOLEAN"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 1
+    scale: 0
+    precision: 1
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+- name: "incidents_2008"
+  type: "TABLE"
+  schema: "testtypes"
+  columns:
+  - name: "unique_key"
+    typeName: "INT64"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 19
+    scale: 0
+    precision: 19
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "descript"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "date"
+    typeName: "DATE"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 10
+    scale: 0
+    precision: 10
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "time"
+    typeName: "TIME"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 15
+    scale: 6
+    precision: 15
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "address"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "longitude"
+    typeName: "FLOAT64"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 15
+    scale: 0
+    precision: 15
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "latitude"
+    typeName: "FLOAT64"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 15
+    scale: 0
+    precision: 15
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "location"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "timestamp"
+    typeName: "TIMESTAMP"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 26
+    scale: 6
+    precision: 26
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+- name: "mobile"
+  type: "TABLE"
+  schema: "testtypes"
+  columns:
+  - name: "date"
+    typeName: "DATE"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 10
+    scale: 0
+    precision: 10
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "hour"
+    typeName: "TIME"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 15
+    scale: 6
+    precision: 15
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "lat"
+    typeName: "FLOAT64"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 15
+    scale: 0
+    precision: 15
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "long"
+    typeName: "FLOAT64"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 15
+    scale: 0
+    precision: 15
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "signal"
+    typeName: "INT64"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 19
+    scale: 0
+    precision: 19
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "network"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "operator"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "status"
+    typeName: "INT64"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 19
+    scale: 0
+    precision: 19
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "description"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "net"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "speed"
+    typeName: "FLOAT64"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 15
+    scale: 0
+    precision: 15
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "satellites"
+    typeName: "FLOAT64"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 15
+    scale: 0
+    precision: 15
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "precission"
+    typeName: "FLOAT64"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 15
+    scale: 0
+    precision: 15
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "provider"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "activity"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "downloadSpeed"
+    typeName: "FLOAT64"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 15
+    scale: 0
+    precision: 15
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "uploadSpeed"
+    typeName: "FLOAT64"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 15
+    scale: 0
+    precision: 15
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "postal_code"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "town_name"
+    typeName: "STRING"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "position_geom"
+    typeName: "GEOGRAPHY"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 65535
+    scale: 0
+    precision: 65535
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+databaseProductName: "Google BigQuery"
+databaseType: "bigquery"

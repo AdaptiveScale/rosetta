@@ -1,0 +1,28 @@
+---
+tables:
+  - name: "tableA"
+    type: "TABLE"
+    schema: "halis"
+    columns:
+      - name: "columnA"
+        typeName: "STRING"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 65535
+        scale: 0
+        precision: 65535
+        nullable: false
+        primaryKey: false
+        autoincrement: false
+      - name: "columnB"
+        typeName: "INT64"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 19
+        scale: 0
+        precision: 19
+        nullable: true
+        primaryKey: false
+        autoincrement: false
+databaseProductName: "Google BigQuery"
+databaseType: "bigquery"
