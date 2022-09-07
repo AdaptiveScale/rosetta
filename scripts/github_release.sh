@@ -19,7 +19,7 @@ create_release() {
          --header 'Accept: application/vnd.github.v3+json' \
          --header 'Authorization: token ${token}' \
          --header 'content-type: application/json' \
-         --data '{\"tag_name\": \"${tag}\", \"name\": \"${tag}\", \"body\":\"Release ${tag}\", \"target_commitish\":\"main\"}' \
+         --data '{\"tag_name\": \"${tag}\", \"name\": \"Release ${tag}\", \"body\":\"Release ${tag}\", \"target_commitish\":\"main\"}' \
          https://api.github.com/repos/$user/$repo/releases"
     http_code=`eval $command`
     if [ $http_code == "201" ]; then
