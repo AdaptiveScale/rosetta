@@ -1,4 +1,5 @@
-# rosetta - Declarative Database Management - DDL Transpiler
+# rosetta 
+### Declarative Database Management - DDL Transpiler
 ![Alt text](./logo.png?raw=true "Rosetta")
 
 ## Overview
