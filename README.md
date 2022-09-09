@@ -71,9 +71,7 @@ export ROSETTA_DRIVERS=/Users/adaptivescale/drivers/*
 
 ### rosetta binary (Recommended)
 
-1. Download the rosetta binary for the supported OS ([releases page](https://github.com/AdaptiveScale/rosetta/releases)). 
-   
-One of the following files:
+1. Download the rosetta binary for the supported OS ([releases page](https://github.com/AdaptiveScale/rosetta/releases)).
    ```
     rosetta-<version>-linux-x64.zip
     rosetta-<version>-mac_aarch64.zip
