@@ -9,7 +9,11 @@ import com.adaptivescale.rosetta.common.models.Database;
 import com.adaptivescale.rosetta.common.models.dbt.DbtModel;
 import com.adaptivescale.rosetta.common.models.input.Connection;
 import com.adaptivescale.rosetta.ddl.DDL;
+import com.adaptivescale.rosetta.ddl.executor.DDLExecutor;
 import com.adaptivescale.rosetta.ddl.DDLFactory;
+import com.adaptivescale.rosetta.ddl.change.ChangeFinder;
+import com.adaptivescale.rosetta.ddl.change.ChangeHandler;
+import com.adaptivescale.rosetta.ddl.change.model.Change;
 import com.adaptivescale.rosetta.test.assertion.*;
 import com.adaptivescale.rosetta.test.assertion.AssertionSqlGenerator;
 import com.adaptivescale.rosetta.test.assertion.generator.AssertionSqlGeneratorFactory;
@@ -33,10 +37,8 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.AbstractMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.concurrent.Callable;
 
 import java.util.function.Consumer;
@@ -151,7 +153,7 @@ class Cli implements Callable<Void> {
 
         String ddl = translatedModels.stream().map(stringDatabaseEntry -> {
             DDL modelDDL = DDLFactory.ddlForDatabaseType(stringDatabaseEntry.getValue().getDatabaseType());
-            return modelDDL.createDataBase(stringDatabaseEntry.getValue(), dropIfExist);
+            return modelDDL.createDatabase(stringDatabaseEntry.getValue(), dropIfExist);
         }).reduce("", (s, s2) -> s.concat("\n\n\n").stripLeading().concat(s2));
 
         StringOutput stringOutput = new StringOutput("ddl.sql", targetWorkspace);
@@ -159,6 +161,69 @@ class Cli implements Callable<Void> {
 
         // generate dbt models
         extractDbtModels(target, targetWorkspace);
+
+        log.info("Successfully written ddl ({}).", stringOutput.getFilePath());
+    }
+
+    @CommandLine.Command(name = "apply", description = "Get current model and compare with state of database," +
+            " generate ddl for changes and apply to database. ", mixinStandardHelpOptions = true)
+    private void apply(@CommandLine.Option(names = {"-s", "--source"}, required = true) String sourceName) throws Exception {
+        requireConfig(config);
+
+        Connection source = getSourceConnection(sourceName);
+        Path sourceWorkspace = Paths.get("./", sourceName);
+
+        if (!Files.isDirectory(sourceWorkspace)) {
+            throw new RuntimeException(String.format("Can not find directory: %s for source name: %s to find" +
+                    " models for translation", sourceWorkspace, sourceName));
+        }
+
+        List<Database> databases = getDatabases(sourceWorkspace)
+                .map(AbstractMap.SimpleImmutableEntry::getValue)
+                .collect(Collectors.toList());
+
+        if (databases.size() != 1) {
+            throw new RuntimeException(String.format("For comparisons we need exactly one model. Found  %d models in" +
+                    " directory %s", databases.size(), sourceWorkspace));
+        }
+
+        Database expectedDatabase = databases.get(0);
+        Database actualDatabase = SourceGeneratorFactory.sourceGenerator(source).generate(source);
+
+        ChangeFinder changeFinder = DDLFactory.changeFinderForDatabaseType(source.getDbType());
+        List<Change<?>> changes = changeFinder.findChanges(expectedDatabase, actualDatabase);
+
+        if (changes.size() == 0) {
+            log.info("No changes detected. Command aborted");
+            return;
+        }
+
+        ChangeHandler handler = DDLFactory.changeHandler(source.getDbType());
+        String ddl = handler.createDDLForChanges(changes);
+
+        Path snapshotsPath = sourceWorkspace.resolve("snapshots");
+        Path applyHistory = sourceWorkspace.resolve("apply");
+
+        if (!Files.exists(snapshotsPath)) {
+            Files.createDirectories(snapshotsPath);
+        }
+
+        if (!Files.exists(applyHistory)) {
+            Files.createDirectories(applyHistory);
+        }
+
+        String timeStamp = new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date());
+        String snapshotModelName = String.format("model-%s.yaml", timeStamp);
+        String ddlHistoryName = String.format("ddl-%s.yaml", timeStamp);
+
+        YamlModelOutput yamlOutputModel = new YamlModelOutput(snapshotModelName, snapshotsPath);
+        yamlOutputModel.write(actualDatabase);
+
+        StringOutput stringOutput = new StringOutput(ddlHistoryName, applyHistory);
+        stringOutput.write(ddl);
+
+        DDLExecutor executor = DDLFactory.executor(source);
+        executor.execute(ddl);
 
         log.info("Successfully written ddl ({}).", stringOutput.getFilePath());
     }
@@ -182,7 +247,7 @@ class Cli implements Callable<Void> {
         for (Database database : collect) {
             AssertionSqlGenerator translator = AssertionSqlGeneratorFactory.generatorFor(source.get());
             DefaultSqlExecution defaultSqlExecution = new DefaultSqlExecution(source.get());
-            new DefaultAssertTestEngine(translator, defaultSqlExecution).run(source.get(),database);
+            new DefaultAssertTestEngine(translator, defaultSqlExecution).run(source.get(), database);
         }
     }
 

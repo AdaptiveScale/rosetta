@@ -45,16 +45,47 @@ Currently, supported databases for translation are shown below in the table.
 | **MySQL**   |      ✅    |     ✅     |    /    |      ✅     |
 | **Postgres** |     ✅     |     ✅     |    ✅    |    /     |
 
-## Usage
+## Getting Started
 
-### Setting Up The CLI
-First, we need to download or build from source the **cli** JAR ``cli-1.0.0.jar`` file to get started.
+### Prerequisites
 
-This can be achieved by downloading the latest release from [releases page](https://github.com/AdaptiveScale/rosetta/releases),
-or by building it manually directly from the source code using `gradle binary:runtimeZip`.
+You need the JDBC drivers to connect to the sources/targets that you will use with the rosetta tool. 
+The JDBC drivers for the rosetta supported databases can be downloaded from the following URLs:
 
-After we download the jar file, we need to specify the location of our JDBC drivers (directory).
-We create an alias command to make the usage simpler.
+- [BigQuery JDBC 4.2](https://storage.googleapis.com/simba-bq-release/jdbc/SimbaJDBCDriverforGoogleBigQuery42_1.3.0.1001.zip)
+- [Snowflake JDBC 3.13.19](https://repo1.maven.org/maven2/net/snowflake/snowflake-jdbc/3.13.19/snowflake-jdbc-3.13.19.jar)
+- [Postgresql JDBC 42.3.7](https://jdbc.postgresql.org/download/postgresql-42.3.7.jar)
+- [MySQL JDBC](https://dev.mysql.com/downloads/file/?id=513221)
+
+Set the ENV variable `ROSETTA_DRIVERS` to point to the location of your JDBC drivers.
+
+```
+export ROSETTA_DRIVERS=<path_to_jdbc_drivers>
+```
+
+example:
+
+```
+export ROSETTA_DRIVERS=/Users/adaptivescale/drivers/*
+```
+
+### rosetta binary (Recommended)
+
+1. Download the rosetta binary for the supported OS ([releases page](https://github.com/AdaptiveScale/rosetta/releases)).
+   ```
+    rosetta-<version>-linux-x64.zip
+    rosetta-<version>-mac_aarch64.zip
+    rosetta-<version>-mac_x64.zip
+    rosetta-<version>-win_x64.zip
+    ```
+2. Unzip the downloaded file
+3. Run rosetta commands using `./rosetta` which is located inside `bin` directory.
+4. On the first run it will create a directory for storing your JDBC drivers, if you haven't set already the ENV variable `ROSETTA_DRIVERS` from the previous step.
+
+### Setting Up the CLI JAR (Optional)
+
+1. Download the rosetta CLI JAR ([releases page](https://github.com/AdaptiveScale/rosetta/releases))
+2. Create an alias command
 
 ```bash
 alias rosetta='java -cp "<path_to_our_cli_jar>:<path_to_our_drivers>" com.adaptivescale.rosetta.cli.Main'
@@ -66,7 +97,12 @@ example:
 alias rosetta='java -cp "/Users/adaptivescale/cli-1.0.0.jar:/Users/adaptivescale/drivers/*" com.adaptivescale.rosetta.cli.Main'
 ```
 
-After setting an alias command we are ready to use the **cli**.
+**Note:** If we are using the **cli** JAR file, we need to specify the location of the JDBC drivers (directory).
+
+### Build from the source (Optional)
+ 
+   ```gradle binary:runtimeZip```
+
 
 ### YAML Config File
 
@@ -101,6 +137,28 @@ connections:
     tables:
       - table_one
       - table_two
+```
+
+### Example connection string configurations for databases
+
+### BigQuery
+```
+url: jdbc:bigquery://https://www.googleapis.com/bigquery/v2:443;ProjectId=<PROJECT-ID>;AdditionalProjects=bigquery-public-data;OAuthType=0;OAuthServiceAcctEmail=<EMAIL>;OAuthPvtKeyPath=<SERVICE-ACCOUNT-PATH>
+```
+
+### Snowflake
+```
+url: jdbc:snowflake://<HOST>:443/?db=<DATABASE>&user=<USER>&password=<PASSWORD>
+```
+
+### PostgreSQL
+```
+url: jdbc:postgresql://<HOST>:15432/<DATABASE>?user=<USER>&password=<PASSWORD>
+```
+
+### MySQL
+```
+url: jdbc:mysql://<USER>:<PASSWORD>@<HOST>:49154/<DATABASE>
 ```
 
 ## Rosetta Commands
@@ -251,9 +309,9 @@ Parameter | Description
 --- | ---
 -h, --help | Show the help message and exit.
 -c, --config CONFIG_FILE | YAML config file.  If none is supplied it will use main.conf in the current directory if it exists.
--s, --source CONNECTION_NAME | The source connection is used to specify which models and connection to use.
+-s, --source CONNECTION_NAME | The source connection is used to specify which models and connections to use.
 
-Notice: Value for BigQuery Array columns should be comma separated value ('a,b,c,d,e').
+**Note:** Value for BigQuery Array columns should be comma separated value ('a,b,c,d,e').
 
 Example:
 ```yaml
@@ -304,6 +362,86 @@ Running tests for mysql. Found: 2
 2 of 2, RUNNING test ('!=') on column: 'first_name'                                                 
 2 of 2, FINISHED test on column: 'first_name' (expected: '1' - actual: '219')  ..................... [FAIL in 0.091s]
 ```
+
+#### apply
+Gets current model and compares with state of database, generates ddl for changes and applies to database.
+
+    rosetta [-c, --config CONFIG_FILE] apply [-h, --help] [-s, --source CONNECTION_NAME]
+
+Parameter | Description
+--- | ---
+-h, --help | Show the help message and exit.
+-c, --config CONFIG_FILE | YAML config file.  If none is supplied it will use main.conf in the current directory if it exists.
+-s, --source CONNECTION_NAME | The source connection is used to specify which models and connection to use.
+
+Example:
+
+(Actual database)
+```yaml
+---
+databaseType: "mysql"
+tables:
+  - name: "actor"
+    type: "TABLE"
+    columns:
+      - name: "actor_id"
+        typeName: "SMALLINT UNSIGNED"
+        ordinalPosition: 0
+        primaryKeySequenceId: 1
+        columnDisplaySize: 5
+        scale: 0
+        precision: 5
+        nullable: false
+        primaryKey: true
+        autoincrement: false
+        tests:
+          assertion:
+            - operator: '='
+              value: 16
+              expected: 1
+```
+
+(Expected database)
+```yaml
+---
+databaseType: "mysql"
+tables:
+  - name: "actor"
+    type: "TABLE"
+    columns:
+      - name: "actor_id"
+        typeName: "SMALLINT UNSIGNED"
+        ordinalPosition: 0
+        primaryKeySequenceId: 1
+        columnDisplaySize: 5
+        scale: 0
+        precision: 5
+        nullable: false
+        primaryKey: true
+        autoincrement: false
+        tests:
+          assertion:
+            - operator: '='
+              value: 16
+              expected: 1
+      - name: "first_name"
+        typeName: "VARCHAR"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 45
+        scale: 0
+        precision: 45
+        nullable: false
+        primaryKey: false
+        autoincrement: false
+        tests:
+          assertion:
+            - operator: '!='
+              value: 'Michael'
+              expected: 1
+```
+
+Description: Our actual database does not contain `first_name` so we expect it to alter the table and add the column, inside the source directory there will be the executed DDL and a snapshot of the current database.
 
 ## Copyright and License Information
 Unless otherwise specified, all content, including all source code files and documentation files in this repository are:

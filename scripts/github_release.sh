@@ -19,7 +19,7 @@ create_release() {
          --header 'Accept: application/vnd.github.v3+json' \
          --header 'Authorization: token ${token}' \
          --header 'content-type: application/json' \
-         --data '{\"tag_name\": \"${tag}\", \"name\": \"${tag}\", \"body\":\"Release ${tag}\", \"target_commitish\":\"main\"}' \
+         --data '{\"tag_name\": \"${tag}\", \"name\": \"Release ${tag}\", \"body\":\"Release ${tag}\", \"target_commitish\":\"main\"}' \
          https://api.github.com/repos/$user/$repo/releases"
     http_code=`eval $command`
     if [ $http_code == "201" ]; then
@@ -34,10 +34,21 @@ create_release() {
     fi
 }
 
+rename_release_files() {
+  FILE=$1
+  OS=$2
+
+  unzip binary/build/$FILE.zip
+  mv binary/build/binary-$OS binary/build/$FILE
+  rm -rf binary/build/$FILE.zip
+  zip binary/build/$FILE.zip binary/build/$FILE
+}
+
 upload_custom_release_file() {
     token=$TOKEN
     name=$1
-    file="binary/build/$name"
+    path=$2
+    file="$path$name"
 
     url=`jq -r .upload_url release.json | cut -d{ -f'1'`
     command="\
@@ -62,7 +73,12 @@ upload_custom_release_file() {
 }
 
 create_release
-upload_custom_release_file "rosetta-$APP_VERSION-linux-x64.zip"
-upload_custom_release_file "rosetta-$APP_VERSION-mac_aarch64.zip"
-upload_custom_release_file "rosetta-$APP_VERSION-mac_x64.zip"
-upload_custom_release_file "rosetta-$APP_VERSION-win_x64.zip"
+rename_release_files "rosetta-$APP_VERSION-linux-x64" "linux-x64"
+rename_release_files "rosetta-$APP_VERSION-mac_aarch64" "mac_aarch64"
+rename_release_files "rosetta-$APP_VERSION-mac_x64" "mac_x64"
+rename_release_files "rosetta-$APP_VERSION-win_x64" "win_x64"
+upload_custom_release_file "rosetta-$APP_VERSION-linux-x64.zip" "binary/build/"
+upload_custom_release_file "rosetta-$APP_VERSION-mac_aarch64.zip" "binary/build/"
+upload_custom_release_file "rosetta-$APP_VERSION-mac_x64.zip" "binary/build/"
+upload_custom_release_file "rosetta-$APP_VERSION-win_x64.zip" "binary/build/"
+upload_custom_release_file "cli-$APP_VERSION.jar" "cli/build/libs/"

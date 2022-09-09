@@ -53,10 +53,10 @@ public class DefaultTranslator implements Translator<Database, Database> {
                                 .stream()
                                 .anyMatch(compatibleType
                                         -> compatibleType.getTypeName()
-                                        .equals(sourceName)))
+                                        .equalsIgnoreCase(sourceName)))
                 .findFirst();
 
-        if (!match.isPresent()) {
+        if (match.isEmpty()) {
             throw new RuntimeException("There is no match for column name: " + column.getName() + " and type: " + column.getTypeName() + ".");
         }
         //todo find a way to create deep copy (faster way)

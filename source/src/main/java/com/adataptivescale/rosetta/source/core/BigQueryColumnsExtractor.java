@@ -2,6 +2,7 @@ package com.adataptivescale.rosetta.source.core;
 
 import com.adaptivescale.rosetta.common.models.Column;
 import com.adaptivescale.rosetta.common.models.input.Connection;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
