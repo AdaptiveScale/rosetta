@@ -71,7 +71,9 @@ export ROSETTA_DRIVERS=/Users/adaptivescale/drivers/*
 
 ### rosetta binary (Recommended)
 
-1. Download the rosetta binary for the supported OS ([releases page](https://github.com/AdaptiveScale/rosetta/releases)). One of the following files:
+1. Download the rosetta binary for the supported OS ([releases page](https://github.com/AdaptiveScale/rosetta/releases)). 
+   
+One of the following files:
    ```
     rosetta-<version>-linux-x64.zip
     rosetta-<version>-mac_aarch64.zip
@@ -80,7 +82,7 @@ export ROSETTA_DRIVERS=/Users/adaptivescale/drivers/*
     ```
 2. Unzip the downloaded file
 3. Run rosetta commands using `./rosetta` which is located inside `bin` directory.
-4. On the first run it will create a directory for storing your JDBC drivers, if you haven't set already the ENV variable `ROSETTA_DRIVERS`
+4. On the first run it will create a directory for storing your JDBC drivers, if you haven't set already the ENV variable `ROSETTA_DRIVERS` from the previous step.
 
 ### Setting Up the CLI JAR (Optional)
 
