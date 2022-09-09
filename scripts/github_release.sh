@@ -34,6 +34,16 @@ create_release() {
     fi
 }
 
+rename_release_files() {
+  FILE=$1
+  OS=$2
+
+  unzip binary/build/$FILE.zip
+  mv binary/build/binary-$OS binary/build/$FILE
+  rm -rf binary/build/$FILE.zip
+  zip binary/build/$FILE.zip binary/build/$FILE
+}
+
 upload_custom_release_file() {
     token=$TOKEN
     name=$1
@@ -63,6 +73,10 @@ upload_custom_release_file() {
 }
 
 create_release
+rename_release_files "rosetta-$APP_VERSION-linux-x64" "linux-x64"
+rename_release_files "rosetta-$APP_VERSION-mac_aarch64" "mac_aarch64"
+rename_release_files "rosetta-$APP_VERSION-mac_x64" "mac_x64"
+rename_release_files "rosetta-$APP_VERSION-win_x64" "win_x64"
 upload_custom_release_file "rosetta-$APP_VERSION-linux-x64.zip" "binary/build/"
 upload_custom_release_file "rosetta-$APP_VERSION-mac_aarch64.zip" "binary/build/"
 upload_custom_release_file "rosetta-$APP_VERSION-mac_x64.zip" "binary/build/"
