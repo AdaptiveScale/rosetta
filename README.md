@@ -55,7 +55,7 @@ The JDBC drivers for the rosetta supported databases can be downloaded from the 
 - [BigQuery JDBC 4.2](https://storage.googleapis.com/simba-bq-release/jdbc/SimbaJDBCDriverforGoogleBigQuery42_1.3.0.1001.zip)
 - [Snowflake JDBC 3.13.19](https://repo1.maven.org/maven2/net/snowflake/snowflake-jdbc/3.13.19/snowflake-jdbc-3.13.19.jar)
 - [Postgresql JDBC 42.3.7](https://jdbc.postgresql.org/download/postgresql-42.3.7.jar)
-- [MySQL JDBC](https://dev.mysql.com/downloads/file/?id=513221)
+- [MySQL JDBC 8.0.30](https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-8.0.30.zip)
 
 Set the ENV variable `ROSETTA_DRIVERS` to point to the location of your JDBC drivers.
 
