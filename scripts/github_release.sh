@@ -38,10 +38,10 @@ rename_release_files() {
   FILE=$1
   OS=$2
 
-  unzip binary/build/$FILE.zip
-  mv binary/build/binary-$OS binary/build/$FILE
-  rm -rf binary/build/$FILE.zip
-  zip binary/build/$FILE.zip binary/build/$FILE
+  unzip $FILE.zip
+  mv binary-$OS $FILE
+  rm -rf $FILE.zip
+  zip $FILE.zip $FILE
 }
 
 upload_custom_release_file() {
