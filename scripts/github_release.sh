@@ -38,7 +38,7 @@ rename_release_files() {
   FILE=$1
   OS=$2
 
-  unzip binary/build/$FILE.zip
+  unzip binary/build/$FILE.zip -d binary/build
   mv binary/build/binary-$OS binary/build/$FILE
   rm -rf binary/build/$FILE.zip
   zip binary/build/$FILE.zip binary/build/$FILE
