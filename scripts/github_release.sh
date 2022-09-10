@@ -39,9 +39,9 @@ rename_release_files() {
   OS=$2
 
   unzip $FILE.zip
-  mv binary-$OS $FILE
+  mv binary-$OS/ $FILE/
   rm -rf $FILE.zip
-  zip $FILE.zip $FILE
+  zip -r $FILE.zip $FILE
 }
 
 upload_custom_release_file() {
