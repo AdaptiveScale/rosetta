@@ -6,6 +6,7 @@ import com.adaptivescale.rosetta.cli.outputs.DbtYamlModelOutput;
 import com.adaptivescale.rosetta.cli.outputs.StringOutput;
 import com.adaptivescale.rosetta.cli.outputs.YamlModelOutput;
 import com.adaptivescale.rosetta.common.models.Database;
+import com.adaptivescale.rosetta.common.DriverManagerDriverProvider;
 import com.adaptivescale.rosetta.common.models.dbt.DbtModel;
 import com.adaptivescale.rosetta.common.models.input.Connection;
 import com.adaptivescale.rosetta.ddl.DDL;
@@ -207,7 +208,7 @@ class Cli implements Callable<Void> {
         StringOutput stringOutput = new StringOutput(ddlHistoryName, applyHistory);
         stringOutput.write(ddl);
 
-        DDLExecutor executor = DDLFactory.executor(source);
+        DDLExecutor executor = DDLFactory.executor(source, new DriverManagerDriverProvider());
         executor.execute(ddl);
 
         log.info("Successfully written ddl ({}).", stringOutput.getFilePath());
@@ -231,7 +232,7 @@ class Cli implements Callable<Void> {
         List<Database> collect = getDatabases(sourceWorkspace).map(AbstractMap.SimpleImmutableEntry::getValue).collect(Collectors.toList());
         for (Database database : collect) {
             AssertionSqlGenerator translator = AssertionSqlGeneratorFactory.generatorFor(source.get());
-            DefaultSqlExecution defaultSqlExecution = new DefaultSqlExecution(source.get());
+            DefaultSqlExecution defaultSqlExecution = new DefaultSqlExecution(source.get(), new DriverManagerDriverProvider());
             new DefaultAssertTestEngine(translator, defaultSqlExecution).run(source.get(), database);
         }
     }

@@ -1,6 +1,8 @@
 package com.adataptivescale.rosetta.source.core;
 
+import com.adaptivescale.rosetta.common.JDBCDriverProvider;
 import com.adaptivescale.rosetta.common.models.Database;
+import com.adaptivescale.rosetta.common.DriverManagerDriverProvider;
 import com.adaptivescale.rosetta.common.models.Table;
 import com.adaptivescale.rosetta.common.models.input.Connection;
 import com.adataptivescale.rosetta.source.core.interfaces.ColumnExtractor;
@@ -11,8 +13,12 @@ import java.util.Collection;
 public class SourceGeneratorFactory {
 
     public static Generator<Database, Connection> sourceGenerator(Connection connection) {
+        return sourceGenerator(connection, new DriverManagerDriverProvider());
+    }
+
+    public static Generator<Database, Connection> sourceGenerator(Connection connection, JDBCDriverProvider driverProvider) {
         TablesExtractor tablesExtractor = new TablesExtractor();
-        ColumnExtractor<java.sql.Connection, Collection<Table>> columnsExtractor = null;
+        ColumnExtractor<java.sql.Connection, Collection<Table>> columnsExtractor;
         if ("bigquery".equals(connection.getDbType())) {
             columnsExtractor = new BigQueryColumnsExtractor(connection);
         } else if ("mysql".equals(connection.getDbType())) {
@@ -22,6 +28,6 @@ public class SourceGeneratorFactory {
         } else {
             columnsExtractor = new ColumnsExtractor(connection);
         }
-        return new DefaultGenerator(tablesExtractor, columnsExtractor);
+        return new DefaultGenerator(tablesExtractor, columnsExtractor, driverProvider);
     }
 }
