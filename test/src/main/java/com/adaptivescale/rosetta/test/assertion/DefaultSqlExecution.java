@@ -1,5 +1,7 @@
 package com.adaptivescale.rosetta.test.assertion;
 
+import com.adaptivescale.rosetta.common.JDBCDriverProvider;
+import com.adaptivescale.rosetta.common.JDBCUtils;
 import com.adaptivescale.rosetta.common.models.input.Connection;
 import lombok.extern.slf4j.Slf4j;
 
@@ -8,21 +10,21 @@ import java.util.Properties;
 
 @Slf4j
 public class DefaultSqlExecution implements SqlExecution {
-    public static final String USER_PROPERTY_NAME = "user";
-    public static final String PASSWORD_PROPERTY_NAME = "password";
-
     private final Connection connection;
+    private final JDBCDriverProvider driverProvider;
 
-    public DefaultSqlExecution(Connection connection) {
+    public DefaultSqlExecution(Connection connection, JDBCDriverProvider driverProvider) {
         this.connection = connection;
+        this.driverProvider = driverProvider;
     }
 
     @Override
     public String execute(String sql) {
         java.sql.Connection sqlConnection = null;
         try {
-            Driver driver = DriverManager.getDriver(connection.getUrl());
-            sqlConnection = driver.connect(connection.getUrl(), setAuthProperties(connection));
+            Driver driver = driverProvider.getDriver(connection);
+            Properties properties = JDBCUtils.setJDBCAuth(connection);
+            sqlConnection = driver.connect(connection.getUrl(), properties);
             ResultSet execute = sqlConnection.createStatement().executeQuery(sql);
             if (execute.next()) {
                 int result = execute.getInt(1);
@@ -41,16 +43,5 @@ public class DefaultSqlExecution implements SqlExecution {
             }
         }
         throw new RuntimeException(String.format("Execution of query: '%s' returns no data", sql));
-    }
-
-    private Properties setAuthProperties(Connection connection) {
-        Properties properties = new Properties();
-        if (connection.getUserName() != null) {
-            properties.setProperty(USER_PROPERTY_NAME, connection.getUserName());
-        }
-        if (connection.getPassword() != null) {
-            properties.setProperty(PASSWORD_PROPERTY_NAME, connection.getPassword());
-        }
-        return properties;
     }
 }
