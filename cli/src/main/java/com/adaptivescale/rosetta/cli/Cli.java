@@ -72,16 +72,13 @@ class Cli implements Callable<Void> {
                          @CommandLine.Option(names = {"-t", "--convert-to"}) String targetName
     ) throws Exception {
         requireConfig(config);
-        Optional<Connection> source = config.getConnection(sourceName);
-        if (source.isEmpty()) {
-            throw new RuntimeException("Can not find source with name: " + sourceName + " configured in config.");
-        }
+        Connection source = getSourceConnection(sourceName);
 
         Path sourceWorkspace = Paths.get("./", sourceName);
         FileUtils.deleteDirectory(sourceWorkspace.toFile());
         Files.createDirectory(sourceWorkspace);
 
-        Database result = SourceGeneratorFactory.sourceGenerator(source.get()).generate(source.get());
+        Database result = SourceGeneratorFactory.sourceGenerator(source).generate(source);
         YamlModelOutput yamlInputModel = new YamlModelOutput("model.yaml", sourceWorkspace);
         yamlInputModel.write(result);
         log.info("Successfully written input database yaml ({}).", yamlInputModel.getFilePath());
@@ -91,19 +88,29 @@ class Cli implements Callable<Void> {
         }
 
         Connection target = getTargetConnection(targetName);
-
-        // no need to read source workspace because we already have model to be translated
-        Translator<Database, Database> translator = TranslatorFactory.translator(source.get().getDbType(),
-                target.getDbType());
-        result = translator.translate(result);
+        List<FileNameAndDatabasePair> translatedModels;
 
         Path targetWorkspace = Paths.get("./", targetName);
         FileUtils.deleteDirectory(targetWorkspace.toFile());
         Files.createDirectory(targetWorkspace);
 
-        YamlModelOutput yamlOutputModel = new YamlModelOutput("model.yaml", targetWorkspace);
-        yamlOutputModel.write(result);
-        log.info("Successfully written output database yaml ({}).", yamlOutputModel.getFilePath());
+        if (source.getDbType().equals(target.getDbType())) {
+            log.info("Skipping translation because the target ({}) and source ({}) db types are the same.",
+                    target.getDbType(), source.getDbType());
+            translatedModels = getDatabases(sourceWorkspace).collect(Collectors.toList());
+
+        } else {
+            // no need to read source workspace because we already have model to be translated
+            Translator<Database, Database> translator = TranslatorFactory.translator(source.getDbType(),
+                    target.getDbType());
+
+            translatedModels = getDatabases(sourceWorkspace)
+                    .map(translateDatabases(translator))
+                    .collect(Collectors.toList());
+        }
+
+        translatedModels.forEach(writeOutput(targetWorkspace));
+        log.info("Successfully written output database yaml ({}/model.yml).", targetWorkspace);
     }
 
     @CommandLine.Command(name = "compile", description = "Generate DDL for target Database [bigquery, snowflake, …]", mixinStandardHelpOptions = true)
@@ -145,7 +152,6 @@ class Cli implements Callable<Void> {
                 log.info("Skipping translation because the target ({}) and source ({}) db types are the same.",
                         target.getDbType(), source.getDbType());
                 translatedModels = getDatabases(sourceWorkspace).collect(Collectors.toList());
-                translatedModels.forEach(writeOutput(targetWorkspace));
             } else {
                 Translator<Database, Database> translator = TranslatorFactory
                         .translator(source.getDbType(), target.getDbType());
@@ -154,8 +160,8 @@ class Cli implements Callable<Void> {
                         .map(translateDatabases(translator))
                         .collect(Collectors.toList());
 
-                translatedModels.forEach(writeOutput(targetWorkspace));
             }
+            translatedModels.forEach(writeOutput(targetWorkspace));
         }
 
         String ddl = translatedModels.stream().map(stringDatabaseEntry -> {
