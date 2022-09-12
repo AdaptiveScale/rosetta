@@ -145,6 +145,7 @@ class Cli implements Callable<Void> {
                 log.info("Skipping translation because the target ({}) and source ({}) db types are the same.",
                         target.getDbType(), source.getDbType());
                 translatedModels = getDatabases(sourceWorkspace).collect(Collectors.toList());
+                translatedModels.forEach(writeOutput(targetWorkspace));
             } else {
                 Translator<Database, Database> translator = TranslatorFactory
                         .translator(source.getDbType(), target.getDbType());
