@@ -88,28 +88,13 @@ class Cli implements Callable<Void> {
         }
 
         Connection target = getTargetConnection(targetName);
-        List<FileNameAndDatabasePair> translatedModels;
 
         Path targetWorkspace = Paths.get("./", targetName);
         FileUtils.deleteDirectory(targetWorkspace.toFile());
         Files.createDirectory(targetWorkspace);
 
-        if (source.getDbType().equals(target.getDbType())) {
-            log.info("Skipping translation because the target ({}) and source ({}) db types are the same.",
-                    target.getDbType(), source.getDbType());
-            translatedModels = getDatabases(sourceWorkspace).collect(Collectors.toList());
+        generateTranslatedModels(source, sourceWorkspace, target, targetWorkspace);
 
-        } else {
-            // no need to read source workspace because we already have model to be translated
-            Translator<Database, Database> translator = TranslatorFactory.translator(source.getDbType(),
-                    target.getDbType());
-
-            translatedModels = getDatabases(sourceWorkspace)
-                    .map(translateDatabases(translator))
-                    .collect(Collectors.toList());
-        }
-
-        translatedModels.forEach(writeOutput(targetWorkspace));
         log.info("Successfully written output database yaml ({}/model.yml).", targetWorkspace);
     }
 
@@ -148,20 +133,7 @@ class Cli implements Callable<Void> {
             FileUtils.deleteDirectory(targetWorkspace.toFile());
             Files.createDirectory(targetWorkspace);
 
-            if (source.getDbType().equals(target.getDbType())) {
-                log.info("Skipping translation because the target ({}) and source ({}) db types are the same.",
-                        target.getDbType(), source.getDbType());
-                translatedModels = getDatabases(sourceWorkspace).collect(Collectors.toList());
-            } else {
-                Translator<Database, Database> translator = TranslatorFactory
-                        .translator(source.getDbType(), target.getDbType());
-
-                translatedModels = getDatabases(sourceWorkspace)
-                        .map(translateDatabases(translator))
-                        .collect(Collectors.toList());
-
-            }
-            translatedModels.forEach(writeOutput(targetWorkspace));
+            translatedModels = generateTranslatedModels(source, sourceWorkspace, target, targetWorkspace);
         }
 
         String ddl = translatedModels.stream().map(stringDatabaseEntry -> {
@@ -373,6 +345,24 @@ class Cli implements Callable<Void> {
         return target.get();
     }
 
+    private List<FileNameAndDatabasePair> generateTranslatedModels(Connection source, Path sourceWorkspace, Connection target, Path targetWorkspace) throws IOException {
+        List<FileNameAndDatabasePair> translatedModels;
+        if (source.getDbType().equals(target.getDbType())) {
+            log.info("Skipping translation because the target ({}) and source ({}) db types are the same.",
+                    target.getDbType(), source.getDbType());
+            translatedModels = getDatabases(sourceWorkspace).collect(Collectors.toList());
+        } else {
+            Translator<Database, Database> translator = TranslatorFactory.translator(source.getDbType(),
+                    target.getDbType());
+
+            translatedModels = getDatabases(sourceWorkspace)
+                    .map(translateDatabases(translator))
+                    .collect(Collectors.toList());
+        }
+
+        translatedModels.forEach(writeOutput(targetWorkspace));
+        return translatedModels;
+    }
 
     /**
      * @param directory directory same as connection name
