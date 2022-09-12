@@ -141,14 +141,20 @@ class Cli implements Callable<Void> {
             FileUtils.deleteDirectory(targetWorkspace.toFile());
             Files.createDirectory(targetWorkspace);
 
-            Translator<Database, Database> translator = TranslatorFactory
-                    .translator(source.getDbType(), target.getDbType());
+            if (source.getDbType().equals(target.getDbType())) {
+                log.info("Skipping translation because the target ({}) and source ({}) db types are the same.",
+                        target.getDbType(), source.getDbType());
+                translatedModels = getDatabases(sourceWorkspace).collect(Collectors.toList());
+            } else {
+                Translator<Database, Database> translator = TranslatorFactory
+                        .translator(source.getDbType(), target.getDbType());
 
-            translatedModels = getDatabases(sourceWorkspace)
-                    .map(translateDatabases(translator))
-                    .collect(Collectors.toList());
+                translatedModels = getDatabases(sourceWorkspace)
+                        .map(translateDatabases(translator))
+                        .collect(Collectors.toList());
 
-            translatedModels.forEach(writeOutput(targetWorkspace));
+                translatedModels.forEach(writeOutput(targetWorkspace));
+            }
         }
 
         String ddl = translatedModels.stream().map(stringDatabaseEntry -> {
