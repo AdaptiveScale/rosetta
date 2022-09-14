@@ -6,6 +6,7 @@ import com.adaptivescale.rosetta.cli.outputs.DbtYamlModelOutput;
 import com.adaptivescale.rosetta.cli.outputs.StringOutput;
 import com.adaptivescale.rosetta.cli.outputs.YamlModelOutput;
 import com.adaptivescale.rosetta.common.models.Database;
+import com.adaptivescale.rosetta.common.DriverManagerDriverProvider;
 import com.adaptivescale.rosetta.common.models.dbt.DbtModel;
 import com.adaptivescale.rosetta.common.models.input.Connection;
 import com.adaptivescale.rosetta.ddl.DDL;
@@ -72,16 +73,13 @@ class Cli implements Callable<Void> {
                          @CommandLine.Option(names = {"-t", "--convert-to"}) String targetName
     ) throws Exception {
         requireConfig(config);
-        Optional<Connection> source = config.getConnection(sourceName);
-        if (source.isEmpty()) {
-            throw new RuntimeException("Can not find source with name: " + sourceName + " configured in config.");
-        }
+        Connection source = getSourceConnection(sourceName);
 
         Path sourceWorkspace = Paths.get("./", sourceName);
         FileUtils.deleteDirectory(sourceWorkspace.toFile());
         Files.createDirectory(sourceWorkspace);
 
-        Database result = SourceGeneratorFactory.sourceGenerator(source.get()).generate(source.get());
+        Database result = SourceGeneratorFactory.sourceGenerator(source).generate(source);
         YamlModelOutput yamlInputModel = new YamlModelOutput("model.yaml", sourceWorkspace);
         yamlInputModel.write(result);
         log.info("Successfully written input database yaml ({}).", yamlInputModel.getFilePath());
@@ -92,18 +90,13 @@ class Cli implements Callable<Void> {
 
         Connection target = getTargetConnection(targetName);
 
-        // no need to read source workspace because we already have model to be translated
-        Translator<Database, Database> translator = TranslatorFactory.translator(source.get().getDbType(),
-                target.getDbType());
-        result = translator.translate(result);
-
         Path targetWorkspace = Paths.get("./", targetName);
         FileUtils.deleteDirectory(targetWorkspace.toFile());
         Files.createDirectory(targetWorkspace);
 
-        YamlModelOutput yamlOutputModel = new YamlModelOutput("model.yaml", targetWorkspace);
-        yamlOutputModel.write(result);
-        log.info("Successfully written output database yaml ({}).", yamlOutputModel.getFilePath());
+        generateTranslatedModels(source, sourceWorkspace, target, targetWorkspace);
+
+        log.info("Successfully written output database yaml ({}/model.yml).", targetWorkspace);
     }
 
     @CommandLine.Command(name = "compile", description = "Generate DDL for target Database [bigquery, snowflake, …]", mixinStandardHelpOptions = true)
@@ -141,14 +134,7 @@ class Cli implements Callable<Void> {
             FileUtils.deleteDirectory(targetWorkspace.toFile());
             Files.createDirectory(targetWorkspace);
 
-            Translator<Database, Database> translator = TranslatorFactory
-                    .translator(source.getDbType(), target.getDbType());
-
-            translatedModels = getDatabases(sourceWorkspace)
-                    .map(translateDatabases(translator))
-                    .collect(Collectors.toList());
-
-            translatedModels.forEach(writeOutput(targetWorkspace));
+            translatedModels = generateTranslatedModels(source, sourceWorkspace, target, targetWorkspace);
         }
 
         String ddl = translatedModels.stream().map(stringDatabaseEntry -> {
@@ -222,7 +208,7 @@ class Cli implements Callable<Void> {
         StringOutput stringOutput = new StringOutput(ddlHistoryName, applyHistory);
         stringOutput.write(ddl);
 
-        DDLExecutor executor = DDLFactory.executor(source);
+        DDLExecutor executor = DDLFactory.executor(source, new DriverManagerDriverProvider());
         executor.execute(ddl);
 
         log.info("Successfully written ddl ({}).", stringOutput.getFilePath());
@@ -246,7 +232,7 @@ class Cli implements Callable<Void> {
         List<Database> collect = getDatabases(sourceWorkspace).map(AbstractMap.SimpleImmutableEntry::getValue).collect(Collectors.toList());
         for (Database database : collect) {
             AssertionSqlGenerator translator = AssertionSqlGeneratorFactory.generatorFor(source.get());
-            DefaultSqlExecution defaultSqlExecution = new DefaultSqlExecution(source.get());
+            DefaultSqlExecution defaultSqlExecution = new DefaultSqlExecution(source.get(), new DriverManagerDriverProvider());
             new DefaultAssertTestEngine(translator, defaultSqlExecution).run(source.get(), database);
         }
     }
@@ -360,6 +346,24 @@ class Cli implements Callable<Void> {
         return target.get();
     }
 
+    private List<FileNameAndDatabasePair> generateTranslatedModels(Connection source, Path sourceWorkspace, Connection target, Path targetWorkspace) throws IOException {
+        List<FileNameAndDatabasePair> translatedModels;
+        if (source.getDbType().equals(target.getDbType())) {
+            log.info("Skipping translation because the target ({}) and source ({}) db types are the same.",
+                    target.getDbType(), source.getDbType());
+            translatedModels = getDatabases(sourceWorkspace).collect(Collectors.toList());
+        } else {
+            Translator<Database, Database> translator = TranslatorFactory.translator(source.getDbType(),
+                    target.getDbType());
+
+            translatedModels = getDatabases(sourceWorkspace)
+                    .map(translateDatabases(translator))
+                    .collect(Collectors.toList());
+        }
+
+        translatedModels.forEach(writeOutput(targetWorkspace));
+        return translatedModels;
+    }
 
     /**
      * @param directory directory same as connection name

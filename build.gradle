@@ -8,7 +8,7 @@ repositories {
 
 allprojects {
     group = 'com.adaptivescale'
-    version = '1.1.0'
+    version = '1.1.1'
     sourceCompatibility = 11
     targetCompatibility = 11
 }
@@ -18,6 +18,36 @@ dependencies {
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+}
+
+jar {
+    from {
+        subprojects.collect { it.sourceSets.main.output }
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'maven-publish'
+
+    sourceCompatibility = 11
+    targetCompatibility = 11
+
+    java {
+        withSourcesJar()
+        withJavadocJar()
+    }
+
+    publishing {
+        publications {
+            maven(MavenPublication) {
+                groupId project.group
+                artifactId project.name
+                version project.version
+                from components.java
+            }
+        }
+    }
 }
 
 test {

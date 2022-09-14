@@ -1,5 +1,6 @@
 package com.adaptivescale.rosetta.ddl;
 
+import com.adaptivescale.rosetta.common.JDBCDriverProvider;
 import com.adaptivescale.rosetta.common.models.input.Connection;
 import com.adaptivescale.rosetta.ddl.change.*;
 import com.adaptivescale.rosetta.ddl.change.comparator.MysqlForeignKeyChangeComparator;
@@ -27,15 +28,15 @@ public class DDLFactory {
         }
     }
 
-    public static DDLExecutor executor(Connection connection) {
+    public static DDLExecutor executor(Connection connection, JDBCDriverProvider driverProvider) {
         String dbType = connection.getDbType();
         switch (dbType) {
             case "bigquery":
-                return new BigQueryDDLExecutor(connection);
+                return new BigQueryDDLExecutor(connection, driverProvider);
             case "snowflake":
-                return new SnowflakeDDLExecutor(connection);
+                return new SnowflakeDDLExecutor(connection, driverProvider);
             case "mysql":
-                return new MySqlDDLExecutor(connection);
+                return new MySqlDDLExecutor(connection, driverProvider);
             default:
                 throw new RuntimeException("DDL not supported for database type: " + dbType);
         }
