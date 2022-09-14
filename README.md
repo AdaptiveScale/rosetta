@@ -9,6 +9,8 @@ Rosetta utilizes JDBC to extract schema metadata from a database and generates d
 
 Generate DDL from a given source and transpile to the desired target.
 
+[Join RosettaDB Slack](https://join.slack.com/t/rosettadb/shared_invite/zt-1fq6ajsl3-h8FOI7oJX3T4eI1HjcpPbw)
+
 ## Translation
 This module will read the database structure from the source and map it to a target type. For example, source metadata was BigQuery and we want to convert it to Snowflake. This will be done with preset JSON files that contain mapping like in the following example:
 ```json
