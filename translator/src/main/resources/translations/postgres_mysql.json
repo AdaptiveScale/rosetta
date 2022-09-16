@@ -32,7 +32,7 @@
 
     {
       "targetTypeName": "NUMERIC",
-      "compatibleType": [
+      "compatibleTypes": [
         {
           "typeName": "numeric"
         }
@@ -113,7 +113,6 @@
       ]
 
     },
-
     {
       "targetTypeName": "CHAR",
       "compatibleTypes": [
