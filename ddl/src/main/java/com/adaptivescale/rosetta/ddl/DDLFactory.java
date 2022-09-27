@@ -3,6 +3,7 @@ package com.adaptivescale.rosetta.ddl;
 import com.adaptivescale.rosetta.common.JDBCDriverProvider;
 import com.adaptivescale.rosetta.common.models.input.Connection;
 import com.adaptivescale.rosetta.ddl.change.*;
+import com.adaptivescale.rosetta.ddl.change.comparator.BigQueryChangesComparator;
 import com.adaptivescale.rosetta.ddl.change.comparator.MysqlForeignKeyChangeComparator;
 import com.adaptivescale.rosetta.ddl.change.comparator.SnowflakeChangesComparator;
 import com.adaptivescale.rosetta.ddl.change.model.Change;
@@ -49,6 +50,9 @@ public class DDLFactory {
     }
 
     private static Comparator<Change<?>> changesSortComparatorForDatabase(String databaseType) {
+        if ("bigquery".equals(databaseType)) {
+            return new BigQueryChangesComparator();
+        }
         if ("snowflake".equals(databaseType)) {
             return new SnowflakeChangesComparator();
         }

@@ -15,6 +15,9 @@
       "compatibleTypes": [
         {
           "typeName": "smallint"
+        },
+        {
+          "typeName": "tinyint unsigned"
         }
       ]
     },
@@ -36,6 +39,9 @@
       "compatibleTypes": [
         {
           "typeName": "smallint"
+        },
+        {
+          "typeName": "smallint unsigned"
         }
       ]
     },
@@ -56,10 +62,16 @@
           "typeName": "mediumint"
         },
         {
+          "typeName": "mediumint unsigned"
+        },
+        {
           "typeName": "int"
         },
         {
           "typeName": "integer"
+        },
+        {
+          "typeName": "year"
         }
       ]
     },
