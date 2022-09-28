@@ -35,9 +35,6 @@
         },
         {
          "typeName": "mediumblob"
-        },
-        {
-          "typeName": "bit"
         }
       ]
     },
@@ -46,6 +43,9 @@
       "compatibleTypes": [
         {
           "typeName": "tinyint"
+        },
+        {
+          "typeName": "bit"
         }
       ]
     },

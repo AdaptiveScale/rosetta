@@ -36,15 +36,15 @@
         },
         {
           "typeName": "year"
+        },
+        {
+          "typeName": "bit"
         }
       ]
     },
     {
       "targetTypeName": "bytes",
       "compatibleTypes": [
-        {
-          "typeName": "bit"
-        },
         {
           "typeName": "bit varying"
         },
