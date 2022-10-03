@@ -2,7 +2,7 @@
   "version": "0.0.1",
   "converters": [
     {
-      "targetTypeName": "int",
+      "targetTypeName": "int64",
       "compatibleTypes": [
         {
           "typeName": "bigint"
