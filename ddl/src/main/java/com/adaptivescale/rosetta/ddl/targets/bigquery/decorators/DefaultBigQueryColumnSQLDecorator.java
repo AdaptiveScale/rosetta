@@ -14,5 +14,5 @@ public class DefaultBigQueryColumnSQLDecorator implements ColumnSQLDecorator {
     }
 
     @Override
-    public String expressSQl() { return column.getName() + " " + columnDataTypeName.nameForColumn(column); }
+    public String expressSQl() { return "`"+column.getName() + "` " + columnDataTypeName.nameForColumn(column); }
 }

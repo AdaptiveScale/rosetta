@@ -28,6 +28,9 @@
         },
         {
           "typeName": "LONGTEXT"
+        },
+        {
+          "typeName": "ENUM"
         }
       ]
     },
@@ -192,6 +195,14 @@
       "compatibleTypes": [
         {
           "typeName": "GEOMETRY"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "ARRAY",
+      "compatibleTypes": [
+        {
+          "typeName": "SET"
         }
       ]
     }

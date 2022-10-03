@@ -76,6 +76,12 @@
       "compatibleTypes": [
         {
           "typeName": "text"
+        },
+        {
+          "typeName": "varchar"
+        },
+        {
+          "typeName": "bpchar"
         }
       ]
     },
@@ -109,6 +115,12 @@
         },
         {
           "typeName": "serial"
+        },
+        {
+          "typeName": "int2"
+        },
+        {
+          "typeName": "int4"
         }
       ]
 
@@ -174,6 +186,9 @@
     "compatibleTypes": [
       {
         "typeName": "boolean"
+      },
+      {
+        "typeName": "bool"
       }
     ]
     },

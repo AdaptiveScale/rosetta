@@ -51,7 +51,9 @@ public class BigQueryDDLGenerator implements DDL {
                     .append("`.");
         }
 
-        builder.append(table.getName())
+        builder.append("`")
+                .append(table.getName())
+                .append("`")
                 .append("(")
                 .append(definitionAsString)
                 .append(");");

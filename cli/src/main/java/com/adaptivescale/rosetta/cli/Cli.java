@@ -200,7 +200,7 @@ class Cli implements Callable<Void> {
 
         String timeStamp = new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date());
         String snapshotModelName = String.format("model-%s.yaml", timeStamp);
-        String ddlHistoryName = String.format("ddl-%s.yaml", timeStamp);
+        String ddlHistoryName = String.format("ddl-%s.sql", timeStamp);
 
         YamlModelOutput yamlOutputModel = new YamlModelOutput(snapshotModelName, snapshotsPath);
         yamlOutputModel.write(actualDatabase);

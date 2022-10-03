@@ -16,7 +16,7 @@ public class DefaultSnowflakeColumnSQLDecorator implements ColumnSQLDecorator {
 
     @Override
     public String expressSQl() {
-        return column.getName() + " "
+        return "\"" + column.getName() + "\" "
                 + columnDataTypeName.nameForColumn(column)
                 + (column.isNullable() ? "" : " not null")
                 + (column.isAutoincrement() ? " AUTOINCREMENT" : "");
