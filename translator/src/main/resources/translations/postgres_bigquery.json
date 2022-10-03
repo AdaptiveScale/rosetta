@@ -27,15 +27,24 @@
         },
         {
           "typeName": "serial"
+        },
+        {
+          "typeName": "int2"
+        },
+        {
+          "typeName": "int4"
+        },
+        {
+          "typeName": "year"
+        },
+        {
+          "typeName": "bit"
         }
       ]
     },
     {
       "targetTypeName": "bytes",
       "compatibleTypes": [
-        {
-          "typeName": "bit"
-        },
         {
           "typeName": "bit varying"
         },
@@ -49,6 +58,9 @@
       "compatibleTypes": [
         {
           "typeName": "boolean"
+        },
+        {
+          "typeName": "bool"
         }
       ]
     },
@@ -69,6 +81,15 @@
         },
         {
           "typeName": "text"
+        },
+        {
+          "typeName": "varchar"
+        },
+        {
+          "typeName": "mpaa_rating"
+        },
+        {
+          "typeName": "bpchar"
         }
       ]
     },
@@ -132,6 +153,14 @@
       "compatibleTypes": [
         {
           "typeName": "numeric"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "array",
+      "compatibleTypes": [
+        {
+          "typeName": "_text"
         }
       ]
     }

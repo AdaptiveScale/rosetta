@@ -18,6 +18,9 @@
         },
         {
           "typeName": "mediumtext"
+        },
+        {
+          "typeName": "enum"
         }
       ]
     },
@@ -40,6 +43,17 @@
       "compatibleTypes": [
         {
           "typeName": "tinyint"
+        },
+        {
+          "typeName": "bit"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "tinyint",
+      "compatibleTypes": [
+        {
+          "typeName": "tinyint unsigned"
         }
       ]
     },
@@ -68,13 +82,27 @@
       ]
     },
     {
+      "targetTypeName": "smallint",
+      "compatibleTypes": [
+        {
+          "typeName": "smallint unsigned"
+        }
+      ]
+    },
+    {
       "targetTypeName": "int",
       "compatibleTypes": [
         {
           "typeName": "mediumint"
         },
         {
+          "typeName": "mediumint unsigned"
+        },
+        {
           "typeName": "int"
+        },
+        {
+          "typeName": "year"
         }
       ]
     },
@@ -145,6 +173,14 @@
         },
         {
           "typeName": "time"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "array",
+      "compatibleTypes": [
+        {
+          "typeName": "set"
         }
       ]
     }

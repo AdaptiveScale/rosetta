@@ -22,15 +22,15 @@ public class SnowflakeDDLTest {
     public void createDB() throws IOException {
         String ddl = generateDDL("clean_database");
         Assertions.assertEquals("CREATE SCHEMA IF NOT EXISTS ROSETTA;\r" +
-                "CREATE TABLE \"ROSETTA\".\"PLAYER\"(Name VARCHAR, Position VARCHAR, Number NUMBER not null);\r" +
+                "CREATE TABLE \"ROSETTA\".\"PLAYER\"(\"Name\" VARCHAR, \"Position\" VARCHAR, \"Number\" NUMBER not null);\r" +
                 "\r" +
-                "CREATE TABLE \"ROSETTA\".\"USER\"(USER_ID NUMBER not null, PRIMARY KEY (USER_ID));", ddl);
+                "CREATE TABLE \"ROSETTA\".\"USER\"(\"USER_ID\" NUMBER not null, PRIMARY KEY (\"USER_ID\"));", ddl);
     }
 
     @Test
     public void addTable() throws IOException {
         String ddl = generateDDL("add_table");
-        Assertions.assertEquals("CREATE TABLE \"ROSETTA\".\"PLAYER\"(Name VARCHAR, Position VARCHAR, Number NUMBER not null);", ddl);
+        Assertions.assertEquals("CREATE TABLE \"ROSETTA\".\"PLAYER\"(\"Name\" VARCHAR, \"Position\" VARCHAR, \"Number\" NUMBER not null);", ddl);
     }
 
     @Test
@@ -42,22 +42,22 @@ public class SnowflakeDDLTest {
     @Test
     public void addColumn() throws IOException {
         String ddl = generateDDL("add_column");
-        Assertions.assertEquals("ALTER TABLE \"ROSETTA\".\"PLAYER\" add Position VARCHAR not null;", ddl);
+        Assertions.assertEquals("ALTER TABLE \"ROSETTA\".\"PLAYER\" add \"Position\" VARCHAR not null;", ddl);
     }
 
 
     @Test
     public void addColumnWithForeignKey() throws IOException {
         String ddl = generateDDL("add_column_with_foreign_key");
-        Assertions.assertEquals("ALTER TABLE \"FBAL\".\"PLAYER\" add POSITION_ID NUMBER;\r" +
+        Assertions.assertEquals("ALTER TABLE \"FBAL\".\"PLAYER\" add \"POSITION_ID\" NUMBER;\r" +
                 "ALTER TABLE \"FBAL\".\"PLAYER\" ADD CONSTRAINT \"PLAYER_FK\" FOREIGN KEY (\"POSITION_ID\") REFERENCES \"FBAL\".\"Position\"(\"ID\") ON DELETE NO ACTION;\r", ddl);
     }
 
     @Test
     public void addColumnAsPrimaryKey() throws IOException {
         String ddl = generateDDL("add_column_as_primary_key");
-        Assertions.assertEquals("ALTER TABLE \"FBAL\".\"PLAYER\" add ID NUMBER not null;\r" +
-                "ALTER TABLE \"FBAL\".\"PLAYER\" ADD PRIMARY KEY (ID);", ddl);
+        Assertions.assertEquals("ALTER TABLE \"FBAL\".\"PLAYER\" add \"ID\" NUMBER not null;\r" +
+                "ALTER TABLE \"FBAL\".\"PLAYER\" ADD PRIMARY KEY (\"ID\");", ddl);
     }
 
     @Test
@@ -105,7 +105,7 @@ public class SnowflakeDDLTest {
     @Test
     public void addForeignKey() throws IOException {
         String ddl = generateDDL("add_foreign_key");
-        Assertions.assertEquals("ALTER TABLE \"FBAL\".\"PLAYER\" add name VARCHAR;\r" +
+        Assertions.assertEquals("ALTER TABLE \"FBAL\".\"PLAYER\" add \"name\" VARCHAR;\r" +
                 "ALTER TABLE \"FBAL\".\"PLAYER\" ADD CONSTRAINT \"PLAYER_FK\" FOREIGN KEY (\"POSITION_ID\") REFERENCES \"FBAL\".\"Position\"(\"ID\") ON DELETE NO ACTION;\r", ddl);
     }
 

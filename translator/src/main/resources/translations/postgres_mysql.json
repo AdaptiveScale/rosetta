@@ -32,7 +32,7 @@
 
     {
       "targetTypeName": "NUMERIC",
-      "compatibleType": [
+      "compatibleTypes": [
         {
           "typeName": "numeric"
         }
@@ -76,6 +76,12 @@
       "compatibleTypes": [
         {
           "typeName": "text"
+        },
+        {
+          "typeName": "varchar"
+        },
+        {
+          "typeName": "bpchar"
         }
       ]
     },
@@ -109,11 +115,16 @@
         },
         {
           "typeName": "serial"
+        },
+        {
+          "typeName": "int2"
+        },
+        {
+          "typeName": "int4"
         }
       ]
 
     },
-
     {
       "targetTypeName": "CHAR",
       "compatibleTypes": [
@@ -175,6 +186,9 @@
     "compatibleTypes": [
       {
         "typeName": "boolean"
+      },
+      {
+        "typeName": "bool"
       }
     ]
     },

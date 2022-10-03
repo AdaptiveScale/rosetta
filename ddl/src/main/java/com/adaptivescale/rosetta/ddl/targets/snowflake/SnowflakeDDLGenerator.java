@@ -200,6 +200,7 @@ public class SnowflakeDDLGenerator implements DDL {
                 .filter(Column::isPrimaryKey)
                 .sorted((o1, o2) -> o1.getPrimaryKeySequenceId() < o2.getPrimaryKeySequenceId() ? -1 : 1)
                 .map(Column::getName)
+                .map(it -> "\"" + it + "\"")
                 .collect(Collectors.toList());
 
         if (primaryKeys.isEmpty()) {
