@@ -3,13 +3,6 @@ package com.adaptivescale.rosetta.common.models;
 import com.adaptivescale.rosetta.common.models.test.Test;
 
 public class AssertTest implements Test {
-    public final static String EQUAL = "=";
-    public final static String NOT_EQUAL = "!=";
-    public final static String BIGGER = ">";
-    public final static String LOWER = ">";
-    public final static String BIGGER_EQUAL = ">=";
-    public final static String LOWER_EQUAL = "<=";
-    public final static String IN = "in";
 
     private String operator;
     private Object value;
