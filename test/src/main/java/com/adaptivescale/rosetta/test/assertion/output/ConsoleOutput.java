@@ -22,8 +22,9 @@ public class ConsoleOutput implements Output {
 
     @Override
     public long printStartTest(AssertTest assertion, Column column) {
-        String format = String.format("%s of %s, RUNNING test ('%s') on column: '%s'", runningTestIndex,
-                totalTestCount, assertion.getOperator(), column.getName());
+        Object value = assertion.getValue() == null ? "null" : assertion.getValue();
+        String format = String.format("%s of %s, RUNNING test ('%s') on column: '%s' with value %s", runningTestIndex,
+                totalTestCount, assertion.getOperator(), column.getName(), value);
         print(append(format, " "));
         return System.currentTimeMillis();
     }

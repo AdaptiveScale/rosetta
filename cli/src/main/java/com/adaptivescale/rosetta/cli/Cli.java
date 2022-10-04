@@ -229,11 +229,13 @@ class Cli implements Callable<Void> {
                     " models for translation", sourceWorkspace, sourceName));
         }
 
-        List<Database> collect = getDatabases(sourceWorkspace).map(AbstractMap.SimpleImmutableEntry::getValue).collect(Collectors.toList());
+        List<Database> collect = getDatabases(sourceWorkspace)
+            .map(AbstractMap.SimpleImmutableEntry::getValue)
+            .collect(Collectors.toList());
         for (Database database : collect) {
-            AssertionSqlGenerator translator = AssertionSqlGeneratorFactory.generatorFor(source.get());
+            AssertionSqlGenerator assertionSqlGenerator = AssertionSqlGeneratorFactory.generatorFor(source.get());
             DefaultSqlExecution defaultSqlExecution = new DefaultSqlExecution(source.get(), new DriverManagerDriverProvider());
-            new DefaultAssertTestEngine(translator, defaultSqlExecution).run(source.get(), database);
+            new DefaultAssertTestEngine(assertionSqlGenerator, defaultSqlExecution).run(source.get(), database);
         }
     }
 
