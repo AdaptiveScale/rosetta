@@ -10,6 +10,7 @@ import com.adaptivescale.rosetta.ddl.change.model.Change;
 import com.adaptivescale.rosetta.ddl.executor.*;
 import com.adaptivescale.rosetta.ddl.targets.bigquery.BigQueryDDLGenerator;
 import com.adaptivescale.rosetta.ddl.targets.mysql.MySqlDDLGenerator;
+import com.adaptivescale.rosetta.ddl.targets.postgres.PostgresDDLGenerator;
 import com.adaptivescale.rosetta.ddl.targets.snowflake.SnowflakeDDLGenerator;
 
 import java.util.Comparator;
@@ -24,6 +25,8 @@ public class DDLFactory {
                 return new SnowflakeDDLGenerator();
             case "bigquery":
                 return new BigQueryDDLGenerator();
+            case "postgres":
+                return new PostgresDDLGenerator();
             default:
                 throw new RuntimeException("DDL not supported for database type: " + databaseType);
         }
@@ -38,6 +41,8 @@ public class DDLFactory {
                 return new SnowflakeDDLExecutor(connection, driverProvider);
             case "mysql":
                 return new MySqlDDLExecutor(connection, driverProvider);
+            case "postgres":
+                return new PostgresDDLExecutor(connection, driverProvider);
             default:
                 throw new RuntimeException("DDL not supported for database type: " + dbType);
         }
