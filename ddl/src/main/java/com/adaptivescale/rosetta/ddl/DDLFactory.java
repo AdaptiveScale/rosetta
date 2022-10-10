@@ -5,6 +5,7 @@ import com.adaptivescale.rosetta.common.models.input.Connection;
 import com.adaptivescale.rosetta.ddl.change.*;
 import com.adaptivescale.rosetta.ddl.change.comparator.BigQueryChangesComparator;
 import com.adaptivescale.rosetta.ddl.change.comparator.MysqlForeignKeyChangeComparator;
+import com.adaptivescale.rosetta.ddl.change.comparator.PostgresForeignKeyChangeComparator;
 import com.adaptivescale.rosetta.ddl.change.comparator.SnowflakeChangesComparator;
 import com.adaptivescale.rosetta.ddl.change.model.Change;
 import com.adaptivescale.rosetta.ddl.executor.*;
@@ -64,12 +65,18 @@ public class DDLFactory {
         if ("mysql".equals(databaseType)) {
             return new MysqlForeignKeyChangeComparator();
         }
+        if ("postgres".equals(databaseType)) {
+            return new PostgresForeignKeyChangeComparator();
+        }
         return null;
     }
 
     public static ChangeFinder changeFinderForDatabaseType(String databaseType) {
         if ("mysql".equals(databaseType)) {
             return new MySQLChangeFinder();
+        }
+        if ("postgres".equals(databaseType)) {
+            return new PostgresChangeFinder();
         }
         return new DefaultChangeFinder();
     }

@@ -17,8 +17,12 @@ public class DefaultPostgresColumnSQLDecorator implements ColumnSQLDecorator {
 
     @Override
     public String expressSQl() {
-        return DEFAULT_WRAPPER + column.getName() + DEFAULT_WRAPPER+ " "
-                + columnDataTypeName.nameForColumn(column)
-                + (column.isNullable() ? " NULL" : " NOT NULL");
+        StringBuilder builder = new StringBuilder();
+        builder.append(DEFAULT_WRAPPER).append(column.getName()).append(DEFAULT_WRAPPER).append(" ");
+        builder.append(columnDataTypeName.nameForColumn(column));
+        if(!column.isNullable()) {
+            builder.append(" NOT NULL ");
+        }
+        return builder.toString();
     }
 }

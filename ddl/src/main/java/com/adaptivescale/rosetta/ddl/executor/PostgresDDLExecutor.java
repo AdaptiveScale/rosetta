@@ -23,8 +23,14 @@ public class PostgresDDLExecutor implements DDLExecutor {
         Properties properties = JDBCUtils.setJDBCAuth(connection);
         properties.setProperty("allowMultiQueries", "true");
 
+        // Postgres supports transaction - wrapping the ddl in  transaction
+        StringBuilder transaction = new StringBuilder();
+        transaction.append("begin transaction;");
+        transaction.append(query);
+        transaction.append("commit;");
+
         java.sql.Connection jdbcConnection = driver.connect(connection.getUrl(), properties);
-        jdbcConnection.createStatement().executeUpdate(query);
+        jdbcConnection.createStatement().executeUpdate(transaction.toString());
         jdbcConnection.close();
     }
 }
