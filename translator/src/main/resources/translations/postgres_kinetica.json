@@ -1,0 +1,152 @@
+{
+  "version": "0.0.1",
+  "converters": [
+    {
+      "targetTypeName": "string",
+      "compatibleTypes": [
+        {
+          "typeName": "character"
+        },
+        {
+          "typeName": "character varying"
+        },
+        {
+          "typeName": "cidr"
+        },
+        {
+          "typeName": "inet"
+        },
+        {
+          "typeName": "json"
+        },
+        {
+          "typeName": "macaddr"
+        },
+        {
+          "typeName": "macaddr8"
+        },
+        {
+          "typeName": "text"
+        },
+        {
+          "typeName": "uuid"
+        },
+        {
+          "typeName": "varchar"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "bytes",
+      "compatibleTypes": [
+        {
+         "typeName": "bytea"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "int8",
+      "compatibleTypes": [
+        {
+          "typeName": "bit"
+        },
+        {
+          "typeName": "bit varying"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "int16",
+      "compatibleTypes": [
+        {
+          "typeName": "smallint"
+        },
+        {
+          "typeName": "smallserial"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "int",
+      "compatibleTypes": [
+        {
+          "typeName": "serial"
+        },
+        {
+          "typeName": "integer"
+        },
+        {
+          "typeName": "int"
+        },
+        {
+          "typeName": "int4"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "long",
+      "compatibleTypes": [
+        {
+          "typeName": "bigint"
+        },
+        {
+          "typeName": "bigserial"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "float",
+      "compatibleTypes": [
+        {
+          "typeName": "real"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "double",
+      "compatibleTypes": [
+        {
+          "typeName": "double"
+        },
+        {
+          "typeName": "double precision"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "decimal",
+      "compatibleTypes": [
+        {
+          "typeName": "decimal"
+        },
+        {
+          "typeName": "numeric"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "date",
+      "compatibleTypes": [
+        {
+          "typeName": "date"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "time",
+      "compatibleTypes": [
+        {
+          "typeName": "time"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "timestamp",
+      "compatibleTypes": [
+        {
+          "typeName": "timestamp"
+        }
+      ]
+    }
+  ]
+}
