@@ -11,18 +11,6 @@
     },
 
     {
-      "targetTypeName": "tinyint",
-      "compatibleTypes": [
-        {
-          "typeName": "smallint"
-        },
-        {
-          "typeName": "tinyint unsigned"
-        }
-      ]
-    },
-
-    {
       "targetTypeName": "boolean",
       "compatibleTypes": [
         {
@@ -42,6 +30,9 @@
         },
         {
           "typeName": "smallint unsigned"
+        },
+        {
+          "typeName": "tinyint unsigned"
         }
       ]
     },
