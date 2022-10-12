@@ -14,7 +14,6 @@ public class KineticaColumnsExtractor extends ColumnsExtractor {
 
     @Override
     protected void extract(ResultSet resultSet, Column column) throws SQLException {
-        // TODO: Test this with Kinetica JDBC
         column.setName(resultSet.getString("COLUMN_NAME"));
         column.setTypeName(String.valueOf(resultSet.getString("TYPE_NAME")));
         column.setNullable(resultSet.getString("IS_NULLABLE").equals("YES"));
