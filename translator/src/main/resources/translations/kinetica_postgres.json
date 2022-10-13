@@ -1,0 +1,127 @@
+{
+  "version": "0.0.1",
+  "converters": [
+
+    {
+      "targetTypeName": "smallint",
+      "compatibleTypes": [
+        {
+          "typeName": "int16"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "bigint",
+      "compatibleTypes": [
+        {
+          "typeName": "long"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "integer",
+      "compatibleTypes": [
+        {
+          "typeName": "int"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "real",
+      "compatibleTypes": [
+        {
+          "typeName": "float"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "decimal",
+      "compatibleTypes": [
+        {
+          "typeName": "double"
+        },
+        {
+          "typeName": "decimal"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "text",
+      "compatibleTypes": [
+        {
+          "typeName": "string"
+        },
+        {
+          "typeName": "char256"
+        },
+        {
+          "typeName": "char128"
+        },
+        {
+          "typeName": "char64"
+        },
+        {
+          "typeName": "char32"
+        },
+        {
+          "typeName": "char16"
+        },
+        {
+          "typeName": "char8"
+        },
+        {
+          "typeName": "char4"
+        },
+        {
+          "typeName": "char2"
+        },
+        {
+          "typeName": "char1"
+        },
+        {
+          "typeName": "ipv4"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "bytea",
+      "compatibleTypes": [
+        {
+          "typeName": "bytes"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "date",
+      "compatibleTypes": [
+        {
+          "typeName": "date"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "timestamp",
+      "compatibleTypes": [
+        {
+          "typeName": "datetime"
+        },
+        {
+          "typeName": "timestamp"
+        },
+        {
+          "typeName": "time"
+        }
+      ]
+    }
+
+
+  ]
+}
