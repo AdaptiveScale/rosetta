@@ -1,0 +1,86 @@
+{
+  "version": "0.0.1",
+  "converters": [
+    {
+      "targetTypeName": "string",
+      "compatibleTypes": [
+        {
+          "typeName": "STRING"
+        },
+        {
+          "typeName": "BOOLEAN"
+        },
+        {
+          "typeName": "BOOL"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "timestamp",
+      "compatibleTypes": [
+        {
+          "typeName": "TIMESTAMP"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "int",
+      "compatibleTypes": [
+        {
+          "typeName": "INT64"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "double",
+      "compatibleTypes": [
+        {
+          "typeName": "FLOAT64"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "date",
+      "compatibleTypes": [
+        {
+          "typeName": "DATE"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "datetime",
+      "compatibleTypes": [
+        {
+          "typeName": "DATETIME"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "time",
+      "compatibleTypes": [
+        {
+          "typeName": "TIME"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "decimal",
+      "compatibleTypes": [
+        {
+          "typeName": "NUMERIC"
+        },
+        {
+          "typeName": "BIGNUMERIC"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "bytes",
+      "compatibleTypes": [
+        {
+          "typeName": "BYTES"
+        }
+      ]
+    }
+  ]
+}

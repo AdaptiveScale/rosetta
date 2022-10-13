@@ -27,6 +27,9 @@
         },
         {
           "typeName": "set"
+        },
+        {
+          "typeName": "boolean"
         }
       ]
     },
@@ -44,9 +47,6 @@
         },
         {
           "typeName": "bool"
-        },
-        {
-          "typeName": "boolean"
         }
       ]
     },
