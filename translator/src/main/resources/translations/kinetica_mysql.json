@@ -1,0 +1,106 @@
+{
+  "version": "0.0.1",
+  "converters": [
+    {
+      "targetTypeName": "VARBINARY",
+      "compatibleTypes": [
+        {
+          "typeName": "wkt"
+        },
+        {
+          "typeName": "bytes"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "FLOAT",
+      "compatibleTypes": [
+        {
+          "typeName": "float"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "TEXT",
+      "compatibleTypes": [
+        {
+          "typeName": "string"
+        },
+        {
+          "typeName": "char256"
+        },
+        {
+          "typeName": "char128"
+        },
+        {
+          "typeName": "char64"
+        },
+        {
+          "typeName": "char32"
+        },
+        {
+          "typeName": "char16"
+        },
+        {
+          "typeName": "char8"
+        },
+        {
+          "typeName": "char4"
+        },
+        {
+          "typeName": "char2"
+        },
+        {
+          "typeName": "char1"
+        },
+        {
+          "typeName": "ipv4"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "TIME",
+      "compatibleTypes": [
+        {
+          "typeName": "time"
+        }
+      ]
+
+    },
+    {
+      "targetTypeName": "TIMESTAMP",
+      "compatibleTypes": [
+        {
+          "typeName": "timestamp"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "INT",
+      "compatibleTypes": [
+        {
+          "typeName": "int"
+        },
+        {
+          "typeName": "int16"
+        },
+        {
+          "typeName": "int8"
+        }
+      ]
+
+    },
+
+    {
+      "targetTypeName": "DATE",
+      "compatibleTypes": [
+        {
+          "typeName": "date"
+        }
+      ]
+    }
+  ]
+}
