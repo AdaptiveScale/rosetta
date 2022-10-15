@@ -41,12 +41,12 @@ This module will read the database structure from the source and map it to a tar
 Currently, supported databases for translation are shown below in the table.
 
 |         | **BigQuery** | **Snowflake** |  **MySQL**  | **Postgres** | **Kinetica** |
-|---------|:--------:|:--------:|:-------:|:--------:|
-| **BigQuery** |     /     |     ✅     |    ✅     |     ✅     |   ✅  
-| **Snowflake** |    ✅     |     /     |   ✅      |    ✅      |   ✅  
-| **MySQL**   |      ✅    |     ✅     |    /    |      ✅     |    ✅  
-| **Postgres** |     ✅     |     ✅     |    ✅    |    /     |     ✅  
-| **Kinetica** |     ✅     |     ✅     |    ✅    |     ✅    |     /
+|---------|:--------:|:--------:|:-------:|:--------:|:--------:|
+| **BigQuery** |     /     |     ✅     |    ✅     |     ✅     |   ✅      |
+| **Snowflake** |    ✅     |     /     |   ✅      |    ✅      |   ✅      |
+| **MySQL**   |      ✅    |     ✅     |    /    |      ✅     |    ✅      | 
+| **Postgres** |     ✅     |     ✅     |    ✅    |    /     |     ✅      | 
+| **Kinetica** |     ✅     |     ✅     |    ✅    |     ✅    |     /      |
 
 ## Getting Started
 
