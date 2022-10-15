@@ -134,6 +134,9 @@
         },
         {
           "typeName": "double precision"
+        },
+        {
+          "typeName": "numeric"
         }
       ]
     },
@@ -142,9 +145,6 @@
       "compatibleTypes": [
         {
           "typeName": "decimal"
-        },
-        {
-          "typeName": "numeric"
         }
       ]
     },
