@@ -1,53 +1,51 @@
 package com.adaptivescale.rosetta.ddl;
 
 import com.adaptivescale.rosetta.common.JDBCDriverProvider;
+import com.adaptivescale.rosetta.common.helpers.ModuleLoader;
 import com.adaptivescale.rosetta.common.models.input.Connection;
+import com.adaptivescale.rosetta.common.types.RosettaModuleTypes;
 import com.adaptivescale.rosetta.ddl.change.*;
 import com.adaptivescale.rosetta.ddl.change.comparator.*;
 import com.adaptivescale.rosetta.ddl.change.model.Change;
 import com.adaptivescale.rosetta.ddl.executor.*;
-import com.adaptivescale.rosetta.ddl.targets.bigquery.BigQueryDDLGenerator;
-import com.adaptivescale.rosetta.ddl.targets.kinetica.KineticaDDLGenerator;
-import com.adaptivescale.rosetta.ddl.targets.mysql.MySqlDDLGenerator;
-import com.adaptivescale.rosetta.ddl.targets.postgres.PostgresDDLGenerator;
-import com.adaptivescale.rosetta.ddl.targets.snowflake.SnowflakeDDLGenerator;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Comparator;
+import java.util.Optional;
 
 public class DDLFactory {
 
     public static DDL ddlForDatabaseType(String databaseType) {
-        switch (databaseType) {
-            case "mysql":
-                return new MySqlDDLGenerator();
-            case "snowflake":
-                return new SnowflakeDDLGenerator();
-            case "bigquery":
-                return new BigQueryDDLGenerator();
-            case "postgres":
-                return new PostgresDDLGenerator();
-            case "kinetica":
-                return new KineticaDDLGenerator();
-            default:
-                throw new RuntimeException("DDL not supported for database type: " + databaseType);
+        Optional<Class<?>> ddlGenerator = ModuleLoader.loadModuleByAnnotationClassValues(
+                DDLFactory.class.getPackageName(), RosettaModuleTypes.DDL_GENERATOR, databaseType);
+        if(ddlGenerator.isEmpty()) {
+            throw new RuntimeException("DDL not supported for database type: " + databaseType);
+        }
+        try {
+            return (DDL) ddlGenerator.get().getDeclaredConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
         }
     }
 
     public static DDLExecutor executor(Connection connection, JDBCDriverProvider driverProvider) {
         String dbType = connection.getDbType();
-        switch (dbType) {
-            case "bigquery":
-                return new BigQueryDDLExecutor(connection, driverProvider);
-            case "snowflake":
-                return new SnowflakeDDLExecutor(connection, driverProvider);
-            case "mysql":
-                return new MySqlDDLExecutor(connection, driverProvider);
-            case "postgres":
-                return new PostgresDDLExecutor(connection, driverProvider);
-            case "kinetica":
-                return new KineticaDDLExecutor(connection, driverProvider);
-            default:
-                throw new RuntimeException("DDL not supported for database type: " + dbType);
+        Optional<Class<?>> ddlGenerator = ModuleLoader.loadModuleByAnnotationClassValues(
+                DDLFactory.class.getPackageName(), RosettaModuleTypes.DDL_EXECUTOR, dbType);
+        if(ddlGenerator.isEmpty()) {
+            throw new RuntimeException("DDL not supported for database type: " + dbType);
+        }
+        try {
+            return (DDLExecutor) ddlGenerator.get()
+                    .getDeclaredConstructor(
+                            Connection.class,
+                            JDBCDriverProvider.class
+                    ).newInstance(
+                            connection,
+                            driverProvider
+                    );
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -58,32 +56,28 @@ public class DDLFactory {
     }
 
     private static Comparator<Change<?>> changesSortComparatorForDatabase(String databaseType) {
-        switch (databaseType){
-            case "bigquery":
-                return new BigQueryChangesComparator();
-            case "snowflake":
-                return new SnowflakeChangesComparator();
-            case "mysql":
-                return new MysqlForeignKeyChangeComparator();
-            case "postgres":
-                return new PostgresForeignKeyChangeComparator();
-            case "kinetica":
-                return new KineticaForeignKeyChangeComparator();
-            default:
-                return null;
+        Optional<Class<?>> ddlGenerator = ModuleLoader.loadModuleByAnnotationClassValues(
+                DDLFactory.class.getPackageName(), RosettaModuleTypes.CHANGE_COMPARATOR, databaseType);
+        if(ddlGenerator.isEmpty()) {
+            throw new RuntimeException("DDL not supported for database type: " + databaseType);
+        }
+        try {
+            return ( Comparator<Change<?>>) ddlGenerator.get().getDeclaredConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
         }
     }
 
     public static ChangeFinder changeFinderForDatabaseType(String databaseType) {
-        switch (databaseType) {
-            case "mysql":
-                return new MySQLChangeFinder();
-            case "postgres":
-                return new PostgresChangeFinder();
-            case "kinetica":
-                return new KineticaChangeFinder();
-            default:
-                return new DefaultChangeFinder();
+        Optional<Class<?>> ddlGenerator = ModuleLoader.loadModuleByAnnotationClassValues(
+                DDLFactory.class.getPackageName(), RosettaModuleTypes.CHANGE_FINDER, databaseType);
+        if(ddlGenerator.isEmpty()) {
+            return new DefaultChangeFinder();
+        }
+        try {
+            return ( ChangeFinder) ddlGenerator.get().getDeclaredConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
         }
     }
 

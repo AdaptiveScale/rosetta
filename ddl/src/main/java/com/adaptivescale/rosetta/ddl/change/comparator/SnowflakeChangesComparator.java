@@ -1,9 +1,15 @@
 package com.adaptivescale.rosetta.ddl.change.comparator;
 
+import com.adaptivescale.rosetta.common.annotations.RosettaModule;
+import com.adaptivescale.rosetta.common.types.RosettaModuleTypes;
 import com.adaptivescale.rosetta.ddl.change.model.Change;
 
 import java.util.Comparator;
 
+@RosettaModule(
+        name = "snowflake",
+        type = RosettaModuleTypes.CHANGE_COMPARATOR
+)
 public class SnowflakeChangesComparator implements Comparator<Change<?>> {
     /**
      * Put foreign keys changes to bottom then put drop foreign keys above all other changes for foreign key
