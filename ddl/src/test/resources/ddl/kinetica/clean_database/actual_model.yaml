@@ -1,4 +1,4 @@
 ---
 tables: []
-databaseProductName: "Snowflake"
-databaseType: "postgres"
+databaseProductName: "kinetica"
+databaseType: "kinetica"

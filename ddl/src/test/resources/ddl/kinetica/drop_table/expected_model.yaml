@@ -106,5 +106,5 @@ tables:
         nullable: false
         primaryKey: true
         autoincrement: false
-databaseProductName: "MySQL"
-databaseType: "postgres"
+databaseProductName: "kinetica"
+databaseType: "kinetica"

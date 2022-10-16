@@ -42,5 +42,5 @@ tables:
         nullable: false
         autoincrement: false
         primaryKey: true
-databaseProductName: "Snowflake"
-databaseType: "postgres"
+databaseProductName: "kinetica"
+databaseType: "kinetica"

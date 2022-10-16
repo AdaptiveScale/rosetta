@@ -153,5 +153,5 @@ tables:
         nullable: true
         autoincrement: false
         primaryKey: false
-databaseProductName: "Snowflake"
-databaseType: "postgres"
+databaseProductName: "kinetica"
+databaseType: "kinetica"
