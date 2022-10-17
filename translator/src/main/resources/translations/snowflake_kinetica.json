@@ -1,0 +1,153 @@
+{
+  "version": "0.0.1",
+  "converters": [
+    {
+      "targetTypeName": "BIGNUMERIC",
+      "compatibleTypes": [
+        {
+          "typeName": "NUMBER"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "decimal",
+      "compatibleTypes": [
+        {
+          "typeName": "DECIMAL"
+        },
+        {
+          "typeName": "DOUBLE"
+        },
+        {
+          "typeName": "DOUBLE PRECISION"
+        },
+        {
+          "typeName": "REAL"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "NUMERIC",
+      "compatibleTypes": [
+        {
+          "typeName": "NUMERIC"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "int",
+      "compatibleTypes": [
+        {
+          "typeName": "INT"
+        },
+        {
+          "typeName": "INTEGER"
+        },
+        {
+          "typeName": "BIGINT"
+        },
+        {
+          "typeName": "SMALLINT"
+        },
+        {
+          "typeName": "TINYINT"
+        },
+        {
+          "typeName": "BYTEINT"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "float",
+      "compatibleTypes": [
+        {
+          "typeName": "FLOAT"
+        },
+        {
+          "typeName": "FLOAT4"
+        },
+        {
+          "typeName": "FLOAT8"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "string",
+      "compatibleTypes": [
+        {
+          "typeName": "VARCHAR"
+        },
+        {
+          "typeName": "CHAR"
+        },
+        {
+          "typeName": "CHARACTER"
+        },
+        {
+          "typeName": "STRING"
+        },
+        {
+          "typeName": "TEXT"
+        },
+        {
+          "typeName": "BOOL"
+        },
+        {
+          "typeName": "BOOLEAN"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "bytes",
+      "compatibleTypes": [
+        {
+          "typeName": "BINARY"
+        },
+        {
+          "typeName": "VARBINARY"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "date",
+      "compatibleTypes": [
+        {
+          "typeName": "DATE"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "datetime",
+      "compatibleTypes": [
+        {
+          "typeName": "DATETIME"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "time",
+      "compatibleTypes": [
+        {
+          "typeName": "TIME"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "timestamp",
+      "compatibleTypes": [
+        {
+          "typeName": "TIMESTAMP"
+        },
+        {
+          "typeName": "TIMESTAMPLTZ"
+        },
+        {
+          "typeName": "TIMESTAMPNTZ"
+        },
+        {
+          "typeName": "TIMESTAMPTZ"
+        }
+      ]
+    }
+  ]
+}

@@ -40,12 +40,13 @@ This module will read the database structure from the source and map it to a tar
 
 Currently, supported databases for translation are shown below in the table.
 
-|         | **BigQuery** | **Snowflake** |  **MySQL**  | **Postgres** |
-|---------|:--------:|:--------:|:-------:|:--------:|
-| **BigQuery** |     /     |     ✅     |    ✅     |     ✅     |
-| **Snowflake** |    ✅     |     /     |   ✅      |    ✅      |
-| **MySQL**   |      ✅    |     ✅     |    /    |      ✅     |
-| **Postgres** |     ✅     |     ✅     |    ✅    |    /     |
+|         | **BigQuery** | **Snowflake** |  **MySQL**  | **Postgres** | **Kinetica** |
+|---------|:--------:|:--------:|:-------:|:--------:|:--------:|
+| **BigQuery** |     /     |     ✅     |    ✅     |     ✅     |   ✅      |
+| **Snowflake** |    ✅     |     /     |   ✅      |    ✅      |   ✅      |
+| **MySQL**   |      ✅    |     ✅     |    /    |      ✅     |    ✅      | 
+| **Postgres** |     ✅     |     ✅     |    ✅    |    /     |     ✅      | 
+| **Kinetica** |     ✅     |     ✅     |    ✅    |     ✅    |     /      |
 
 ## Getting Started
 
@@ -58,6 +59,7 @@ The JDBC drivers for the rosetta supported databases can be downloaded from the 
 - [Snowflake JDBC 3.13.19](https://repo1.maven.org/maven2/net/snowflake/snowflake-jdbc/3.13.19/snowflake-jdbc-3.13.19.jar)
 - [Postgresql JDBC 42.3.7](https://jdbc.postgresql.org/download/postgresql-42.3.7.jar)
 - [MySQL JDBC 8.0.30](https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-8.0.30.zip)
+- [Kinetica JDBC 7.1.7.7](https://github.com/kineticadb/kinetica-client-jdbc/archive/refs/tags/v7.1.7.7.zip)
 
 Set the ENV variable `ROSETTA_DRIVERS` to point to the location of your JDBC drivers.
 

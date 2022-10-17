@@ -1,0 +1,131 @@
+{
+  "version": "0.0.1",
+  "converters": [
+    {
+      "targetTypeName": "TEXT",
+      "compatibleTypes": [
+        {
+          "typeName": "string"
+        },
+        {
+          "typeName": "char256"
+        },
+        {
+          "typeName": "char128"
+        },
+        {
+          "typeName": "char64"
+        },
+        {
+          "typeName": "char32"
+        },
+        {
+          "typeName": "char16"
+        },
+        {
+          "typeName": "char8"
+        },
+        {
+          "typeName": "char4"
+        },
+        {
+          "typeName": "char2"
+        },
+        {
+          "typeName": "char1"
+        },
+        {
+          "typeName": "ipv4"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "INTEGER",
+      "compatibleTypes": [
+        {
+          "typeName": "int"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "TINYINT",
+      "compatibleTypes": [
+        {
+          "typeName": "int8"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "SMALLINT",
+      "compatibleTypes": [
+        {
+          "typeName": "int16"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "BIGINT",
+      "compatibleTypes": [
+        {
+          "typeName": "long"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "FLOAT",
+      "compatibleTypes": [
+        {
+          "typeName": "float"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "DOUBLE",
+      "compatibleTypes": [
+        {
+          "typeName": "double"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "DECIMAL",
+      "compatibleTypes": [
+        {
+          "typeName": "decimal"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "TIMESTAMP",
+      "compatibleTypes": [
+        {
+          "typeName": "timestamp"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "DATE",
+      "compatibleTypes": [
+        {
+          "typeName": "date"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "DATETIME",
+      "compatibleTypes": [
+        {
+          "typeName": "datetime"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "TIME",
+      "compatibleTypes": [
+        {
+          "typeName": "time"
+        }
+      ]
+    }
+  ]
+}
