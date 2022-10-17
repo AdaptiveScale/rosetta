@@ -110,9 +110,21 @@ public class PostgresDDLGenerator implements DDL {
 
         if (!Objects.equals(expected.getTypeName(), actual.getTypeName())
                 || !Objects.equals(expected.isNullable(), actual.isNullable())) {
-            return String.format("ALTER TABLE%s MODIFY %s;",
-                    handleNullSchema(table.getSchema(), table.getName()),
-                    columnSQLDecoratorFactory.decoratorFor(expected).expressSQl());
+            String alterColumnString = columnSQLDecoratorFactory.decoratorFor(expected).expressSQl();
+            String formattedAlterColumn = String.format("%s TYPE %s", alterColumnString.split(" ")[0], alterColumnString.split(" ")[1]);
+
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("ALTER TABLE");
+            stringBuilder.append(handleNullSchema(table.getSchema(), table.getName()));
+            stringBuilder.append(" ALTER COLUMN ");
+            stringBuilder.append(formattedAlterColumn);
+            if(expected.isNullable()){
+                stringBuilder.append(", ALTER COLUMN ");
+                stringBuilder.append(expected.getName());
+                stringBuilder.append(" DROP NOT NULL");
+            }
+            stringBuilder.append(";");
+            return stringBuilder.toString();
         }
 
         log.info("No action taken for changes detected in column: {}.{}.{}", change.getTable().getSchema(),
@@ -154,7 +166,7 @@ public class PostgresDDLGenerator implements DDL {
 
     @Override
     public String dropForeignKey(ForeignKey actual) {
-        return "ALTER TABLE" + handleNullSchema(actual.getSchema(), actual.getTableName()) + " DROP FOREIGN KEY "+ DEFAULT_WRAPPER + actual.getName() + DEFAULT_WRAPPER +";";
+        return "ALTER TABLE" + handleNullSchema(actual.getSchema(), actual.getTableName()) + " DROP CONSTRAINT " + DEFAULT_WRAPPER + actual.getName() + DEFAULT_WRAPPER + ";";
     }
 
     @Override
