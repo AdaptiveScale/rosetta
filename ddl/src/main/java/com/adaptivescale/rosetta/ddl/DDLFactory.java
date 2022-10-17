@@ -11,6 +11,7 @@ import com.adaptivescale.rosetta.ddl.targets.kinetica.KineticaDDLGenerator;
 import com.adaptivescale.rosetta.ddl.targets.mysql.MySqlDDLGenerator;
 import com.adaptivescale.rosetta.ddl.targets.postgres.PostgresDDLGenerator;
 import com.adaptivescale.rosetta.ddl.targets.snowflake.SnowflakeDDLGenerator;
+import com.adaptivescale.rosetta.ddl.targets.spanner.SpannerDDLGenerator;
 
 import java.util.Comparator;
 
@@ -28,6 +29,8 @@ public class DDLFactory {
                 return new PostgresDDLGenerator();
             case "kinetica":
                 return new KineticaDDLGenerator();
+            case "spanner":
+                return new SpannerDDLGenerator();
             default:
                 throw new RuntimeException("DDL not supported for database type: " + databaseType);
         }
@@ -46,6 +49,8 @@ public class DDLFactory {
                 return new PostgresDDLExecutor(connection, driverProvider);
             case "kinetica":
                 return new KineticaDDLExecutor(connection, driverProvider);
+            case "spanner":
+                return new SpannerDDLExecutor(connection, driverProvider);
             default:
                 throw new RuntimeException("DDL not supported for database type: " + dbType);
         }
@@ -69,6 +74,8 @@ public class DDLFactory {
                 return new PostgresForeignKeyChangeComparator();
             case "kinetica":
                 return new KineticaForeignKeyChangeComparator();
+            case "spanner":
+                return new SpannerForeignKeyChangeComparator();
             default:
                 return null;
         }
@@ -82,6 +89,8 @@ public class DDLFactory {
                 return new PostgresChangeFinder();
             case "kinetica":
                 return new KineticaChangeFinder();
+            case "spanner":
+                return new SpannerChangeFinder();
             default:
                 return new DefaultChangeFinder();
         }
