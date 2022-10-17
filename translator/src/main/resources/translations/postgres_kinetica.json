@@ -1,0 +1,176 @@
+{
+  "version": "0.0.1",
+  "converters": [
+    {
+      "targetTypeName": "string",
+      "compatibleTypes": [
+        {
+          "typeName": "character"
+        },
+        {
+          "typeName": "character varying"
+        },
+        {
+          "typeName": "cidr"
+        },
+        {
+          "typeName": "inet"
+        },
+        {
+          "typeName": "json"
+        },
+        {
+          "typeName": "macaddr"
+        },
+        {
+          "typeName": "macaddr8"
+        },
+        {
+          "typeName": "text"
+        },
+        {
+          "typeName": "uuid"
+        },
+        {
+          "typeName": "varchar"
+        },
+        {
+          "typeName": "boolean"
+        },
+        {
+          "typeName": "bool"
+        },
+        {
+          "typeName": "mpaa_rating"
+        },
+        {
+          "typeName": "_text"
+        },
+        {
+          "typeName": "tsvector"
+        },
+        {
+          "typeName": "bpchar"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "bytes",
+      "compatibleTypes": [
+        {
+         "typeName": "bytea"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "int8",
+      "compatibleTypes": [
+        {
+          "typeName": "bit"
+        },
+        {
+          "typeName": "bit varying"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "int16",
+      "compatibleTypes": [
+        {
+          "typeName": "smallint"
+        },
+        {
+          "typeName": "smallserial"
+        },
+        {
+          "typeName": "int2"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "int",
+      "compatibleTypes": [
+        {
+          "typeName": "serial"
+        },
+        {
+          "typeName": "integer"
+        },
+        {
+          "typeName": "int"
+        },
+        {
+          "typeName": "int4"
+        },
+        {
+          "typeName": "year"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "long",
+      "compatibleTypes": [
+        {
+          "typeName": "bigint"
+        },
+        {
+          "typeName": "bigserial"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "float",
+      "compatibleTypes": [
+        {
+          "typeName": "real"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "double",
+      "compatibleTypes": [
+        {
+          "typeName": "double"
+        },
+        {
+          "typeName": "double precision"
+        },
+        {
+          "typeName": "numeric"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "decimal",
+      "compatibleTypes": [
+        {
+          "typeName": "decimal"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "date",
+      "compatibleTypes": [
+        {
+          "typeName": "date"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "time",
+      "compatibleTypes": [
+        {
+          "typeName": "time"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "datetime",
+      "compatibleTypes": [
+        {
+          "typeName": "timestamp"
+        }
+      ]
+    }
+  ]
+}
