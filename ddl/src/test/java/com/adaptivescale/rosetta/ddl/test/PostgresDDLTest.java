@@ -70,39 +70,39 @@ public class PostgresDDLTest {
     @Test
     public void alterColumnDataType() throws IOException {
         String ddl = generateDDL("alter_column_data_type");
-        Assertions.assertEquals("ALTER TABLE \"PLAYER\" MODIFY \"name\" INTEGER;", ddl);
+        Assertions.assertEquals("ALTER TABLE \"PLAYER\" ALTER COLUMN \"name\" TYPE INTEGER, ALTER COLUMN name DROP NOT NULL;", ddl);
     }
 
     @Test
     public void alterColumnToNullable() throws IOException {
         String ddl = generateDDL("alter_column_to_nullable");
-        Assertions.assertEquals("ALTER TABLE \"PLAYER\" MODIFY \"ID\" numeric;", ddl);
+        Assertions.assertEquals("ALTER TABLE \"PLAYER\" ALTER COLUMN \"ID\" TYPE numeric, ALTER COLUMN ID DROP NOT NULL;", ddl);
     }
 
     @Test
     public void alterColumnToNotNullable() throws IOException {
         String ddl = generateDDL("alter_column_to_not_nullable");
-        Assertions.assertEquals("ALTER TABLE \"PLAYER\" MODIFY \"ID\" numeric NOT NULL ;", ddl);
+        Assertions.assertEquals("ALTER TABLE \"PLAYER\" ALTER COLUMN \"ID\" TYPE numeric;", ddl);
     }
 
     @Test
     public void dropColumnWithForeignKey() throws IOException {
         String ddl = generateDDL("drop_column_with_foreign_key");
-        Assertions.assertEquals("ALTER TABLE \"FBAL\".\"PLAYER\" DROP FOREIGN KEY \"PLAYER_FK\";\r" +
+        Assertions.assertEquals("ALTER TABLE \"FBAL\".\"PLAYER\" DROP CONSTRAINT \"PLAYER_FK\";\r" +
                 "ALTER TABLE \"FBAL\".\"PLAYER\" DROP COLUMN \"POSITION_ID\";", ddl);
     }
 
     @Test
     public void dropColumnWithPrimaryKeyReferenced() throws IOException {
         String ddl = generateDDL("drop_column_with_primary_key_referenced");
-        Assertions.assertEquals("ALTER TABLE \"TEAMPLAYERS\" DROP FOREIGN KEY \"TEAMPLAYERS_FK\";\r" +
+        Assertions.assertEquals("ALTER TABLE \"TEAMPLAYERS\" DROP CONSTRAINT \"TEAMPLAYERS_FK\";\r" +
                 "ALTER TABLE \"PLAYER\" DROP COLUMN \"ID\";", ddl);
     }
 
     @Test
     public void dropTableWhereColumnIsReferenced() throws IOException {
         String ddl = generateDDL("drop_table_where_column_is_referenced");
-        Assertions.assertEquals("ALTER TABLE \"TEAMPLAYERS\" DROP FOREIGN KEY \"TEAMPLAYERS_FK_TEAM\";\r" +
+        Assertions.assertEquals("ALTER TABLE \"TEAMPLAYERS\" DROP CONSTRAINT \"TEAMPLAYERS_FK_TEAM\";\r" +
                 "DROP TABLE \"TEAM\";", ddl);
     }
 
@@ -116,13 +116,13 @@ public class PostgresDDLTest {
     @Test
     public void dropForeignKey() throws IOException {
         String ddl = generateDDL("drop_foreign_key");
-        Assertions.assertEquals("ALTER TABLE \"TEAMPLAYERS\" DROP FOREIGN KEY \"TEAMPLAYERS_FK\";", ddl);
+        Assertions.assertEquals("ALTER TABLE \"TEAMPLAYERS\" DROP CONSTRAINT \"TEAMPLAYERS_FK\";", ddl);
     }
 
     @Test
     public void dropPrimaryKey() throws IOException {
         String ddl = generateDDL("drop_primary_key");
-        Assertions.assertEquals("ALTER TABLE \"TEAMPLAYERS\" DROP FOREIGN KEY \"TEAMPLAYERS_FK\";\r" +
+        Assertions.assertEquals("ALTER TABLE \"TEAMPLAYERS\" DROP CONSTRAINT \"TEAMPLAYERS_FK\";\r" +
                 "ALTER TABLE \"PLAYER\" DROP PRIMARY KEY;", ddl);
     }
 
@@ -142,7 +142,7 @@ public class PostgresDDLTest {
     @Test
     public void alterForeignKeyName() throws IOException {
         String ddl = generateDDL("alter_foreign_key_name");
-        Assertions.assertEquals("ALTER TABLE \"TEAMPLAYERS\" DROP FOREIGN KEY \"TEAMPLAYERS_FK\";\r" +
+        Assertions.assertEquals("ALTER TABLE \"TEAMPLAYERS\" DROP CONSTRAINT \"TEAMPLAYERS_FK\";\r" +
                 "ALTER TABLE \"TEAMPLAYERS\" ADD CONSTRAINT TEAMPLAYERS_CHANGED_FK FOREIGN KEY (\"PLAYERID\") REFERENCES  " +
                 "\"PLAYER\"(\"ID\") ON DELETE NO ACTION ;\r", ddl);
     }
@@ -150,14 +150,14 @@ public class PostgresDDLTest {
     @Test
     public void alterForeignKey() throws IOException {
         String ddl = generateDDL("alter_foreign_key");
-        Assertions.assertEquals("ALTER TABLE \"TEAMPLAYERS\" DROP FOREIGN KEY \"TEAMPLAYERS_FK\";\r" +
+        Assertions.assertEquals("ALTER TABLE \"TEAMPLAYERS\" DROP CONSTRAINT \"TEAMPLAYERS_FK\";\r" +
                 "ALTER TABLE \"TEAMPLAYERS\" ADD CONSTRAINT TEAMPLAYERS_FK FOREIGN KEY (\"PLAYERID\") REFERENCES  \"PLAYER\"(\"ID\") ON DELETE SET NULL ;\r", ddl);
     }
 
     @Test
     public void dropPrimaryKeyColumnAndAlterForeignKey() throws IOException {
         String ddl = generateDDL("drop_pk_column_and_alter_fk");
-        Assertions.assertEquals("ALTER TABLE \"TEAMPLAYERS\" DROP FOREIGN KEY \"TEAMPLAYERS_FK\";\r" +
+        Assertions.assertEquals("ALTER TABLE \"TEAMPLAYERS\" DROP CONSTRAINT \"TEAMPLAYERS_FK\";\r" +
                 "ALTER TABLE \"PLAYER\" DROP COLUMN \"ID\";\r" +
                 "ALTER TABLE \"TEAMPLAYERS\" ADD CONSTRAINT TEAMPLAYERS_FK FOREIGN KEY (\"PLAYERID\") REFERENCES  \"POSITION\"(\"ID\");\r", ddl);
     }
@@ -165,7 +165,7 @@ public class PostgresDDLTest {
     @Test
     public void dropTableWithPrimaryKeyColumnAndAlterForeignKey() throws IOException {
         String ddl = generateDDL("drop_table_with_pk_column_and_alter_fk");
-        Assertions.assertEquals("ALTER TABLE \"TEAMPLAYERS\" DROP FOREIGN KEY \"TEAMPLAYERS_FK\";\r" +
+        Assertions.assertEquals("ALTER TABLE \"TEAMPLAYERS\" DROP CONSTRAINT \"TEAMPLAYERS_FK\";\r" +
                 "DROP TABLE \"PLAYER\";\r" +
                 "ALTER TABLE \"TEAMPLAYERS\" ADD CONSTRAINT TEAMPLAYERS_FK FOREIGN KEY (\"PLAYERID\") REFERENCES  \"POSITION\"(\"ID\");\r", ddl);
     }
