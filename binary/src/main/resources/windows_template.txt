@@ -55,7 +55,7 @@ if x%ROSETTA_DRIVERS% == x (
     if not exist %APP_HOME%/drivers mkdir "%APP_HOME%/drivers/"
     set CLASSPATH=%CLASSPATH%;%APP_HOME%/drivers/*
 ) else (
-    set CLASSPATH=%CLASSPATH%;%ROSETTA_DRIVERS%*
+    set CLASSPATH=%CLASSPATH%;%ROSETTA_DRIVERS%
 )
 
 <% if ( System.properties['BADASS_CDS_ARCHIVE_FILE_WINDOWS'] ) { %>
