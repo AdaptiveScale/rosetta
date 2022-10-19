@@ -165,6 +165,12 @@ url: jdbc:postgresql://<HOST>:15432/<DATABASE>?user=<USER>&password=<PASSWORD>
 url: jdbc:mysql://<USER>:<PASSWORD>@<HOST>:49154/<DATABASE>
 ```
 
+### Kinetica
+```
+url: jdbc:kinetica:URL=http://<HOST>:9191;CombinePrepareAndExecute=1
+```
+
+
 ## Rosetta Commands
 ### Available commands
 - init
