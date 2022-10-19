@@ -157,12 +157,12 @@ url: jdbc:snowflake://<HOST>:443/?db=<DATABASE>&user=<USER>&password=<PASSWORD>
 
 ### PostgreSQL
 ```
-url: jdbc:postgresql://<HOST>:15432/<DATABASE>?user=<USER>&password=<PASSWORD>
+url: jdbc:postgresql://<HOST>:5432/<DATABASE>?user=<USER>&password=<PASSWORD>
 ```
 
 ### MySQL
 ```
-url: jdbc:mysql://<USER>:<PASSWORD>@<HOST>:49154/<DATABASE>
+url: jdbc:mysql://<USER>:<PASSWORD>@<HOST>:3306/<DATABASE>
 ```
 
 ### Kinetica
