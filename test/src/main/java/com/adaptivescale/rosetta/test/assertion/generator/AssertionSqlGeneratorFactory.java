@@ -19,7 +19,7 @@ public class AssertionSqlGeneratorFactory {
         } else if ("kinetica".equals(connection.getDbType())) {
             return new DefaultAssertionSqlGenerator();
         } else if ("spanner".equals(connection.getDbType())) {
-            return new DefaultAssertionSqlGenerator();
+            return new SpannerAssertionSqlGenerator();
         }
         String msg = String.format("Database type '%s' not supported for assertion testing.", connection.getDbType());
         log.error(msg);
