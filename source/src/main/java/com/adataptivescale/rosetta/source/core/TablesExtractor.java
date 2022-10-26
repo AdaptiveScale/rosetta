@@ -25,7 +25,11 @@ public class TablesExtractor implements TableExtractor<Collection<Table>, Connec
             Table table = new Table();
             table.setName(resultSet.getString("TABLE_NAME"));
             table.setType(resultSet.getString("TABLE_TYPE"));
-            table.setSchema(resultSet.getString("TABLE_SCHEM"));
+            String tableSchema = resultSet.getString("TABLE_SCHEM");
+            if(tableSchema==null) {
+                tableSchema = resultSet.getString("TABLE_CAT");
+            }
+            table.setSchema(tableSchema);
 
             tables.add(table);
         }

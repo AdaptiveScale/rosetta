@@ -40,13 +40,14 @@ This module will read the database structure from the source and map it to a tar
 
 Currently, supported databases for translation are shown below in the table.
 
-|         | **BigQuery** | **Snowflake** |  **MySQL**  | **Postgres** | **Kinetica** |
-|---------|:--------:|:--------:|:-------:|:--------:|:--------:|
-| **BigQuery** |     /     |     ✅     |    ✅     |     ✅     |   ✅      |
-| **Snowflake** |    ✅     |     /     |   ✅      |    ✅      |   ✅      |
-| **MySQL**   |      ✅    |     ✅     |    /    |      ✅     |    ✅      | 
-| **Postgres** |     ✅     |     ✅     |    ✅    |    /     |     ✅      | 
-| **Kinetica** |     ✅     |     ✅     |    ✅    |     ✅    |     /      |
+|         | **BigQuery** | **Snowflake** |  **MySQL**  | **Postgres** | **Kinetica** | **Google Cloud Spanner** |
+|---------|:--------:|:--------:|:-------:|:--------:|:--------:|:--------:|
+| **BigQuery** |     /     |     ✅     |    ✅     |     ✅     |   ✅      |    ❌  |
+| **Snowflake** |    ✅     |     /     |   ✅      |    ✅      |   ✅      |    ❌  |
+| **MySQL**   |      ✅    |     ✅     |    /    |      ✅     |    ✅      |    ❌  |
+| **Postgres** |     ✅     |     ✅     |    ✅    |    /     |     ✅      |    ✅  |
+| **Kinetica** |     ✅     |     ✅     |    ✅    |     ✅    |     /      |    ❌  |
+| **Google Cloud Spanner** |     ❌     |     ❌     |    ❌    |     ❌    |     ❌     |    /  |
 
 ## Getting Started
 
@@ -170,6 +171,15 @@ url: jdbc:mysql://<USER>:<PASSWORD>@<HOST>:3306/<DATABASE>
 url: jdbc:kinetica:URL=http://<HOST>:9191;CombinePrepareAndExecute=1
 ```
 
+### Google Cloud Spanner
+```
+url: jdbc:cloudspanner:/projects/my-project/instances/my-instance/databases/my-db;credentials=/path/to/credentials.json
+```
+
+### Google CLoud Spanner (Emulator)
+```
+url: jdbc:cloudspanner://localhost:9010/projects/test/instances/test/databases/test?autoConfigEmulator=true
+```
 
 ## Rosetta Commands
 ### Available commands
