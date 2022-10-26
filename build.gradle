@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'com.adarshr.test-logger' version '3.2.0'
 }
 
 repositories {
@@ -8,7 +9,7 @@ repositories {
 
 allprojects {
     group = 'com.adaptivescale'
-    version = '1.4.0'
+    version = '1.4.1'
     sourceCompatibility = 11
     targetCompatibility = 11
 }
@@ -29,6 +30,7 @@ jar {
 subprojects {
     apply plugin: 'java'
     apply plugin: 'maven-publish'
+    apply plugin: 'com.adarshr.test-logger'
 
     sourceCompatibility = 11
     targetCompatibility = 11
@@ -52,4 +54,26 @@ subprojects {
 
 test {
     useJUnitPlatform()
+    testLogging {
+        showStandardStreams = true
+    }
+}
+
+testlogger {
+    showExceptions = true
+    showStackTraces = true
+    showFullStackTraces = false
+    showCauses = true
+    slowThreshold = 2000
+    showSummary = true
+    showSimpleNames = false
+    showPassed = true
+    showSkipped = true
+    showFailed = true
+    showOnlySlow = false
+    showStandardStreams = false
+    showPassedStandardStreams = true
+    showSkippedStandardStreams = true
+    showFailedStandardStreams = true
+    logLevel = LogLevel.LIFECYCLE
 }

@@ -1,0 +1,16 @@
+version: '3'
+services:
+  mysql:
+    image: sakiladb/mysql:latest
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=sakila
+
+  postgres:
+    image: frantiseks/postgres-sakila
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=sakilla
+
