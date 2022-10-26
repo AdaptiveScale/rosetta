@@ -119,7 +119,7 @@ public class SpannerDDLGenerator implements DDL {
         if (!Objects.equals(expected.getTypeName(), actual.getTypeName())
                 || !Objects.equals(expected.isNullable(), actual.isNullable())) {
             String alterColumnString = columnSQLDecoratorFactory.decoratorFor(expected).expressSQl();
-            String formattedAlterColumn = String.format("%s TYPE %s", alterColumnString.split(" ")[0], alterColumnString.split(" ")[1]);
+            String formattedAlterColumn = String.format("%s %s", alterColumnString.split(" ")[0], alterColumnString.split(" ")[1]);
 
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append("ALTER TABLE");

@@ -110,10 +110,10 @@ public class SpannerChangeFinder implements ChangeFinder {
                 boolean same = Objects.equals(expectedColumn.isNullable(), actualColumn.isNullable())
                         && Objects.equals(expectedColumn.isAutoincrement(), actualColumn.isAutoincrement())
                         && Objects.equals(expectedColumn.getTypeName(), extractFromSpannerJdbcTypeName(actualColumn))
-//                        && Objects.equals(expectedColumn.getPrecision(), actualColumn.getPrecision())
+                        && Objects.equals(expectedColumn.getPrecision(), actualColumn.getPrecision())
                         && Objects.equals(expectedColumn.getScale(), actualColumn.getScale())
                         && Objects.equals(expectedColumn.getOrdinalPosition(), actualColumn.getOrdinalPosition())
-//                        && Objects.equals(expectedColumn.getColumnDisplaySize(), actualColumn.getColumnDisplaySize())
+                        && Objects.equals(expectedColumn.getColumnDisplaySize(), actualColumn.getColumnDisplaySize())
                         && Objects.equals(expectedColumn.getPrimaryKeySequenceId(), actualColumn.getPrimaryKeySequenceId());
 
                 if (!same) {

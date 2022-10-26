@@ -48,6 +48,9 @@
         },
         {
           "typeName": "serial4"
+        },
+        {
+          "typeName": "year"
         }
       ]
     },
