@@ -126,10 +126,8 @@ public class SpannerDDLGenerator implements DDL {
             stringBuilder.append(handleNullSchema(table.getSchema(), table.getName()));
             stringBuilder.append(" ALTER COLUMN ");
             stringBuilder.append(formattedAlterColumn);
-            if(expected.isNullable()){
-                stringBuilder.append(", ALTER COLUMN ");
-                stringBuilder.append(expected.getName());
-                stringBuilder.append(" DROP NOT NULL");
+            if(expected.isNullable() == false){
+                stringBuilder.append(" NOT NULL");
             }
             stringBuilder.append(";");
             return stringBuilder.toString();
