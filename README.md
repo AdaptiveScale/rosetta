@@ -171,8 +171,12 @@ url: jdbc:mysql://<USER>:<PASSWORD>@<HOST>:3306/<DATABASE>
 url: jdbc:kinetica:URL=http://<HOST>:9191;CombinePrepareAndExecute=1
 ```
 
+### Google Cloud Spanner
+```
+url: jdbc:cloudspanner:/projects/my-project/instances/my-instance/databases/my-db;credentials=/path/to/credentials.json
+```
 
-### Spanner
+### Google CLoud Spanner (Emulator)
 ```
 url: jdbc:cloudspanner://localhost:9010/projects/test/instances/test/databases/test?autoConfigEmulator=true
 ```
