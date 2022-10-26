@@ -27,6 +27,8 @@ public class SourceGeneratorFactory {
             columnsExtractor = new SnowflakeColumnsExtractor(connection);
         } else if ("kinetica".equals(connection.getDbType())) {
             columnsExtractor = new KineticaColumnsExtractor(connection);
+        } else if ("spanner".equals(connection.getDbType())) {
+            columnsExtractor = new SpannerColumnsExtractor(connection);
         } else {
             columnsExtractor = new ColumnsExtractor(connection);
         }
