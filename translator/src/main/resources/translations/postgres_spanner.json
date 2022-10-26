@@ -1,0 +1,250 @@
+{
+  "version": "0.0.1",
+  "converters": [
+    {
+      "targetTypeName": "INT64",
+      "compatibleTypes": [
+        {
+          "typeName": "Bigint"
+        },
+        {
+          "typeName": "int8"
+        },
+        {
+          "typeName": "Bigserial"
+        },
+        {
+          "typeName": "serial8"
+        },
+        {
+          "typeName": "Integer"
+        },
+        {
+          "typeName": "int"
+        },
+        {
+          "typeName": "int4"
+        },
+        {
+          "typeName": "money"
+        },
+        {
+          "typeName": "interval"
+        },
+        {
+          "typeName": "smallint"
+        },
+        {
+          "typeName": "int2"
+        },
+        {
+          "typeName": "Smallserial"
+        },
+        {
+          "typeName": "serial2"
+        },
+        {
+          "typeName": "Serial"
+        },
+        {
+          "typeName": "serial4"
+        },
+        {
+          "typeName": "year"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "NUMERIC",
+      "compatibleTypes": [
+        {
+          "typeName": "numeric"
+        },
+        {
+          "typeName": "decimal"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "ARRAY<BOOL>",
+      "compatibleTypes": [
+        {
+          "typeName": "bit"
+        },
+        {
+          "typeName": "bit varying"
+        },
+        {
+          "typeName": "varbit"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "BOOL",
+      "compatibleTypes": [
+        {
+          "typeName": "Boolean"
+        },
+        {
+          "typeName": "boool"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "FLOAT64",
+      "compatibleTypes": [
+        {
+          "typeName": "double precision"
+        },
+        {
+          "typeName": "float8"
+        },
+        {
+          "typeName": "Real"
+        },
+        {
+          "typeName": "float4"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "ARRAY<FLOAT64>",
+      "compatibleTypes": [
+        {
+          "typeName": "box"
+        },
+        {
+          "typeName": "circle"
+        },
+        {
+          "typeName": "double precision"
+        },
+        {
+          "typeName": "float8"
+        },
+        {
+          "typeName": "line"
+        },
+        {
+          "typeName": "lseg"
+        },
+        {
+          "typeName": "path"
+        },
+        {
+          "typeName": "point"
+        },
+        {
+          "typeName": "polygon"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "BYTES",
+      "compatibleTypes": [
+        {
+          "typeName": "bytea"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "DATE",
+      "compatibleTypes": [
+        {
+          "typeName": "date"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "TIMESTAMP",
+      "compatibleTypes": [
+        {
+          "typeName": "timestamp"
+        },
+        {
+          "typeName": "timestamptz"
+        },
+        {
+          "typeName": "timestamp without time zone"
+        },
+        {
+          "typeName": "timestamp with time zone"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "STRING",
+      "compatibleTypes": [
+        {
+          "typeName": "character"
+        },
+        {
+          "typeName": "char"
+        },
+        {
+          "typeName": "character varying"
+        },
+        {
+          "typeName": "varchar"
+        },
+        {
+          "typeName": "cidr"
+        },
+        {
+          "typeName": "inet"
+        },
+        {
+          "typeName": "json"
+        },
+        {
+          "typeName": "jsonb"
+        },
+        {
+          "typeName": "macaddr"
+        },
+        {
+          "typeName": "macaddr8"
+        },
+        {
+          "typeName": "text"
+        },
+        {
+          "typeName": "uuid"
+        },
+        {
+          "typeName": "boolean"
+        },
+        {
+          "typeName": "bool"
+        },
+        {
+          "typeName": "mpaa_rating"
+        },
+        {
+          "typeName": "_text"
+        },
+        {
+          "typeName": "time"
+        },
+        {
+          "typeName": "time without time zone"
+        },
+        {
+          "typeName": "time with time zone"
+        },
+        {
+          "typeName": "timetz"
+        },
+        {
+          "typeName": "tsvector"
+        },
+        {
+          "typeName": "bpchar"
+        },
+        {
+          "typeName": "xml"
+        }
+      ]
+    }
+  ]
+}
