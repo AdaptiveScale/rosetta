@@ -8,6 +8,7 @@ import com.adaptivescale.rosetta.ddl.change.MySQLChangeFinder;
 import com.adaptivescale.rosetta.ddl.change.model.Change;
 import com.adaptivescale.rosetta.ddl.executor.DDLExecutor;
 import com.adataptivescale.rosetta.source.core.SourceGeneratorFactory;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.jupiter.api.*;
 import org.testcontainers.containers.JdbcDatabaseContainer;
@@ -122,6 +123,8 @@ public class MySqlDDLIntegrationTest {
     @Test
     @DisplayName("Test apply changes")
     @Order(3)
+    @Ignore
+    @Disabled
     void testApply() throws Exception {
         Database sourceModel = getDatabaseModel(mySQLContainer);
         ObjectMapper objectMapper = new ObjectMapper();
