@@ -61,6 +61,24 @@ The JDBC drivers for the rosetta supported databases can be downloaded from the 
 - [Postgresql JDBC 42.3.7](https://jdbc.postgresql.org/download/postgresql-42.3.7.jar)
 - [MySQL JDBC 8.0.30](https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-8.0.30.zip)
 - [Kinetica JDBC 7.1.7.7](https://github.com/kineticadb/kinetica-client-jdbc/archive/refs/tags/v7.1.7.7.zip)
+- [Google Cloud Spanner JDBC 2.6.2](https://search.maven.org/remotecontent?filepath=com/google/cloud/google-cloud-spanner-jdbc/2.6.2/google-cloud-spanner-jdbc-2.6.2-single-jar-with-dependencies.jar)
+
+**Note:** If you face one of the following errors with Google Cloud Spanner JDBC
+
+```
+java.sql.SQLException: No suitable driver
+
+or
+
+java.lang.SecurityException: Invalid signature file digest for Manifest main attributes
+```
+
+you can fix it by running the following command where your driver is located:
+```
+zip -d google-cloud-spanner-jdbc-2.6.2-single-jar-with-dependencies.jar 'META-INF/.SF' 'META-INF/.RSA' 'META-INF/*SF'
+```
+
+### ROSETTA_DRIVERS Environment
 
 Set the ENV variable `ROSETTA_DRIVERS` to point to the location of your JDBC drivers.
 
