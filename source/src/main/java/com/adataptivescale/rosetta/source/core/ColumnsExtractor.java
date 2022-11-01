@@ -116,8 +116,6 @@ public class ColumnsExtractor implements ColumnExtractor<java.sql.Connection, Co
             index.setAscOrDesc(exportedKeys.getString("ASC_OR_DESC"));
 
             indicesMappedByName.put(indexName, index);
-//            List<Index> indices = result.computeIfAbsent(table.getName(), k -> new ArrayList<>());
-//            indices.add(index);
         }
 
         result.put(table.getName(), new ArrayList<Index>(indicesMappedByName.values()));
