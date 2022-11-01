@@ -39,6 +39,7 @@ public class ChangeHandlerImplementation implements ChangeHandler{
                     break;
                 case FOREIGN_KEY:
                     ddlStatements.add(onForeignKeyChange((ForeignKeyChange) change));
+                    break;
                 case INDEX:
                     ddlStatements.add(onIndexChange((IndexChange) change));
             }
