@@ -1,9 +1,6 @@
 package com.adaptivescale.rosetta.ddl.targets.spanner;
 
-import com.adaptivescale.rosetta.common.models.Column;
-import com.adaptivescale.rosetta.common.models.Database;
-import com.adaptivescale.rosetta.common.models.ForeignKey;
-import com.adaptivescale.rosetta.common.models.Table;
+import com.adaptivescale.rosetta.common.models.*;
 import com.adaptivescale.rosetta.ddl.DDL;
 import com.adaptivescale.rosetta.ddl.change.model.ColumnChange;
 import com.adaptivescale.rosetta.ddl.change.model.ForeignKeyChange;
@@ -97,6 +94,19 @@ public class SpannerDDLGenerator implements DDL {
         if (!foreignKeys.isEmpty()) {
             stringBuilder.append("\r").append(foreignKeys).append("\r");
         }
+
+        String indices = database
+            .getTables()
+            .stream()
+            .map(this::createIndicesForTable)
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .collect(Collectors.joining());
+
+        if (!indices.isEmpty()) {
+            stringBuilder.append("\r").append(indices).append("\r");
+        }
+
         return stringBuilder.toString();
     }
 
@@ -230,6 +240,33 @@ public class SpannerDDLGenerator implements DDL {
         return column.getForeignKeys().stream().map(this::createForeignKey).collect(Collectors.joining());
     }
 
+    private Optional<String> createIndicesForTable(Table table) {
+        String result = table
+            .getIndices()
+            .stream()
+            .map(this::createIndex).collect(Collectors.joining());
+
+        return result.isEmpty() ? Optional.empty() : Optional.of(result);
+    }
+
+    @Override
+    public String createIndex(Index index) {
+        if (index.getName().equals("PRIMARY_KEY") || index.getName().startsWith("IDX_")) {
+            return "";
+        }
+        String createIndexStatement = "CREATE INDEX ";
+        if (!index.getNonUnique()) {
+            createIndexStatement = "CREATE UNIQUE INDEX ";
+        }
+        return createIndexStatement + index.getName() + " ON" + handleNullSchema(index.getSchema(), index.getTableName())
+                + "(" + commaSeperatedColumns(index.getColumnNames()) + ");\r";
+    }
+
+    @Override
+    public String dropIndex(Index index) {
+        return "DROP INDEX " + index.getName() + ";\r";
+    }
+
     private String handleNullSchema(String schema, String tableName) {
         return ((schema == null || schema.isEmpty()) ? " " : (" "+ DEFAULT_WRAPPER + schema + DEFAULT_WRAPPER +".")) + DEFAULT_WRAPPER + tableName + DEFAULT_WRAPPER;
     }
@@ -246,5 +283,12 @@ public class SpannerDDLGenerator implements DDL {
             log.warn("Spanner does not support 'ON DELETE CASCADE' for foreign keys. Will be ignored.");
         }
         return "";
+    }
+
+    private String commaSeperatedColumns(List<String> columnNames) {
+        return columnNames
+            .stream()
+            .map(it -> DEFAULT_WRAPPER + it + DEFAULT_WRAPPER)
+            .collect(Collectors.joining(","));
     }
 }
