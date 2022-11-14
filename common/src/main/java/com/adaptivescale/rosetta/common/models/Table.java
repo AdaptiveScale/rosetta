@@ -9,6 +9,8 @@ public class Table {
     private String type;
     private String schema;
 
+    private String code;
+
     private Collection<Column> columns;
 
     public String getName() {
@@ -42,5 +44,13 @@ public class Table {
 
     public void setSchema(String schema) {
         this.schema = schema;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 }

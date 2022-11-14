@@ -11,10 +11,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class TablesExtractor implements TableExtractor<Collection<Table>, Connection, java.sql.Connection> {
+    private String[] EXTRACT_TYPES = new String[]{"TABLE"};
     @Override
     public Collection<Table> extract(Connection target, java.sql.Connection connection) throws SQLException {
         DatabaseMetaData metaData = connection.getMetaData();
-        ResultSet resultSet = metaData.getTables(target.getDatabaseName(), target.getSchemaName(), null, new String[]{"TABLE"});
+        ResultSet resultSet = metaData.getTables(target.getDatabaseName(), target.getSchemaName(), null, getEXTRACT_TYPES());
 
         Collection<Table> tables = new ArrayList<>();
 
@@ -38,5 +39,13 @@ public class TablesExtractor implements TableExtractor<Collection<Table>, Connec
             resultSet.close();
         }
         return tables;
+    }
+
+    public String[] getEXTRACT_TYPES() {
+        return EXTRACT_TYPES;
+    }
+
+    public void setEXTRACT_TYPES(String[] EXTRACT_TYPES) {
+        this.EXTRACT_TYPES = EXTRACT_TYPES;
     }
 }
