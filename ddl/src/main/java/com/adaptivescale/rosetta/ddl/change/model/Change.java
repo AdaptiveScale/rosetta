@@ -46,7 +46,8 @@ public class Change<T> {
         DATABASE,
         TABLE,
         COLUMN,
-        FOREIGN_KEY
+        FOREIGN_KEY,
+        INDEX
     }
 
     public enum Status {

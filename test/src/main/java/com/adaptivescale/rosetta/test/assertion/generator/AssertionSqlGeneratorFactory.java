@@ -16,6 +16,10 @@ public class AssertionSqlGeneratorFactory {
             return new SnowflakeAssertionSqlGenerator();
         } else if ("postgres".equals(connection.getDbType())) {
             return new DefaultAssertionSqlGenerator();
+        } else if ("kinetica".equals(connection.getDbType())) {
+            return new DefaultAssertionSqlGenerator();
+        } else if ("spanner".equals(connection.getDbType())) {
+            return new SpannerAssertionSqlGenerator();
         }
         String msg = String.format("Database type '%s' not supported for assertion testing.", connection.getDbType());
         log.error(msg);

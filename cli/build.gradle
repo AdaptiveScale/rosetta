@@ -20,12 +20,22 @@ dependencies {
     implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.3'
     implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: '2.13.3'   //debug only
+    implementation group: 'org.apache.commons', name: 'commons-text', version: '1.10.0'
 
     compileOnly 'org.projectlombok:lombok:1.18.12'
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    testImplementation "org.junit.jupiter:junit-jupiter:5.8.1"
+    testImplementation "org.testcontainers:testcontainers:1.17.5"
+    testImplementation "org.testcontainers:junit-jupiter:1.17.5"
+    testImplementation "org.testcontainers:mysql:1.17.5"
+    testImplementation 'mysql:mysql-connector-java:8.0.30'
+    testImplementation 'org.postgresql:postgresql:42.5.0'
+    testImplementation group: 'com.github.stefanbirkner', name: 'system-rules', version: '1.19.0'
+    testImplementation group: 'org.junit-pioneer', name: 'junit-pioneer', version: '1.8.0'
+
 }
 
 test {

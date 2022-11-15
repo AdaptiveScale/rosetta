@@ -62,9 +62,11 @@ public class SnowflakeChangesComparator implements Comparator<Change<?>> {
             return 1;
         }
 
+        //if change is drop, put ahead of all other changes
+        if (changeA.getStatus() == Change.Status.DROP) {
+            return -1;
+        }
 
         return 0;
-
-
     }
 }

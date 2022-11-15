@@ -1,35 +1,21 @@
-package com.adaptivescale.rosetta.ddl.targets.postgres;
+package com.adaptivescale.rosetta.ddl.targets.spanner;
 
-import com.adaptivescale.rosetta.common.annotations.RosettaModule;
-import com.adaptivescale.rosetta.common.models.Column;
-import com.adaptivescale.rosetta.common.models.Database;
-import com.adaptivescale.rosetta.common.models.ForeignKey;
-import com.adaptivescale.rosetta.common.models.Table;
-import com.adaptivescale.rosetta.common.types.RosettaModuleTypes;
+import com.adaptivescale.rosetta.common.models.*;
 import com.adaptivescale.rosetta.ddl.DDL;
 import com.adaptivescale.rosetta.ddl.change.model.ColumnChange;
 import com.adaptivescale.rosetta.ddl.change.model.ForeignKeyChange;
 import com.adaptivescale.rosetta.ddl.targets.ColumnSQLDecoratorFactory;
 import lombok.extern.slf4j.Slf4j;
 
-import java.sql.DatabaseMetaData;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.adaptivescale.rosetta.ddl.targets.postgres.Constants.DEFAULT_WRAPPER;
+import static com.adaptivescale.rosetta.ddl.targets.spanner.Constants.DEFAULT_WRAPPER;
 
 @Slf4j
-@RosettaModule(
-        name = "postgres",
-        type = RosettaModuleTypes.DDL_GENERATOR
-)
-public class PostgresDDLGenerator implements DDL {
+public class SpannerDDLGenerator implements DDL {
 
-
-    private final ColumnSQLDecoratorFactory columnSQLDecoratorFactory = new PostgresColumnDecoratorFactory();
+    private final ColumnSQLDecoratorFactory columnSQLDecoratorFactory = new SpannerColumnDecoratorFactory();
 
     @Override
     public String createColumn(Column column) {
@@ -38,10 +24,12 @@ public class PostgresDDLGenerator implements DDL {
 
     @Override
     public String createTable(Table table, boolean dropTableIfExists) {
+        if(table.getColumns().stream().filter(column -> column.isPrimaryKey()).count()==0){
+            throw new RuntimeException(String.format("Table %s has no primary key. Spanner requires tables to have primary key.", table.getName()));
+        }
         List<String> definitions = table.getColumns().stream().map(this::createColumn).collect(Collectors.toList());
 
         Optional<String> primaryKeysForTable = createPrimaryKeysForTable(table);
-        primaryKeysForTable.ifPresent(definitions::add);
         String definitionAsString = String.join(", ", definitions);
 
         StringBuilder stringBuilder = new StringBuilder();
@@ -60,7 +48,14 @@ public class PostgresDDLGenerator implements DDL {
                     .append(table.getSchema()).append(DEFAULT_WRAPPER).append(".");
         }
 
-        stringBuilder.append(DEFAULT_WRAPPER).append(table.getName()).append(DEFAULT_WRAPPER).append("(").append(definitionAsString).append(");");
+        stringBuilder.append(DEFAULT_WRAPPER).append(table.getName()).append(DEFAULT_WRAPPER)
+                .append("(").append(definitionAsString).append(")");
+        if(primaryKeysForTable.isPresent()) {
+            stringBuilder.append(" ");
+            stringBuilder.append(primaryKeysForTable.get());
+        }
+
+        stringBuilder.append(";");
         return stringBuilder.toString();
     }
 
@@ -70,16 +65,19 @@ public class PostgresDDLGenerator implements DDL {
 
         Set<String> schemas = database.getTables().stream().map(Table::getSchema).filter(s -> s != null && !s.isEmpty()).collect(Collectors.toSet());
         if (!schemas.isEmpty()) {
-            stringBuilder.append(
-                    schemas
-                            .stream()
-                            .map(schema -> "CREATE SCHEMA IF NOT EXISTS " + DEFAULT_WRAPPER + schema + DEFAULT_WRAPPER)
-                            .collect(Collectors.joining(";\r\r"))
-
-            );
-            stringBuilder.append(";\r");
+            throw new RuntimeException("Schema is not supported in Spanner");
         }
-
+        List<String> missingPrimaryKeys = new ArrayList<>();
+        database.getTables().forEach(table -> {
+            if(table.getColumns().stream().filter(column -> column.isPrimaryKey()).count()==0){
+                missingPrimaryKeys.add(table.getName());
+            }
+        });
+        if(!missingPrimaryKeys.isEmpty()){
+            throw new RuntimeException(
+                    String.format("Tables %s are missing primary key. Spanner does not allow table without primary key.",
+                            missingPrimaryKeys.stream().collect(Collectors.joining(","))));
+        }
         stringBuilder.append(database.getTables()
                 .stream()
                 .map(table -> createTable(table, dropTableIfExists))
@@ -96,6 +94,19 @@ public class PostgresDDLGenerator implements DDL {
         if (!foreignKeys.isEmpty()) {
             stringBuilder.append("\r").append(foreignKeys).append("\r");
         }
+
+        String indices = database
+            .getTables()
+            .stream()
+            .map(this::createIndicesForTable)
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .collect(Collectors.joining());
+
+        if (!indices.isEmpty()) {
+            stringBuilder.append("\r").append(indices).append("\r");
+        }
+
         return stringBuilder.toString();
     }
 
@@ -103,7 +114,8 @@ public class PostgresDDLGenerator implements DDL {
     public String createForeignKey(ForeignKey foreignKey) {
         return "ALTER TABLE" + handleNullSchema(foreignKey.getSchema(), foreignKey.getTableName()) + " ADD CONSTRAINT "
                 + foreignKey.getName() + " FOREIGN KEY ("+ DEFAULT_WRAPPER + foreignKey.getColumnName() + DEFAULT_WRAPPER +") REFERENCES "
-                + handleNullSchema(foreignKey.getPrimaryTableSchema(), foreignKey.getPrimaryTableName())
+                + foreignKey.getPrimaryTableName()
+//                + handleNullSchema(foreignKey.getPrimaryTableSchema(), foreignKey.getPrimaryTableName())
                 + "("+ DEFAULT_WRAPPER + foreignKey.getPrimaryColumnName()+ DEFAULT_WRAPPER + ")"
                 + foreignKeyDeleteRuleSanitation(foreignKeyDeleteRule(foreignKey)) + ";\r";
     }
@@ -117,17 +129,15 @@ public class PostgresDDLGenerator implements DDL {
         if (!Objects.equals(expected.getTypeName(), actual.getTypeName())
                 || !Objects.equals(expected.isNullable(), actual.isNullable())) {
             String alterColumnString = columnSQLDecoratorFactory.decoratorFor(expected).expressSQl();
-            String formattedAlterColumn = String.format("%s TYPE %s", alterColumnString.split(" ")[0], alterColumnString.split(" ")[1]);
+            String formattedAlterColumn = String.format("%s %s", alterColumnString.split(" ")[0], alterColumnString.split(" ")[1]);
 
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append("ALTER TABLE");
             stringBuilder.append(handleNullSchema(table.getSchema(), table.getName()));
             stringBuilder.append(" ALTER COLUMN ");
             stringBuilder.append(formattedAlterColumn);
-            if(expected.isNullable()){
-                stringBuilder.append(", ALTER COLUMN ");
-                stringBuilder.append(expected.getName());
-                stringBuilder.append(" DROP NOT NULL");
+            if(expected.isNullable() == false){
+                stringBuilder.append(" NOT NULL");
             }
             stringBuilder.append(";");
             return stringBuilder.toString();
@@ -230,6 +240,33 @@ public class PostgresDDLGenerator implements DDL {
         return column.getForeignKeys().stream().map(this::createForeignKey).collect(Collectors.joining());
     }
 
+    private Optional<String> createIndicesForTable(Table table) {
+        String result = table
+            .getIndices()
+            .stream()
+            .map(this::createIndex).collect(Collectors.joining());
+
+        return result.isEmpty() ? Optional.empty() : Optional.of(result);
+    }
+
+    @Override
+    public String createIndex(Index index) {
+        if (index.getName().equals("PRIMARY_KEY") || index.getName().startsWith("IDX_")) {
+            return "";
+        }
+        String createIndexStatement = "CREATE INDEX ";
+        if (!index.getNonUnique()) {
+            createIndexStatement = "CREATE UNIQUE INDEX ";
+        }
+        return createIndexStatement + index.getName() + " ON" + handleNullSchema(index.getSchema(), index.getTableName())
+                + "(" + commaSeperatedColumns(index.getColumnNames()) + ");\r";
+    }
+
+    @Override
+    public String dropIndex(Index index) {
+        return "DROP INDEX " + index.getName() + ";\r";
+    }
+
     private String handleNullSchema(String schema, String tableName) {
         return ((schema == null || schema.isEmpty()) ? " " : (" "+ DEFAULT_WRAPPER + schema + DEFAULT_WRAPPER +".")) + DEFAULT_WRAPPER + tableName + DEFAULT_WRAPPER;
     }
@@ -242,23 +279,16 @@ public class PostgresDDLGenerator implements DDL {
     }
 
     private String foreignKeyDeleteRule(ForeignKey foreignKey) {
-        if (foreignKey.getDeleteRule() == null || foreignKey.getDeleteRule().isEmpty()) {
-            return "";
+        if (foreignKey.getDeleteRule() != null || !foreignKey.getDeleteRule().isEmpty()) {
+            log.warn("Spanner does not support 'ON DELETE CASCADE' for foreign keys. Will be ignored.");
         }
-        switch (Integer.parseInt(foreignKey.getDeleteRule())) {
-            case DatabaseMetaData.importedKeyCascade:
-                return "ON DELETE CASCADE";
-            case DatabaseMetaData.importedKeySetNull:
-                return "ON DELETE SET NULL";
-            case DatabaseMetaData.importedKeyNoAction:
-                return "ON DELETE NO ACTION";
-            case DatabaseMetaData.importedKeySetDefault:
-            case DatabaseMetaData.importedKeyInitiallyDeferred:
-            case DatabaseMetaData.importedKeyInitiallyImmediate:
-            case DatabaseMetaData.importedKeyNotDeferrable:
-            default:
-                //todo add warn log
-                return "";
-        }
+        return "";
+    }
+
+    private String commaSeperatedColumns(List<String> columnNames) {
+        return columnNames
+            .stream()
+            .map(it -> DEFAULT_WRAPPER + it + DEFAULT_WRAPPER)
+            .collect(Collectors.joining(","));
     }
 }

@@ -1,16 +1,10 @@
 package com.adaptivescale.rosetta.ddl.change.comparator;
 
-import com.adaptivescale.rosetta.common.annotations.RosettaModule;
-import com.adaptivescale.rosetta.common.types.RosettaModuleTypes;
 import com.adaptivescale.rosetta.ddl.change.model.Change;
 
 import java.util.Comparator;
 
-@RosettaModule(
-        name = "kinetica",
-        type = RosettaModuleTypes.CHANGE_COMPARATOR
-)
-public class KineticaForeignKeyChangeComparator implements Comparator<Change<?>> {
+public class SpannerForeignKeyChangeComparator implements Comparator<Change<?>> {
 
     /**
      * ForeignKeys with status drop put at first
@@ -51,11 +45,6 @@ public class KineticaForeignKeyChangeComparator implements Comparator<Change<?>>
         }
 
         if (isFKChangeB) {
-            return -1;
-        }
-
-        //if change is drop, put ahead of all other changes
-        if (changeA.getStatus() == Change.Status.DROP) {
             return -1;
         }
 

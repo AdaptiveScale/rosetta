@@ -39,6 +39,9 @@ public class ChangeHandlerImplementation implements ChangeHandler{
                     break;
                 case FOREIGN_KEY:
                     ddlStatements.add(onForeignKeyChange((ForeignKeyChange) change));
+                    break;
+                case INDEX:
+                    ddlStatements.add(onIndexChange((IndexChange) change));
             }
         }
 
@@ -96,6 +99,18 @@ public class ChangeHandlerImplementation implements ChangeHandler{
                 return ddl.dropForeignKey(change.getActual());
             default:
                 throw new RuntimeException("Operation " + change.getStatus() + " for foreign key not supported");
+        }
+    }
+
+    @Override
+    public String onIndexChange(IndexChange change) {
+        switch (change.getStatus()) {
+            case ADD:
+                return ddl.createIndex(change.getExpected());
+            case DROP:
+                return ddl.dropIndex(change.getActual());
+            default:
+                throw new RuntimeException("Operation " + change.getStatus() + " for index not supported");
         }
     }
 }
