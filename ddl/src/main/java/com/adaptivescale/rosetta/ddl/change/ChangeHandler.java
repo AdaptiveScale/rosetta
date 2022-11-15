@@ -15,4 +15,6 @@ public interface ChangeHandler {
     String onColumnChange(ColumnChange change);
 
     String onForeignKeyChange(ForeignKeyChange change);
+
+    String onIndexChange(IndexChange change);
 }

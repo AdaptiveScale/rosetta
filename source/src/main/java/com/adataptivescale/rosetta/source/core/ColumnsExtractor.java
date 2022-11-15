@@ -2,6 +2,7 @@ package com.adataptivescale.rosetta.source.core;
 
 import com.adaptivescale.rosetta.common.models.Column;
 import com.adaptivescale.rosetta.common.models.ForeignKey;
+import com.adaptivescale.rosetta.common.models.Index;
 import com.adaptivescale.rosetta.common.models.Table;
 import com.adaptivescale.rosetta.common.models.input.Connection;
 import com.adataptivescale.rosetta.source.common.QueryHelper;
@@ -25,6 +26,7 @@ public class ColumnsExtractor implements ColumnExtractor<java.sql.Connection, Co
             Collection<Column> columns = new ArrayList<>();
             Map<String, Integer> primaryKeysData = extractPrimaryKeys(connection, table);
             Map<String, List<ForeignKey>> foreignKeys = extractForeignKeys(connection, table);
+            Map<String, List<Index>> indices = extractIndices(connection, table);
             ResultSet resultSet = connection.getMetaData().getColumns(this.connection.getDatabaseName(), table.getSchema(), table.getName(), null);
 
             while (resultSet.next()) {
@@ -39,6 +41,10 @@ public class ColumnsExtractor implements ColumnExtractor<java.sql.Connection, Co
                 }
                 columns.add(column);
                 table.setColumns(columns);
+            }
+
+            if (indices.containsKey(table.getName())) {
+                table.setIndices(indices.get(table.getName()));
             }
 
             if (!resultSet.isClosed()) {
@@ -86,6 +92,33 @@ public class ColumnsExtractor implements ColumnExtractor<java.sql.Connection, Co
             result.put(primaryKeys.getString("COLUMN_NAME"),
                     primaryKeys.getInt("KEY_SEQ"));
         }
+        return result;
+    }
+
+    private Map<String, List<Index>> extractIndices(java.sql.Connection connection, Table table) throws SQLException {
+        ResultSet exportedKeys = connection.getMetaData().getIndexInfo(this.connection.getDatabaseName(), table.getSchema(), table.getName(), false, false);
+        Map<String, List<Index>> result = new HashMap<>();
+        Map<String, Index> indicesMappedByName = new HashMap<>();
+
+        while (exportedKeys.next()) {
+            String indexName = exportedKeys.getString("INDEX_NAME");
+            Index index = indicesMappedByName.getOrDefault(indexName, new Index());
+
+            index.setName(exportedKeys.getString("INDEX_NAME"));
+            index.setSchema(exportedKeys.getString("TABLE_SCHEM"));
+            index.setTableName(exportedKeys.getString("TABLE_NAME"));
+            index.addColumn(exportedKeys.getString("COLUMN_NAME"));
+            index.setIndexQualifier(exportedKeys.getString("INDEX_QUALIFIER"));
+            index.setType(exportedKeys.getShort("TYPE"));
+            index.setCardinality(exportedKeys.getInt("CARDINALITY"));
+            index.setFilterCondition(exportedKeys.getString("FILTER_CONDITION"));
+            index.setNonUnique(exportedKeys.getBoolean("NON_UNIQUE"));
+            index.setAscOrDesc(exportedKeys.getString("ASC_OR_DESC"));
+
+            indicesMappedByName.put(indexName, index);
+        }
+
+        result.put(table.getName(), new ArrayList<Index>(indicesMappedByName.values()));
         return result;
     }
 }

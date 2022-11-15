@@ -1,9 +1,6 @@
 package com.adaptivescale.rosetta.ddl;
 
-import com.adaptivescale.rosetta.common.models.Column;
-import com.adaptivescale.rosetta.common.models.Database;
-import com.adaptivescale.rosetta.common.models.ForeignKey;
-import com.adaptivescale.rosetta.common.models.Table;
+import com.adaptivescale.rosetta.common.models.*;
 import com.adaptivescale.rosetta.ddl.change.model.ColumnChange;
 import com.adaptivescale.rosetta.ddl.change.model.ForeignKeyChange;
 
@@ -15,7 +12,6 @@ public interface DDL {
     String createDatabase(Database database, boolean dropTableIfExists);
 
     String createForeignKey(ForeignKey foreignKey);
-
 
     String alterColumn(ColumnChange change);
 
@@ -30,4 +26,12 @@ public interface DDL {
     String dropForeignKey(ForeignKey actual);
 
     String alterTable(Table expected, Table actual);
+
+    default String createIndex(Index index) {
+        return null;
+    }
+
+    default String dropIndex(Index actual) {
+        return null;
+    }
 }
