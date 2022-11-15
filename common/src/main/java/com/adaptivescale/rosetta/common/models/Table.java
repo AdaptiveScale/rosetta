@@ -1,6 +1,7 @@
 package com.adaptivescale.rosetta.common.models;
 
 import java.util.Collection;
+import java.util.List;
 
 public class Table {
 
@@ -8,6 +9,7 @@ public class Table {
     private String description;
     private String type;
     private String schema;
+    private List<Index> indices;
 
     private Collection<Column> columns;
 
@@ -42,5 +44,21 @@ public class Table {
 
     public void setSchema(String schema) {
         this.schema = schema;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public List<Index> getIndices() {
+        return indices;
+    }
+
+    public void setIndices(List<Index> indices) {
+        this.indices = indices;
     }
 }

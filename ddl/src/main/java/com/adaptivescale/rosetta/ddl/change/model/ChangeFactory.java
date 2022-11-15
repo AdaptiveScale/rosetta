@@ -1,9 +1,6 @@
 package com.adaptivescale.rosetta.ddl.change.model;
 
-import com.adaptivescale.rosetta.common.models.Column;
-import com.adaptivescale.rosetta.common.models.Database;
-import com.adaptivescale.rosetta.common.models.ForeignKey;
-import com.adaptivescale.rosetta.common.models.Table;
+import com.adaptivescale.rosetta.common.models.*;
 
 
 public class ChangeFactory {
@@ -22,5 +19,9 @@ public class ChangeFactory {
 
     public static Change<ForeignKey> foreignKeyChange(ForeignKey expected, ForeignKey actual, Change.Status status){
         return new ForeignKeyChange(expected, actual, status, Change.Type.FOREIGN_KEY);
+    }
+
+    public static Change<Index> indexChange(Index expected, Index actual, Change.Status status) {
+        return new IndexChange(expected, actual, status, Change.Type.INDEX);
     }
 }

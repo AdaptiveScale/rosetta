@@ -136,4 +136,5 @@ public class Column {
     public void setTests(Tests tests) {
         this.tests = tests;
     }
+
 }

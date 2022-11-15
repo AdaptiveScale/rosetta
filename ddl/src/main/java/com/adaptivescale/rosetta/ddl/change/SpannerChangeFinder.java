@@ -1,12 +1,10 @@
 package com.adaptivescale.rosetta.ddl.change;
 
-import com.adaptivescale.rosetta.common.models.Column;
-import com.adaptivescale.rosetta.common.models.Database;
-import com.adaptivescale.rosetta.common.models.ForeignKey;
-import com.adaptivescale.rosetta.common.models.Table;
+import com.adaptivescale.rosetta.common.models.*;
 import com.adaptivescale.rosetta.ddl.change.model.Change;
 import com.adaptivescale.rosetta.ddl.change.model.ChangeFactory;
 import com.adaptivescale.rosetta.ddl.change.model.ColumnChange;
+import com.adaptivescale.rosetta.ddl.change.model.IndexChange;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
@@ -46,7 +44,9 @@ public class SpannerChangeFinder implements ChangeFinder {
                 actualTables.remove(table);
                 //change in table
                 List<Change<?>> changesFromTables = findChangesInColumnsForTable(expectedTable, table, allForeignKeys);
+                List<Change<?>> changesFromIndices = findChangesInIndicesForTable(expectedTable, table);
                 changes.addAll(changesFromTables);
+                changes.addAll(changesFromIndices);
             } else {
                 throw new RuntimeException(String.format("Found %d table with name '%s' and schema '%s'",
                         foundedTables.size(), expectedTable.getName(), expectedTable.getSchema()));
@@ -67,6 +67,46 @@ public class SpannerChangeFinder implements ChangeFinder {
         List<Change<?>> result = filterDuplicates(changes);
         log.info("Found {} changes", result.size());
         return result;
+    }
+
+    private List<Change<?>> findChangesInIndicesForTable(Table expected, Table actual) {
+        List<Change<?>> changes = new ArrayList<>();
+        ArrayList<Index> actualIndices = new ArrayList<>(actual.getIndices());
+
+        for (Index expectedIndex : expected.getIndices()) {
+            List<Index> foundIndices = actualIndices
+                .stream()
+                .filter(index -> Objects.equals(expectedIndex.getName(), index.getName()))
+                .collect(Collectors.toList());
+
+            if (foundIndices.isEmpty()) {
+                Change<Index> indexChange = ChangeFactory.indexChange(expectedIndex, null, Change.Status.ADD);
+                changes.add(indexChange);
+
+            } else if (foundIndices.size() == 1) {
+                Index actualIndex = foundIndices.get(0);
+
+                boolean same = Objects.equals(expectedIndex, actualIndex);
+
+                if (!same) {
+                    changes.add(ChangeFactory.indexChange(expectedIndex, actualIndex, Change.Status.DROP));
+                    changes.add(ChangeFactory.indexChange(expectedIndex, actualIndex, Change.Status.ADD));
+                }
+
+                for (Index foundIndex: foundIndices) {
+                    actualIndices.remove(foundIndex);
+                }
+            } else {
+                throw new RuntimeException(String.format("Found %d indices with name '%s' in table '%s'.'%s'",
+                        foundIndices.size(), actual.getName(), actual.getName(), actual.getSchema()));
+            }
+        }
+
+        for (Index actualIndex : actualIndices) {
+            Change<Index> indexChange = ChangeFactory.indexChange(null, actualIndex, Change.Status.DROP);
+            changes.add(indexChange);
+        }
+        return changes;
     }
 
     private String extractFromSpannerJdbcTypeName(Column column) {
@@ -257,6 +297,10 @@ public class SpannerChangeFinder implements ChangeFinder {
 
             if (object instanceof Database) {
                 id = "DATABASE->" + change.getStatus() + "->" + ((Database) object).getDatabaseType();
+            }
+
+            if (object instanceof Index) {
+                id = "INDEX->" + change.getStatus() + "->" + ((Index) object).getSchema() + "->" + ((Index) object).getTableName() + "->" + ((Index) object).getName();
             }
 
             boolean contains = foreignKeysFound.contains(id);
