@@ -49,6 +49,51 @@ Currently, supported databases for translation are shown below in the table.
 | **Kinetica** |     ✅     |     ✅     |    ✅    |     ✅    |     /      |    ❌  |
 | **Google Cloud Spanner** |     ❌     |     ❌     |    ❌    |     ❌    |     ❌     |    /  |
 
+
+## Indices (Index)
+
+Indices are supported in Google Cloud Spanner. An example on how they are represented in model.yaml
+
+```
+tables:
+- name: "ExampleTable"
+  type: "TABLE"
+  schema: ""
+  indices:
+  - name: "PRIMARY_KEY"
+    schema: ""
+    tableName: "ExampleTable"
+    columnNames:
+    - "Id"
+    - "UserId"
+    nonUnique: false
+    indexQualifier: ""
+    type: 1
+    ascOrDesc: "A"
+    cardinality: -1
+  - name: "IDX_ExampleTable_AddressId_299189FB00FDAFA5"
+    schema: ""
+    tableName: "ExampleTable"
+    columnNames:
+    - "AddressId"
+    nonUnique: true
+    indexQualifier: ""
+    type: 2
+    ascOrDesc: "A"
+    cardinality: -1
+  - name: "TestIndex"
+    schema: ""
+    tableName: "ExampleTable"
+    columnNames:
+    - "ClientId"
+    - "DisplayName"
+    nonUnique: true
+    indexQualifier: ""
+    type: 2
+    ascOrDesc: "A"
+    cardinality: -1
+```
+
 ## Getting Started
 
 ### Prerequisites
@@ -160,6 +205,19 @@ connections:
     tables:
       - table_one
       - table_two
+```
+
+In the YAML config file you can also use environment variables. An example usage of environment variables in config file:
+
+```
+connections:
+  - name: snowflake_weather_prod
+    databaseName: SNOWFLAKE_SAMPLE_DATA
+    schemaName: WEATHER
+    dbType: snowflake
+    url: jdbc:snowflake://<account_identifier>.snowflakecomputing.com/?<connection_params>
+    userName: ${USER}
+    password: ${PASSWORD}
 ```
 
 ### Example connection string configurations for databases
