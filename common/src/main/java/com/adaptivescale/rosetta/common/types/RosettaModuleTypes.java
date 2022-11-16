@@ -21,4 +21,6 @@ public enum RosettaModuleTypes {
     DDL_EXECUTOR,
     CHANGE_COMPARATOR,
     CHANGE_FINDER,
+    COLUMN_EXTRACTOR,
+    TABLE_EXTRACTOR,
 }

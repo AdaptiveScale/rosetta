@@ -9,9 +9,12 @@ repositories {
 dependencies {
 
     implementation project(':common')
+    implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.30'
 
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.3'
     implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: '2.13.3'
+    compileOnly 'org.projectlombok:lombok:1.18.12'
+    annotationProcessor 'org.projectlombok:lombok:1.18.12'
 
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'

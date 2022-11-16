@@ -1,11 +1,17 @@
 package com.adataptivescale.rosetta.source.core;
 
+import com.adaptivescale.rosetta.common.annotations.RosettaModule;
 import com.adaptivescale.rosetta.common.models.Column;
 import com.adaptivescale.rosetta.common.models.input.Connection;
+import com.adaptivescale.rosetta.common.types.RosettaModuleTypes;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+@RosettaModule(
+        name = "spanner",
+        type = RosettaModuleTypes.COLUMN_EXTRACTOR
+)
 public class SpannerColumnsExtractor extends ColumnsExtractor {
   public SpannerColumnsExtractor(Connection connection) {
     super(connection);
