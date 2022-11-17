@@ -5,6 +5,7 @@ import java.util.Collection;
 public class Database {
 
     private Collection<Table> tables;
+    private Collection<View> views;
     private String databaseProductName;
     private String databaseType;
 
@@ -14,6 +15,14 @@ public class Database {
 
     public void setTables(Collection<Table> tables) {
         this.tables = tables;
+    }
+
+    public Collection<View> getViews() {
+        return views;
+    }
+
+    public void setViews(Collection<View> views) {
+        this.views = views;
     }
 
     public void setName(String databaseProductName) {
