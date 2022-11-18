@@ -1,9 +1,15 @@
 package com.adaptivescale.rosetta.ddl.change.comparator;
 
+import com.adaptivescale.rosetta.common.annotations.RosettaModule;
+import com.adaptivescale.rosetta.common.types.RosettaModuleTypes;
 import com.adaptivescale.rosetta.ddl.change.model.Change;
 
 import java.util.Comparator;
 
+@RosettaModule(
+        name = "spanner",
+        type = RosettaModuleTypes.CHANGE_COMPARATOR
+)
 public class SpannerForeignKeyChangeComparator implements Comparator<Change<?>> {
 
     /**
