@@ -4,20 +4,16 @@ import com.adaptivescale.rosetta.common.JDBCDriverProvider;
 import com.adaptivescale.rosetta.common.helpers.ModuleLoader;
 import com.adaptivescale.rosetta.common.models.Database;
 import com.adaptivescale.rosetta.common.DriverManagerDriverProvider;
-import com.adaptivescale.rosetta.common.models.Table;
 import com.adaptivescale.rosetta.common.models.input.Connection;
 import com.adaptivescale.rosetta.common.types.RosettaModuleTypes;
-import com.adataptivescale.rosetta.source.core.interfaces.ColumnExtractor;
 import com.adataptivescale.rosetta.source.core.interfaces.Generator;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
 import java.util.Optional;
 
 @Slf4j
 public class SourceGeneratorFactory {
-
     public static Generator<Database, Connection> sourceGenerator(Connection connection) {
         return sourceGenerator(connection, new DriverManagerDriverProvider());
     }
@@ -38,7 +34,6 @@ public class SourceGeneratorFactory {
     }
 
     private static TablesExtractor loadTableExtractor(Connection connection) {
-        ColumnExtractor<java.sql.Connection, Collection<Table>> columnsExtractor;
         Optional<Class<?>> tableExtractorModule = ModuleLoader.loadModuleByAnnotationClassValues(
                 TablesExtractor.class.getPackageName(), RosettaModuleTypes.TABLE_EXTRACTOR, connection.getDbType());
         if(tableExtractorModule.isEmpty()) {

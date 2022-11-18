@@ -36,7 +36,6 @@ dependencies {
     testImplementation 'org.postgresql:postgresql:42.5.0'
     testImplementation group: 'com.github.stefanbirkner', name: 'system-rules', version: '1.19.0'
     testImplementation group: 'org.junit-pioneer', name: 'junit-pioneer', version: '1.8.0'
-//    implementation files('/Users/ailegion/Projects/Drivers/allDrivers/kinetica-jdbc-7.1.7.7.jar')
 
 }
 
