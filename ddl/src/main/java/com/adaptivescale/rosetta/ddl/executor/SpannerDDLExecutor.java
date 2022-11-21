@@ -2,7 +2,9 @@ package com.adaptivescale.rosetta.ddl.executor;
 
 import com.adaptivescale.rosetta.common.JDBCDriverProvider;
 import com.adaptivescale.rosetta.common.JDBCUtils;
+import com.adaptivescale.rosetta.common.annotations.RosettaModule;
 import com.adaptivescale.rosetta.common.models.input.Connection;
+import com.adaptivescale.rosetta.common.types.RosettaModuleTypes;
 
 import java.sql.Driver;
 import java.sql.SQLException;
@@ -10,6 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+@RosettaModule(
+        name = "spanner",
+        type = RosettaModuleTypes.DDL_EXECUTOR
+)
 public class SpannerDDLExecutor implements DDLExecutor {
     private final Connection connection;
     private final JDBCDriverProvider driverProvider;

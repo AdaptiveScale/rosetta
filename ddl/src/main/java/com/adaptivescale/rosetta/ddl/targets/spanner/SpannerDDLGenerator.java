@@ -1,6 +1,8 @@
 package com.adaptivescale.rosetta.ddl.targets.spanner;
 
+import com.adaptivescale.rosetta.common.annotations.RosettaModule;
 import com.adaptivescale.rosetta.common.models.*;
+import com.adaptivescale.rosetta.common.types.RosettaModuleTypes;
 import com.adaptivescale.rosetta.ddl.DDL;
 import com.adaptivescale.rosetta.ddl.change.model.ColumnChange;
 import com.adaptivescale.rosetta.ddl.change.model.ForeignKeyChange;
@@ -13,6 +15,10 @@ import java.util.stream.Collectors;
 import static com.adaptivescale.rosetta.ddl.targets.spanner.Constants.DEFAULT_WRAPPER;
 
 @Slf4j
+@RosettaModule(
+        name = "spanner",
+        type = RosettaModuleTypes.DDL_GENERATOR
+)
 public class SpannerDDLGenerator implements DDL {
 
     private final ColumnSQLDecoratorFactory columnSQLDecoratorFactory = new SpannerColumnDecoratorFactory();

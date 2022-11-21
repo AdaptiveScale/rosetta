@@ -1,9 +1,11 @@
 package com.adaptivescale.rosetta.ddl.change;
 
+import com.adaptivescale.rosetta.common.annotations.RosettaModule;
 import com.adaptivescale.rosetta.common.models.Column;
 import com.adaptivescale.rosetta.common.models.Database;
 import com.adaptivescale.rosetta.common.models.ForeignKey;
 import com.adaptivescale.rosetta.common.models.Table;
+import com.adaptivescale.rosetta.common.types.RosettaModuleTypes;
 import com.adaptivescale.rosetta.ddl.change.model.*;
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,6 +15,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Slf4j
+@RosettaModule(
+        name = "mysql",
+        type = RosettaModuleTypes.CHANGE_FINDER
+)
 public class MySQLChangeFinder implements ChangeFinder {
 
     @Override
