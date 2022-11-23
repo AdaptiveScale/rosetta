@@ -5,6 +5,7 @@ import com.adaptivescale.rosetta.common.models.Column;
 import com.adaptivescale.rosetta.common.models.Database;
 import com.adaptivescale.rosetta.common.models.Table;
 import com.adaptivescale.rosetta.common.models.input.Connection;
+import com.adaptivescale.rosetta.common.models.test.AssertionResult;
 import com.adaptivescale.rosetta.common.models.test.Tests;
 import com.adaptivescale.rosetta.test.assertion.output.ConsoleOutput;
 import com.adaptivescale.rosetta.test.assertion.output.Output;
@@ -19,6 +20,7 @@ public class DefaultAssertTestEngine implements AssertTestEngine {
     private final AssertionSqlGenerator sqlGenerator;
     private final SqlExecution sqlExecution;
     private final Output output;
+    private final List<AssertionResult> results = new ArrayList<>();
 
     public DefaultAssertTestEngine(AssertionSqlGenerator sqlGenerator, SqlExecution sqlExecution) {
         this.sqlGenerator = sqlGenerator;
@@ -49,15 +51,25 @@ public class DefaultAssertTestEngine implements AssertTestEngine {
                     continue;
                 }
                 for (AssertTest assertion : assertions) {
+                    AssertionResult assertionResult = new AssertionResult();
+                    assertionResult.setAssertTest(assertion);
                     long startTime = output.printStartTest(assertion, column);
+                    assertionResult.setStartTime(startTime);
                     String sql = sqlGenerator.generateSql(connection, table, column, assertion);
+                    assertionResult.setSqlExecuted(sql);
                     String result = sqlExecution.execute(sql);
                     boolean pass = Objects.equals(assertion.getExpected(), result);
+                    assertionResult.setPass(pass);
+                    results.add(assertionResult);
                     output.printEndTest(assertion, column, startTime, pass, result);
                 }
             }
         }
 
         output.endTestForDatabase();
+    }
+
+    public List<AssertionResult> getResults() {
+        return results;
     }
 }
