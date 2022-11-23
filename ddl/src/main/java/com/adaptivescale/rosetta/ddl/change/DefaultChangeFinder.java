@@ -1,9 +1,6 @@
 package com.adaptivescale.rosetta.ddl.change;
 
-import com.adaptivescale.rosetta.common.models.Column;
-import com.adaptivescale.rosetta.common.models.Database;
-import com.adaptivescale.rosetta.common.models.ForeignKey;
-import com.adaptivescale.rosetta.common.models.Table;
+import com.adaptivescale.rosetta.common.models.*;
 import com.adaptivescale.rosetta.ddl.change.model.Change;
 import com.adaptivescale.rosetta.ddl.change.model.ChangeFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +27,7 @@ public class DefaultChangeFinder implements ChangeFinder {
             return changes;
         }
 
+        // Table changes
         Collection<Table> actualTables = new ArrayList<>(actual.getTables());
 
         for (Table expectedTable : expected.getTables()) {
@@ -59,8 +57,43 @@ public class DefaultChangeFinder implements ChangeFinder {
             changes.add(tableChange);
         }
 
+        // Process view changes
+        viewChanges(expected, actual, changes);
+
         log.info("Found {} changes", changes.size());
         return changes;
+    }
+
+    private void viewChanges(Database expected, Database actual, List<Change<?>> changes) {
+        // Table changes
+        Collection<View> actualViews = new ArrayList<>(actual.getViews());
+
+        for (View expectedView : expected.getViews()) {
+            List<View> foundViews = actualViews
+                    .stream()
+                    .filter(view -> Objects.equals(expectedView.getName(), view.getName()) && Objects.equals(expectedView.getSchema(), view.getSchema()))
+                    .collect(Collectors.toList());
+
+            if (foundViews.size() == 0) {
+                Change<View> tableChange = ChangeFactory.viewChange(expectedView, null, Change.Status.ADD);
+                changes.add(tableChange);
+            } else if (foundViews.size() == 1) {
+                View view = foundViews.get(0);
+                actualViews.remove(view);
+                //change in view - TODO -currently using table function as they identical - split in future
+                List<Change<?>> changesFromView = findChangesInColumnsForTable(expectedView, view);
+                changes.addAll(changesFromView);
+            } else {
+                throw new RuntimeException(String.format("Found %d view with name '%s' and schema '%s'",
+                        foundViews.size(), expectedView.getName(), expectedView.getSchema()));
+            }
+        }
+
+        //mark all for deletion
+        for (View actualView : actualViews) {
+            Change<View> viewChange = ChangeFactory.viewChange(null, actualView, Change.Status.DROP);
+            changes.add(viewChange);
+        }
     }
 
     private List<Change<?>> findChangesInColumnsForTable(Table expected, Table actual) {

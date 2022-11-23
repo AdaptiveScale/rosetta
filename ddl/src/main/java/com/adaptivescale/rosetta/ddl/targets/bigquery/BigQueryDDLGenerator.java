@@ -1,13 +1,11 @@
 package com.adaptivescale.rosetta.ddl.targets.bigquery;
 
-import com.adaptivescale.rosetta.common.models.Column;
-import com.adaptivescale.rosetta.common.models.Database;
-import com.adaptivescale.rosetta.common.models.ForeignKey;
-import com.adaptivescale.rosetta.common.models.Table;
+import com.adaptivescale.rosetta.common.models.*;
 import com.adaptivescale.rosetta.ddl.DDL;
 import com.adaptivescale.rosetta.ddl.change.model.ColumnChange;
 import com.adaptivescale.rosetta.ddl.change.model.ForeignKeyChange;
 import com.adaptivescale.rosetta.ddl.targets.ColumnSQLDecoratorFactory;
+import com.adaptivescale.rosetta.ddl.utils.TemplateEngine;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
@@ -150,5 +148,32 @@ public class BigQueryDDLGenerator implements DDL {
     @Override
     public String alterTable(Table expected, Table actual) {
         return null;
+    }
+
+    @Override
+    public String createView(View view, boolean dropViewIfExists) {
+        StringBuilder builder = new StringBuilder();
+
+        if (dropViewIfExists) {
+            Map<String, Object> params = new HashMap<>();
+            params.put("schemaName", view.getSchema());
+            params.put("viewName", view.getName());
+            builder.append(TemplateEngine.process("bigquery/view/drop", params));
+        }
+        Map<String, Object> createParams = new HashMap<>();
+        createParams.put("schemaName", view.getSchema());
+        createParams.put("viewName", view.getName());
+        createParams.put("viewCode", view.getCode());
+        builder.append(TemplateEngine.process( "bigquery/view/create", createParams));
+
+        return builder.toString();
+    }
+
+    @Override
+    public String dropView(View actual) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("schemaName", actual.getSchema());
+        params.put("viewName", actual.getName());
+        return TemplateEngine.process("bigquery/view/drop", params);
     }
 }

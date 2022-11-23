@@ -24,4 +24,8 @@ public class ChangeFactory {
     public static Change<Index> indexChange(Index expected, Index actual, Change.Status status) {
         return new IndexChange(expected, actual, status, Change.Type.INDEX);
     }
+
+    public static Change<View> viewChange(View expected, View actual, Change.Status status){
+        return new ViewChange(expected, actual, status, Change.Type.VIEW);
+    }
 }

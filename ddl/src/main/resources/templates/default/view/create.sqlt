@@ -1,0 +1,2 @@
+CREATE VIEW `[(${databaseName})].[(${schemaName})].[(${viewName})]`
+AS select * from `public.actor` limit 10;
