@@ -23,6 +23,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class BigQueryViewExtractor extends DefaultViewExtractor{
     @Override
@@ -39,8 +40,13 @@ public class BigQueryViewExtractor extends DefaultViewExtractor{
             for (Map<String, Object> record : records) {
                 Optional<View> tmpTable = viewsBySchema.get(schemaName).stream()
                         .filter(view -> view.getName().equals(record.get("table_name"))).findAny();
-                String ddl = record.get("ddl").toString();
-                tmpTable.ifPresent(table -> table.setCode(ddl));
+                String[] ddls = record.get("ddl").toString().split("\n");
+                String ddl = Arrays.stream(Arrays.copyOfRange(ddls, 1, ddls.length)).collect(Collectors.joining(" "));
+                if(ddl.endsWith(";")) {
+                    ddl= ddl.substring(0, ddl.length()-2);
+                }
+                String finalDdl = ddl;
+                tmpTable.ifPresent(table -> table.setCode(finalDdl));
             }
         }
     }
