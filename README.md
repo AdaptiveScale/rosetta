@@ -384,6 +384,8 @@ Parameter | Description
 -h, --help | Show the help message and exit.
 -c, --config CONFIG_FILE | YAML config file.  If none is supplied it will use main.conf in the current directory if it exists.
 -s, --source CONNECTION_NAME | The source connection is used to specify which models and connection to use.
+-m, --model MODEL_FILE (Optional) | The model file to use for apply. Default is `model.yaml`
+
 
 Example:
 ```
@@ -469,6 +471,8 @@ Parameter | Description
 -h, --help | Show the help message and exit.
 -c, --config CONFIG_FILE | YAML config file.  If none is supplied it will use main.conf in the current directory if it exists.
 -s, --source CONNECTION_NAME | The source connection is used to specify which models and connection to use.
+-m, --model MODEL_FILE (Optional) | The model file to use for apply. Default is `model.yaml`
+
 
 Example:
 

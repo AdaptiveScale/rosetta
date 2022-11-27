@@ -56,6 +56,9 @@ import static com.adaptivescale.rosetta.cli.Constants.*;
         description = "Declarative Database Management - DDL Transpiler"
 )
 class Cli implements Callable<Void> {
+
+    public static final String DEFAULT_MODEL_YAML = "model.yaml";
+
     @CommandLine.Spec
     CommandLine.Model.CommandSpec spec;
 
@@ -82,7 +85,7 @@ class Cli implements Callable<Void> {
         Files.createDirectory(sourceWorkspace);
 
         Database result = SourceGeneratorFactory.sourceGenerator(source).generate(source);
-        YamlModelOutput yamlInputModel = new YamlModelOutput("model.yaml", sourceWorkspace);
+        YamlModelOutput yamlInputModel = new YamlModelOutput(DEFAULT_MODEL_YAML, sourceWorkspace);
         yamlInputModel.write(result);
         log.info("Successfully written input database yaml ({}).", yamlInputModel.getFilePath());
 
@@ -155,7 +158,8 @@ class Cli implements Callable<Void> {
 
     @CommandLine.Command(name = "apply", description = "Get current model and compare with state of database," +
             " generate ddl for changes and apply to database. ", mixinStandardHelpOptions = true)
-    private void apply(@CommandLine.Option(names = {"-s", "--source"}, required = true) String sourceName) throws Exception {
+    private void apply(@CommandLine.Option(names = {"-s", "--source"}, required = true) String sourceName,
+                       @CommandLine.Option(names = {"-m", "--model"}, defaultValue = DEFAULT_MODEL_YAML) String model) throws Exception {
         requireConfig(config);
 
         Connection source = getSourceConnection(sourceName);
@@ -166,7 +170,7 @@ class Cli implements Callable<Void> {
                     " models for translation", sourceWorkspace, sourceName));
         }
 
-        List<Database> databases = getDatabases(sourceWorkspace)
+        List<Database> databases = getDatabaseForModel(sourceWorkspace, model)
                 .map(AbstractMap.SimpleImmutableEntry::getValue)
                 .collect(Collectors.toList());
 
@@ -283,7 +287,7 @@ class Cli implements Callable<Void> {
         List<Database> databases = getDatabases(sourceWorkspace).map(AbstractMap.SimpleImmutableEntry::getValue).collect(Collectors.toList());
 
         DbtModel dbtModel = DbtModelGenerator.dbtModelGenerator(connection, databases);
-        DbtYamlModelOutput dbtYamlModelOutput = new DbtYamlModelOutput("model.yaml", dbtWorkspace);
+        DbtYamlModelOutput dbtYamlModelOutput = new DbtYamlModelOutput(DEFAULT_MODEL_YAML, dbtWorkspace);
         dbtYamlModelOutput.write(dbtModel);
 
         Map<String, String> dbtSQLTables = DbtModelGenerator.dbtSQLGenerator(dbtModel);
@@ -294,7 +298,8 @@ class Cli implements Callable<Void> {
     }
 
     @CommandLine.Command(name = "diff", description = "Show difference between local model and database", mixinStandardHelpOptions = true)
-    private void diff(@CommandLine.Option(names = {"-s", "--source"}) String sourceName) throws Exception {
+    private void diff(@CommandLine.Option(names = {"-s", "--source"}) String sourceName,
+                      @CommandLine.Option(names = {"-m", "--model"}, defaultValue=DEFAULT_MODEL_YAML) String model) throws Exception {
         requireConfig(config);
         Connection sourceConnection = getSourceConnection(sourceName);
 
@@ -304,7 +309,7 @@ class Cli implements Callable<Void> {
                     " models for translation", sourceWorkspace, sourceName));
         }
 
-        List<Database> databases = getDatabases(sourceWorkspace)
+        List<Database> databases = getDatabaseForModel(sourceWorkspace, model)
                 .map(AbstractMap.SimpleImmutableEntry::getValue)
                 .collect(Collectors.toList());
 
@@ -394,6 +399,19 @@ class Cli implements Callable<Void> {
     private Stream<FileNameAndDatabasePair> getDatabases(Path directory) throws IOException {
         return Files.list(directory)
                 .filter(path -> !Files.isDirectory(path) && "yaml".equals(FilenameUtils.getExtension(path.toString())))
+                .map(path -> {
+                    try {
+                        Database input = new ObjectMapper(new YAMLFactory()).readValue(path.toFile(), Database.class);
+                        return new FileNameAndDatabasePair(path.getFileName().toString(), input);
+                    } catch (Exception exception) {
+                        throw new RuntimeException(exception);
+                    }
+                });
+    }
+
+    private Stream<FileNameAndDatabasePair> getDatabaseForModel(Path directory, String model) throws IOException {
+        return Files.list(directory)
+                .filter(path -> FilenameUtils.getName(path.toString()).equals(model) && !Files.isDirectory(path))
                 .map(path -> {
                     try {
                         Database input = new ObjectMapper(new YAMLFactory()).readValue(path.toFile(), Database.class);
