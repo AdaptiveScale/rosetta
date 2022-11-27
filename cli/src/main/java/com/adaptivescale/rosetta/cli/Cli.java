@@ -186,6 +186,12 @@ class Cli implements Callable<Void> {
             return;
         }
 
+        if (changes.stream().filter(change -> change.getStatus().equals(Change.Status.DROP)).findFirst().isPresent() &&
+            expectedDatabase.getSafetyOperationEnabled()) {
+            log.info("Not going to perform the changes because there are DROP operations and the safety operation is enabled.");
+            return;
+        }
+
         ChangeHandler handler = DDLFactory.changeHandler(source.getDbType());
         String ddl = handler.createDDLForChanges(changes);
 
