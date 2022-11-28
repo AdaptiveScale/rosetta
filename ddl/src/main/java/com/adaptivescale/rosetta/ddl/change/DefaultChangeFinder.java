@@ -82,7 +82,10 @@ public class DefaultChangeFinder implements ChangeFinder {
                 actualViews.remove(view);
                 //change in view - TODO -currently using table function as they identical - split in future
                 List<Change<?>> changesFromView = findChangesInColumnsForTable(expectedView, view);
-                changes.addAll(changesFromView);
+                if(!changesFromView.isEmpty()) {
+                    Change<View> viewChange = ChangeFactory.viewChange(expectedView, null, Change.Status.ALTER);
+                    changes.add(viewChange);
+                }
             } else {
                 throw new RuntimeException(String.format("Found %d view with name '%s' and schema '%s'",
                         foundViews.size(), expectedView.getName(), expectedView.getSchema()));

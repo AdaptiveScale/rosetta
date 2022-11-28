@@ -176,4 +176,13 @@ public class BigQueryDDLGenerator implements DDL {
         params.put("viewName", actual.getName());
         return TemplateEngine.process("bigquery/view/drop", params);
     }
+
+    @Override
+    public String alterView(View expected, View actual) {
+        Map<String, Object> createParams = new HashMap<>();
+        createParams.put("schemaName", expected.getSchema());
+        createParams.put("viewName", expected.getName());
+        createParams.put("viewCode", expected.getCode());
+        return TemplateEngine.process( "bigquery/view/alter", createParams);
+    }
 }

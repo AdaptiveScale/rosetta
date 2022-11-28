@@ -1,0 +1,3 @@
+create or replace view `[(${schemaName})].[(${viewName})]`
+[(${viewCode})]
+;
