@@ -4,7 +4,7 @@ import java.util.Collection;
 
 public class Database {
 
-    private Boolean safetyOperationEnabled = false;
+    private Boolean safeMode = false;
     private Collection<Table> tables;
     private String databaseProductName;
     private String databaseType;
@@ -37,11 +37,11 @@ public class Database {
         this.databaseType = databaseType;
     }
 
-    public Boolean getSafetyOperationEnabled() {
-        return safetyOperationEnabled;
+    public Boolean getSafeMode() {
+        return safeMode;
     }
 
-    public void setSafetyOperationEnabled(Boolean safetyOperationEnabled) {
-        this.safetyOperationEnabled = safetyOperationEnabled;
+    public void setSafeMode(Boolean safeMode) {
+        this.safeMode = safeMode;
     }
 }

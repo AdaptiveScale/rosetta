@@ -313,7 +313,7 @@ Parameter | Description
 Example:
 ```yaml
 ---
-safetyOperationEnabled: false
+safeMode: false
 databaseType: bigquery
 tables:
 - name: "profiles"
@@ -413,7 +413,7 @@ Parameter | Description
 Example:
 ```yaml
 ---
-safetyOperationEnabled: false
+safeMode: false
 databaseType: "mysql"
 tables:
   - name: "actor"
@@ -477,7 +477,7 @@ Example:
 (Actual database)
 ```yaml
 ---
-safetyOperationEnabled: false
+safeMode: false
 databaseType: "mysql"
 tables:
   - name: "actor"
@@ -503,7 +503,7 @@ tables:
 (Expected database)
 ```yaml
 ---
-safetyOperationEnabled: false
+safeMode: false
 databaseType: "mysql"
 tables:
   - name: "actor"
@@ -545,8 +545,8 @@ Description: Our actual database does not contain `first_name` so we expect it t
 
 
 ### Safety Operation
-In `model.yaml` you can find the attribute `safetyOperationEnabled` which is by default disabled. If you want to prevent any DROP operation during
-`apply` command, enable the safety operation the value for `safetyOperationEnabled: true`.
+In `model.yaml` you can find the attribute `safeMode` which is by default disabled (false). If you want to prevent any DROP operation during
+`apply` command, set `safeMode: true`.
 
 ## Copyright and License Information
 Unless otherwise specified, all content, including all source code files and documentation files in this repository are:

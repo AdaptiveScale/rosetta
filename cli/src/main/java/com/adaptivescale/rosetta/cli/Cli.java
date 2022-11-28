@@ -187,8 +187,8 @@ class Cli implements Callable<Void> {
         }
 
         if (changes.stream().filter(change -> change.getStatus().equals(Change.Status.DROP)).findFirst().isPresent() &&
-            expectedDatabase.getSafetyOperationEnabled()) {
-            log.info("Not going to perform the changes because there are DROP operations and the safety operation is enabled.");
+            expectedDatabase.getSafeMode()) {
+            log.info("Not going to perform the changes because there are DROP operations and the safe mode is enabled.");
             return;
         }
 
