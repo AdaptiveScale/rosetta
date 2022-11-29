@@ -133,8 +133,6 @@ public class BigQueryDDLGenerator implements DDL {
         return String.format("ALTER TABLE %s.%s ADD COLUMN %s;", change.getTable().getSchema(), change.getTable().getName(), columnNameWithType);
     }
 
-
-
     @Override
     public String dropTable(Table actual) {
         return String.format("DROP TABLE %s.%s;", actual.getSchema(), actual.getName());

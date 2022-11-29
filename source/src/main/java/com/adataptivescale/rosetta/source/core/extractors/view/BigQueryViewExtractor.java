@@ -16,7 +16,9 @@
 
 package com.adataptivescale.rosetta.source.core.extractors.view;
 
+import com.adaptivescale.rosetta.common.annotations.RosettaModule;
 import com.adaptivescale.rosetta.common.models.View;
+import com.adaptivescale.rosetta.common.types.RosettaModuleTypes;
 import com.adataptivescale.rosetta.source.common.QueryHelper;
 
 import java.sql.ResultSet;
@@ -25,6 +27,10 @@ import java.sql.Statement;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@RosettaModule(
+        name = "bigquery",
+        type = RosettaModuleTypes.VIEW_EXTRACTOR
+)
 public class BigQueryViewExtractor extends DefaultViewExtractor{
     @Override
     protected void attachViewDDL(Collection<View> views, java.sql.Connection connection) throws SQLException {

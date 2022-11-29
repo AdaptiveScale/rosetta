@@ -23,4 +23,5 @@ public enum RosettaModuleTypes {
     CHANGE_FINDER,
     COLUMN_EXTRACTOR,
     TABLE_EXTRACTOR,
+    VIEW_EXTRACTOR,
 }
