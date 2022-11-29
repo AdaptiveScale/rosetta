@@ -313,6 +313,7 @@ Parameter | Description
 Example:
 ```yaml
 ---
+safeMode: false
 databaseType: bigquery
 tables:
 - name: "profiles"
@@ -384,6 +385,8 @@ Parameter | Description
 -h, --help | Show the help message and exit.
 -c, --config CONFIG_FILE | YAML config file.  If none is supplied it will use main.conf in the current directory if it exists.
 -s, --source CONNECTION_NAME | The source connection is used to specify which models and connection to use.
+-m, --model MODEL_FILE (Optional) | The model file to use for apply. Default is `model.yaml`
+
 
 Example:
 ```
@@ -412,6 +415,7 @@ Parameter | Description
 Example:
 ```yaml
 ---
+safeMode: false
 databaseType: "mysql"
 tables:
   - name: "actor"
@@ -469,12 +473,15 @@ Parameter | Description
 -h, --help | Show the help message and exit.
 -c, --config CONFIG_FILE | YAML config file.  If none is supplied it will use main.conf in the current directory if it exists.
 -s, --source CONNECTION_NAME | The source connection is used to specify which models and connection to use.
+-m, --model MODEL_FILE (Optional) | The model file to use for apply. Default is `model.yaml`
+
 
 Example:
 
 (Actual database)
 ```yaml
 ---
+safeMode: false
 databaseType: "mysql"
 tables:
   - name: "actor"
@@ -500,6 +507,7 @@ tables:
 (Expected database)
 ```yaml
 ---
+safeMode: false
 databaseType: "mysql"
 tables:
   - name: "actor"
@@ -538,6 +546,11 @@ tables:
 ```
 
 Description: Our actual database does not contain `first_name` so we expect it to alter the table and add the column, inside the source directory there will be the executed DDL and a snapshot of the current database.
+
+
+### Safety Operation
+In `model.yaml` you can find the attribute `safeMode` which is by default disabled (false). If you want to prevent any DROP operation during
+`apply` command, set `safeMode: true`.
 
 ## Copyright and License Information
 Unless otherwise specified, all content, including all source code files and documentation files in this repository are:
