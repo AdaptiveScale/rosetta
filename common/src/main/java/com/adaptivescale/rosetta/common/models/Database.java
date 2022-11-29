@@ -4,6 +4,7 @@ import java.util.Collection;
 
 public class Database {
 
+    private Boolean safeMode = false;
     private Collection<Table> tables;
     private String databaseProductName;
     private String databaseType;
@@ -34,5 +35,13 @@ public class Database {
 
     public void setDatabaseType(String databaseType) {
         this.databaseType = databaseType;
+    }
+
+    public Boolean getSafeMode() {
+        return safeMode;
+    }
+
+    public void setSafeMode(Boolean safeMode) {
+        this.safeMode = safeMode;
     }
 }
