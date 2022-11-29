@@ -1,9 +1,11 @@
 package com.adaptivescale.rosetta.ddl.change;
 
+import com.adaptivescale.rosetta.common.annotations.RosettaModule;
 import com.adaptivescale.rosetta.common.models.Column;
 import com.adaptivescale.rosetta.common.models.Database;
 import com.adaptivescale.rosetta.common.models.ForeignKey;
 import com.adaptivescale.rosetta.common.models.Table;
+import com.adaptivescale.rosetta.common.types.RosettaModuleTypes;
 import com.adaptivescale.rosetta.ddl.change.model.Change;
 import com.adaptivescale.rosetta.ddl.change.model.ChangeFactory;
 import com.adaptivescale.rosetta.ddl.change.model.ColumnChange;
@@ -15,6 +17,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Slf4j
+@RosettaModule(
+        name = "postgres",
+        type = RosettaModuleTypes.CHANGE_FINDER
+)
 public class PostgresChangeFinder implements ChangeFinder {
 
     @Override

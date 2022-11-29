@@ -1,9 +1,11 @@
 package com.adaptivescale.rosetta.ddl.targets.kinetica;
 
+import com.adaptivescale.rosetta.common.annotations.RosettaModule;
 import com.adaptivescale.rosetta.common.models.Column;
 import com.adaptivescale.rosetta.common.models.Database;
 import com.adaptivescale.rosetta.common.models.ForeignKey;
 import com.adaptivescale.rosetta.common.models.Table;
+import com.adaptivescale.rosetta.common.types.RosettaModuleTypes;
 import com.adaptivescale.rosetta.ddl.DDL;
 import com.adaptivescale.rosetta.ddl.change.model.ColumnChange;
 import com.adaptivescale.rosetta.ddl.change.model.ForeignKeyChange;
@@ -20,6 +22,10 @@ import java.util.stream.Collectors;
 import static com.adaptivescale.rosetta.ddl.targets.kinetica.Constants.DEFAULT_WRAPPER;
 
 @Slf4j
+@RosettaModule(
+        name = "kinetica",
+        type = RosettaModuleTypes.DDL_GENERATOR
+)
 public class KineticaDDLGenerator implements DDL {
 
     private final ColumnSQLDecoratorFactory columnSQLDecoratorFactory = new KineticaColumnDecoratorFactory();

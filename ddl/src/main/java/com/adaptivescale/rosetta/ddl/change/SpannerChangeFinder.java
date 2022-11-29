@@ -1,6 +1,8 @@
 package com.adaptivescale.rosetta.ddl.change;
 
+import com.adaptivescale.rosetta.common.annotations.RosettaModule;
 import com.adaptivescale.rosetta.common.models.*;
+import com.adaptivescale.rosetta.common.types.RosettaModuleTypes;
 import com.adaptivescale.rosetta.ddl.change.model.Change;
 import com.adaptivescale.rosetta.ddl.change.model.ChangeFactory;
 import com.adaptivescale.rosetta.ddl.change.model.ColumnChange;
@@ -13,6 +15,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Slf4j
+@RosettaModule(
+        name = "spanner",
+        type = RosettaModuleTypes.CHANGE_FINDER
+)
 public class SpannerChangeFinder implements ChangeFinder {
     @Override
     public List<Change<?>> findChanges(Database expected, Database actual) {

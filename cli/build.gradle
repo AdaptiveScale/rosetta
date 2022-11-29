@@ -15,12 +15,13 @@ dependencies {
     implementation project(':test')
 
     implementation group: 'info.picocli', name: 'picocli', version: '4.6.3'
-    implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.30'
+    implementation group: 'org.slf4j', name: 'slf4j-simple', version: '2.0.5'
     implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.7'
     implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.3'
     implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: '2.13.3'   //debug only
     implementation group: 'org.apache.commons', name: 'commons-text', version: '1.10.0'
+    implementation group: 'org.reflections', name: 'reflections', version: '0.10.2'
 
     compileOnly 'org.projectlombok:lombok:1.18.12'
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
