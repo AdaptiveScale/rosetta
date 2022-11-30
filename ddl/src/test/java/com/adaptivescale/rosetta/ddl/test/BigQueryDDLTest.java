@@ -62,6 +62,20 @@ public class BigQueryDDLTest {
         Assertions.assertEquals("ALTER TABLE halis.tableA ALTER COLUMN columnB DROP NOT NULL;", ddl);
     }
 
+    @Test
+    public void addView() throws IOException {
+        String ddl = generateDDL("add_view");
+        Assertions.assertEquals("CREATE VIEW `halis.viewB`\r\n" +
+                "select * from tableB limit 1\r\n" +
+                ";", ddl);
+    }
+
+    @Test
+    public void dropView() throws IOException {
+        String ddl = generateDDL("drop_view");
+        Assertions.assertEquals("DROP VIEW IF EXISTS `halis.viewB`;", ddl);
+    }
+
     private String generateDDL(String testType) throws IOException {
         Database actual = Utils.getDatabase(resourceDirectory.resolve(testType), "actual_model.yaml");
         Database expected = Utils.getDatabase(resourceDirectory.resolve(testType), "expected_model.yaml");

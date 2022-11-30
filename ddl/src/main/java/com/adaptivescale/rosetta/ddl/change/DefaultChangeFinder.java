@@ -65,7 +65,11 @@ public class DefaultChangeFinder implements ChangeFinder {
     }
 
     private void viewChanges(Database expected, Database actual, List<Change<?>> changes) {
-        // Table changes
+        // Backwards compatibility
+        if (actual.getViews() == null) {
+            return;
+        }
+        // View changes
         Collection<View> actualViews = new ArrayList<>(actual.getViews());
 
         for (View expectedView : expected.getViews()) {
