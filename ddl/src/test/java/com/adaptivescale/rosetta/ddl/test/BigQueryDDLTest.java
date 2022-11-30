@@ -65,9 +65,8 @@ public class BigQueryDDLTest {
     @Test
     public void addView() throws IOException {
         String ddl = generateDDL("add_view");
-        Assertions.assertEquals("CREATE VIEW `halis.viewB`\r\n" +
-                "select * from tableB limit 1\r\n" +
-                ";", ddl);
+        Assertions.assertEquals("CREATE VIEW `halis.viewB` select * from tableB limit 1 ;",
+                ddl.replaceAll("(\\n)", " ").replaceAll("(\\r)", ""));
     }
 
     @Test
