@@ -45,7 +45,7 @@ public class MySqlDDLIntegrationTest {
 
     private static int PORT = 3306;
 
-    private static String DROP_VIEWS = "CREATE TABLE `date_time` (\n" +
+    private static String CREATE_DDL = "CREATE TABLE `date_time` (\n" +
             "  `c_date` date DEFAULT NULL,\n" +
             "  `c_year` year NOT NULL,\n" +
             "  `c_time` time NOT NULL,\n" +
@@ -55,7 +55,7 @@ public class MySqlDDLIntegrationTest {
             "  PRIMARY KEY (`user_date`)\n" +
             ")";
 
-    public static String DROP_VIEWS1 = "CREATE TABLE `numeric` (\n" +
+    public static String CREATE_DDL1 = "CREATE TABLE `numeric` (\n" +
             "  `c_bigint` bigint DEFAULT NULL,\n" +
             "  `c_boolean` tinyint(1) DEFAULT NULL,\n" +
             "  `c_decimal` decimal(10,0) NOT NULL,\n" +
@@ -75,7 +75,7 @@ public class MySqlDDLIntegrationTest {
             "  PRIMARY KEY (`useri_id`)\n" +
             ")";
 
-    private static String DROP_VIEWS2 = "CREATE TABLE `string_binary` (\n" +
+    private static String CREATE_DDL2 = "CREATE TABLE `string_binary` (\n" +
             "  `c_varchar` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,\n" +
             "  `c_character` char(1) NOT NULL,\n" +
             "  `c_binary` binary(1) NOT NULL,\n" +
@@ -94,23 +94,23 @@ public class MySqlDDLIntegrationTest {
             "  PRIMARY KEY (`c_name`)\n" +
             ")";
 
-    private static String DROP_USER = "CREATE TABLE `user` (\n" +
+    private static String CREATE_DDL3 = "CREATE TABLE `user` (\n" +
             "  `user_addr` varchar(32) NOT NULL,\n" +
             "  PRIMARY KEY (`user_addr`)\n" +
             ")";
 
-    private static String DROP_USER1 = "CREATE TABLE `user1` (\n" +
+    private static String CREATE_DDL4 = "CREATE TABLE `user1` (\n" +
             "  `user_salary` decimal(5,2) NOT NULL,\n" +
             "  PRIMARY KEY (`user_salary`)\n" +
             ")";
 
-    private static String DROP_USER2 = "CREATE TABLE `user2` (\n" +
+    private static String CREATE_DDL5 = "CREATE TABLE `user2` (\n" +
             "  `student_id` bigint unsigned NOT NULL AUTO_INCREMENT,\n" +
             "  PRIMARY KEY (`student_id`),\n" +
             "  UNIQUE KEY `student_id` (`student_id`)\n" +
             ")";
 
-    private static String DROP_VIEWSFK = "CREATE TABLE `user_test` (\n" +
+    private static String CREATE_DDL6 = "CREATE TABLE `user_test` (\n" +
             "  `user_id` int DEFAULT NULL,\n" +
             "  `name_t` char(1) DEFAULT NULL,\n" +
             "  `useri_date` date DEFAULT NULL,\n" +
@@ -188,13 +188,13 @@ public class MySqlDDLIntegrationTest {
     @DisplayName("Prep MySQL")
     @Order(0)
     void prep() throws Exception {
-        mySQLContainer.createConnection("").createStatement().execute(DROP_VIEWS);
-        mySQLContainer.createConnection("").createStatement().execute(DROP_VIEWS1);
-        mySQLContainer.createConnection("").createStatement().execute(DROP_VIEWS2);
-        mySQLContainer.createConnection("").createStatement().execute(DROP_USER);
-        mySQLContainer.createConnection("").createStatement().execute(DROP_USER1);
-        mySQLContainer.createConnection("").createStatement().execute(DROP_USER2);
-        mySQLContainer.createConnection("").createStatement().execute(DROP_VIEWSFK);
+        mySQLContainer.createConnection("").createStatement().execute(CREATE_DDL);
+        mySQLContainer.createConnection("").createStatement().execute(CREATE_DDL1);
+        mySQLContainer.createConnection("").createStatement().execute(CREATE_DDL2);
+        mySQLContainer.createConnection("").createStatement().execute(CREATE_DDL3);
+        mySQLContainer.createConnection("").createStatement().execute(CREATE_DDL4);
+        mySQLContainer.createConnection("").createStatement().execute(CREATE_DDL5);
+        mySQLContainer.createConnection("").createStatement().execute(CREATE_DDL6);
     }
 
 
