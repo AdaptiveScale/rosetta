@@ -12,6 +12,7 @@ import com.adaptivescale.rosetta.ddl.executor.DDLExecutor;
 import com.adaptivescale.rosetta.test.assertion.AssertionSqlGenerator;
 import com.adaptivescale.rosetta.test.assertion.DefaultAssertTestEngine;
 import com.adaptivescale.rosetta.test.assertion.DefaultSqlExecution;
+import com.adaptivescale.rosetta.test.assertion.generator.AssertionSqlGeneratorFactory;
 import com.adataptivescale.rosetta.source.core.SourceGeneratorFactory;
 import integration.helpers.GenericJDBCContainer;
 import org.junit.Ignore;
@@ -450,5 +451,33 @@ public class MySqlDDLIntegrationTest {
                 });
             }
         });
+    }
+
+    @Test
+    @DisplayName("Test MySQL Assertion tests")
+    @Order(6)
+    void testAssertionTest() throws Exception {
+        Database sourceModel = getDatabaseModel(mySQLContainer);
+        ObjectMapper objectMapper = new ObjectMapper();
+        Database targetModel = objectMapper.readValue(objectMapper.writeValueAsString(sourceModel), Database.class);
+        targetModel.getTables().forEach(table -> {
+            if(table.getName().equals("actor"))
+                table.getColumns().forEach(column -> {
+                    if(column.getName().equals("first_name")){
+                        AssertTest assertTest = new AssertTest();
+                        assertTest.setValue("Nick");
+                        assertTest.setOperator("=");
+                        assertTest.setExpected("3");
+                        Tests tests = new Tests();
+                        tests.setAssertions(List.of(assertTest));
+                        column.setTests(tests);
+                    }
+                });
+        });
+
+        AssertionSqlGenerator assertionSqlGenerator = AssertionSqlGeneratorFactory.generatorFor(getRosettaConnection(mySQLContainer));
+        DefaultSqlExecution defaultSqlExecution = new DefaultSqlExecution(getRosettaConnection(mySQLContainer), new DriverManagerDriverProvider());
+        new DefaultAssertTestEngine(assertionSqlGenerator, defaultSqlExecution).run(getRosettaConnection(mySQLContainer), targetModel);
+
     }
 }
