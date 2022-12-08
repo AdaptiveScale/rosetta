@@ -1,0 +1,147 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>RosettaDB Quick Start Guide</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid="UA-52746336-1"
+                  id="http://rosettadb.io"
+                  title="RosettaDB Quick Start Guide"
+                  environment="web"
+                  feedback-link="">
+    
+      <google-codelab-step label="Introduction" duration="0">
+        <p class="image-container"><img style="width: 600.00px" src="img/d5698afb88741da9.png"></p>
+<p>Welcome to the RosettaDB quickstart guide.  This guide will walk you through step-by-step on how to get started with using rosetta.</p>
+<h2 is-upgraded>What is RosettaDB?</h2>
+<p>RosettaDB is a declarative schema management toolset that allows you to define a database schema in a simple modeling language, DBML, written in YAML, which provides an abstraction for both managing database objects for a single database as well as porting, or transpiring, database objects from one database to another--you can model your schema once and deploy to any of the supported databases.   </p>
+<p>RosettaDB maintains the state of the database objects so that the DDL for the transformations of those objects over time are automatically generated from the declarative DBML model, and data quality tests can be incorporated directly into the model. By making database object declarative Rosetta can support idempotence of data pipelines and make database schema management programmable -- Database as Code!</p>
+<p>RosettaDB is declarative database modeling technology that supports the following functions:</p>
+<p>Defining database object in a declarative fashion using DBML, a YAML based object definition language that defines your database objects<br>Converting data models from one database system to another</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Prerequisites" duration="0">
+        <p>To follow along with this guide you will need access to a MySQL database.  For the sake of simplicity, you can set up the database in a docker container with the following command:<br></p>
+<pre>docker run -d --name mysql -p 3306:3306 restsql/mysql-sakila</pre>
+<aside class="special"><p><strong>Note:</strong> There are plenty of tutorials on the internet for setting up Docker for your operating system.  Please ensure that you have a MySQL database running either in a Docker container or locally on your system, that you can fully interact with, before you continue.</p>
+</aside>
+<p>The examples provided in this guide can be adopted for Linux, Windows and MacOS operating systems, and are left as an exercise for the user.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="RosettaDB Setup" duration="0">
+        <p>To install and use rosetta you will need both the rosetta binary and the corresponding JDBC for your database.</p>
+<h2 is-upgraded>Download RosettaDB Binary</h2>
+<p>You can download the binary for your operating system from <a href="https://github.com/AdaptiveScale/rosetta/releases/latest" target="_blank">GitHub</a>.</p>
+<p><a href="https://github.com/AdaptiveScale/rosetta/releases/latest" target="_blank"><paper-button class="colored" raised><iron-icon icon="file-download"></iron-icon>Download RosettaDB</paper-button></a></p>
+<p>Example of operating system specific downloads:</p>
+<p class="image-container"><img style="width: 233.50px" src="img/5170737fe308d9b8.png"></p>
+<h2 is-upgraded>Extract the Zip File</h2>
+<p>Using your system&#39;s unzip software, extract the archive to a desired location on your computer.</p>
+<pre>unzip rosetta-1.7.2-mac_x64.zip</pre>
+<aside class="warning"><p><strong>Caution:</strong> Extract the binary to a location where you have both read and write permissions. On linux or MacOS your home folder would be a good choice.</p>
+</aside>
+<h2 is-upgraded>Download JDBC Driver(s)</h2>
+<p>To connect to your database with rosetta it&#39;s recommended that you use a tested JDBC driver.  You can find download links for the JDBC drivers on the GitHub page or download directly from the vendor.</p>
+<p><a href="https://github.com/AdaptiveScale/rosetta#prerequisites" target="_blank"><paper-button class="colored" raised><iron-icon icon="file-download"></iron-icon>Download JDBC Driver</paper-button></a></p>
+<aside class="special"><p><strong>Note:</strong> The JDBC drivers tested with RosettaDB are linked from the GitHub page.</p>
+</aside>
+<p>There&#39;s a good chance the JDBC driver is provided as a Zip file, so you need to extract that to your computer as well. Locate the JAR file for your driver as you will be using this in a later step to configure your database connection.</p>
+<p class="image-container"><img style="width: 298.53px" src="img/27b0d2de2f8279a1.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Environment Settings" duration="0">
+        <p>Accessing the RosettaDB binary can be done either by using a relative path or a fully qualified path from any directory.</p>
+<p>Update the <strong><code>PATH</code></strong> environment variable so that the rosetta binary can be invoked from any location.  You can do this by updating and reloading your system profile file – e.g. on linux this can be your <strong><code>.bashrc</code></strong> file.</p>
+<p>Additionally, RosettaDB will look for JDBC drivers on the path defined via the <strong><code>ROSETTA_DRIVERS</code></strong> variable.</p>
+<p>Add the following lines to your profile file...<br></p>
+<pre>export PATH=$PATH:~/rosetta-1.7.2-mac_x64/bin
+export ROSETTA_DRIVERS=~/drivers/jdbc/*</pre>
+<aside class="special"><p><strong>Note:</strong> Make sure to load (source) the profile file with the new settings.  You can do this by closing and reopening the terminal app.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Initialize a New Project" duration="0">
+        <p>RosettaDB organizes all of its working files into subfolders, and all your connections will be defined in a config file.</p>
+<p>To have rosetta prime the  config file for you, you can issue the <strong><code>init</code></strong> sub-command.</p>
+<pre>rosetta init my_project</pre>
+<p><strong><code>Example...</code></strong></p>
+<p class="image-container"><img style="width: 624.00px" src="img/c10c9505a1fba6ab.gif"></p>
+<p>Now that you have a project folder and your config file initialized, you can edit the main.conf file with your database configuration.  </p>
+<p>Here&#39;s an example configuration for a MySQL database running locally on this host:</p>
+<pre><code>connections:
+  - name: mysql
+    databaseName: sakila
+    dbType: mysql
+    url: jdbc:mysql://localhost:3306/sakila
+    userName: root
+    password: sakila</code></pre>
+<p><strong><code>Example...</code></strong></p>
+<p class="image-container"><img style="width: 624.00px" src="img/5e362566b25db40c.gif"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Extract your First Model" duration="0">
+        <p>To extract a DBML, a database model file in YAML format, you simply run the <strong><code>extract</code></strong> command pointing to the desired source connection.</p>
+<pre>rosetta extract -s mysql</pre>
+<aside class="special"><p><strong>Note:</strong> Make sure you change to the project directory you created earlier so that the <strong><code>main.conf</code></strong> file is referenced automatically. </p>
+</aside>
+<aside class="warning"><p><strong>TIP:</strong> Give your connections meaningful names since they will create folders with those same names.</p>
+</aside>
+<p><strong><code>Example...</code></strong></p>
+<p class="image-container"><img style="width: 624.00px" src="img/94e935d97571e9d6.gif"></p>
+<p>Once the extract command completes you will see a <strong><code>model.yaml</code></strong> file created inside of a new folder named <strong><code>mysql</code></strong>, the same name that was used for defining the connection to the MySQL database.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Summary" duration="0">
+        <p>In this guide you learned how to install and configure rosetta and you extracted your very first model.</p>
+<p>Try the following next steps for working with RosettaDB:</p>
+<ul>
+<li>Create multiple connections – e.g. MySQL and Postgres</li>
+<li>Convert the model from MySQL to Postgres with the <strong><code>compile</code></strong> subcommand </li>
+<li>Deploy your model to Postgres</li>
+<li>Alter your model and compare it with your database with <strong><code>diff</code></strong></li>
+<li>Make changes to your model and perform an <strong><code>apply</code></strong></li>
+<li>Add tests to your model</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>
