@@ -37,7 +37,7 @@ public class PostgresDDLIntegrationTest {
     private static int PORT = 5432;
 
     private static String DROP_VIEWS = "DROP VIEW actor_info,customer_list,film_list,nicer_but_slower_film_list,sales_by_film_category,sales_by_store,staff_list cascade;";
-    private static String DROP_VIEWS1 =
+    private static String CREATE_DDL =
             "CREATE TABLE \"public\".numerics (\n" +
             "\tc_bigint int8 NULL,\n" +
             "\tc_bigserial bigserial NOT NULL,\n" +
@@ -57,7 +57,7 @@ public class PostgresDDLIntegrationTest {
             "\tCONSTRAINT numerics_pkey PRIMARY KEY (user_salary)\n" +
             ");";
 
-    private static String DROP_VIEWS2 =
+    private static String CREATE_DDL1 =
             "CREATE TABLE \"public\".strings (\n" +
             "\tc_bit bit(1) NULL,\n" +
             "\tc_bitvarying varbit NULL,\n" +
@@ -69,7 +69,7 @@ public class PostgresDDLIntegrationTest {
             "\tCONSTRAINT strings_pkey PRIMARY KEY (user1_name)\n" +
             ");";
 
-    private static String DROP_VIEWS3 ="CREATE TABLE \"public\".time_date (\n" +
+    private static String CREATE_DDL2 ="CREATE TABLE \"public\".time_date (\n" +
             "\tc_timestamp timestamp NULL,\n" +
             "\tc_timestamptz timestamptz NULL,\n" +
             "\tc_date date NULL,\n" +
@@ -79,13 +79,13 @@ public class PostgresDDLIntegrationTest {
             "\tCONSTRAINT time_date_pkey PRIMARY KEY (user_date)\n" +
             ");";
 
-    private static String DROP_VIEWS4 ="CREATE TABLE \"public\".user1 (\n" +
+    private static String CREATE_DDL3 ="CREATE TABLE \"public\".user1 (\n" +
             "\tcustomer_id int4 NULL,\n" +
             "\tuser1_salary money NULL,\n" +
             "\tuser_name varchar(32) NULL,\n" +
             "\tuser_date date NULL\n" +
             ");\n";
-    private static String DROP_VIEWSFK =
+    private static String CREATE_DDL4 =
             "ALTER TABLE \"public\".user1 ADD CONSTRAINT user1_user1_salary_fkey FOREIGN KEY (user1_salary) REFERENCES \"public\".numerics(user_salary);\n" +
             "ALTER TABLE \"public\".user1 ADD CONSTRAINT user1_user_date_fkey FOREIGN KEY (user_date) REFERENCES \"public\".time_date(user_date);\n" +
             "ALTER TABLE \"public\".user1 ADD CONSTRAINT user1_user_name_fkey FOREIGN KEY (user_name) REFERENCES \"public\".strings(user1_name);";
@@ -103,11 +103,11 @@ public class PostgresDDLIntegrationTest {
     @Order(0)
     void prep() throws Exception {
         container.getContainer().createConnection("").createStatement().execute(DROP_VIEWS);
-        container.getContainer().createConnection("").createStatement().execute(DROP_VIEWS1);
-        container.getContainer().createConnection("").createStatement().execute(DROP_VIEWS2);
-        container.getContainer().createConnection("").createStatement().execute(DROP_VIEWS3);
-        container.getContainer().createConnection("").createStatement().execute(DROP_VIEWS4);
-        container.getContainer().createConnection("").createStatement().execute(DROP_VIEWSFK);
+        container.getContainer().createConnection("").createStatement().execute(CREATE_DDL);
+        container.getContainer().createConnection("").createStatement().execute(CREATE_DDL1);
+        container.getContainer().createConnection("").createStatement().execute(CREATE_DDL2);
+        container.getContainer().createConnection("").createStatement().execute(CREATE_DDL3);
+        container.getContainer().createConnection("").createStatement().execute(CREATE_DDL4);
     }
 
     @Test
