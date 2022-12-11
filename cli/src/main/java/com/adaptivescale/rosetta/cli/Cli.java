@@ -292,7 +292,7 @@ class Cli implements Callable<Void> {
 
         List<Database> databases = getDatabases(sourceWorkspace).map(AbstractMap.SimpleImmutableEntry::getValue).collect(Collectors.toList());
 
-        DbtModel dbtModel = DbtModelGenerator.dbtModelGenerator(connection, databases);
+        DbtModel dbtModel = DbtModelGenerator.dbtModelGenerator(databases);
         DbtYamlModelOutput dbtYamlModelOutput = new DbtYamlModelOutput(DEFAULT_MODEL_YAML, dbtWorkspace);
         dbtYamlModelOutput.write(dbtModel);
 
