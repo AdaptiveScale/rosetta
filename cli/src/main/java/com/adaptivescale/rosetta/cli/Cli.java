@@ -52,7 +52,7 @@ import static com.adaptivescale.rosetta.cli.Constants.*;
 @Slf4j
 @CommandLine.Command(name = "cli",
         mixinStandardHelpOptions = true,
-        version = "1.7.2",
+        version = "1.7.3",
         description = "Declarative Database Management - DDL Transpiler"
 )
 class Cli implements Callable<Void> {
@@ -292,7 +292,7 @@ class Cli implements Callable<Void> {
 
         List<Database> databases = getDatabases(sourceWorkspace).map(AbstractMap.SimpleImmutableEntry::getValue).collect(Collectors.toList());
 
-        DbtModel dbtModel = DbtModelGenerator.dbtModelGenerator(connection, databases);
+        DbtModel dbtModel = DbtModelGenerator.dbtModelGenerator(databases);
         DbtYamlModelOutput dbtYamlModelOutput = new DbtYamlModelOutput(DEFAULT_MODEL_YAML, dbtWorkspace);
         dbtYamlModelOutput.write(dbtModel);
 

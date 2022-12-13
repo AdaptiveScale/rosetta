@@ -1,0 +1,35 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2022-12-08T00:25:25Z",
+  "id": "http://rosettadb.io",
+  "duration": 0,
+  "title": "RosettaDB Quick Start Guide",
+  "authors": "Makalle Takalla",
+  "summary": "This guide is intended to  help you get up to speed quickly with RosettaDB.",
+  "source": "1yckg-UOjtQgXUN_3ZYmxdHsVwzHBSHL_8A5XFxA-Vi8",
+  "theme": "web",
+  "status": [
+    "draft"
+  ],
+  "category": [
+    "web"
+  ],
+  "tags": [
+    "data-governance",
+    "data-lineage",
+    "data-source",
+    "database",
+    "dataops",
+    "etl",
+    "jdbc",
+    "label",
+    "labels",
+    "tag",
+    "tags"
+  ],
+  "ga": "UA-52746336-1",
+  "url": "http://rosettadb.io"
+}
