@@ -23,7 +23,7 @@ public class DefaultTester implements Diff<List<String>, Database, Database> {
     private static final String INDEX_REMOVED_FORMAT = "Index Removed: Index '%s'";
     private static final String INDEX_ADDED_FORMAT = "Index Added: Index '%s'";
 
-    private static final String VIEW_REMOVED_FORMAT = "View Removed: Table '%s'";
+    private static final String VIEW_REMOVED_FORMAT = "View Removed: View '%s'";
 
     private static final String VIEW_COLUMNS_CHANGED_FORMAT = "View Changed: View '%s' columns changed";
     private static final String VIEW_ADDED_FORMAT = "View Added: View '%s'";
@@ -155,7 +155,7 @@ public class DefaultTester implements Diff<List<String>, Database, Database> {
             List<String> columnsChangesLogs = new ArrayList<>();
             Optional<View> targetView = getView(view.getName(), targetValue);
             if (targetView.isEmpty()) {
-                //this table is removed
+                //this view is removed
                 changes.add(String.format(VIEW_REMOVED_FORMAT, view.getName()));
                 continue;
             }
@@ -256,7 +256,7 @@ public class DefaultTester implements Diff<List<String>, Database, Database> {
         List<View> viewsAdded = targetValue
                 .getViews()
                 .stream()
-                .filter(table -> !localViewName.contains(table.getName()))
+                .filter(view -> !localViewName.contains(view.getName()))
                 .collect(Collectors.toList());
         viewsAdded.forEach(view -> changes.add(String.format(VIEW_ADDED_FORMAT, view.getName())));
     }

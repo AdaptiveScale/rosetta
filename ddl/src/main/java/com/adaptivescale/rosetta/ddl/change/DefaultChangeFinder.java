@@ -79,8 +79,8 @@ public class DefaultChangeFinder implements ChangeFinder {
                     .collect(Collectors.toList());
 
             if (foundViews.size() == 0) {
-                Change<View> tableChange = ChangeFactory.viewChange(expectedView, null, Change.Status.ADD);
-                changes.add(tableChange);
+                Change<View> viewChange = ChangeFactory.viewChange(expectedView, null, Change.Status.ADD);
+                changes.add(viewChange);
             } else if (foundViews.size() == 1) {
                 View view = foundViews.get(0);
                 actualViews.remove(view);

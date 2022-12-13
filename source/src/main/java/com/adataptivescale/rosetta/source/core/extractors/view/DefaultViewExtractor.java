@@ -45,8 +45,8 @@ public class DefaultViewExtractor implements ViewExtractor<Collection<View>, Con
         while (resultSet.next()) {
             if (!target.getTables().isEmpty() &&
                     !target.getTables().contains(resultSet.getString("TABLE_NAME"))) continue;
-            View table = map(resultSet);
-            views.add(table);
+            View view = map(resultSet);
+            views.add(view);
         }
 
         if (!resultSet.isClosed()) {
@@ -60,14 +60,14 @@ public class DefaultViewExtractor implements ViewExtractor<Collection<View>, Con
     }
 
     private View map(ResultSet resultSet) throws SQLException {
-        View table = new View();
-        table.setName(resultSet.getString("TABLE_NAME"));
-        table.setType(resultSet.getString("TABLE_TYPE"));
+        View view = new View();
+        view.setName(resultSet.getString("TABLE_NAME"));
+        view.setType(resultSet.getString("TABLE_TYPE"));
         String tableSchema = resultSet.getString("TABLE_SCHEM");
         if(tableSchema==null) {
             tableSchema = resultSet.getString("TABLE_CAT");
         }
-        table.setSchema(tableSchema);
-        return table;
+        view.setSchema(tableSchema);
+        return view;
     }
 }
