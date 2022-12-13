@@ -23,6 +23,10 @@ import java.util.stream.Collectors;
         type = RosettaModuleTypes.DDL_GENERATOR
 )
 public class BigQueryDDLGenerator implements DDL {
+
+    private static String VIEW_DROP_TEMPLATE = "bigquery/view/drop";
+    private static String VIEW_CREATE_TEMPLATE = "bigquery/view/create";
+    private static String VIEW_ALTER_TEMPLATE = "bigquery/view/alter";
     private final ColumnSQLDecoratorFactory columnSQLDecoratorFactory;
 
     public BigQueryDDLGenerator() {
@@ -163,16 +167,14 @@ public class BigQueryDDLGenerator implements DDL {
         StringBuilder builder = new StringBuilder();
 
         if (dropViewIfExists) {
-            Map<String, Object> params = new HashMap<>();
-            params.put("schemaName", view.getSchema());
-            params.put("viewName", view.getName());
-            builder.append(TemplateEngine.process("bigquery/view/drop", params));
+            dropView(view);
+            builder.append(dropView(view));
         }
         Map<String, Object> createParams = new HashMap<>();
         createParams.put("schemaName", view.getSchema());
         createParams.put("viewName", view.getName());
         createParams.put("viewCode", view.getCode());
-        builder.append(TemplateEngine.process( "bigquery/view/create", createParams));
+        builder.append(TemplateEngine.process(VIEW_CREATE_TEMPLATE, createParams));
 
         return builder.toString();
     }
@@ -182,7 +184,7 @@ public class BigQueryDDLGenerator implements DDL {
         Map<String, Object> params = new HashMap<>();
         params.put("schemaName", actual.getSchema());
         params.put("viewName", actual.getName());
-        return TemplateEngine.process("bigquery/view/drop", params);
+        return TemplateEngine.process(VIEW_DROP_TEMPLATE, params);
     }
 
     @Override
@@ -191,6 +193,6 @@ public class BigQueryDDLGenerator implements DDL {
         createParams.put("schemaName", expected.getSchema());
         createParams.put("viewName", expected.getName());
         createParams.put("viewCode", expected.getCode());
-        return TemplateEngine.process( "bigquery/view/alter", createParams);
+        return TemplateEngine.process(VIEW_ALTER_TEMPLATE, createParams);
     }
 }
