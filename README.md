@@ -557,7 +557,7 @@ In `model.yaml` you can find the attribute `safeMode` which is by default disabl
 `apply` command, set `safeMode: true`.
 
 ### Operation level
-In `model.yaml` you can find the attribute `operationLevel` which is by default is set to `database`. If you want to apply changes on to schemas in your model instead of the whole database in 
+In `model.yaml` you can find the attribute `operationLevel` which is by default set to `database`. If you want to apply changes on to schemas in your model instead of the whole database in 
 `apply` command, set `operationLevel: schema`.
 
 ## Copyright and License Information
