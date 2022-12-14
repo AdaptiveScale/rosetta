@@ -14,14 +14,8 @@
  *   limitations under the License.
  */
 
-package com.adaptivescale.rosetta.common.types;
+package com.adataptivescale.rosetta.source.core.interfaces;
 
-public enum RosettaModuleTypes {
-    DDL_GENERATOR,
-    DDL_EXECUTOR,
-    CHANGE_COMPARATOR,
-    CHANGE_FINDER,
-    COLUMN_EXTRACTOR,
-    TABLE_EXTRACTOR,
-    VIEW_EXTRACTOR,
+public interface ViewExtractor<V,E,U> {
+    V extract(E param1, U param2) throws Exception;
 }

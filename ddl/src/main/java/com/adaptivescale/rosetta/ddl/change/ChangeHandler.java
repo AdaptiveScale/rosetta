@@ -17,4 +17,6 @@ public interface ChangeHandler {
     String onForeignKeyChange(ForeignKeyChange change);
 
     String onIndexChange(IndexChange change);
+
+    String onViewChange(ViewChange change);
 }

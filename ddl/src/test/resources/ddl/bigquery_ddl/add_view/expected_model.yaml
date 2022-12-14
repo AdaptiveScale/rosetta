@@ -1,0 +1,103 @@
+---
+tables:
+  - name: "tableA"
+    type: "TABLE"
+    schema: "halis"
+    columns:
+      - name: "columnA"
+        typeName: "STRING"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 65535
+        scale: 0
+        precision: 65535
+        nullable: true
+        primaryKey: false
+        autoincrement: false
+      - name: "columnB"
+        typeName: "INT64"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 19
+        scale: 0
+        precision: 19
+        nullable: true
+        primaryKey: false
+        autoincrement: false
+  - name: "tableB"
+    type: "TABLE"
+    schema: "halis"
+    columns:
+      - name: "columnA"
+        typeName: "STRING"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 65535
+        scale: 0
+        precision: 65535
+        nullable: true
+        primaryKey: false
+        autoincrement: false
+      - name: "columnB"
+        typeName: "INT64"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 19
+        scale: 0
+        precision: 19
+        nullable: true
+        primaryKey: false
+        autoincrement: false
+views:
+  - name: "viewA"
+    type: "VIEW"
+    schema: "halis"
+    columns:
+      - name: "columnA"
+        typeName: "STRING"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 65535
+        scale: 0
+        precision: 65535
+        nullable: true
+        primaryKey: false
+        autoincrement: false
+      - name: "columnB"
+        typeName: "INT64"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 19
+        scale: 0
+        precision: 19
+        nullable: true
+        primaryKey: false
+        autoincrement: false
+    code: "select * from tableA limit 1"
+  - name: "viewB"
+    type: "VIEW"
+    schema: "halis"
+    columns:
+      - name: "columnA"
+        typeName: "STRING"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 65535
+        scale: 0
+        precision: 65535
+        nullable: true
+        primaryKey: false
+        autoincrement: false
+      - name: "columnB"
+        typeName: "INT64"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 19
+        scale: 0
+        precision: 19
+        nullable: true
+        primaryKey: false
+        autoincrement: false
+    code: "select * from tableB limit 1"
+databaseProductName: "Google BigQuery"
+databaseType: "bigquery"

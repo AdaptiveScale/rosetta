@@ -14,14 +14,16 @@
  *   limitations under the License.
  */
 
-package com.adaptivescale.rosetta.common.types;
+package com.adaptivescale.rosetta.common.models;
 
-public enum RosettaModuleTypes {
-    DDL_GENERATOR,
-    DDL_EXECUTOR,
-    CHANGE_COMPARATOR,
-    CHANGE_FINDER,
-    COLUMN_EXTRACTOR,
-    TABLE_EXTRACTOR,
-    VIEW_EXTRACTOR,
+public class View extends Table {
+    private String code;
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
 }
