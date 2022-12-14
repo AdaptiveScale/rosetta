@@ -42,6 +42,8 @@ public class ChangeHandlerImplementation implements ChangeHandler{
                     break;
                 case INDEX:
                     ddlStatements.add(onIndexChange((IndexChange) change));
+                case VIEW:
+                    ddlStatements.add(onViewChange((ViewChange) change));
             }
         }
 
@@ -111,6 +113,20 @@ public class ChangeHandlerImplementation implements ChangeHandler{
                 return ddl.dropIndex(change.getActual());
             default:
                 throw new RuntimeException("Operation " + change.getStatus() + " for index not supported");
+        }
+    }
+
+    @Override
+    public String onViewChange(ViewChange change) {
+        switch (change.getStatus()) {
+            case DROP:
+                return ddl.dropView(change.getActual());
+            case ADD:
+                return ddl.createView(change.getExpected(), false);
+            case ALTER:
+                return ddl.alterView(change.getExpected(), change.getActual());
+            default:
+                throw new RuntimeException("Operation " + change.getStatus() + " for view not supported");
         }
     }
 }

@@ -14,14 +14,12 @@
  *   limitations under the License.
  */
 
-package com.adaptivescale.rosetta.common.types;
+package com.adaptivescale.rosetta.ddl.change.model;
 
-public enum RosettaModuleTypes {
-    DDL_GENERATOR,
-    DDL_EXECUTOR,
-    CHANGE_COMPARATOR,
-    CHANGE_FINDER,
-    COLUMN_EXTRACTOR,
-    TABLE_EXTRACTOR,
-    VIEW_EXTRACTOR,
+import com.adaptivescale.rosetta.common.models.View;
+
+public class ViewChange extends Change<View>{
+    protected ViewChange(View expected, View actual, Status state, Type type) {
+        super(expected, actual, state, type);
+    }
 }

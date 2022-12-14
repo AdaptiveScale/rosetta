@@ -34,4 +34,16 @@ public interface DDL {
     default String dropIndex(Index actual) {
         return null;
     }
+
+    default String dropView(View actual) {
+        return "";
+    };
+
+    default String createView(View expected, boolean dropViewIfExists) {
+        return "";
+    };
+
+    default String alterView(View expected, View actual) {
+        return "";
+    };
 }

@@ -5,11 +5,13 @@ import com.adaptivescale.rosetta.common.models.Column;
 import com.adaptivescale.rosetta.common.models.Database;
 import com.adaptivescale.rosetta.common.models.ForeignKey;
 import com.adaptivescale.rosetta.common.models.Table;
+import com.adaptivescale.rosetta.common.models.View;
 import com.adaptivescale.rosetta.common.types.RosettaModuleTypes;
 import com.adaptivescale.rosetta.ddl.DDL;
 import com.adaptivescale.rosetta.ddl.change.model.ColumnChange;
 import com.adaptivescale.rosetta.ddl.change.model.ForeignKeyChange;
 import com.adaptivescale.rosetta.ddl.targets.ColumnSQLDecoratorFactory;
+import com.adaptivescale.rosetta.ddl.utils.TemplateEngine;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
@@ -21,6 +23,10 @@ import java.util.stream.Collectors;
         type = RosettaModuleTypes.DDL_GENERATOR
 )
 public class BigQueryDDLGenerator implements DDL {
+
+    private static String VIEW_DROP_TEMPLATE = "bigquery/view/drop";
+    private static String VIEW_CREATE_TEMPLATE = "bigquery/view/create";
+    private static String VIEW_ALTER_TEMPLATE = "bigquery/view/alter";
     private final ColumnSQLDecoratorFactory columnSQLDecoratorFactory;
 
     public BigQueryDDLGenerator() {
@@ -131,8 +137,6 @@ public class BigQueryDDLGenerator implements DDL {
         return String.format("ALTER TABLE %s.%s ADD COLUMN %s;", change.getTable().getSchema(), change.getTable().getName(), columnNameWithType);
     }
 
-
-
     @Override
     public String dropTable(Table actual) {
         return String.format("DROP TABLE %s.%s;", actual.getSchema(), actual.getName());
@@ -156,5 +160,39 @@ public class BigQueryDDLGenerator implements DDL {
     @Override
     public String alterTable(Table expected, Table actual) {
         return null;
+    }
+
+    @Override
+    public String createView(View view, boolean dropViewIfExists) {
+        StringBuilder builder = new StringBuilder();
+
+        if (dropViewIfExists) {
+            dropView(view);
+            builder.append(dropView(view));
+        }
+        Map<String, Object> createParams = new HashMap<>();
+        createParams.put("schemaName", view.getSchema());
+        createParams.put("viewName", view.getName());
+        createParams.put("viewCode", view.getCode());
+        builder.append(TemplateEngine.process(VIEW_CREATE_TEMPLATE, createParams));
+
+        return builder.toString();
+    }
+
+    @Override
+    public String dropView(View actual) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("schemaName", actual.getSchema());
+        params.put("viewName", actual.getName());
+        return TemplateEngine.process(VIEW_DROP_TEMPLATE, params);
+    }
+
+    @Override
+    public String alterView(View expected, View actual) {
+        Map<String, Object> createParams = new HashMap<>();
+        createParams.put("schemaName", expected.getSchema());
+        createParams.put("viewName", expected.getName());
+        createParams.put("viewCode", expected.getCode());
+        return TemplateEngine.process(VIEW_ALTER_TEMPLATE, createParams);
     }
 }

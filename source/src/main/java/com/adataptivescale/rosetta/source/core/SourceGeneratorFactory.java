@@ -6,7 +6,12 @@ import com.adaptivescale.rosetta.common.models.Database;
 import com.adaptivescale.rosetta.common.DriverManagerDriverProvider;
 import com.adaptivescale.rosetta.common.models.input.Connection;
 import com.adaptivescale.rosetta.common.types.RosettaModuleTypes;
+import com.adataptivescale.rosetta.source.core.extractors.column.*;
+import com.adataptivescale.rosetta.source.core.extractors.table.DefaultTablesExtractor;
+import com.adataptivescale.rosetta.source.core.extractors.view.DefaultViewExtractor;
 import com.adataptivescale.rosetta.source.core.interfaces.Generator;
+import com.adataptivescale.rosetta.source.core.interfaces.TableExtractor;
+import com.adataptivescale.rosetta.source.core.interfaces.ViewExtractor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationTargetException;
@@ -33,23 +38,38 @@ public class SourceGeneratorFactory {
         }
     }
 
-    private static TablesExtractor loadTableExtractor(Connection connection) {
+    private static TableExtractor loadTableExtractor(Connection connection) {
         Optional<Class<?>> tableExtractorModule = ModuleLoader.loadModuleByAnnotationClassValues(
-                TablesExtractor.class.getPackageName(), RosettaModuleTypes.TABLE_EXTRACTOR, connection.getDbType());
+                DefaultTablesExtractor.class.getPackageName(), RosettaModuleTypes.TABLE_EXTRACTOR, connection.getDbType());
         if(tableExtractorModule.isEmpty()) {
             log.warn("Table extractor not supported for database type: {} falling back to default.", connection.getDbType());
-            return new TablesExtractor();
+            return new DefaultTablesExtractor();
         }
         try {
-            return (TablesExtractor) tableExtractorModule.get().getDeclaredConstructor().newInstance();
+            return (TableExtractor) tableExtractorModule.get().getDeclaredConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static ViewExtractor loadViewExtractor(Connection connection) {
+        Optional<Class<?>> viewExtractorModule = ModuleLoader.loadModuleByAnnotationClassValues(
+                DefaultViewExtractor.class.getPackageName(), RosettaModuleTypes.VIEW_EXTRACTOR, connection.getDbType());
+        if(viewExtractorModule.isEmpty()) {
+            log.warn("View extractor not supported for database type: {} falling back to default.", connection.getDbType());
+            return new DefaultViewExtractor();
+        }
+        try {
+            return (ViewExtractor) viewExtractorModule.get().getDeclaredConstructor().newInstance();
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
     }
 
     public static Generator<Database, Connection> sourceGenerator(Connection connection, JDBCDriverProvider driverProvider) {
-        TablesExtractor tablesExtractor = loadTableExtractor(connection);
+        TableExtractor tablesExtractor = loadTableExtractor(connection);
+        ViewExtractor viewExtractor = loadViewExtractor(connection);
         ColumnsExtractor columnsExtractor = loadColumnExtractor(connection);
-        return new DefaultGenerator(tablesExtractor, columnsExtractor, driverProvider);
+        return new DefaultGenerator(tablesExtractor, viewExtractor, columnsExtractor, driverProvider);
     }
 }

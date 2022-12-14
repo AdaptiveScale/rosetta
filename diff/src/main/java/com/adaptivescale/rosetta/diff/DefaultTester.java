@@ -23,6 +23,11 @@ public class DefaultTester implements Diff<List<String>, Database, Database> {
     private static final String INDEX_REMOVED_FORMAT = "Index Removed: Index '%s'";
     private static final String INDEX_ADDED_FORMAT = "Index Added: Index '%s'";
 
+    private static final String VIEW_REMOVED_FORMAT = "View Removed: View '%s'";
+
+    private static final String VIEW_COLUMNS_CHANGED_FORMAT = "View Changed: View '%s' columns changed";
+    private static final String VIEW_ADDED_FORMAT = "View Added: View '%s'";
+
     @Override
     public List<String> find(Database localValue, Database targetValue) {
 
@@ -139,8 +144,124 @@ public class DefaultTester implements Diff<List<String>, Database, Database> {
                 .collect(Collectors.toList());
         tablesAdded.forEach(table -> changes.add(String.format(TABLE_ADDED_FORMAT, table.getName())));
 
+        // Check views for changes
+        testViews(localValue, targetValue, changes);
         return changes;
     }
+
+    private void testViews(Database localValue, Database targetValue, List<String> changes) {
+        //do we need to check for root properties if are changed
+        for (View view : localValue.getViews()) {
+            List<String> columnsChangesLogs = new ArrayList<>();
+            Optional<View> targetView = getView(view.getName(), targetValue);
+            if (targetView.isEmpty()) {
+                //this view is removed
+                changes.add(String.format(VIEW_REMOVED_FORMAT, view.getName()));
+                continue;
+            }
+
+            Collection<Column> columns = view.getColumns();
+            for (Column localColumn : columns) {
+                Optional<Column> targetColumn = getColumn(localColumn.getName(), targetView.get());
+                if (targetColumn.isEmpty()) {
+                    //this column was removed
+                    columnsChangesLogs.add(String.format(COLUMN_REMOVED_FORMAT, localColumn.getName(), view.getName()));
+                    continue;
+                }
+
+                if (!Objects.equals(localColumn.getDescription(), targetColumn.get().getDescription())) {
+                    String description = String.format(COLUMN_CHANGED_FORMAT, localColumn.getName(),
+                            view.getName(), "Description", localColumn.getDescription(),
+                            targetColumn.get().getDescription());
+                    columnsChangesLogs.add(description);
+                }
+
+                if (!Objects.equals(localColumn.getColumnDisplaySize(), targetColumn.get().getColumnDisplaySize())) {
+                    String result = String.format(COLUMN_CHANGED_FORMAT, localColumn.getName(),
+                            view.getName(), "Display Size", localColumn.getColumnDisplaySize(),
+                            targetColumn.get().getColumnDisplaySize());
+                    columnsChangesLogs.add(result);
+                }
+
+                if (!Objects.equals(localColumn.getLabel(), targetColumn.get().getLabel())) {
+                    String result = String.format(COLUMN_CHANGED_FORMAT, localColumn.getName(),
+                            view.getName(), "Label", localColumn.getLabel(),
+                            targetColumn.get().getLabel());
+                    columnsChangesLogs.add(result);
+                }
+
+                if (!Objects.equals(localColumn.getOrdinalPosition(), targetColumn.get().getOrdinalPosition())) {
+                    String result = String.format(COLUMN_CHANGED_FORMAT, localColumn.getName(),
+                            view.getName(), "Ordinal Position", localColumn.getOrdinalPosition(),
+                            targetColumn.get().getOrdinalPosition());
+                    columnsChangesLogs.add(result);
+                }
+
+                if (!Objects.equals(localColumn.getPrecision(), targetColumn.get().getPrecision())) {
+                    String result = String.format(COLUMN_CHANGED_FORMAT, localColumn.getName(),
+                            view.getName(), "Precision", localColumn.getPrecision(),
+                            targetColumn.get().getPrecision());
+                    columnsChangesLogs.add(result);
+                }
+
+                if (!Objects.equals(localColumn.getTypeName(), targetColumn.get().getTypeName())) {
+                    String result = String.format(COLUMN_CHANGED_FORMAT, localColumn.getName(),
+                            view.getName(), "Type Name", localColumn.getTypeName(),
+                            targetColumn.get().getTypeName());
+                    columnsChangesLogs.add(result);
+                }
+
+                if (!Objects.equals(localColumn.isAutoincrement(), targetColumn.get().isAutoincrement())) {
+                    String result = String.format(COLUMN_CHANGED_FORMAT, localColumn.getName(),
+                            view.getName(), "Autoincrement", localColumn.isAutoincrement(),
+                            targetColumn.get().isAutoincrement());
+                    columnsChangesLogs.add(result);
+                }
+
+                if (!Objects.equals(localColumn.isPrimaryKey(), targetColumn.get().isPrimaryKey())) {
+                    String result = String.format(COLUMN_CHANGED_FORMAT, localColumn.getName(),
+                            view.getName(), "Primary key", localColumn.isPrimaryKey(),
+                            targetColumn.get().isPrimaryKey());
+                    columnsChangesLogs.add(result);
+                }
+
+                if (!Objects.equals(localColumn.isNullable(), targetColumn.get().isNullable())) {
+                    String result = String.format(COLUMN_CHANGED_FORMAT, localColumn.getName(),
+                            view.getName(), "Nullable", localColumn.isNullable(),
+                            targetColumn.get().isNullable());
+                    columnsChangesLogs.add(result);
+                }
+
+                columnsChangesLogs.addAll(sameForeignKeys(localColumn.getForeignKeys(), targetColumn.get().getForeignKeys()));
+            }
+
+            //check what columns are added, by filtering what is not in local model
+            Set<String> localColumnsName = columns.stream().map(Column::getName).collect(Collectors.toSet());
+            List<Column> addedColumns = targetView
+                    .get()
+                    .getColumns()
+                    .stream()
+                    .filter(column -> !localColumnsName.contains(column.getName()))
+                    .collect(Collectors.toList());
+
+            addedColumns.forEach(column -> columnsChangesLogs.add(String.format(COLUMN_ADDED_FORMAT, column.getName(), view.getName())));
+            if (columnsChangesLogs.size() > 0) {
+                changes.add(String.format(VIEW_COLUMNS_CHANGED_FORMAT, view.getName()));
+                changes.addAll(columnsChangesLogs);
+            }
+
+            changes.addAll(sameIndices(view.getIndices(), targetView.get().getIndices()));
+        }
+        Set<String> localViewName = localValue.getViews().stream().map(View::getName).collect(Collectors.toSet());
+        List<View> viewsAdded = targetValue
+                .getViews()
+                .stream()
+                .filter(view -> !localViewName.contains(view.getName()))
+                .collect(Collectors.toList());
+        viewsAdded.forEach(view -> changes.add(String.format(VIEW_ADDED_FORMAT, view.getName())));
+    }
+
+
 
     private List<String> sameIndices(List<Index> localIndices, List<Index> targetIndices) {
         List<String> changeLogs = new ArrayList<>();
@@ -297,5 +418,9 @@ public class DefaultTester implements Diff<List<String>, Database, Database> {
 
     private Optional<Table> getTable(String tableName, Database targetValue) {
         return targetValue.getTables().stream().filter(targetTable -> targetTable.getName().equals(tableName)).findFirst();
+    }
+
+    private Optional<View> getView(String viewName, Database targetValue) {
+        return targetValue.getViews().stream().filter(targetView -> targetView.getName().equals(viewName)).findFirst();
     }
 }
