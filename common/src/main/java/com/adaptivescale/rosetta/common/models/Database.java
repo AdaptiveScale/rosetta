@@ -1,5 +1,7 @@
 package com.adaptivescale.rosetta.common.models;
 
+import com.adaptivescale.rosetta.common.models.enums.OperationLevelEnum;
+
 import java.util.Collection;
 
 public class Database {
@@ -9,6 +11,8 @@ public class Database {
     private Collection<View> views;
     private String databaseProductName;
     private String databaseType;
+
+    private OperationLevelEnum operationLevel = OperationLevelEnum.database;
 
     public Collection<Table> getTables() {
         return tables;
@@ -52,5 +56,13 @@ public class Database {
 
     public void setSafeMode(Boolean safeMode) {
         this.safeMode = safeMode;
+    }
+
+    public OperationLevelEnum getOperationLevel() {
+        return operationLevel;
+    }
+
+    public void setOperationLevel(OperationLevelEnum operationLevel) {
+        this.operationLevel = operationLevel;
     }
 }
