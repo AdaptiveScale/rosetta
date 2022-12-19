@@ -1,0 +1,604 @@
+address_id,address,address2,district,city_id,postal_code,phone,last_update
+1,47 MySakila Drive,,Alberta,300,,,25.9.14 22:30
+2,28 MySQL Boulevard,,QLD,576,,,25.9.14 22:30
+3,23 Workhaven Lane,,Alberta,300,,14033335568,25.9.14 22:30
+4,1411 Lillydale Drive,,QLD,576,,6172235589,25.9.14 22:30
+5,1913 Hanoi Way,,Nagasaki,463,35200,28303384290,25.9.14 22:31
+6,1121 Loja Avenue,,California,449,17886,8.38635E+11,25.9.14 22:34
+7,692 Joliet Street,,Attika,38,83579,4.48477E+11,25.9.14 22:31
+8,1566 Inegl Manor,,Mandalay,349,53561,7.05814E+11,25.9.14 22:32
+9,53 Idfu Parkway,,Nantou,361,42399,10655648674,25.9.14 22:33
+10,1795 Santiago de Compostela Way,,Texas,295,18743,8.60453E+11,25.9.14 22:33
+11,900 Santiago de Compostela Parkway,,Central Serbia,280,93896,7.16571E+11,25.9.14 22:34
+12,478 Joliet Way,,Hamilton,200,77948,6.57282E+11,25.9.14 22:32
+13,613 Korolev Drive,,Masqat,329,45844,3.80658E+11,25.9.14 22:32
+14,1531 Sal Drive,,Esfahan,162,53628,6.48857E+11,25.9.14 22:31
+15,1542 Tarlac Parkway,,Kanagawa,440,1027,6.35297E+11,25.9.14 22:31
+16,808 Bhopal Manor,,Haryana,582,10672,4.65888E+11,25.9.14 22:31
+17,270 Amroha Parkway,,Osmaniye,384,29610,6.9548E+11,25.9.14 22:33
+18,770 Bydgoszcz Avenue,,California,120,16266,5.17338E+11,25.9.14 22:33
+19,419 Iligan Lane,,Madhya Pradesh,76,72878,9.90911E+11,25.9.14 22:31
+20,360 Toulouse Parkway,,England,495,54308,9.49312E+11,25.9.14 22:33
+21,270 Toulon Boulevard,,Kalmykia,156,81766,4.07752E+11,25.9.14 22:32
+22,320 Brest Avenue,,Kaduna,252,43331,7.47792E+11,25.9.14 22:32
+23,1417 Lancaster Avenue,,Northern Cape,267,72192,2.72572E+11,25.9.14 22:33
+24,1688 Okara Way,,Nothwest Border Prov,327,21954,1.44454E+11,25.9.14 22:32
+25,262 A Corua (La Corua) Parkway,,Dhaka,525,34418,8.92776E+11,25.9.14 22:30
+26,28 Charlotte Amalie Street,,Rabat-Sal-Zammour-Z,443,37551,1.61968E+11,25.9.14 22:32
+27,1780 Hino Boulevard,,Liepaja,303,7716,9.02731E+11,25.9.14 22:31
+28,96 Tafuna Way,,Crdoba,128,99865,9.3473E+11,25.9.14 22:30
+29,934 San Felipe de Puerto Plata Street,,Sind,472,99780,1.96496E+11,25.9.14 22:32
+30,18 Duisburg Boulevard,,,121,58327,9.9801E+11,25.9.14 22:31
+31,217 Botshabelo Place,,Southern Mindanao,138,49521,6.65357E+11,25.9.14 22:32
+32,1425 Shikarpur Manor,,Bihar,346,65599,6.78221E+11,25.9.14 22:31
+33,786 Aurora Avenue,,Yamaguchi,474,65750,18461860151,25.9.14 22:31
+34,1668 Anpolis Street,,Taipei,316,50199,5.25256E+11,25.9.14 22:33
+35,33 Gorontalo Way,,West Bengali,257,30348,7.45995E+11,25.9.14 22:31
+36,176 Mandaluyong Place,,Uttar Pradesh,239,65213,6.27706E+11,25.9.14 22:31
+37,127 Purnea (Purnia) Manor,,Piemonte,17,79388,9.11872E+11,25.9.14 22:31
+38,61 Tama Street,,Okayama,284,94065,7.08403E+11,25.9.14 22:31
+39,391 Callao Drive,,Midi-Pyrnes,544,34021,4.40512E+11,25.9.14 22:31
+40,334 Munger (Monghyr) Lane,,Markazi,31,38145,4.81183E+11,25.9.14 22:31
+41,1440 Fukuyama Loop,,Henan,362,47929,9.12257E+11,25.9.14 22:30
+42,269 Cam Ranh Parkway,,Chisinau,115,34689,4.89784E+11,25.9.14 22:32
+43,306 Antofagasta Place,,Esprito Santo,569,3989,3.78319E+11,25.9.14 22:30
+44,671 Graz Street,,Oriental,353,94399,6.80769E+11,25.9.14 22:32
+45,42 Brindisi Place,,Yerevan,586,16744,42384721397,25.9.14 22:30
+46,1632 Bislig Avenue,,Nonthaburi,394,61117,4.71676E+11,25.9.14 22:33
+47,1447 Imus Way,,Tahiti,167,48942,5.39758E+11,25.9.14 22:31
+48,1998 Halifax Drive,,Lipetsk,308,76022,1.77728E+11,25.9.14 22:32
+49,1718 Valencia Street,,Antofagasta,27,37359,6.75293E+11,25.9.14 22:30
+50,46 Pjatigorsk Lane,,Moscow (City),343,23616,2.62077E+11,25.9.14 22:32
+51,686 Garland Manor,,Cear,247,52535,69493378813,25.9.14 22:30
+52,909 Garland Manor,,Tatarstan,367,69367,7.058E+11,25.9.14 22:32
+53,725 Isesaki Place,,Mekka,237,74428,8.76295E+11,25.9.14 22:33
+54,115 Hidalgo Parkway,,Khartum,379,80168,3.07704E+11,25.9.14 22:33
+55,1135 Izumisano Parkway,,California,171,48150,1.71823E+11,25.9.14 22:33
+56,939 Probolinggo Loop,,Galicia,1,4166,6.80428E+11,25.9.14 22:33
+57,17 Kabul Boulevard,,Chiba,355,38594,6.97761E+11,25.9.14 22:31
+58,1964 Allappuzha (Alleppey) Street,,Yamaguchi,227,48980,9.20811E+11,25.9.14 22:31
+59,1697 Kowloon and New Kowloon Loop,,Moskova,49,57807,4.99352E+11,25.9.14 22:32
+60,1668 Saint Louis Place,,Tahiti,397,39072,3.47488E+11,25.9.14 22:31
+61,943 Tokat Street,,Vaduz,560,45428,8.89319E+11,25.9.14 22:31
+62,1114 Liepaja Street,,Sarawak,282,69226,2.12869E+11,25.9.14 22:32
+63,1213 Ranchi Parkway,,Karnataka,350,94352,8.00024E+11,25.9.14 22:31
+64,81 Hodeida Way,,Rajasthan,231,55561,2.50768E+11,25.9.14 22:31
+65,915 Ponce Place,,Basel-Stadt,56,83980,1395251317,25.9.14 22:33
+66,1717 Guadalajara Lane,,Missouri,441,85505,9.1409E+11,25.9.14 22:33
+67,1214 Hanoi Way,,Nebraska,306,67055,4.91001E+11,25.9.14 22:33
+68,1966 Amroha Avenue,,Sichuan,139,70385,3.33489E+11,25.9.14 22:30
+69,698 Otsu Street,,Cayenne,105,71110,4.09984E+11,25.9.14 22:31
+70,1150 Kimchon Manor,,Skne ln,321,96109,6.63449E+11,25.9.14 22:33
+71,1586 Guaruj Place,,Hunan,579,5135,9.47233E+11,25.9.14 22:30
+72,57 Arlington Manor,,Madhya Pradesh,475,48960,9.90214E+11,25.9.14 22:31
+73,1031 Daugavpils Parkway,,Bchar,63,59025,1.07137E+11,25.9.14 22:29
+74,1124 Buenaventura Drive,,Mekka,13,6856,4.07734E+11,25.9.14 22:32
+75,492 Cam Ranh Street,,Eastern Visayas,61,50805,5.65018E+11,25.9.14 22:32
+76,89 Allappuzha (Alleppey) Manor,,National Capital Reg,517,75444,2.558E+11,25.9.14 22:32
+77,1947 Poos de Caldas Boulevard,,Chiayi,114,60951,4.27454E+11,25.9.14 22:33
+78,1206 Dos Quebradas Place,,So Paulo,431,20207,2.41833E+11,25.9.14 22:30
+79,1551 Rampur Lane,,Changhwa,108,72394,2.51164E+11,25.9.14 22:33
+80,602 Paarl Street,,Pavlodar,402,98889,8.96315E+11,25.9.14 22:31
+81,1692 Ede Loop,,So Paulo,30,9223,9.18711E+11,25.9.14 22:30
+82,936 Salzburg Lane,,Uttar Pradesh,425,96709,8.75757E+11,25.9.14 22:31
+83,586 Tete Way,,Kanagawa,256,1079,18581624103,25.9.14 22:31
+84,1888 Kabul Drive,,Oyo & Osun,217,20936,7.01457E+11,25.9.14 22:32
+85,320 Baiyin Parkway,,Mahajanga,319,37307,2.23665E+11,25.9.14 22:31
+86,927 Baha Blanca Parkway,,Krim,479,9495,8.21972E+11,25.9.14 22:33
+87,929 Tallahassee Loop,,Gauteng,497,74671,8.00717E+11,25.9.14 22:33
+88,125 Citt del Vaticano Boulevard,,Puebla,40,67912,48417642933,25.9.14 22:32
+89,1557 Ktahya Boulevard,,England,88,88002,7.20998E+11,25.9.14 22:33
+90,870 Ashqelon Loop,,Songkhla,489,84931,1.35117E+11,25.9.14 22:33
+91,1740 Portoviejo Avenue,,Sucre,480,29932,1.98123E+11,25.9.14 22:30
+92,1942 Ciparay Parkway,,Cheju,113,82624,9.78987E+11,25.9.14 22:33
+93,1926 El Alto Avenue,,Buenos Aires,289,75543,8.46225E+11,25.9.14 22:30
+94,1952 Chatsworth Drive,,Guangdong,332,25958,9.91562E+11,25.9.14 22:30
+95,1370 Le Mans Avenue,,Brunei and Muara,53,52163,3.4568E+11,25.9.14 22:30
+96,984 Effon-Alaiye Avenue,,Gois,183,17119,1.32987E+11,25.9.14 22:30
+97,832 Nakhon Sawan Manor,,Inner Mongolia,592,49021,2.75596E+11,25.9.14 22:30
+98,152 Kitwe Parkway,,Caraga,82,53182,8.35434E+11,25.9.14 22:32
+99,1697 Tanauan Lane,,Punjab,399,22870,4764773857,25.9.14 22:31
+100,1308 Arecibo Way,,Georgia,41,30695,6171054059,25.9.14 22:33
+101,1599 Plock Drive,,Tete,534,71986,8.17249E+11,25.9.14 22:32
+102,669 Firozabad Loop,,Abu Dhabi,12,92265,4.12903E+11,25.9.14 22:33
+103,588 Vila Velha Manor,,Kyongsangbuk,268,51540,3.3334E+11,25.9.14 22:33
+104,1913 Kamakura Place,,Lipetsk,238,97287,9.42571E+11,25.9.14 22:32
+105,733 Mandaluyong Place,,Asir,2,77459,1.96568E+11,25.9.14 22:32
+106,659 Vaduz Drive,,Ha Darom,34,49708,7.09935E+11,25.9.14 22:31
+107,1177 Jelets Way,,Kwara & Kogi,220,3305,4.84293E+11,25.9.14 22:32
+108,1386 Yangor Avenue,,Provence-Alpes-Cte,543,80720,4.49216E+11,25.9.14 22:31
+109,454 Nakhon Sawan Boulevard,,Funafuti,173,76383,9.63887E+11,25.9.14 22:33
+110,1867 San Juan Bautista Tuxtepec Avenue,,Ivanovo,225,78311,5.47003E+11,25.9.14 22:32
+111,1532 Dzerzinsk Way,,Buenos Aires,334,9599,3.30838E+11,25.9.14 22:30
+112,1002 Ahmadnagar Manor,,Mxico,213,93026,3.71491E+11,25.9.14 22:32
+113,682 Junan Way,,North West,273,30418,6.22255E+11,25.9.14 22:33
+114,804 Elista Drive,,Hubei,159,61069,3.79805E+11,25.9.14 22:30
+115,1378 Alvorada Avenue,,Distrito Federal,102,75834,2.72234E+11,25.9.14 22:34
+116,793 Cam Ranh Avenue,,California,292,87057,8.24371E+11,25.9.14 22:33
+117,1079 Tel Aviv-Jaffa Boulevard,,Sucre,132,10885,3.58179E+11,25.9.14 22:34
+118,442 Rae Bareli Place,,Nordrhein-Westfalen,148,24321,8.86636E+11,25.9.14 22:31
+119,1107 Nakhon Sawan Avenue,,Mxico,365,75149,8.67547E+11,25.9.14 22:32
+120,544 Malm Parkway,,Central Java,403,63502,3.8676E+11,25.9.14 22:31
+121,1967 Sincelejo Place,,Gujarat,176,73644,5.77813E+11,25.9.14 22:31
+122,333 Goinia Way,,Texas,185,78625,9.09029E+11,25.9.14 22:33
+123,1987 Coacalco de Berriozbal Loop,,al-Qalyubiya,476,96065,7.87654E+11,25.9.14 22:30
+124,241 Mosul Lane,,Risaralda,147,76157,7.65345E+11,25.9.14 22:30
+125,211 Chiayi Drive,,Uttar Pradesh,164,58186,6.65994E+11,25.9.14 22:31
+126,1175 Tanauan Way,,Lima,305,64615,9.37223E+11,25.9.14 22:32
+127,117 Boa Vista Way,,Uttar Pradesh,566,6804,6.77976E+11,25.9.14 22:31
+128,848 Tafuna Manor,,Ktahya,281,45142,6.14935E+11,25.9.14 22:33
+129,569 Baicheng Lane,,Gauteng,85,60304,4.90212E+11,25.9.14 22:33
+130,1666 Qomsheh Drive,,So Paulo,410,66255,5.82835E+11,25.9.14 22:30
+131,801 Hagonoy Drive,,Smolensk,484,8439,2.37426E+11,25.9.14 22:32
+132,1050 Garden Grove Avenue,,Slaskie,236,4999,9.73047E+11,25.9.14 22:32
+133,1854 Tieli Street,,Shandong,302,15819,5.09492E+11,25.9.14 22:30
+134,758 Junan Lane,,Gois,190,82639,9.35449E+11,25.9.14 22:30
+135,1752 So Leopoldo Parkway,,Taka-Karpatia,345,14014,2.52265E+11,25.9.14 22:33
+136,898 Belm Manor,,Free State,87,49757,7.07169E+11,25.9.14 22:33
+137,261 Saint Louis Way,,Coahuila de Zaragoza,541,83401,3.21944E+11,25.9.14 22:32
+138,765 Southampton Drive,,al-Qalyubiya,421,4285,23712411567,25.9.14 22:30
+139,943 Johannesburg Avenue,,Maharashtra,417,5892,90921003005,25.9.14 22:31
+140,788 Atinsk Street,,Karnataka,211,81691,1.46498E+11,25.9.14 22:31
+141,1749 Daxian Place,,Gelderland,29,11044,9.6337E+11,25.9.14 22:32
+142,1587 Sullana Lane,,Inner Mongolia,207,85769,4.6806E+11,25.9.14 22:30
+143,1029 Dzerzinsk Manor,,Ynlin,542,57519,33173584456,25.9.14 22:33
+144,1666 Beni-Mellal Place,,Tennessee,123,13377,9099941466,25.9.14 22:33
+145,928 Jaffna Loop,,Hiroshima,172,93762,5.81852E+11,25.9.14 22:31
+146,483 Ljubertsy Parkway,,Scotland,149,60562,5.81174E+11,25.9.14 22:33
+147,374 Bat Yam Boulevard,,Kilis,266,97700,9.23262E+11,25.9.14 22:33
+148,1027 Songkhla Manor,,Minsk,340,30861,5.6366E+11,25.9.14 22:30
+149,999 Sanaa Loop,,Gauteng,491,3439,9.18032E+11,25.9.14 22:33
+150,879 Newcastle Way,,Michigan,499,90732,2.06841E+11,25.9.14 22:34
+151,1337 Lincoln Parkway,,Saitama,555,99457,5.97815E+11,25.9.14 22:31
+152,1952 Pune Lane,,Saint-Denis,442,92150,3.54615E+11,25.9.14 22:32
+153,782 Mosul Street,,Massachusetts,94,25545,8.859E+11,25.9.14 22:33
+154,781 Shimonoseki Drive,,Michoacn de Ocampo,202,95444,6.32316E+11,25.9.14 22:32
+155,1560 Jelets Boulevard,,Shandong,291,77777,1.89446E+11,25.9.14 22:30
+156,1963 Moscow Place,,Assam,354,64863,7.61379E+11,25.9.14 22:31
+157,456 Escobar Way,,Jakarta Raya,232,36061,7.19203E+11,25.9.14 22:31
+158,798 Cianjur Avenue,,Shanxi,590,76990,4.99409E+11,25.9.14 22:30
+159,185 Novi Sad Place,,Bern,72,41778,9.04254E+11,25.9.14 22:33
+160,1367 Yantai Manor,,Ondo & Ekiti,381,21294,8.89538E+11,25.9.14 22:32
+161,1386 Nakhon Sawan Boulevard,,Pyongyang-si,420,53502,3.68899E+11,25.9.14 22:32
+162,369 Papeete Way,,North Carolina,187,66639,1.70117E+11,25.9.14 22:33
+163,1440 Compton Place,,North Austria,307,81037,9.3106E+11,25.9.14 22:30
+164,1623 Baha Blanca Manor,,Moskova,310,81511,1.49981E+11,25.9.14 22:32
+165,97 Shimoga Avenue,,Tel Aviv,533,44660,1.77167E+11,25.9.14 22:31
+166,1740 Le Mans Loop,,Pays de la Loire,297,22853,1.68477E+11,25.9.14 22:31
+167,1287 Xiangfan Boulevard,,Gifu,253,57844,8.19416E+11,25.9.14 22:31
+168,842 Salzburg Lane,,Adana,529,3313,6.97151E+11,25.9.14 22:33
+169,154 Tallahassee Loop,,Xinxiang,199,62250,9.35509E+11,25.9.14 22:30
+170,710 San Felipe del Progreso Avenue,,Lilongwe,304,76901,8.43801E+11,25.9.14 22:31
+171,1540 Wroclaw Drive,,Maharashtra,107,62686,1.82363E+11,25.9.14 22:31
+172,475 Atinsk Way,,Gansu,240,59571,2.01706E+11,25.9.14 22:30
+173,1294 Firozabad Drive,,Jiangxi,407,70618,1.61802E+11,25.9.14 22:30
+174,1877 Ezhou Lane,,Rajasthan,550,63337,2.64542E+11,25.9.14 22:31
+175,316 Uruapan Street,,Perak,223,58194,2.75789E+11,25.9.14 22:31
+176,29 Pyongyang Loop,,Batman,58,47753,7.34781E+11,25.9.14 22:33
+177,1010 Klerksdorp Way,,Steiermark,186,6802,4.93009E+11,25.9.14 22:30
+178,1848 Salala Boulevard,,Miranda,373,25220,48265851133,25.9.14 22:34
+179,431 Xiangtan Avenue,,Kerala,18,4854,2.30251E+11,25.9.14 22:31
+180,757 Rustenburg Avenue,,Skikda,483,89668,5.06134E+11,25.9.14 22:30
+181,146 Johannesburg Way,,Tamaulipas,330,54132,9.53689E+11,25.9.14 22:32
+182,1891 Rizhao Boulevard,,So Paulo,456,47288,3.91066E+11,25.9.14 22:30
+183,1089 Iwatsuki Avenue,,Kirov,270,35109,8.66092E+11,25.9.14 22:32
+184,1410 Benin City Parkway,,Risaralda,405,29747,1.0415E+11,25.9.14 22:30
+185,682 Garden Grove Place,,Tennessee,333,67497,72136330362,25.9.14 22:33
+186,533 al-Ayn Boulevard,,California,126,8862,6.62227E+11,25.9.14 22:33
+187,1839 Szkesfehrvr Parkway,,Gois,317,55709,9.47469E+11,25.9.14 22:30
+188,741 Ambattur Manor,,Noord-Brabant,438,43310,3.0259E+11,25.9.14 22:32
+189,927 Barcelona Street,,Chaharmahal va Bakht,467,65121,9.51486E+11,25.9.14 22:31
+190,435 0 Way,,West Bengali,195,74750,7.60172E+11,25.9.14 22:31
+191,140 Chiayi Parkway,,Sumy,506,38982,8.55864E+11,25.9.14 22:33
+192,1166 Changhwa Street,,Caraga,62,58852,6.50752E+11,25.9.14 22:32
+193,891 Novi Sad Manor,,Ontario,383,5379,2.47647E+11,25.9.14 22:30
+194,605 Rio Claro Parkway,,Tabora,513,49348,3.52469E+11,25.9.14 22:33
+195,1077 San Felipe de Puerto Plata Place,,Rostov-na-Donu,369,65387,8.12824E+11,25.9.14 22:32
+196,9 San Miguel de Tucumn Manor,,Uttar Pradesh,169,90845,9.56189E+11,25.9.14 22:31
+197,447 Surakarta Loop,,Nyanza,271,10428,9.4083E+11,25.9.14 22:31
+198,345 Oshawa Boulevard,,Tokyo-to,204,32114,1.04491E+11,25.9.14 22:31
+199,1792 Valle de la Pascua Place,,Nordrhein-Westfalen,477,15540,4.1942E+11,25.9.14 22:31
+200,1074 Binzhou Manor,,Baden-Wrttemberg,325,36490,3.31133E+11,25.9.14 22:31
+201,817 Bradford Loop,,Jiangsu,109,89459,2.64286E+11,25.9.14 22:30
+202,955 Bamenda Way,,Ondo & Ekiti,218,1545,7.68482E+11,25.9.14 22:32
+203,1149 A Corua (La Corua) Boulevard,,Haiphong,194,95824,4.70884E+11,25.9.14 22:34
+204,387 Mwene-Ditu Drive,,Ahal,35,8073,7.64478E+11,25.9.14 22:33
+205,68 Molodetno Manor,,Nordrhein-Westfalen,575,4662,1.46641E+11,25.9.14 22:31
+206,642 Nador Drive,,Maharashtra,77,3924,3.6905E+11,25.9.14 22:31
+207,1688 Nador Lane,,Sulawesi Utara,184,61613,6.52218E+11,25.9.14 22:31
+208,1215 Pyongyang Parkway,,Usak,557,25238,6.46237E+11,25.9.14 22:33
+209,1679 Antofagasta Street,,Alto Paran,122,86599,9.05904E+11,25.9.14 22:32
+210,1304 s-Hertogenbosch Way,,Santa Catarina,83,10925,90336226227,25.9.14 22:30
+211,850 Salala Loop,,Kitaa,371,10800,4.03405E+11,25.9.14 22:31
+212,624 Oshawa Boulevard,,West Bengali,51,89959,49677664184,25.9.14 22:31
+213,43 Dadu Avenue,,Rajasthan,74,4855,95666951770,25.9.14 22:31
+214,751 Lima Loop,,Aden,7,99405,7.5646E+11,25.9.14 22:34
+215,1333 Haldia Street,,Jilin,174,82161,4.08304E+11,25.9.14 22:30
+216,660 Jedda Boulevard,,Washington,65,25053,1.68758E+11,25.9.14 22:33
+217,1001 Miyakonojo Lane,,Taizz,518,67924,5.84317E+11,25.9.14 22:34
+218,226 Brest Manor,,California,508,2299,7.85881E+11,25.9.14 22:34
+219,1229 Valencia Parkway,,Haskovo,498,99124,3.52679E+11,25.9.14 22:30
+220,1201 Qomsheh Manor,,Gois,28,21464,8.73492E+11,25.9.14 22:30
+221,866 Shivapuri Manor,,Uttar Pradesh,448,22474,7.78503E+11,25.9.14 22:31
+222,1168 Najafabad Parkway,,Kabol,251,40301,8.86649E+11,25.9.14 22:29
+223,1244 Allappuzha (Alleppey) Place,,Buenos Aires,567,20657,9.91803E+11,25.9.14 22:30
+224,1842 Luzinia Boulevard,,Zanzibar West,593,94420,7.06879E+11,25.9.14 22:33
+225,1926 Gingoog Street,,Sisilia,511,22824,4.69739E+11,25.9.14 22:31
+226,810 Palghat (Palakkad) Boulevard,,Jaroslavl,235,73431,5.16331E+11,25.9.14 22:32
+227,1820 Maring Parkway,,Punjab,324,88307,99760893676,25.9.14 22:32
+228,60 Poos de Caldas Street,,Rajasthan,243,82338,9.63064E+11,25.9.14 22:31
+229,1014 Loja Manor,,Tamil Nadu,22,66851,4.60796E+11,25.9.14 22:31
+230,201 Effon-Alaiye Way,,Asuncin,37,64344,6.84193E+11,25.9.14 22:32
+231,430 Alessandria Loop,,Saarland,439,47446,6.69828E+11,25.9.14 22:31
+232,754 Valencia Place,,Phnom Penh,406,87911,5.94319E+11,25.9.14 22:30
+233,356 Olomouc Manor,,Gois,26,93323,22326410776,25.9.14 22:30
+234,1256 Bislig Boulevard,,Botosani,86,50598,4.79007E+11,25.9.14 22:32
+235,954 Kimchon Place,,West Bengali,559,42420,5.41328E+11,25.9.14 22:31
+236,885 Yingkou Manor,,Kaduna,596,31390,5.88965E+11,25.9.14 22:32
+237,1736 Cavite Place,,Qina,216,98775,4.31771E+11,25.9.14 22:30
+238,346 Skikda Parkway,,Hawalli,233,90628,6.30424E+11,25.9.14 22:31
+239,98 Stara Zagora Boulevard,,Valle,96,76448,6.10174E+11,25.9.14 22:30
+240,1479 Rustenburg Boulevard,,Southern Tagalog,527,18727,7.27785E+11,25.9.14 22:32
+241,647 A Corua (La Corua) Street,,Chollanam,357,36971,7.92557E+11,25.9.14 22:33
+242,1964 Gijn Manor,,Karnataka,473,14408,9.1812E+11,25.9.14 22:31
+243,47 Syktyvkar Lane,,West Java,118,22236,63937119031,25.9.14 22:31
+244,1148 Saarbrcken Parkway,,Fukushima,226,1921,1.37773E+11,25.9.14 22:31
+245,1103 Bilbays Parkway,,Hubei,578,87660,2.7998E+11,25.9.14 22:30
+246,1246 Boksburg Parkway,,Hebei,422,28349,8.90284E+11,25.9.14 22:30
+247,1483 Pathankot Street,,Tucumn,454,37288,6.86016E+11,25.9.14 22:30
+248,582 Papeete Loop,,Central Visayas,294,27722,5.69869E+11,25.9.14 22:32
+249,300 Junan Street,,Kyonggi,553,81314,8.90289E+11,25.9.14 22:33
+250,829 Grand Prairie Way,,Paran,328,6461,7.41071E+11,25.9.14 22:30
+251,1473 Changhwa Parkway,,Mxico,124,75933,2.66798E+11,25.9.14 22:32
+252,1309 Weifang Street,,Florida,520,57338,4.35785E+11,25.9.14 22:34
+253,1760 Oshawa Manor,,Tianjin,535,38140,56257502250,25.9.14 22:30
+254,786 Stara Zagora Way,,Oyo & Osun,390,98332,7.16257E+11,25.9.14 22:32
+255,1966 Tonghae Street,,Anhalt Sachsen,198,36481,5.67359E+11,25.9.14 22:31
+256,1497 Yuzhou Drive,,England,312,3433,2.4681E+11,25.9.14 22:33
+258,752 Ondo Loop,,Miyazaki,338,32474,1.34674E+11,25.9.14 22:31
+259,1338 Zalantun Lane,,Minas Gerais,413,45403,8.40523E+11,25.9.14 22:30
+260,127 Iwakuni Boulevard,,Central Luzon,192,20777,9.87443E+11,25.9.14 22:32
+261,51 Laredo Avenue,,Sagaing,342,68146,8.84537E+11,25.9.14 22:32
+262,771 Yaound Manor,,Sofala,64,86768,2.45478E+11,25.9.14 22:32
+263,532 Toulon Street,,Santiago,460,69517,46871694740,25.9.14 22:30
+264,1027 Banjul Place,,West Bengali,197,50390,5.38241E+11,25.9.14 22:31
+265,1158 Mandi Bahauddin Parkway,,Shanxi,136,98484,2.76556E+11,25.9.14 22:30
+266,862 Xintai Lane,,Cagayan Valley,548,30065,2.65153E+11,25.9.14 22:32
+267,816 Cayenne Parkway,,Manab,414,93629,2.82875E+11,25.9.14 22:30
+268,1831 Nam Dinh Loop,,National Capital Reg,323,51990,3.22889E+11,25.9.14 22:32
+269,446 Kirovo-Tepetsk Lane,,Osaka,203,19428,3.03967E+11,25.9.14 22:31
+270,682 Halisahar Place,,Severn Morava,378,20536,4.75553E+11,25.9.14 22:30
+271,1587 Loja Manor,,Salzburg,447,5410,6.21625E+11,25.9.14 22:30
+272,1762 Paarl Parkway,,Hunan,298,53928,1.9246E+11,25.9.14 22:30
+273,1519 Ilorin Place,,Kerala,395,49298,3.57446E+11,25.9.14 22:31
+274,920 Kumbakonam Loop,,California,446,75090,6.85011E+11,25.9.14 22:34
+275,906 Goinia Way,,Wielkopolskie,255,83565,7.01768E+11,25.9.14 22:32
+276,1675 Xiangfan Manor,,Tamil Nadu,283,11763,2.7115E+11,25.9.14 22:31
+277,85 San Felipe de Puerto Plata Drive,,Shandong,584,46063,1.7074E+11,25.9.14 22:30
+278,144 South Hill Loop,,Guanajuato,445,2012,45387294817,25.9.14 22:32
+279,1884 Shikarpur Avenue,,Haryana,263,85548,9.59949E+11,25.9.14 22:31
+280,1980 Kamjanets-Podilskyi Street,,Illinois,404,89502,8.74337E+11,25.9.14 22:33
+281,1944 Bamenda Way,,Michigan,573,24645,75975221996,25.9.14 22:34
+282,556 Baybay Manor,,Oyo & Osun,374,55802,3.63982E+11,25.9.14 22:32
+283,457 Tongliao Loop,,Bursa,222,56254,8.80756E+11,25.9.14 22:33
+284,600 Bradford Street,,East Azerbaidzan,514,96204,1.17592E+11,25.9.14 22:31
+285,1006 Santa Brbara dOeste Manor,,Ondo & Ekiti,389,36229,85059738746,25.9.14 22:32
+286,1308 Sumy Loop,,Fujian,175,30657,5.83021E+11,25.9.14 22:30
+287,1405 Chisinau Place,,Ponce,411,8160,62781725285,25.9.14 22:32
+288,226 Halifax Street,,Xinxiang,277,58492,7.90651E+11,25.9.14 22:30
+289,1279 Udine Parkway,,Edo & Delta,69,75860,1.95004E+11,25.9.14 22:32
+290,1336 Benin City Drive,,Shiga,386,46044,3.41243E+11,25.9.14 22:31
+291,1155 Liaocheng Place,,Oyo & Osun,152,22650,5.58236E+11,25.9.14 22:32
+292,1993 Tabuk Lane,,Tamil Nadu,522,64221,6.48482E+11,25.9.14 22:31
+293,86 Higashiosaka Lane,,Guanajuato,563,33768,9.57129E+11,25.9.14 22:32
+294,1912 Allende Manor,,Kowloon and New Kowl,279,58124,1.72262E+11,25.9.14 22:31
+295,544 Tarsus Boulevard,,Gurico,562,53145,892523334,25.9.14 22:34
+296,1936 Cuman Avenue,,Virginia,433,61195,9.76799E+11,25.9.14 22:33
+297,1192 Tongliao Street,,Sharja,470,19065,3.50971E+11,25.9.14 22:33
+298,44 Najafabad Way,,Baskimaa,146,61391,96604821070,25.9.14 22:33
+299,32 Pudukkottai Lane,,Ohio,140,38834,9.67275E+11,25.9.14 22:33
+300,661 Chisinau Lane,,Pietari,274,8856,8.16436E+11,25.9.14 22:32
+301,951 Stara Zagora Manor,,Punjab,400,98573,4.29926E+11,25.9.14 22:31
+302,922 Vila Velha Loop,,Maharashtra,9,4085,5.10737E+11,25.9.14 22:31
+303,898 Jining Lane,,Pohjois-Pohjanmaa,387,40070,1.61643E+11,25.9.14 22:31
+304,1635 Kuwana Boulevard,,Hiroshima,205,52137,7.10604E+11,25.9.14 22:31
+305,41 El Alto Parkway,,Maharashtra,398,56883,51917807050,25.9.14 22:31
+306,1883 Maikop Lane,,Kaliningrad,254,68469,96110042435,25.9.14 22:32
+307,1908 Gaziantep Place,,Liaoning,536,58979,1.08054E+11,25.9.14 22:30
+308,687 Alessandria Parkway,,Sanaa,455,57587,4.07219E+11,25.9.14 22:34
+309,827 Yuncheng Drive,,Callao,99,79047,5.04434E+11,25.9.14 22:32
+310,913 Coacalco de Berriozbal Loop,,Texas,33,42141,2.62088E+11,25.9.14 22:33
+311,715 So Bernardo do Campo Lane,,Kedah,507,84804,1.81179E+11,25.9.14 22:32
+312,1354 Siegen Street,,Rio de Janeiro,25,80184,5.73442E+11,25.9.14 22:30
+313,1191 Sungai Petani Boulevard,,Missouri,262,9668,9.8326E+11,25.9.14 22:33
+314,1224 Huejutla de Reyes Boulevard,,Lombardia,91,70923,8.06017E+11,25.9.14 22:31
+315,543 Bergamo Avenue,,Minas Gerais,215,59686,1.03602E+11,25.9.14 22:30
+316,746 Joliet Lane,,Kursk,286,94878,6.88485E+11,25.9.14 22:32
+317,780 Kimberley Way,,Tabuk,515,17032,8.24397E+11,25.9.14 22:33
+318,1774 Yaound Place,,Hubei,166,91400,6.13124E+11,25.9.14 22:30
+319,1957 Yantai Lane,,So Paulo,490,59255,7.04948E+11,25.9.14 22:30
+320,1542 Lubumbashi Boulevard,,Tel Aviv,57,62472,5.088E+11,25.9.14 22:31
+321,651 Pathankot Loop,,Maharashtra,336,59811,1.39378E+11,25.9.14 22:31
+322,1359 Zhoushan Parkway,,Streymoyar,545,29763,46568045367,25.9.14 22:30
+323,1769 Iwaki Lane,,Kujawsko-Pomorskie,97,25787,5.56101E+11,25.9.14 22:32
+324,1145 Vilnius Manor,,Mxico,451,73170,6.74806E+11,25.9.14 22:32
+325,1892 Nabereznyje Telny Lane,,Tutuila,516,28396,4.7823E+11,25.9.14 22:30
+326,470 Boksburg Street,,Central,81,97960,9.0803E+11,25.9.14 22:32
+327,1427 A Corua (La Corua) Place,,Buenos Aires,45,85799,9.72575E+11,25.9.14 22:30
+328,479 San Felipe del Progreso Avenue,,Morelos,130,54949,8.69052E+11,25.9.14 22:32
+329,867 Benin City Avenue,,Henan,591,78543,1.68885E+11,25.9.14 22:30
+330,981 Kumbakonam Place,,Distrito Federal,89,87611,8.29116E+11,25.9.14 22:30
+331,1016 Iwakuni Street,,St George,269,49833,9.61371E+11,25.9.14 22:32
+332,663 Baha Blanca Parkway,,Adana,5,33463,8.34419E+11,25.9.14 22:33
+333,1860 Taguig Loop,,West Java,119,59550,38158430589,25.9.14 22:31
+334,1816 Bydgoszcz Loop,,Dhaka,234,64308,9.65274E+11,25.9.14 22:30
+335,587 Benguela Manor,,Illinois,42,91590,1.65451E+11,25.9.14 22:33
+336,430 Kumbakonam Drive,,Santa F,457,28814,1.05471E+11,25.9.14 22:30
+337,1838 Tabriz Lane,,Dhaka,143,1195,38988715447,25.9.14 22:30
+338,431 Szkesfehrvr Avenue,,Baki,48,57828,1.19501E+11,25.9.14 22:30
+339,503 Sogamoso Loop,,Sumqayit,505,49812,8.34627E+11,25.9.14 22:30
+340,507 Smolensk Loop,,Sousse,492,22971,80303246192,25.9.14 22:33
+341,1920 Weifang Avenue,,Uttar Pradesh,427,15643,8.69508E+11,25.9.14 22:31
+342,124 al-Manama Way,,Hiroshima,382,52368,6.47899E+11,25.9.14 22:31
+343,1443 Mardan Street,,Western Cape,392,31483,2.31383E+11,25.9.14 22:33
+344,1909 Benguela Lane,,Henan,581,19913,6.24138E+11,25.9.14 22:30
+345,68 Ponce Parkway,,Hanoi,201,85926,8.70635E+11,25.9.14 22:34
+346,1217 Konotop Avenue,,Gelderland,151,504,7.18917E+11,25.9.14 22:32
+347,1293 Nam Dinh Way,,Roraima,84,71583,6.97656E+11,25.9.14 22:30
+348,785 Vaduz Street,,Baja California,335,36170,8.95617E+11,25.9.14 22:32
+349,1516 Escobar Drive,,Tongatapu,370,46069,64536069371,25.9.14 22:33
+350,1628 Nagareyama Lane,,Central,453,60079,20064292617,25.9.14 22:32
+351,1157 Nyeri Loop,,Adygea,320,56380,2.62745E+11,25.9.14 22:32
+352,1673 Tangail Drive,,Daugavpils,137,26857,6.27924E+11,25.9.14 22:31
+353,381 Kabul Way,,Taipei,209,87272,55477302294,25.9.14 22:33
+354,953 Hodeida Street,,Southern Tagalog,221,18841,53912826864,25.9.14 22:32
+355,469 Nakhon Sawan Street,,Tuvassia,531,58866,6.892E+11,25.9.14 22:32
+356,1378 Beira Loop,,Krasnojarsk,597,40792,8.40958E+11,25.9.14 22:32
+357,1641 Changhwa Place,,Nord-Ouest,52,37636,2.56546E+11,25.9.14 22:30
+358,1698 Southport Loop,,Hidalgo,393,49009,7.54358E+11,25.9.14 22:32
+359,519 Nyeri Manor,,So Paulo,461,37650,7.64681E+11,25.9.14 22:30
+360,619 Hunuco Avenue,,Shimane,331,81508,1.42596E+11,25.9.14 22:31
+361,45 Aparecida de Goinia Place,,Madhya Pradesh,464,7431,6.50497E+11,25.9.14 22:31
+362,482 Kowloon and New Kowloon Manor,,Bratislava,90,97056,7.38968E+11,25.9.14 22:33
+363,604 Bern Place,,Jharkhand,429,5373,6.20719E+11,25.9.14 22:31
+364,1623 Kingstown Drive,,Buenos Aires,20,91299,2.96395E+11,25.9.14 22:30
+365,1009 Zanzibar Lane,,Arecibo,32,64875,1.02396E+11,25.9.14 22:32
+366,114 Jalib al-Shuyukh Manor,,Centre,585,60440,8.45379E+11,25.9.14 22:30
+367,1163 London Parkway,,Par,66,6066,6.7512E+11,25.9.14 22:30
+368,1658 Jastrzebie-Zdrj Loop,,Central,372,96584,5.68368E+11,25.9.14 22:31
+369,817 Laredo Avenue,,Jalisco,188,77449,1.5125E+11,25.9.14 22:32
+370,1565 Tangail Manor,,Okinawa,377,45750,6.34445E+11,25.9.14 22:31
+371,1912 Emeishan Drive,,Balikesir,50,33050,99883471275,25.9.14 22:33
+372,230 Urawa Drive,,Andhra Pradesh,8,2738,1.66898E+11,25.9.14 22:31
+373,1922 Miraj Way,,Esfahan,356,13203,3.20471E+11,25.9.14 22:31
+374,433 Florencia Street,,Chihuahua,250,91330,5.6173E+11,25.9.14 22:32
+375,1049 Matamoros Parkway,,Karnataka,191,69640,9.60505E+11,25.9.14 22:31
+376,1061 Ede Avenue,,Southern Tagalog,98,57810,3.33391E+11,25.9.14 22:32
+377,154 Oshawa Manor,,East Java,415,72771,4.40366E+11,25.9.14 22:31
+378,1191 Tandil Drive,,Southern Tagalog,523,6362,45554316010,25.9.14 22:32
+379,1133 Rizhao Avenue,,Pernambuco,572,2800,6.00265E+11,25.9.14 22:30
+380,1519 Santiago de los Caballeros Loop,,East Kasai,348,22025,4.09315E+11,25.9.14 22:30
+381,1618 Olomouc Manor,,Kurgan,285,26385,96846695220,25.9.14 22:32
+382,220 Hidalgo Drive,,Kermanshah,265,45298,3.42721E+11,25.9.14 22:31
+383,686 Donostia-San Sebastin Lane,,Guangdong,471,97390,71857599858,25.9.14 22:30
+384,97 Mogiljov Lane,,Gujarat,73,89294,9.24815E+11,25.9.14 22:31
+385,1642 Charlotte Amalie Drive,,Slaskie,549,75442,8.21477E+11,25.9.14 22:32
+386,1368 Maracabo Boulevard,,,493,32716,9.34352E+11,25.9.14 22:30
+387,401 Sucre Boulevard,,New Hampshire,322,25007,4.86396E+11,25.9.14 22:33
+388,368 Hunuco Boulevard,,Namibe,360,17165,1.06439E+11,25.9.14 22:30
+389,500 Lincoln Parkway,,Jiangsu,210,95509,5.50307E+11,25.9.14 22:30
+390,102 Chapra Drive,,Ibaragi,521,14073,7.76032E+11,25.9.14 22:31
+391,1793 Meixian Place,,Hmelnytskyi,258,33535,6.19966E+11,25.9.14 22:33
+392,514 Ife Way,,Shaba,315,69973,9.00236E+11,25.9.14 22:30
+393,717 Changzhou Lane,,Southern Tagalog,104,21615,4.26255E+11,25.9.14 22:32
+394,753 Ilorin Avenue,,Sichuan,157,3656,4.64511E+11,25.9.14 22:30
+395,1337 Mit Ghamr Avenue,,Nakhon Sawan,358,29810,1.75283E+11,25.9.14 22:33
+396,767 Pyongyang Drive,,Osaka,229,83536,6.67736E+11,25.9.14 22:31
+397,614 Pak Kret Street,,Addis Abeba,6,27796,47808359842,25.9.14 22:30
+398,954 Lapu-Lapu Way,,Moskova,278,8816,7.37229E+11,25.9.14 22:32
+399,331 Bydgoszcz Parkway,,Asturia,181,966,5.37374E+11,25.9.14 22:33
+400,1152 Citrus Heights Manor,,al-Qadarif,15,5239,7.65957E+11,25.9.14 22:33
+401,168 Cianjur Manor,,Saitama,228,73824,6.79095E+11,25.9.14 22:31
+402,616 Hagonoy Avenue,,Krasnojarsk,39,46043,6.04178E+11,25.9.14 22:32
+403,1190 0 Place,,Rio Grande do Sul,44,10417,8.41877E+11,25.9.14 22:30
+404,734 Bchar Place,,Punjab,375,30586,2.80579E+11,25.9.14 22:32
+405,530 Lausanne Lane,,Texas,135,11067,7.75235E+11,25.9.14 22:33
+406,454 Patiala Lane,,Fukushima,276,13496,7.94553E+11,25.9.14 22:31
+407,1346 Mysore Drive,,Bretagne,92,61507,5.16647E+11,25.9.14 22:31
+408,990 Etawah Loop,,Tamil Nadu,564,79940,2.06169E+11,25.9.14 22:31
+409,1266 Laredo Parkway,,Saitama,380,7664,1483365694,25.9.14 22:31
+410,88 Nagaon Manor,,Buenos Aires,524,86868,7.79461E+11,25.9.14 22:30
+411,264 Bhimavaram Manor,,St Thomas,111,54749,3.02527E+11,25.9.14 22:34
+412,1639 Saarbrcken Drive,,North West,437,9827,3.28495E+11,25.9.14 22:33
+413,692 Amroha Drive,,Northern,230,35575,3.59479E+11,25.9.14 22:33
+414,1936 Lapu-Lapu Parkway,,Bauchi & Gombe,141,7122,6.53437E+11,25.9.14 22:32
+415,432 Garden Grove Street,,Ontario,430,65630,6.15965E+11,25.9.14 22:30
+416,1445 Carmen Parkway,,West Java,117,70809,5.98912E+11,25.9.14 22:31
+417,791 Salinas Street,,Punjab,208,40509,1.29953E+11,25.9.14 22:31
+418,126 Acua Parkway,,West Bengali,71,58888,4.8004E+11,25.9.14 22:31
+419,397 Sunnyvale Avenue,,Guanajuato,19,55566,6.80852E+11,25.9.14 22:32
+420,992 Klerksdorp Loop,,Utrecht,23,33711,8.5529E+11,25.9.14 22:32
+421,966 Arecibo Loop,,Sind,134,94018,15273765306,25.9.14 22:32
+422,289 Santo Andr Manor,,al-Sharqiya,16,72410,2.14976E+11,25.9.14 22:32
+423,437 Chungho Drive,,Puerto Plata,450,59489,4.91271E+11,25.9.14 22:30
+424,1948 Bayugan Parkway,,Bihar,264,60622,9.87306E+11,25.9.14 22:31
+425,1866 al-Qatif Avenue,,California,155,89420,5.46794E+11,25.9.14 22:33
+426,1661 Abha Drive,,Tamil Nadu,416,14400,2.70457E+11,25.9.14 22:31
+427,1557 Cape Coral Parkway,,Hubei,293,46875,3.68284E+11,25.9.14 22:30
+428,1727 Matamoros Place,,Sawhaj,465,78813,1.29674E+11,25.9.14 22:30
+429,1269 Botosani Manor,,Guangdong,468,47394,7.36517E+11,25.9.14 22:30
+430,355 Vitria de Santo Anto Way,,Oaxaca,452,81758,5.48004E+11,25.9.14 22:32
+431,1596 Acua Parkway,,Jharkhand,418,70425,1.57133E+11,25.9.14 22:31
+432,259 Ipoh Drive,,So Paulo,189,64964,4.1901E+11,25.9.14 22:30
+433,1823 Hoshiarpur Lane,,Komi,510,33191,3.07134E+11,25.9.14 22:32
+434,1404 Taguig Drive,,Okayama,547,87212,5.72069E+11,25.9.14 22:31
+435,740 Udaipur Lane,,Nizni Novgorod,150,33505,4.97289E+11,25.9.14 22:32
+436,287 Cuautla Boulevard,,Chuquisaca,501,72736,82619513349,25.9.14 22:30
+437,1766 Almirante Brown Street,,KwaZulu-Natal,364,63104,6.17568E+11,25.9.14 22:33
+438,596 Huixquilucan Place,,Nampula,351,65892,3.42709E+11,25.9.14 22:32
+439,1351 Aparecida de Goinia Parkway,,Northern Mindanao,391,41775,9.59835E+11,25.9.14 22:32
+440,722 Bradford Lane,,Shandong,249,90920,7.46251E+11,25.9.14 22:30
+441,983 Santa F Way,,British Colombia,565,47472,1.4572E+11,25.9.14 22:30
+442,1245 Ibirit Way,,La Romana,290,40926,3.31889E+11,25.9.14 22:30
+443,1836 Korla Parkway,,Copperbelt,272,55405,6.89682E+11,25.9.14 22:34
+444,231 Kaliningrad Place,,Lombardia,70,57833,5.75081E+11,25.9.14 22:31
+445,495 Bhimavaram Lane,,Maharashtra,144,3,82088937724,25.9.14 22:31
+446,1924 Shimonoseki Drive,,Batna,59,52625,4.06784E+11,25.9.14 22:29
+447,105 Dzerzinsk Manor,,Inner Mongolia,540,48570,2.40776E+11,25.9.14 22:30
+448,614 Denizli Parkway,,Rio Grande do Sul,486,29444,8.76492E+11,25.9.14 22:30
+449,1289 Belm Boulevard,,Tartumaa,530,88306,2.37369E+11,25.9.14 22:30
+450,203 Tambaram Street,,Buenos Aires,161,73942,4.1155E+11,25.9.14 22:30
+451,1704 Tambaram Manor,,West Bengali,554,2834,39463554936,25.9.14 22:31
+452,207 Cuernavaca Loop,,Tatarstan,352,52671,7.829E+11,25.9.14 22:32
+453,319 Springs Loop,,Baijeri,160,99552,72524459905,25.9.14 22:31
+454,956 Nam Dinh Manor,,Kerman,481,21872,4.74048E+11,25.9.14 22:31
+455,1947 Paarl Way,,Central Java,509,23636,8.34061E+11,25.9.14 22:31
+456,814 Simferopol Loop,,Sinaloa,154,48745,5.24567E+11,25.9.14 22:32
+457,535 Ahmadnagar Manor,,Abu Dhabi,3,41136,9.8511E+11,25.9.14 22:33
+458,138 Caracas Boulevard,,Zulia,326,16790,9.74433E+11,25.9.14 22:34
+459,251 Florencia Drive,,Michoacn de Ocampo,556,16119,1.18012E+11,25.9.14 22:32
+460,659 Gatineau Boulevard,,La Paz,153,28587,2.05525E+11,25.9.14 22:30
+461,1889 Valparai Way,,Ziguinchor,600,75559,6.70371E+11,25.9.14 22:33
+462,1485 Bratislava Place,,Illinois,435,83183,9.24664E+11,25.9.14 22:33
+463,935 Aden Boulevard,,Central Java,532,64709,3.35053E+11,25.9.14 22:31
+464,76 Kermanshah Manor,,Esfahan,423,23343,7.62362E+11,25.9.14 22:31
+465,734 Tanshui Avenue,,Caquet,170,70664,3.66777E+11,25.9.14 22:30
+466,118 Jaffna Loop,,Northern Mindanao,182,10447,3.25527E+11,25.9.14 22:32
+467,1621 Tongliao Avenue,,Irkutsk,558,22173,2.09343E+11,25.9.14 22:32
+468,1844 Usak Avenue,,Nova Scotia,196,84461,1.64415E+11,25.9.14 22:30
+469,1872 Toulon Loop,,OHiggins,428,7939,9.28809E+11,25.9.14 22:30
+470,1088 Ibirit Place,,Jalisco,595,88502,49084281333,25.9.14 22:32
+471,1322 Mosul Parkway,,Shandong,145,95400,2.68054E+11,25.9.14 22:30
+472,1447 Chatsworth Place,,Chihuahua,129,41545,7.6937E+11,25.9.14 22:32
+473,1257 Guadalajara Street,,Karnataka,78,33599,1.95338E+11,25.9.14 22:31
+474,1469 Plock Lane,,Galicia,388,95835,6.22885E+11,25.9.14 22:33
+475,434 Ourense (Orense) Manor,,Hodeida,206,14122,5.6237E+11,25.9.14 22:34
+476,270 Tambaram Parkway,,Gauteng,244,9668,2.48447E+11,25.9.14 22:33
+477,1786 Salinas Place,,Nam Ha,359,66546,2.06061E+11,25.9.14 22:34
+478,1078 Stara Zagora Drive,,Aceh,301,69221,9.32993E+11,25.9.14 22:31
+479,1854 Okara Boulevard,,Drenthe,158,42123,1.31913E+11,25.9.14 22:32
+480,421 Yaound Street,,Sumy,385,11363,7.26876E+11,25.9.14 22:33
+481,1153 Allende Way,,Qubec,179,20336,8.56872E+11,25.9.14 22:30
+482,808 Naala-Porto Parkway,,England,500,41060,5.53452E+11,25.9.14 22:33
+483,632 Usolje-Sibirskoje Parkway,,Ha Darom,36,73085,6.67649E+11,25.9.14 22:31
+484,98 Pyongyang Boulevard,,Ohio,11,88749,1.91958E+11,25.9.14 22:33
+485,984 Novoterkassk Loop,,Gaziantep,180,28165,4.35119E+11,25.9.14 22:33
+486,64 Korla Street,,Mwanza,347,25145,5.10383E+11,25.9.14 22:33
+487,1785 So Bernardo do Campo Street,,Veracruz,125,71182,6.84529E+11,25.9.14 22:32
+488,698 Jelets Boulevard,,Denizli,142,2596,9.75186E+11,25.9.14 22:33
+489,1297 Alvorada Parkway,,Ningxia,587,11839,5.08349E+11,25.9.14 22:30
+490,1909 Dayton Avenue,,Guangdong,469,88513,7.02955E+11,25.9.14 22:30
+491,1789 Saint-Denis Parkway,,Coahuila de Zaragoza,4,8268,9.36807E+11,25.9.14 22:32
+492,185 Mannheim Lane,,Stavropol,408,23661,5.89378E+11,25.9.14 22:32
+493,184 Mandaluyong Street,,Baja California Sur,288,94239,4.88425E+11,25.9.14 22:32
+494,591 Sungai Petani Drive,,Okayama,376,46400,37247325001,25.9.14 22:31
+495,656 Matamoros Drive,,Boyac,487,19489,17305839123,25.9.14 22:30
+496,775 ostka Drive,,al-Daqahliya,337,22358,1.71973E+11,25.9.14 22:30
+497,1013 Tabuk Boulevard,,West Bengali,261,96203,1.584E+11,25.9.14 22:31
+498,319 Plock Parkway,,Istanbul,504,26101,8.5426E+11,25.9.14 22:33
+499,1954 Kowloon and New Kowloon Way,,Chimborazo,434,63667,8.98559E+11,25.9.14 22:30
+500,362 Rajkot Lane,,Gansu,47,98030,9.6202E+11,25.9.14 22:30
+501,1060 Tandil Lane,,Shandong,432,72349,2.11256E+11,25.9.14 22:30
+502,1515 Korla Way,,England,589,57197,9.59468E+11,25.9.14 22:33
+503,1416 San Juan Bautista Tuxtepec Avenue,,Zufar,444,50592,1.44207E+11,25.9.14 22:32
+504,1 Valle de Santiago Avenue,,Apulia,93,86208,4.65898E+11,25.9.14 22:31
+505,519 Brescia Parkway,,East Java,318,69504,7.93997E+11,25.9.14 22:31
+506,414 Mandaluyong Street,,Lubelskie,314,16370,52709222667,25.9.14 22:32
+507,1197 Sokoto Boulevard,,West Bengali,478,87687,8.68603E+11,25.9.14 22:31
+508,496 Celaya Drive,,Nagano,552,90797,7.59587E+11,25.9.14 22:31
+509,786 Matsue Way,,Illinois,245,37469,1.11177E+11,25.9.14 22:33
+510,48 Maracabo Place,,Central Luzon,519,1570,82671830126,25.9.14 22:32
+511,1152 al-Qatif Lane,,Kalimantan Barat,412,44816,1.31371E+11,25.9.14 22:31
+512,1269 Ipoh Avenue,,Eskisehir,163,54674,4.0263E+11,25.9.14 22:33
+513,758 Korolev Parkway,,Andhra Pradesh,568,75474,4.41628E+11,25.9.14 22:31
+514,1747 Rustenburg Place,,Bihar,110,51369,4.42674E+11,25.9.14 22:31
+515,886 Tonghae Place,,Volgograd,259,19450,7.11928E+11,25.9.14 22:32
+516,1574 Goinia Boulevard,,Heilongjiang,502,39529,59634255214,25.9.14 22:30
+517,548 Uruapan Street,,Ontario,312,35653,8.79347E+11,25.9.14 22:33
+519,962 Tama Loop,,,583,65952,2.82668E+11,25.9.14 22:32
+520,1778 Gijn Manor,,Hubei,594,35156,2.88911E+11,25.9.14 22:30
+521,568 Dhule (Dhulia) Loop,,Coquimbo,127,92568,6.02101E+11,25.9.14 22:30
+522,1768 Udine Loop,,Battambang,60,32347,4.48876E+11,25.9.14 22:30
+523,608 Birgunj Parkway,,Taipei,116,400,6.27426E+11,25.9.14 22:33
+524,680 A Corua (La Corua) Manor,,Sivas,482,49806,1.58326E+11,25.9.14 22:33
+525,1949 Sanya Street,,Gumma,224,61244,1.32101E+11,25.9.14 22:31
+526,617 Klerksdorp Place,,Khanh Hoa,366,94707,5.74973E+11,25.9.14 22:34
+527,1993 0 Loop,,Liaoning,588,41214,25865528181,25.9.14 22:30
+528,1176 Southend-on-Sea Manor,,Southern Tagalog,458,81651,2.36679E+11,25.9.14 22:32
+529,600 Purnea (Purnia) Avenue,,Nghe An,571,18043,6.3841E+11,25.9.14 22:34
+530,1003 Qinhuangdao Street,,West Java,419,25972,35533115997,25.9.14 22:31
+531,1986 Sivas Place,,Friuli-Venezia Giuli,551,95775,1.82059E+11,25.9.14 22:31
+532,1427 Tabuk Place,,Florida,101,31342,2.14757E+11,25.9.14 22:33
+533,556 Asuncin Way,,Mogiljov,339,35364,3.38244E+11,25.9.14 22:30
+534,486 Ondo Parkway,,Benguela,67,35202,1.05882E+11,25.9.14 22:30
+535,635 Brest Manor,,Andhra Pradesh,75,40899,80593242951,25.9.14 22:31
+536,166 Jinchang Street,,Buenos Aires,165,86760,7.17566E+11,25.9.14 22:30
+537,958 Sagamihara Lane,,Mie,287,88408,4.27275E+11,25.9.14 22:31
+538,1817 Livorno Way,,Khanh Hoa,100,79401,4.7838E+11,25.9.14 22:34
+539,1332 Gaziantep Lane,,Shandong,80,22813,3.83353E+11,25.9.14 22:30
+540,949 Allende Lane,,Uttar Pradesh,24,67521,1.22981E+11,25.9.14 22:31
+541,195 Ilorin Street,,Chari-Baguirmi,363,49250,8912935608,25.9.14 22:30
+542,193 Bhusawal Place,,Kang-won,539,9750,7.45268E+11,25.9.14 22:33
+543,43 Vilnius Manor,,Colorado,42,79814,4.845E+11,25.9.14 22:33
+544,183 Haiphong Street,,Jilin,46,69953,4.886E+11,25.9.14 22:30
+545,163 Augusta-Richmond County Loop,,Carabobo,561,33030,7.54579E+11,25.9.14 22:34
+546,191 Jos Azueta Parkway,,Ruse,436,13629,9.32157E+11,25.9.14 22:30
+547,379 Lublin Parkway,,Toscana,309,74568,9.2196E+11,25.9.14 22:31
+548,1658 Cuman Loop,,Sumatera Selatan,396,51309,7.84907E+11,25.9.14 22:31
+549,454 Qinhuangdao Drive,,Tadla-Azilal,68,25866,7.8627E+11,25.9.14 22:32
+550,1715 Okayama Street,,So Paulo,485,55676,1.69353E+11,25.9.14 22:30
+551,182 Nukualofa Drive,,Sumy,275,15414,4.26346E+11,25.9.14 22:33
+552,390 Wroclaw Way,,Hainan,462,5753,3.57593E+11,25.9.14 22:30
+553,1421 Quilmes Lane,,Ishikawa,260,19151,1.35408E+11,25.9.14 22:31
+554,947 Trshavn Place,,Central Luzon,528,841,50898428626,25.9.14 22:32
+555,1764 Jalib al-Shuyukh Parkway,,Galicia,459,77642,84794532510,25.9.14 22:33
+556,346 Cam Ranh Avenue,,Zhejiang,599,39976,9.78431E+11,25.9.14 22:30
+557,1407 Pachuca de Soto Place,,Rio Grande do Sul,21,26284,3.80078E+11,25.9.14 22:30
+558,904 Clarksville Drive,,Zhejiang,193,52234,9.55349E+11,25.9.14 22:30
+559,1917 Kumbakonam Parkway,,Vojvodina,368,11892,6.98183E+11,25.9.14 22:34
+560,1447 Imus Place,,Gujarat,426,12905,62127829280,25.9.14 22:31
+561,1497 Fengshan Drive,,KwaZulu-Natal,112,63022,3.68738E+11,25.9.14 22:33
+562,869 Shikarpur Way,,England,496,57380,5.90764E+11,25.9.14 22:33
+563,1059 Yuncheng Avenue,,Vilna,570,47498,1.07093E+11,25.9.14 22:31
+564,505 Madiun Boulevard,,Dolnoslaskie,577,97271,9.70639E+11,25.9.14 22:32
+565,1741 Hoshiarpur Boulevard,,al-Sharqiya,79,22372,8.55066E+11,25.9.14 22:30
+566,1229 Varanasi (Benares) Manor,,Buenos Aires,43,40195,8.1774E+11,25.9.14 22:30
+567,1894 Boa Vista Way,,Texas,178,77464,2.39358E+11,25.9.14 22:33
+568,1342 Sharja Way,,Sokoto & Kebbi & Zam,488,93655,9.46114E+11,25.9.14 22:32
+569,1342 Abha Boulevard,,Bukarest,95,10714,9.97454E+11,25.9.14 22:32
+570,415 Pune Avenue,,Shandong,580,44274,2.03203E+11,25.9.14 22:30
+571,1746 Faaa Way,,Huanuco,214,32515,8.63081E+11,25.9.14 22:32
+572,539 Hami Way,,Tokat,538,52196,5.25518E+11,25.9.14 22:33
+573,1407 Surakarta Manor,,Moskova,466,33224,3.24346E+11,25.9.14 22:32
+574,502 Mandi Bahauddin Parkway,,Anzotegui,55,15992,6.18157E+11,25.9.14 22:34
+575,1052 Pathankot Avenue,,Sichuan,299,77397,1.28499E+11,25.9.14 22:30
+576,1351 Sousse Lane,,Coahuila de Zaragoza,341,37815,2.03804E+11,25.9.14 22:32
+577,1501 Pangkal Pinang Avenue,,Mazowieckie,409,943,7.70864E+11,25.9.14 22:32
+578,1405 Hagonoy Avenue,,Slaskie,133,86587,8.67288E+11,25.9.14 22:32
+579,521 San Juan Bautista Tuxtepec Place,,Qaraghandy,598,95093,8.44018E+11,25.9.14 22:31
+580,923 Tangail Boulevard,,Tokyo-to,10,33384,3.15528E+11,25.9.14 22:31
+581,186 Skikda Lane,,Morelos,131,89422,14465669789,25.9.14 22:32
+582,1568 Celaya Parkway,,Kaohsiung,168,34750,2.7867E+11,25.9.14 22:33
+583,1489 Kakamigahara Lane,,Taipei,526,98883,29341849811,25.9.14 22:33
+584,1819 Alessandria Loop,,Campeche,103,53829,3.77634E+11,25.9.14 22:32
+585,1208 Tama Loop,,Ninawa,344,73605,9.54786E+11,25.9.14 22:31
+586,951 Springs Lane,,Central Mindanao,219,96115,1.65165E+11,25.9.14 22:32
+587,760 Miyakonojo Drive,,Guerrero,246,64682,2.94449E+11,25.9.14 22:32
+588,966 Asuncin Way,,Hidalgo,212,62703,9.95527E+11,25.9.14 22:32
+589,1584 Ljubertsy Lane,,England,494,22954,2.8571E+11,25.9.14 22:33
+590,247 Jining Parkway,,Banjul,54,53446,1.70115E+11,25.9.14 22:31
+591,773 Dallas Manor,,Buenos Aires,424,12664,9.14466E+11,25.9.14 22:30
+592,1923 Stara Zagora Lane,,Nantou,546,95179,1.82179E+11,25.9.14 22:33
+593,1402 Zanzibar Boulevard,,Guanajuato,106,71102,3.87448E+11,25.9.14 22:32
+594,1464 Kursk Parkway,,Shandong,574,17381,3.38758E+11,25.9.14 22:30
+595,1074 Sanaa Parkway,,Loja,311,22474,1.54124E+11,25.9.14 22:30
+596,1759 Niznekamsk Avenue,,al-Manama,14,39414,8.64393E+11,25.9.14 22:30
+597,32 Liaocheng Way,,Minas Gerais,248,1944,4.10877E+11,25.9.14 22:30
+598,42 Fontana Avenue,,Fejr,512,14684,4.3783E+11,25.9.14 22:31
+599,1895 Zhezqazghan Drive,,California,177,36693,1.3781E+11,25.9.14 22:33
+600,1837 Kaduna Parkway,,Inner Mongolia,241,82580,6.40844E+11,25.9.14 22:30
+601,844 Bucuresti Place,,Liaoning,242,36603,9.35952E+11,25.9.14 22:30
+602,1101 Bucuresti Boulevard,,West Greece,401,97661,1.99515E+11,25.9.14 22:31
+603,1103 Quilmes Boulevard,,Piura,503,52137,6.44021E+11,25.9.14 22:32
+604,1331 Usak Boulevard,,Vaud,296,61960,1.45309E+11,25.9.14 22:33
+605,1325 Fukuyama Street,,Heilongjiang,537,27107,2.88241E+11,25.9.14 22:30
