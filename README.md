@@ -222,9 +222,19 @@ connections:
 
 ### Example connection string configurations for databases
 
-### BigQuery
+### BigQuery (service-based authentication OAuth 0)
 ```
 url: jdbc:bigquery://https://www.googleapis.com/bigquery/v2:443;ProjectId=<PROJECT-ID>;AdditionalProjects=bigquery-public-data;OAuthType=0;OAuthServiceAcctEmail=<EMAIL>;OAuthPvtKeyPath=<SERVICE-ACCOUNT-PATH>
+```
+
+### BigQuery (pre-generated token authentication OAuth 2)
+```
+jdbc:bigquery://https://www.googleapis.com/bigquery/v2:443;OAuthType=2;ProjectId=<PROJECT-ID>;OAuthAccessToken=<ACCESS-TOKEN>;OAuthRefreshToken=<REFRESH-TOKEN>;OAuthClientId=<CLIENT-ID>;OAuthClientSecret=<CLIENT-SECRET>;
+```
+
+### BigQuery (application default credentials authentication OAuth 3)
+```
+jdbc:bigquery://https://www.googleapis.com/bigquery/v2:443;OAuthType=3;ProjectId=<PROJECT-ID>;
 ```
 
 ### Snowflake
