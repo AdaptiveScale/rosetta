@@ -7,7 +7,9 @@ import com.adaptivescale.rosetta.cli.outputs.StringOutput;
 import com.adaptivescale.rosetta.cli.outputs.YamlModelOutput;
 import com.adaptivescale.rosetta.common.models.Database;
 import com.adaptivescale.rosetta.common.DriverManagerDriverProvider;
+import com.adaptivescale.rosetta.common.models.Table;
 import com.adaptivescale.rosetta.common.models.dbt.DbtModel;
+import com.adaptivescale.rosetta.common.models.enums.OperationLevelEnum;
 import com.adaptivescale.rosetta.common.models.input.Connection;
 import com.adaptivescale.rosetta.ddl.DDL;
 import com.adaptivescale.rosetta.ddl.executor.DDLExecutor;
@@ -52,7 +54,7 @@ import static com.adaptivescale.rosetta.cli.Constants.*;
 @Slf4j
 @CommandLine.Command(name = "cli",
         mixinStandardHelpOptions = true,
-        version = "1.8.0",
+        version = "1.8.1",
         description = "Declarative Database Management - DDL Transpiler"
 )
 class Cli implements Callable<Void> {
@@ -181,6 +183,12 @@ class Cli implements Callable<Void> {
 
         Database expectedDatabase = databases.get(0);
         Database actualDatabase = SourceGeneratorFactory.sourceGenerator(source).generate(source);
+
+        if (expectedDatabase.getOperationLevel().equals(OperationLevelEnum.schema)) {
+            Set<String> expectedSchemaList = expectedDatabase.getTables().stream().map(Table::getSchema).collect(Collectors.toSet());
+            List<Table> tablesWithMatchingSchema = actualDatabase.getTables().stream().filter(table -> expectedSchemaList.contains(table.getSchema())).collect(Collectors.toList());
+            actualDatabase.setTables(tablesWithMatchingSchema);
+        }
 
         ChangeFinder changeFinder = DDLFactory.changeFinderForDatabaseType(source.getDbType());
         List<Change<?>> changes = changeFinder.findChanges(expectedDatabase, actualDatabase);
