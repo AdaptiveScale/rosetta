@@ -325,6 +325,7 @@ Example:
 ---
 safeMode: false
 databaseType: bigquery
+operationLevel: database
 tables:
 - name: "profiles"
   type: "TABLE"
@@ -427,6 +428,7 @@ Example:
 ---
 safeMode: false
 databaseType: "mysql"
+operationLevel: database
 tables:
   - name: "actor"
     type: "TABLE"
@@ -493,6 +495,7 @@ Example:
 ---
 safeMode: false
 databaseType: "mysql"
+operationLevel: database
 tables:
   - name: "actor"
     type: "TABLE"
@@ -519,6 +522,7 @@ tables:
 ---
 safeMode: false
 databaseType: "mysql"
+operationLevel: database
 tables:
   - name: "actor"
     type: "TABLE"
@@ -561,6 +565,10 @@ Description: Our actual database does not contain `first_name` so we expect it t
 ### Safety Operation
 In `model.yaml` you can find the attribute `safeMode` which is by default disabled (false). If you want to prevent any DROP operation during
 `apply` command, set `safeMode: true`.
+
+### Operation level
+In `model.yaml` you can find the attribute `operationLevel` which is by default set to `database`. If you want to apply changes on to schemas in your model instead of the whole database in 
+`apply` command, set `operationLevel: schema`.
 
 ## Copyright and License Information
 Unless otherwise specified, all content, including all source code files and documentation files in this repository are:
