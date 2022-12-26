@@ -7,26 +7,25 @@ import java.util.stream.Collectors;
 
 public class DefaultTester implements Diff<List<String>, Database, Database> {
 
-    private static final String TABLE_COLUMNS_CHANGED_FORMAT = "Table Changed: Table '%s' columns changed";
-    private static final String TABLE_REMOVED_FORMAT = "Table Removed: Table '%s'";
-    private static final String TABLE_ADDED_FORMAT = "Table Added: Table '%s'";
+    private static final String TABLE_COLUMNS_CHANGED_FORMAT = "Table Changed: Table '%s' columns changed in the target database.";
+    private static final String TABLE_REMOVED_FORMAT = "Table '%s' exists in the model, but it does not exist in the target database.";
+    private static final String TABLE_ADDED_FORMAT = "Table '%s' does not exist in the model, but it exists in the target database.";
 
     private static final String COLUMN_CHANGED_FORMAT = "Column Changed: Column '%s' in table '%s' changed '%s'. Old value: '%s', new value: '%s'";
-    private static final String COLUMN_REMOVED_FORMAT = "Column Removed: Column '%s' in table '%s'";
-    private static final String COLUMN_ADDED_FORMAT = "Column Added: Column '%s' in table '%s'";
+    private static final String COLUMN_REMOVED_FORMAT = "Column '%s' in table '%s' exists in the model, but it does not exist in the target database.";
+    private static final String COLUMN_ADDED_FORMAT = "Column '%s' in table '%s' does not exist in the model, but it exists in the target database.";
 
     private static final String COLUMN_FOREIGN_KEY_CHANGED = "Foreign Key Changed: FK '%s' on Column '%s' in table '%s' changed '%s'. Old value: '%s', new value: '%s'";
-    private static final String COLUMN_FOREIGN_KEY_ADDED = "Foreign Key Added: FK '%s'  on Column '%s' in table '%s' is added";
-    private static final String COLUMN_FOREIGN_KEY_REMOVED = "Foreign Key Changed: FK '%s' on Column '%s' in table '%s' is removed";
+    private static final String COLUMN_FOREIGN_KEY_REMOVED = "ForeignKey '%s' on Column '%s' in table '%s' exists in the model, but it does not exist in the target database.";
+    private static final String COLUMN_FOREIGN_KEY_ADDED = "ForeignKey '%s' on Column '%s' in table '%s' does not exist in the model, but it exists in the target database.";
 
     private static final String INDEX_CHANGED_FORMAT = "Index Changed: Index '%s'";
-    private static final String INDEX_REMOVED_FORMAT = "Index Removed: Index '%s'";
-    private static final String INDEX_ADDED_FORMAT = "Index Added: Index '%s'";
-
-    private static final String VIEW_REMOVED_FORMAT = "View Removed: View '%s'";
+    private static final String INDEX_REMOVED_FORMAT = "Index '%s' exists in the model, but it does not exist in the target database.";
+    private static final String INDEX_ADDED_FORMAT = "Index '%s' does not exist in the model, but it exists in the target database.";
 
     private static final String VIEW_COLUMNS_CHANGED_FORMAT = "View Changed: View '%s' columns changed";
-    private static final String VIEW_ADDED_FORMAT = "View Added: View '%s'";
+    private static final String VIEW_REMOVED_FORMAT = "View '%s' exists in the model, but it does not exist in the target database.";
+    private static final String VIEW_ADDED_FORMAT = "View '%s' does not exist in the model, but it exists in the target database.";
 
     @Override
     public List<String> find(Database localValue, Database targetValue) {
