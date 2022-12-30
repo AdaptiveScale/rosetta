@@ -11,12 +11,14 @@ import com.adaptivescale.rosetta.common.models.Table;
 import com.adaptivescale.rosetta.common.models.dbt.DbtModel;
 import com.adaptivescale.rosetta.common.models.enums.OperationLevelEnum;
 import com.adaptivescale.rosetta.common.models.input.Connection;
+import com.adaptivescale.rosetta.common.types.DriverClassName;
 import com.adaptivescale.rosetta.ddl.DDL;
 import com.adaptivescale.rosetta.ddl.executor.DDLExecutor;
 import com.adaptivescale.rosetta.ddl.DDLFactory;
 import com.adaptivescale.rosetta.ddl.change.ChangeFinder;
 import com.adaptivescale.rosetta.ddl.change.ChangeHandler;
 import com.adaptivescale.rosetta.ddl.change.model.Change;
+import com.adaptivescale.rosetta.ddl.utils.TemplateEngine;
 import com.adaptivescale.rosetta.test.assertion.*;
 import com.adaptivescale.rosetta.test.assertion.AssertionSqlGenerator;
 import com.adaptivescale.rosetta.test.assertion.generator.AssertionSqlGeneratorFactory;
@@ -291,6 +293,42 @@ class Cli implements Callable<Void> {
         }
 
         extractDbtModels(source, sourceWorkspace);
+    }
+
+    @CommandLine.Command(name = "generate", description = "Generate code", mixinStandardHelpOptions = true)
+    private void generate(@CommandLine.Option(names = {"-s", "--source"}, required = true) String sourceName,
+                         @CommandLine.Option(names = {"-t", "--target"}, required = true) String targetName,
+                         @CommandLine.Option(names = {"--spark"}) boolean generateSpark
+    ) throws Exception {
+        requireConfig(config);
+
+        Connection source = getSourceConnection(sourceName);
+        Connection target = getTargetConnection(targetName);
+
+        Path sourceWorkspace = Paths.get("./", sourceName);
+        Files.createDirectory(sourceWorkspace);
+
+        if (generateSpark) {
+            Database sourceDatabase = SourceGeneratorFactory.sourceGenerator(source).generate(source);
+            String spark_code = generateSparkTemplateCode(source, target, sourceDatabase);
+            StringOutput stringOutput = new StringOutput("spark_code.tpy", sourceWorkspace);
+            stringOutput.write(spark_code);
+
+            log.info("Successfully written spark code ({}).", stringOutput.getFilePath());
+        }
+    }
+
+    private String generateSparkTemplateCode(Connection source, Connection target, Database sourceDatabase) {
+        Collection<Table> tables = sourceDatabase.getTables();
+
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("sourceDataSource", source);
+        variables.put("sourceDataSourceClassName", DriverClassName.valueOf(source.getDbType().toUpperCase()));
+        variables.put("targetDataSource", target);
+        variables.put("targetDataSourceClassName", DriverClassName.valueOf(target.getDbType().toUpperCase()));
+        variables.put("tables", tables);
+
+        return TemplateEngine.process("python/spark_code", variables);
     }
 
     private void extractDbtModels(Connection connection, Path sourceWorkspace) throws IOException {
