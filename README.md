@@ -563,17 +563,18 @@ tables:
 Description: Our actual database does not contain `first_name` so we expect it to alter the table and add the column, inside the source directory there will be the executed DDL and a snapshot of the current database.
 
 #### generate
-This command will generate a Spark SQL (file), firstly it extracts a schema from a source database and gets connection properties form the source connection, then it creates a python (file) that translates schemas which is ready to transfer data from source to target.
+This command will generate a Spark SQL (file) or a Scala SQL (file), firstly it extracts a schema from a source database and gets connection properties form the source connection, then it creates a python (file) or scala (file) that translates schemas, which is ready to transfer data from source to target.
 
-    rosetta [-c, --config CONFIG_FILE] generate [-h, --help] [-s, --source CONNECTION_NAME] [-t, --convert-to CONNECTION_NAME] [--spark]
+    rosetta [-c, --config CONFIG_FILE] generate [-h, --help] [-s, --source CONNECTION_NAME] [-t, --target CONNECTION_NAME] [--pyspark] [--scala]
 
 Parameter | Description
 --- | ---
 -h, --help | Show the help message and exit.
 -c, --config CONFIG_FILE | YAML config file.  If none is supplied it will use main.conf in the current directory if it exists.
 -s, --source CONNECTION_NAME | The source connection name to extract schema from.
--t, --convert-to CONNECTION_NAME | The target connection name in which source DBML converts to.
---spark | Generates the Spark SQL file.
+-t, --target CONNECTION_NAME| The target connection name where the data will be transfered.
+--pyspark | Generates the Spark SQL file.
+--scala | Generates the Scala SQL file.
 
 
 ### Safety Operation

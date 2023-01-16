@@ -298,7 +298,8 @@ class Cli implements Callable<Void> {
     @CommandLine.Command(name = "generate", description = "Generate code", mixinStandardHelpOptions = true)
     private void generate(@CommandLine.Option(names = {"-s", "--source"}, required = true) String sourceName,
                          @CommandLine.Option(names = {"-t", "--target"}, required = true) String targetName,
-                         @CommandLine.Option(names = {"--spark"}) boolean generateSpark
+                         @CommandLine.Option(names = {"--pyspark"}) boolean generateSpark,
+                          @CommandLine.Option(names = {"--scala"}) boolean generateScala
     ) throws Exception {
         requireConfig(config);
 
@@ -306,15 +307,25 @@ class Cli implements Callable<Void> {
         Connection target = getTargetConnection(targetName);
 
         Path sourceWorkspace = Paths.get("./", sourceName);
-        Files.createDirectory(sourceWorkspace);
+        if (!Files.exists(sourceWorkspace.toAbsolutePath()))
+            Files.createDirectory(sourceWorkspace);
 
-        if (generateSpark) {
+        if (generateSpark || !generateScala) {
             Database sourceDatabase = SourceGeneratorFactory.sourceGenerator(source).generate(source);
             String spark_code = generateSparkTemplateCode(source, target, sourceDatabase);
-            StringOutput stringOutput = new StringOutput("spark_code.tpy", sourceWorkspace);
+            StringOutput stringOutput = new StringOutput("spark_code.py", sourceWorkspace);
             stringOutput.write(spark_code);
 
             log.info("Successfully written spark code ({}).", stringOutput.getFilePath());
+        }
+
+        if (generateScala) {
+            Database sourceDatabase = SourceGeneratorFactory.sourceGenerator(source).generate(source);
+            String scala_code = generateScalaTemplateCode(source, target, sourceDatabase);
+            StringOutput stringOutput = new StringOutput("scala_code.scala", sourceWorkspace);
+            stringOutput.write(scala_code);
+
+            log.info("Successfully written scala code ({}).", stringOutput.getFilePath());
         }
     }
 
@@ -329,6 +340,19 @@ class Cli implements Callable<Void> {
         variables.put("tables", tables);
 
         return TemplateEngine.process("python/spark_code", variables);
+    }
+
+    private String generateScalaTemplateCode(Connection source, Connection target, Database sourceDatabase) {
+        Collection<Table> tables = sourceDatabase.getTables();
+
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("sourceDataSource", source);
+        variables.put("sourceDataSourceClassName", DriverClassName.valueOf(source.getDbType().toUpperCase()));
+        variables.put("targetDataSource", target);
+        variables.put("targetDataSourceClassName", DriverClassName.valueOf(target.getDbType().toUpperCase()));
+        variables.put("tables", tables);
+
+        return TemplateEngine.process("scala/scala_code", variables);
     }
 
     private void extractDbtModels(Connection connection, Path sourceWorkspace) throws IOException {
