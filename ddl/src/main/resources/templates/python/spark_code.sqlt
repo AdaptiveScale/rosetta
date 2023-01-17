@@ -1,0 +1,48 @@
+# Guide for using this snippet code: https://spark.apache.org/docs/latest/sql-data-sources-jdbc.html
+
+from pyspark.sql import SparkSession, SQLContext
+
+spark = (SparkSession.builder
+    .appName("myapp")
+    .master('local')
+    .getOrCreate()
+)
+sc = spark.sparkContext
+sqlContext = SQLContext(sc)
+
+# Source Database
+source_jdbc_url="[(${sourceDataSource.url})]"
+source_driver="[(${sourceDataSourceClassName})]"
+source_username="[(${sourceDataSource.userName})]"
+source_password="[(${sourceDataSource.password})]"
+
+# Target Database
+target_jdbc_url="[(${targetDataSource.url})]"
+target_driver="[(${targetDataSourceClassName})]"
+target_username="[(${targetDataSource.userName})]"
+target_password="[(${targetDataSource.password})]"
+
+tables=[[# th:each="table : ${tables}"]'[( ${table.name} )]'[# th:if="${tableStat.index < tables.size - 1}"], [/][/]]
+
+for table in tables:
+    # Read data from the table
+    df = (sqlContext.read
+      .format("jdbc")
+      .option("url", source_jdbc_url)
+      .option("dbtable", table)
+      .option("user", source_username)
+      .option("password", source_password)
+      .load()
+    )
+
+    # Write data to the table
+    (df.write
+      .format("jdbc")
+      .option("url", target_jdbc_url)
+      .option("driver", target_driver)
+      .option("dbtable", table)
+      .option("user", target_username)
+      .option("password", target_password)
+      .mode('overwrite')
+      .save()
+    )

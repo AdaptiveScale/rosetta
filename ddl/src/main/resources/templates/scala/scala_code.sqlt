@@ -1,0 +1,44 @@
+import org.apache.spark.sql.SparkSession
+
+val spark = SparkSession.builder()
+  .appName("myapp")
+  .master("local")
+  .getOrCreate()
+val sc = spark.sparkContext
+val sqlContext = new SQLContext(sc)
+
+// Source Database
+val sourceJdbcUrl = "[(${sourceDataSource.url})]"
+val sourceDriver = "[(${sourceDataSourceClassName})]"
+val sourceUsername = "[(${sourceDataSource.userName})]"
+val sourcePassword = "[(${sourceDataSource.password})]"
+
+// Target Database
+val targetJdbcUrl = "[(${targetDataSource.url})]"
+val targetDriver = "[(${targetDataSourceClassName})]"
+val targetUsername = "[(${targetDataSource.userName})]"
+val targetPassword = "[(${targetDataSource.password})]"
+
+val tables = Array([# th:each="table : ${tables}"]"[( ${table.name} )]"[# th:if="${tableStat.index < tables.size - 1}"], [/][/])
+
+for (table <- tables) {
+    // Read data from the table
+    val df = sqlContext.read
+      .format("jdbc")
+      .option("url", sourceJdbcUrl)
+      .option("dbtable", table)
+      .option("user", sourceUsername)
+      .option("password", sourcePassword)
+      .load()
+
+    // Write data to the table
+    df.write
+      .format("jdbc")
+      .option("url", targetJdbcUrl)
+      .option("driver", targetDriver)
+      .option("dbtable", table)
+      .option("user", targetUsername)
+      .option("password", targetPassword)
+      .mode("overwrite")
+      .save()
+}
