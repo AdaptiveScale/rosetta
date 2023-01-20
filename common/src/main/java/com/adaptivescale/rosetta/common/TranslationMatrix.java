@@ -41,7 +41,7 @@ public class TranslationMatrix {
 
     void loadCSVData() throws IOException {
         String line = "";
-        String splitBy = ",";
+        String splitBy = ";;";
         //parsing a CSV file into BufferedReader class constructor
         BufferedReader br = new BufferedReader(new FileReader("translation.csv"));
         StringBuilder dataInsertQuery = new StringBuilder();
