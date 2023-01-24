@@ -100,11 +100,13 @@ public class KineticaDDLGenerator implements DDL {
 
     @Override
     public String createForeignKey(ForeignKey foreignKey) {
-        return "ALTER TABLE" + handleNullSchema(foreignKey.getSchema(), foreignKey.getTableName()) + " ADD CONSTRAINT "
-                + foreignKey.getName() + " FOREIGN KEY ("+ DEFAULT_WRAPPER + foreignKey.getColumnName() + DEFAULT_WRAPPER +") REFERENCES "
-                + handleNullSchema(foreignKey.getPrimaryTableSchema(), foreignKey.getPrimaryTableName())
-                + "("+ DEFAULT_WRAPPER + foreignKey.getPrimaryColumnName()+ DEFAULT_WRAPPER + ")"
-                + foreignKeyDeleteRuleSanitation(foreignKeyDeleteRule(foreignKey)) + ";\r";
+        return "";
+//        return "ALTER TABLE" + handleNullSchema(foreignKey.getSchema(), foreignKey.getTableName())
+//                + " ADD FOREIGN KEY ("+ DEFAULT_WRAPPER + foreignKey.getColumnName() + DEFAULT_WRAPPER +") REFERENCES "
+//                + handleNullSchema(foreignKey.getPrimaryTableSchema(), foreignKey.getPrimaryTableName())
+//                + "("+ DEFAULT_WRAPPER + foreignKey.getPrimaryColumnName()+ DEFAULT_WRAPPER + ")"
+//                + foreignKeyDeleteRuleSanitation(foreignKeyDeleteRule(foreignKey))
+//                + " AS " + foreignKey.getName() + ";\r";
     }
 
     @Override
