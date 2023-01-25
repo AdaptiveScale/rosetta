@@ -81,9 +81,6 @@
         },
         {
           "typeName": "smallserial"
-        },
-        {
-          "typeName": "int2"
         }
       ]
     },
@@ -104,6 +101,9 @@
         },
         {
           "typeName": "year"
+        },
+        {
+          "typeName": "int2"
         }
       ]
     },
