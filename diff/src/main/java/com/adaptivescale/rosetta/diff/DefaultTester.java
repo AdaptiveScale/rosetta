@@ -149,6 +149,9 @@ public class DefaultTester implements Diff<List<String>, Database, Database> {
     }
 
     private void testViews(Database localValue, Database targetValue, List<String> changes) {
+        if (localValue.getViews() == null) {
+            return;
+        }
         //do we need to check for root properties if are changed
         for (View view : localValue.getViews()) {
             List<String> columnsChangesLogs = new ArrayList<>();

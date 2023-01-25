@@ -3,7 +3,6 @@ package com.adaptivescale.rosetta.common.models;
 import com.adaptivescale.rosetta.common.models.enums.OperationLevelEnum;
 
 import java.util.Collection;
-import java.util.Collections;
 
 public class Database {
 
@@ -24,9 +23,6 @@ public class Database {
     }
 
     public Collection<View> getViews() {
-        if (views == null) {
-            return Collections.emptyList();
-        }
         return views;
     }
 
