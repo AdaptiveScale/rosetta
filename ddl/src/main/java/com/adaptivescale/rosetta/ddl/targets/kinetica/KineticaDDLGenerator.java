@@ -52,7 +52,7 @@ public class KineticaDDLGenerator implements DDL {
             stringBuilder.append(DEFAULT_WRAPPER).append(table.getName()).append(DEFAULT_WRAPPER).append("; \n");
         }
 
-        stringBuilder.append("CREATE REPLICATED TABLE ");
+        stringBuilder.append("CREATE TABLE ");
 
         if (table.getSchema() != null && !table.getSchema().isBlank()) {
             stringBuilder.append(DEFAULT_WRAPPER)
