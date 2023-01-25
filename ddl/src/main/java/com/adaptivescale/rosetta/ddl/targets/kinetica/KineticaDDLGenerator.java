@@ -52,7 +52,7 @@ public class KineticaDDLGenerator implements DDL {
             stringBuilder.append(DEFAULT_WRAPPER).append(table.getName()).append(DEFAULT_WRAPPER).append("; \n");
         }
 
-        stringBuilder.append("CREATE TABLE ");
+        stringBuilder.append("CREATE REPLICATED TABLE ");
 
         if (table.getSchema() != null && !table.getSchema().isBlank()) {
             stringBuilder.append(DEFAULT_WRAPPER)
@@ -100,13 +100,11 @@ public class KineticaDDLGenerator implements DDL {
 
     @Override
     public String createForeignKey(ForeignKey foreignKey) {
-        return "";
-//        return "ALTER TABLE" + handleNullSchema(foreignKey.getSchema(), foreignKey.getTableName())
-//                + " ADD FOREIGN KEY ("+ DEFAULT_WRAPPER + foreignKey.getColumnName() + DEFAULT_WRAPPER +") REFERENCES "
-//                + handleNullSchema(foreignKey.getPrimaryTableSchema(), foreignKey.getPrimaryTableName())
-//                + "("+ DEFAULT_WRAPPER + foreignKey.getPrimaryColumnName()+ DEFAULT_WRAPPER + ")"
-//                + foreignKeyDeleteRuleSanitation(foreignKeyDeleteRule(foreignKey))
-//                + " AS " + foreignKey.getName() + ";\r";
+        return "ALTER TABLE" + handleNullSchema(foreignKey.getSchema(), foreignKey.getTableName()) + " ADD CONSTRAINT "
+                + foreignKey.getName() + " FOREIGN KEY ("+ DEFAULT_WRAPPER + foreignKey.getColumnName() + DEFAULT_WRAPPER +") REFERENCES "
+                + handleNullSchema(foreignKey.getPrimaryTableSchema(), foreignKey.getPrimaryTableName())
+                + "("+ DEFAULT_WRAPPER + foreignKey.getPrimaryColumnName()+ DEFAULT_WRAPPER + ")"
+                + foreignKeyDeleteRuleSanitation(foreignKeyDeleteRule(foreignKey)) + ";\r";
     }
 
     @Override
