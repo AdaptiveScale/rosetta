@@ -2,6 +2,7 @@
 tables:
   - name: "PLAYER"
     type: "TABLE"
+    schema: "ROSETTA"
     columns:
       - name: "name"
         typeName: "varchar"
@@ -23,8 +24,10 @@ tables:
         foreignKeys:
           - name: "PLAYER_FK"
             tableName: "PLAYER"
+            schema: "ROSETTA"
             columnName: "POSITION_ID"
             deleteRule: "3"
+            primaryTableSchema: "ROSETTA"
             primaryTableName: "Position"
             primaryColumnName: "ID"
         nullable: true
@@ -42,6 +45,7 @@ tables:
         primaryKey: true
   - name: "Position"
     type: "TABLE"
+    schema: "ROSETTA"
     columns:
       - name: "ID"
         typeName: "numeric"
@@ -75,6 +79,7 @@ tables:
         primaryKey: false
   - name: "TEAM"
     type: "TABLE"
+    schema: "ROSETTA"
     columns:
       - name: "name"
         typeName: "varchar"
@@ -108,6 +113,7 @@ tables:
         primaryKey: true
   - name: "TEAMPLAYERS"
     type: "TABLE"
+    schema: "ROSETTA"
     columns:
       - name: "TEAMID"
         typeName: "numeric"
@@ -119,8 +125,10 @@ tables:
         foreignKeys:
           - name: "TEAMPLAYERS_FK_TEAM"
             tableName: "TEAMPLAYERS"
+            schema: "ROSETTA"
             columnName: "TEAMID"
             deleteRule: "3"
+            primaryTableSchema: "ROSETTA"
             primaryTableName: "TEAM"
             primaryColumnName: "ID"
         nullable: true
@@ -136,8 +144,10 @@ tables:
         foreignKeys:
           - name: "TEAMPLAYERS_FK"
             tableName: "TEAMPLAYERS"
+            schema: "ROSETTA"
             columnName: "PLAYERID"
             deleteRule: "3"
+            primaryTableSchema: "ROSETTA"
             primaryTableName: "PLAYER"
             primaryColumnName: "ID"
         nullable: true

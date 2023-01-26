@@ -2,6 +2,7 @@
 tables:
   - name: "PLAYER"
     type: "TABLE"
+    schema: "ROSETTA"
     columns:
       - name: "name"
         typeName: "varchar"
@@ -22,11 +23,11 @@ tables:
         precision: 38
         foreignKeys:
           - name: "PLAYER_FK"
-            schema: "FBAL"
+            schema: "ROSETTA"
             tableName: "PLAYER"
             columnName: "POSITION_ID"
             deleteRule: "3"
-            primaryTableSchema: "FBAL"
+            primaryTableSchema: "ROSETTA"
             primaryTableName: "Position"
             primaryColumnName: "ID"
         nullable: true
