@@ -2,6 +2,7 @@
 tables:
   - name: "PLAYER"
     type: "TABLE"
+    schema: "ROSETTA"
     columns:
       - name: "name"
         typeName: "VARCHAR"
@@ -42,6 +43,7 @@ tables:
         autoincrement: false
   - name: "Position"
     type: "TABLE"
+    schema: "ROSETTA"
     columns:
       - name: "ID"
         typeName: "DECIMAL"
@@ -65,6 +67,7 @@ tables:
         autoincrement: false
   - name: "TEAM"
     type: "TABLE"
+    schema: "ROSETTA"
     columns:
       - name: "name"
         typeName: "VARCHAR"
@@ -98,6 +101,7 @@ tables:
         autoincrement: false
   - name: "TEAMPLAYERS"
     type: "TABLE"
+    schema: "ROSETTA"
     columns:
       - name: "TEAMID"
         typeName: "DECIMAL"

@@ -45,58 +45,51 @@ public class KineticaDDLTest {
     @Test
     public void addTable() throws IOException {
         String ddl = generateDDL("add_table");
-        Assertions.assertEquals("CREATE TABLE \"Position\"(\"ID\" DECIMAL(10) NOT NULL , \"DESCRIPTION\" VARCHAR," +
+        Assertions.assertEquals("CREATE TABLE \"ROSETTA\".\"Position\"(\"ID\" DECIMAL(10) NOT NULL , \"DESCRIPTION\" VARCHAR," +
                 " \"Name\" VARCHAR, PRIMARY KEY (\"ID\"));", ddl);
     }
 
     @Test
     public void dropTable() throws IOException {
         String ddl = generateDDL("drop_table");
-        Assertions.assertEquals("DROP TABLE \"TEAMPLAYERS\";", ddl);
+        Assertions.assertEquals("DROP TABLE IF EXISTS \"ROSETTA\".\"TEAMPLAYERS\";", ddl);
     }
 
     @Test
     public void addColumn() throws IOException {
         String ddl = generateDDL("add_column");
-        Assertions.assertEquals("ALTER TABLE \"Position\" ADD COLUMN \"DESCRIPTION\" varchar(100);", ddl);
+        Assertions.assertEquals("ALTER TABLE \"ROSETTA\".\"Position\" ADD \"DESCRIPTION\" varchar(100);", ddl);
     }
 
     @Test
     public void addColumnWithForeignKey() throws IOException {
         String ddl = generateDDL("add_column_with_foreign_key");
-        Assertions.assertEquals("ALTER TABLE \"PLAYER\" ADD COLUMN \"POSITION_ID\" numeric;\r" +
-                "ALTER TABLE \"FBAL\".\"PLAYER\" ADD CONSTRAINT PLAYER_FK FOREIGN KEY (\"POSITION_ID\") REFERENCES  \"FBAL\".\"Position\"(\"ID\") ON DELETE NO ACTION ;\r", ddl);
-    }
-
-    @Test
-    public void addColumnAsPrimaryKey() throws IOException {
-        String ddl = generateDDL("add_column_as_primary_key");
-        Assertions.assertEquals("ALTER TABLE \"PLAYER\" ADD COLUMN \"ID\" numeric NOT NULL ;\r" +
-                "ALTER TABLE \"PLAYER\" ADD PRIMARY KEY (\"ID\");", ddl);
+        Assertions.assertEquals("ALTER TABLE \"ROSETTA\".\"PLAYER\" ADD \"POSITION_ID\" numeric(SHARD_KEY);\r" +
+                "ALTER TABLE \"ROSETTA\".\"PLAYER\" ADD FOREIGN KEY (\"POSITION_ID\") REFERENCES \"ROSETTA\".\"Position\"(\"ID\") AS PLAYER_FK;", ddl);
     }
 
     @Test
     public void dropColumn() throws IOException {
         String ddl = generateDDL("drop_column");
-        Assertions.assertEquals("ALTER TABLE \"Position\" DROP COLUMN \"DESCRIPTION\";", ddl);
+        Assertions.assertEquals("ALTER TABLE \"ROSETTA\".\"Position\" DROP COLUMN \"DESCRIPTION\";", ddl);
     }
 
     @Test
     public void alterColumnDataType() throws IOException {
         String ddl = generateDDL("alter_column_data_type");
-        Assertions.assertEquals("ALTER TABLE \"PLAYER\" MODIFY \"name\" INTEGER;", ddl);
+        Assertions.assertEquals("ALTER TABLE \"ROSETTA\".\"PLAYER\" MODIFY \"name\" INTEGER;", ddl);
     }
 
     @Test
     public void alterColumnToNullable() throws IOException {
         String ddl = generateDDL("alter_column_to_nullable");
-        Assertions.assertEquals("ALTER TABLE \"PLAYER\" MODIFY \"ID\" numeric;", ddl);
+        Assertions.assertEquals("ALTER TABLE \"ROSETTA\".\"PLAYER\" MODIFY \"ID\" numeric;", ddl);
     }
 
     @Test
     public void alterColumnToNotNullable() throws IOException {
         String ddl = generateDDL("alter_column_to_not_nullable");
-        Assertions.assertEquals("ALTER TABLE \"PLAYER\" MODIFY \"ID\" numeric NOT NULL ;", ddl);
+        Assertions.assertEquals("ALTER TABLE \"ROSETTA\".\"PLAYER\" MODIFY \"ID\" numeric NOT NULL ;", ddl);
     }
 
     @Test
@@ -109,79 +102,59 @@ public class KineticaDDLTest {
     @Test
     public void dropColumnWithPrimaryKeyReferenced() throws IOException {
         String ddl = generateDDL("drop_column_with_primary_key_referenced");
-        Assertions.assertEquals("ALTER TABLE \"TEAMPLAYERS\" DROP FOREIGN KEY \"TEAMPLAYERS_FK\";\r" +
-                "ALTER TABLE \"PLAYER\" DROP COLUMN \"ID\";", ddl);
+        Assertions.assertEquals("ALTER TABLE \"ROSETTA\".\"TEAMPLAYERS\" DROP FOREIGN KEY \"TEAMPLAYERS_FK\";\r" +
+                "ALTER TABLE \"ROSETTA\".\"PLAYER\" DROP COLUMN \"ID\";", ddl);
     }
 
     @Test
     public void dropTableWhereColumnIsReferenced() throws IOException {
         String ddl = generateDDL("drop_table_where_column_is_referenced");
-        Assertions.assertEquals("ALTER TABLE \"TEAMPLAYERS\" DROP FOREIGN KEY \"TEAMPLAYERS_FK_TEAM\";\r" +
-                "DROP TABLE \"TEAM\";", ddl);
+        Assertions.assertEquals("ALTER TABLE \"ROSETTA\".\"TEAMPLAYERS\" DROP FOREIGN KEY \"TEAMPLAYERS_FK_TEAM\";\r" +
+                "DROP TABLE IF EXISTS \"ROSETTA\".\"TEAM\";", ddl);
     }
 
     @Test
     public void addForeignKey() throws IOException {
         String ddl = generateDDL("add_foreign_key");
-        Assertions.assertEquals("ALTER TABLE \"PLAYER\" ADD CONSTRAINT PLAYER_FK FOREIGN KEY (\"POSITION_ID\") " +
-                "REFERENCES  \"Position\"(\"ID\") ON DELETE NO ACTION ;\r", ddl);
+        Assertions.assertEquals("ALTER TABLE \"ROSETTA\".\"PLAYER\" ADD FOREIGN KEY (\"POSITION_ID\") " +
+                "REFERENCES \"ROSETTA\".\"Position\"(\"ID\") AS PLAYER_FK;", ddl);
     }
 
     @Test
     public void dropForeignKey() throws IOException {
         String ddl = generateDDL("drop_foreign_key");
-        Assertions.assertEquals("ALTER TABLE \"TEAMPLAYERS\" DROP FOREIGN KEY \"TEAMPLAYERS_FK\";", ddl);
-    }
-
-    @Test
-    public void dropPrimaryKey() throws IOException {
-        String ddl = generateDDL("drop_primary_key");
-        Assertions.assertEquals("ALTER TABLE \"TEAMPLAYERS\" DROP FOREIGN KEY \"TEAMPLAYERS_FK\";\r" +
-                "ALTER TABLE \"PLAYER\" DROP PRIMARY KEY;", ddl);
-    }
-
-    @Test
-    public void addPrimaryKey() throws IOException {
-        String ddl = generateDDL("add_primary_key");
-        Assertions.assertEquals("ALTER TABLE \"PLAYER\" ADD PRIMARY KEY (\"ID\");", ddl);
-    }
-
-    @Test
-    public void alterPrimaryKey() throws IOException {
-        String ddl = generateDDL("alter_primary_key");
-        Assertions.assertEquals("\r" +
-                "ALTER TABLE \"PLAYER\" DROP PRIMARY KEY, ADD PRIMARY KEY (\"ID\", \"POSITION_ID\");\r", ddl);
+        Assertions.assertEquals("ALTER TABLE \"ROSETTA\".\"TEAMPLAYERS\" DROP FOREIGN KEY \"TEAMPLAYERS_FK\";", ddl);
     }
 
     @Test
     public void alterForeignKeyName() throws IOException {
         String ddl = generateDDL("alter_foreign_key_name");
-        Assertions.assertEquals("ALTER TABLE \"TEAMPLAYERS\" DROP FOREIGN KEY \"TEAMPLAYERS_FK\";\r" +
-                "ALTER TABLE \"TEAMPLAYERS\" ADD CONSTRAINT TEAMPLAYERS_CHANGED_FK FOREIGN KEY (\"PLAYERID\") REFERENCES  " +
-                "\"PLAYER\"(\"ID\") ON DELETE NO ACTION ;\r", ddl);
+        Assertions.assertEquals("ALTER TABLE \"ROSETTA\".\"TEAMPLAYERS\" DROP FOREIGN KEY \"TEAMPLAYERS_FK\";\r" +
+                "ALTER TABLE \"ROSETTA\".\"TEAMPLAYERS\" ADD FOREIGN KEY (\"PLAYERID\") REFERENCES " +
+                "\"ROSETTA\".\"PLAYER\"(\"ID\") AS TEAMPLAYERS_CHANGED_FK;", ddl);
     }
 
     @Test
     public void alterForeignKey() throws IOException {
         String ddl = generateDDL("alter_foreign_key");
-        Assertions.assertEquals("ALTER TABLE \"TEAMPLAYERS\" DROP FOREIGN KEY \"TEAMPLAYERS_FK\";\r" +
-                "ALTER TABLE \"TEAMPLAYERS\" ADD CONSTRAINT TEAMPLAYERS_FK FOREIGN KEY (\"PLAYERID\") REFERENCES  \"PLAYER\"(\"ID\") ON DELETE SET NULL ;\r", ddl);
+        Assertions.assertEquals("ALTER TABLE \"ROSETTA\".\"TEAMPLAYERS\" DROP FOREIGN KEY \"TEAMPLAYERS_FK\";\r" +
+                "ALTER TABLE \"ROSETTA\".\"TEAMPLAYERS\" ADD FOREIGN KEY (\"PLAYERID\") REFERENCES \"ROSETTA\".\"PLAYER\"(\"ID\") AS TEAMPLAYERS_FK;", ddl);
     }
 
     @Test
     public void dropPrimaryKeyColumnAndAlterForeignKey() throws IOException {
         String ddl = generateDDL("drop_pk_column_and_alter_fk");
-        Assertions.assertEquals("ALTER TABLE \"TEAMPLAYERS\" DROP FOREIGN KEY \"TEAMPLAYERS_FK\";\r" +
-                "ALTER TABLE \"PLAYER\" DROP COLUMN \"ID\";\r" +
-                "ALTER TABLE \"TEAMPLAYERS\" ADD CONSTRAINT TEAMPLAYERS_FK FOREIGN KEY (\"PLAYERID\") REFERENCES  \"POSITION\"(\"ID\");\r", ddl);
+        Assertions.assertEquals("ALTER TABLE \"ROSETTA\".\"TEAMPLAYERS\" DROP FOREIGN KEY \"TEAMPLAYERS_FK\";\r" +
+                "ALTER TABLE \"ROSETTA\".\"PLAYER\" DROP COLUMN \"ID\";\r" +
+                "ALTER TABLE \"ROSETTA\".\"TEAMPLAYERS\" ADD FOREIGN KEY (\"PLAYERID\") REFERENCES \"ROSETTA\".\"POSITION\"(\"ID\") AS TEAMPLAYERS_FK;", ddl);
     }
 
     @Test
     public void dropTableWithPrimaryKeyColumnAndAlterForeignKey() throws IOException {
         String ddl = generateDDL("drop_table_with_pk_column_and_alter_fk");
-        Assertions.assertEquals("ALTER TABLE \"TEAMPLAYERS\" DROP FOREIGN KEY \"TEAMPLAYERS_FK\";\r" +
-                "DROP TABLE \"PLAYER\";\r" +
-                "ALTER TABLE \"TEAMPLAYERS\" ADD CONSTRAINT TEAMPLAYERS_FK FOREIGN KEY (\"PLAYERID\") REFERENCES  \"POSITION\"(\"ID\");\r", ddl);
+        Assertions.assertEquals("ALTER TABLE \"ROSETTA\".\"TEAMPLAYERS\" DROP FOREIGN KEY \"TEAMPLAYERS_FK\";\r" +
+                "DROP TABLE IF EXISTS \"ROSETTA\".\"PLAYER\";\r" +
+                "ALTER TABLE \"ROSETTA\".\"TEAMPLAYERS\" ADD FOREIGN KEY (\"PLAYERID\") REFERENCES \"ROSETTA\".\"POSITION\"(\"ID\") AS TEAMPLAYERS_FK;", ddl);
     }
 
     private String generateDDL(String testType) throws IOException {

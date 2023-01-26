@@ -1,0 +1,1 @@
+ALTER TABLE "[(${schemaName})]"."[(${tableName})]" ADD FOREIGN KEY ("[(${foreignkeyColumn})]") REFERENCES "[(${primaryTableSchema})]"."[(${primaryTableName})]"("[(${foreignKeyPrimaryColumnName})]") AS [(${foreignkeyName})];

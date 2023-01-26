@@ -10,13 +10,11 @@ import com.adaptivescale.rosetta.ddl.DDL;
 import com.adaptivescale.rosetta.ddl.change.model.ColumnChange;
 import com.adaptivescale.rosetta.ddl.change.model.ForeignKeyChange;
 import com.adaptivescale.rosetta.ddl.targets.ColumnSQLDecoratorFactory;
+import com.adaptivescale.rosetta.ddl.utils.TemplateEngine;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.DatabaseMetaData;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.adaptivescale.rosetta.ddl.targets.kinetica.Constants.DEFAULT_WRAPPER;
@@ -28,6 +26,24 @@ import static com.adaptivescale.rosetta.ddl.targets.kinetica.Constants.DEFAULT_W
 )
 public class KineticaDDLGenerator implements DDL {
 
+    private final static String TABLE_CREATE_TEMPLATE = "kinetica/table/create";
+
+    private final static String TABLE_ALTER_TEMPLATE = "kinetica/table/alter";
+
+    private final static String TABLE_DROP_TEMPLATE = "kinetica/table/drop";
+
+    private final static String SCHEMA_CREATE_TEMPLATE = "kinetica/schema/create";
+
+    private final static String FOREIGN_KEY_CREATE_TEMPLATE = "kinetica/foreignkey/create";
+
+    private final static String FOREIGN_KEY_DROP_TEMPLATE = "kinetica/foreignkey/drop";
+
+    private final static String COLUMN_ADD_TEMPLATE = "kinetica/column/add";
+
+    private final static String COLUMN_MODIFY_TEMPLATE = "kinetica/column/modify";
+
+    private final static String COLUMN_DROP_TEMPLATE = "kinetica/column/drop";
+
     private final ColumnSQLDecoratorFactory columnSQLDecoratorFactory = new KineticaColumnDecoratorFactory();
 
     @Override
@@ -37,29 +53,25 @@ public class KineticaDDLGenerator implements DDL {
 
     @Override
     public String createTable(Table table, boolean dropTableIfExists) {
+        Map<String, Object> createParams = new HashMap<>();
+
         List<String> definitions = table.getColumns().stream().map(this::createColumn).collect(Collectors.toList());
 
-        Optional<String> primaryKeysForTable = createPrimaryKeysForTable(table);
+        List<String> foreignKeysForTable = getForeignKeysColumnNames(table);
+        Optional<String> primaryKeysForTable = createPrimaryKeysForTable(table, foreignKeysForTable);
         primaryKeysForTable.ifPresent(definitions::add);
         String definitionAsString = String.join(", ", definitions);
 
         StringBuilder stringBuilder = new StringBuilder();
         if (dropTableIfExists) {
-            stringBuilder.append("DROP TABLE IF EXISTS ");
-            if (table.getSchema() != null && !table.getSchema().isBlank()) {
-                stringBuilder.append("`").append(table.getSchema()).append("`.");
-            }
-            stringBuilder.append(DEFAULT_WRAPPER).append(table.getName()).append(DEFAULT_WRAPPER).append("; \n");
+            stringBuilder.append(dropTable(table));
         }
 
-        stringBuilder.append("CREATE REPLICATED TABLE ");
+        createParams.put("schemaName", table.getSchema());
+        createParams.put("tableName", table.getName());
+        createParams.put("tableCode", definitionAsString);
+        stringBuilder.append(TemplateEngine.process(TABLE_CREATE_TEMPLATE, createParams));
 
-        if (table.getSchema() != null && !table.getSchema().isBlank()) {
-            stringBuilder.append(DEFAULT_WRAPPER)
-                    .append(table.getSchema()).append(DEFAULT_WRAPPER).append(".");
-        }
-
-        stringBuilder.append(DEFAULT_WRAPPER).append(table.getName()).append(DEFAULT_WRAPPER).append("(").append(definitionAsString).append(");");
         return stringBuilder.toString();
     }
 
@@ -70,27 +82,26 @@ public class KineticaDDLGenerator implements DDL {
         Set<String> schemas = database.getTables().stream().map(Table::getSchema).filter(s -> s != null && !s.isEmpty()).collect(Collectors.toSet());
         if (!schemas.isEmpty()) {
             stringBuilder.append(
-                    schemas
-                            .stream()
-                            .map(schema -> "CREATE SCHEMA IF NOT EXISTS " + DEFAULT_WRAPPER + schema + DEFAULT_WRAPPER)
-                            .collect(Collectors.joining(";\r\r"))
-
+                schemas
+                    .stream()
+                    .map(this::createSchema)
+                    .collect(Collectors.joining())
             );
-            stringBuilder.append(";\r");
+            stringBuilder.append("\r");
         }
 
         stringBuilder.append(database.getTables()
-                .stream()
-                .map(table -> createTable(table, dropTableIfExists))
-                .collect(Collectors.joining("\r\r")));
+            .stream()
+            .map(table -> createTable(table, dropTableIfExists))
+            .collect(Collectors.joining("\r\r")));
 
         String foreignKeys = database
-                .getTables()
-                .stream()
-                .map(this::foreignKeys)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.joining());
+            .getTables()
+            .stream()
+            .map(this::foreignKeys)
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .collect(Collectors.joining());
 
         if (!foreignKeys.isEmpty()) {
             stringBuilder.append("\r").append(foreignKeys).append("\r");
@@ -100,13 +111,15 @@ public class KineticaDDLGenerator implements DDL {
 
     @Override
     public String createForeignKey(ForeignKey foreignKey) {
-//        return "";
-        return "ALTER TABLE" + handleNullSchema(foreignKey.getSchema(), foreignKey.getTableName())
-                + " ADD FOREIGN KEY ("+ DEFAULT_WRAPPER + foreignKey.getColumnName() + DEFAULT_WRAPPER +") REFERENCES "
-                + handleNullSchema(foreignKey.getPrimaryTableSchema(), foreignKey.getPrimaryTableName())
-                + "("+ DEFAULT_WRAPPER + foreignKey.getPrimaryColumnName()+ DEFAULT_WRAPPER + ")"
-//                + foreignKeyDeleteRuleSanitation(foreignKeyDeleteRule(foreignKey))
-                + " AS " + foreignKey.getName() + ";\r";
+        Map<String, Object> params = new HashMap<>();
+        params.put("schemaName", foreignKey.getSchema());
+        params.put("tableName", foreignKey.getTableName());
+        params.put("foreignkeyColumn", foreignKey.getColumnName());
+        params.put("primaryTableSchema", foreignKey.getPrimaryTableSchema());
+        params.put("primaryTableName", foreignKey.getPrimaryTableName());
+        params.put("foreignKeyPrimaryColumnName", foreignKey.getPrimaryColumnName());
+        params.put("foreignkeyName", foreignKey.getName());
+        return TemplateEngine.process(FOREIGN_KEY_CREATE_TEMPLATE, params);
     }
 
     @Override
@@ -117,9 +130,12 @@ public class KineticaDDLGenerator implements DDL {
 
         if (!Objects.equals(expected.getTypeName(), actual.getTypeName())
                 || !Objects.equals(expected.isNullable(), actual.isNullable())) {
-            return String.format("ALTER TABLE%s MODIFY %s;",
-                    handleNullSchema(table.getSchema(), table.getName()),
-                    columnSQLDecoratorFactory.decoratorFor(expected).expressSQl());
+
+            Map<String, Object> params = new HashMap<>();
+            params.put("schemaName", table.getSchema());
+            params.put("tableName", table.getName());
+            params.put("columnDefinition", columnSQLDecoratorFactory.decoratorFor(expected).expressSQl());
+            return TemplateEngine.process(COLUMN_MODIFY_TEMPLATE, params);
         }
 
         log.info("No action taken for changes detected in column: {}.{}.{}", change.getTable().getSchema(),
@@ -133,9 +149,11 @@ public class KineticaDDLGenerator implements DDL {
         Table table = change.getTable();
         Column actual = change.getActual();
 
-        return "ALTER TABLE" +
-                handleNullSchema(table.getSchema(), table.getName()) + " DROP COLUMN "+ DEFAULT_WRAPPER +
-                actual.getName() + DEFAULT_WRAPPER +";";
+        Map<String, Object> params = new HashMap<>();
+        params.put("schemaName", table.getSchema());
+        params.put("tableName", table.getName());
+        params.put("columnName", actual.getName());
+        return TemplateEngine.process(COLUMN_DROP_TEMPLATE, params);
     }
 
     @Override
@@ -143,15 +161,19 @@ public class KineticaDDLGenerator implements DDL {
         Table table = change.getTable();
         Column expected = change.getExpected();
 
-        return "ALTER TABLE" +
-                handleNullSchema(table.getSchema(), table.getName()) +
-                " ADD COLUMN " +
-                columnSQLDecoratorFactory.decoratorFor(expected).expressSQl() + ";";
+        Map<String, Object> params = new HashMap<>();
+        params.put("schemaName", table.getSchema());
+        params.put("tableName", table.getName());
+        params.put("columnDefinition", columnSQLDecoratorFactory.decoratorFor(expected).expressSQl());
+        return TemplateEngine.process(COLUMN_ADD_TEMPLATE, params);
     }
 
     @Override
     public String dropTable(Table actual) {
-        return "DROP TABLE" + handleNullSchema(actual.getSchema(), actual.getName()) + ";";
+        Map<String, Object> params = new HashMap<>();
+        params.put("schemaName", actual.getSchema());
+        params.put("tableName", actual.getName());
+        return TemplateEngine.process(TABLE_DROP_TEMPLATE, params);
     }
 
     @Override
@@ -161,43 +183,28 @@ public class KineticaDDLGenerator implements DDL {
 
     @Override
     public String dropForeignKey(ForeignKey actual) {
-        return "ALTER TABLE" + handleNullSchema(actual.getSchema(), actual.getTableName()) + " DROP FOREIGN KEY "+ DEFAULT_WRAPPER + actual.getName() + DEFAULT_WRAPPER +";";
+        Map<String, Object> params = new HashMap<>();
+        params.put("schemaName", actual.getSchema());
+        params.put("tableName", actual.getTableName());
+        params.put("foreignkeyName", actual.getName());
+        return TemplateEngine.process(FOREIGN_KEY_DROP_TEMPLATE, params);
     }
 
     @Override
     public String alterTable(Table expected, Table actual) {
-        boolean doesPKExist = actual.getColumns().stream().map(Column::isPrimaryKey).reduce((aBoolean, aBoolean2) -> aBoolean || aBoolean2).orElse(false);
-        boolean doWeNeedToCreatePk = expected.getColumns().stream().map(Column::isPrimaryKey).reduce((aBoolean, aBoolean2) -> aBoolean || aBoolean2).orElse(false);
-
-        StringBuilder stringBuilder = new StringBuilder("ALTER TABLE")
-                .append(handleNullSchema(expected.getSchema(), expected.getName()));
-
-        if (doesPKExist) {
-            stringBuilder.append(" DROP PRIMARY KEY");
-        }
-
-        if (doWeNeedToCreatePk) {
-            Optional<String> primaryKeysForTable = createPrimaryKeysForTable(expected);
-            if (primaryKeysForTable.isPresent()) {
-                if (doesPKExist) {
-                    stringBuilder.append(",");
-                }
-                stringBuilder.append(" ADD ").append(primaryKeysForTable.get());
-            }
-        }
-
-        stringBuilder.append(";");
-        return stringBuilder.toString();
+        return "";
     }
 
-    private Optional<String> createPrimaryKeysForTable(Table table) {
+    private Optional<String> createPrimaryKeysForTable(Table table, List<String> foreignKeysForTable) {
         List<String> primaryKeys = table
-                .getColumns()
-                .stream()
-                .filter(Column::isPrimaryKey)
-                .sorted((o1, o2) -> o1.getPrimaryKeySequenceId() < o2.getPrimaryKeySequenceId() ? -1 : 1)
-                .map(pk -> String.format(DEFAULT_WRAPPER+"%s"+DEFAULT_WRAPPER, pk.getName()))
-                .collect(Collectors.toList());
+            .getColumns()
+            .stream()
+            .filter(Column::isPrimaryKey)
+            .sorted((o1, o2) -> o1.getPrimaryKeySequenceId() < o2.getPrimaryKeySequenceId() ? -1 : 1)
+            .map(pk -> String.format(DEFAULT_WRAPPER+"%s"+DEFAULT_WRAPPER, pk.getName()))
+            .collect(Collectors.toList());
+
+        primaryKeys.addAll(foreignKeysForTable);
 
         if (primaryKeys.isEmpty()) {
             return Optional.empty();
@@ -208,10 +215,18 @@ public class KineticaDDLGenerator implements DDL {
 
     private Optional<String> foreignKeys(Table table) {
         String result = table.getColumns().stream()
-                .filter(column -> column.getForeignKeys() != null && !column.getForeignKeys().isEmpty())
-                .map(this::createForeignKeys).collect(Collectors.joining());
+            .filter(column -> column.getForeignKeys() != null && !column.getForeignKeys().isEmpty())
+            .map(this::createForeignKeys).collect(Collectors.joining());
 
         return result.isEmpty() ? Optional.empty() : Optional.of(result);
+    }
+
+    private List<String> getForeignKeysColumnNames(Table table) {
+        return table.getColumns().stream()
+            .filter(column -> column.getForeignKeys() != null && !column.getForeignKeys().isEmpty())
+            .map(Column::getName)
+            .map(fk -> String.format(DEFAULT_WRAPPER+"%s"+DEFAULT_WRAPPER, fk))
+            .collect(Collectors.toList());
     }
 
     //ALTER TABLE rosetta.contacts ADD CONSTRAINT contacts_fk FOREIGN KEY (contact_id) REFERENCES rosetta."user"(user_id);
@@ -230,24 +245,9 @@ public class KineticaDDLGenerator implements DDL {
         return " " + deleteRule + " ";
     }
 
-    private String foreignKeyDeleteRule(ForeignKey foreignKey) {
-        if (foreignKey.getDeleteRule() == null || foreignKey.getDeleteRule().isEmpty()) {
-            return "";
-        }
-        switch (Integer.parseInt(foreignKey.getDeleteRule())) {
-            case DatabaseMetaData.importedKeyCascade:
-                return "ON DELETE CASCADE";
-            case DatabaseMetaData.importedKeySetNull:
-                return "ON DELETE SET NULL";
-            case DatabaseMetaData.importedKeyNoAction:
-                return "ON DELETE NO ACTION";
-            case DatabaseMetaData.importedKeySetDefault:
-            case DatabaseMetaData.importedKeyInitiallyDeferred:
-            case DatabaseMetaData.importedKeyInitiallyImmediate:
-            case DatabaseMetaData.importedKeyNotDeferrable:
-            default:
-                //todo add warn log
-                return "";
-        }
+    private String createSchema(String schema) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("schemaName", schema);
+        return TemplateEngine.process(SCHEMA_CREATE_TEMPLATE, params);
     }
 }
