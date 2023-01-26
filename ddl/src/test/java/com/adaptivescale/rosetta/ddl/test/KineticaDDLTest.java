@@ -64,7 +64,7 @@ public class KineticaDDLTest {
     @Test
     public void addColumnWithForeignKey() throws IOException {
         String ddl = generateDDL("add_column_with_foreign_key");
-        Assertions.assertEquals("ALTER TABLE \"ROSETTA\".\"PLAYER\" ADD \"POSITION_ID\" numeric(SHARD_KEY);\r" +
+        Assertions.assertEquals("ALTER TABLE \"ROSETTA\".\"PLAYER\" ADD \"POSITION_ID\" numeric;\r" +
                 "ALTER TABLE \"ROSETTA\".\"PLAYER\" ADD FOREIGN KEY (\"POSITION_ID\") REFERENCES \"ROSETTA\".\"Position\"(\"ID\") AS PLAYER_FK;", ddl);
     }
 
