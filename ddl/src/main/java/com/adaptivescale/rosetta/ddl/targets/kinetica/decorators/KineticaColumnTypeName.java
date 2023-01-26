@@ -17,9 +17,10 @@ public class KineticaColumnTypeName implements ColumnDataTypeName {
         if ( !PRECISION_DEFAULTS.contains(column.getPrecision()) && PRECISION_TYPES.contains(column.getTypeName().toLowerCase())) {
             builder.append("(").append(column.getPrecision()).append(")");
         }
-        if (column.getForeignKeys() != null && !column.getForeignKeys().isEmpty()) {
-            builder.append(SHARD_KEY);
-        }
+        //TODO: Enable this with foreign key functionality
+//        if (column.getForeignKeys() != null && !column.getForeignKeys().isEmpty()) {
+//            builder.append(SHARD_KEY);
+//        }
         return builder.toString();
     }
 }

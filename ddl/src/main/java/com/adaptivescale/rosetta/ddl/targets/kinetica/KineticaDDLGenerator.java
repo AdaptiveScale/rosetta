@@ -95,17 +95,20 @@ public class KineticaDDLGenerator implements DDL {
             .map(table -> createTable(table, dropTableIfExists))
             .collect(Collectors.joining("\r\r")));
 
-        String foreignKeys = database
-            .getTables()
-            .stream()
-            .map(this::foreignKeys)
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .collect(Collectors.joining());
+        //TODO: Check if we can enable foreign keys in Kinetica
+        //Disable temporarily the foreign keys in Kinetica
+//        String foreignKeys = database
+//            .getTables()
+//            .stream()
+//            .map(this::foreignKeys)
+//            .filter(Optional::isPresent)
+//            .map(Optional::get)
+//            .collect(Collectors.joining("\r"));
+//
+//        if (!foreignKeys.isEmpty()) {
+//            stringBuilder.append("\r").append(foreignKeys).append("\r");
+//        }
 
-        if (!foreignKeys.isEmpty()) {
-            stringBuilder.append("\r").append(foreignKeys).append("\r");
-        }
         return stringBuilder.toString();
     }
 
@@ -204,7 +207,8 @@ public class KineticaDDLGenerator implements DDL {
             .map(pk -> String.format(DEFAULT_WRAPPER+"%s"+DEFAULT_WRAPPER, pk.getName()))
             .collect(Collectors.toList());
 
-        primaryKeys.addAll(foreignKeysForTable);
+        //TODO: Enable this with foreign key functionality
+//        primaryKeys.addAll(foreignKeysForTable);
 
         if (primaryKeys.isEmpty()) {
             return Optional.empty();
@@ -229,7 +233,6 @@ public class KineticaDDLGenerator implements DDL {
             .collect(Collectors.toList());
     }
 
-    //ALTER TABLE rosetta.contacts ADD CONSTRAINT contacts_fk FOREIGN KEY (contact_id) REFERENCES rosetta."user"(user_id);
     private String createForeignKeys(Column column) {
         return column.getForeignKeys().stream().map(this::createForeignKey).collect(Collectors.joining());
     }
