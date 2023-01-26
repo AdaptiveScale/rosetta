@@ -2,6 +2,7 @@
 tables:
   - name: "PLAYER"
     type: "TABLE"
+    schema: "ROSETTA"
     columns:
       - name: "name"
         typeName: "varchar"

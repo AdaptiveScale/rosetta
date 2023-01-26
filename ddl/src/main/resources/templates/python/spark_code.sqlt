@@ -1,5 +1,16 @@
 # Guide for using this snippet code: https://spark.apache.org/docs/latest/sql-data-sources-jdbc.html
 
+# If you want to use the spark shell you can provide the information about JDBC drivers using:
+# ./bin/spark-shell --driver-class-path postgresql-9.4.1207.jar --jars postgresql-9.4.1207.jar
+
+# Otherwise you can configure your SparkSession to use specific drivers using the example:
+# spark = (SparkSession.builder
+#          .appName("myapp")
+#          .master('local')
+#          .config('spark.driver.extraClassPath','postgresql-42.3.6.jar:mysql-connector-java-8.0.28.jar')
+#          .getOrCreate()
+#          )
+
 from pyspark.sql import SparkSession, SQLContext
 
 spark = (SparkSession.builder
@@ -29,6 +40,7 @@ for table in tables:
     df = (sqlContext.read
       .format("jdbc")
       .option("url", source_jdbc_url)
+      .option("driver", source_driver)
       .option("dbtable", table)
       .option("user", source_username)
       .option("password", source_password)

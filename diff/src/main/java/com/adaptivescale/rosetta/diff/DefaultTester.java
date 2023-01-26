@@ -149,8 +149,11 @@ public class DefaultTester implements Diff<List<String>, Database, Database> {
     }
 
     private void testViews(Database localValue, Database targetValue, List<String> changes) {
+        Collection<View> localViews = Optional.ofNullable(localValue.getViews())
+            .orElse(Collections.emptyList());
+
         //do we need to check for root properties if are changed
-        for (View view : localValue.getViews()) {
+        for (View view : localViews) {
             List<String> columnsChangesLogs = new ArrayList<>();
             Optional<View> targetView = getView(view.getName(), targetValue);
             if (targetView.isEmpty()) {
@@ -251,7 +254,7 @@ public class DefaultTester implements Diff<List<String>, Database, Database> {
 
             changes.addAll(sameIndices(view.getIndices(), targetView.get().getIndices()));
         }
-        Set<String> localViewName = localValue.getViews().stream().map(View::getName).collect(Collectors.toSet());
+        Set<String> localViewName = localViews.stream().map(View::getName).collect(Collectors.toSet());
         List<View> viewsAdded = targetValue
                 .getViews()
                 .stream()
