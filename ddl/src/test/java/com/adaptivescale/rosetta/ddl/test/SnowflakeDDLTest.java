@@ -56,7 +56,7 @@ public class SnowflakeDDLTest {
         Assertions.assertEquals("USE SCHEMA \"FBAL\";\n" +
                 "ALTER TABLE \"PLAYER\" ADD \"POSITION_ID\" NUMBER;\r" +
                 "USE SCHEMA \"FBAL\";\n" +
-                "ALTER TABLE \"PLAYER\" ADD CONSTRAINT \"PLAYER_FK\" FOREIGN KEY (\"POSITION_ID\") REFERENCES \"Position\"(\"ID\") ON DELETE NO ACTION;", ddl);
+                "ALTER TABLE \"PLAYER\" ADD CONSTRAINT \"PLAYER_FK\" FOREIGN KEY (\"POSITION_ID\") REFERENCES \"Position\"(\"ID\") ON DELETE NO ACTION;\n", ddl);
     }
 
     @Test
@@ -123,7 +123,7 @@ public class SnowflakeDDLTest {
         Assertions.assertEquals("USE SCHEMA \"FBAL\";\n" +
                 "ALTER TABLE \"PLAYER\" ADD \"name\" VARCHAR;\r" +
                 "USE SCHEMA \"FBAL\";\n" +
-                "ALTER TABLE \"PLAYER\" ADD CONSTRAINT \"PLAYER_FK\" FOREIGN KEY (\"POSITION_ID\") REFERENCES \"Position\"(\"ID\") ON DELETE NO ACTION;", ddl);
+                "ALTER TABLE \"PLAYER\" ADD CONSTRAINT \"PLAYER_FK\" FOREIGN KEY (\"POSITION_ID\") REFERENCES \"Position\"(\"ID\") ON DELETE NO ACTION;\n", ddl);
     }
 
     @Test
@@ -139,7 +139,7 @@ public class SnowflakeDDLTest {
         Assertions.assertEquals("USE SCHEMA \"FBAL\";\n" +
                 "ALTER TABLE \"TEAMPLAYERS\" DROP CONSTRAINT \"TEAMPLAYERS_FK_TEAM_CHANGED\";\r" +
                 "USE SCHEMA \"FBAL\";\n" +
-                "ALTER TABLE \"TEAMPLAYERS\" ADD CONSTRAINT \"TEAMPLAYERS_FK_TEAM\" FOREIGN KEY (\"TEAMID\") REFERENCES \"TEAM\"(\"ID\") ON DELETE NO ACTION;", ddl);
+                "ALTER TABLE \"TEAMPLAYERS\" ADD CONSTRAINT \"TEAMPLAYERS_FK_TEAM\" FOREIGN KEY (\"TEAMID\") REFERENCES \"TEAM\"(\"ID\") ON DELETE NO ACTION;\n", ddl);
     }
 
     @Test
@@ -148,7 +148,7 @@ public class SnowflakeDDLTest {
         Assertions.assertEquals("USE SCHEMA \"FBAL\";\n" +
                 "ALTER TABLE \"TEAMPLAYERS\" DROP CONSTRAINT \"TEAMPLAYERS_FK_TEAM\";\r" +
                 "USE SCHEMA \"FBAL\";\n" +
-                "ALTER TABLE \"TEAMPLAYERS\" ADD CONSTRAINT \"TEAMPLAYERS_FK_TEAM\" FOREIGN KEY (\"TEAMID\") REFERENCES \"TEAM\"(\"ID\") ON DELETE NO ACTION;", ddl);
+                "ALTER TABLE \"TEAMPLAYERS\" ADD CONSTRAINT \"TEAMPLAYERS_FK_TEAM\" FOREIGN KEY (\"TEAMID\") REFERENCES \"TEAM\"(\"ID\") ON DELETE NO ACTION;\n", ddl);
     }
 
     private String generateDDL(String testType) throws IOException {
