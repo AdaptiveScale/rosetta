@@ -30,7 +30,9 @@ public class SnowflakeDDLExecutor implements DDLExecutor {
 
         java.sql.Connection jdbcConnection = driver.connect(connection.getUrl(), properties);
         jdbcConnection.createStatement().execute("alter session set MULTI_STATEMENT_COUNT = 0;");
-        jdbcConnection.createStatement().executeUpdate(query);
+        if (query != null && !query.isEmpty()) {
+            jdbcConnection.createStatement().executeUpdate(query);
+        }
         jdbcConnection.close();
     }
 }

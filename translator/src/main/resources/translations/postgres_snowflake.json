@@ -55,6 +55,12 @@
       "compatibleTypes": [
         {
           "typeName": "uuid"
+        },
+        {
+          "typeName": "mpaa_rating"
+        },
+        {
+          "typeName": "tsvector"
         }
       ]
     },
@@ -173,6 +179,9 @@
         },
         {
           "typeName": "serial"
+        },
+        {
+          "typeName": "year"
         }
       ]
     },

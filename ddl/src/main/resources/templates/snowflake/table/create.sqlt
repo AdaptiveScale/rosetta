@@ -1,0 +1,2 @@
+USE SCHEMA "[(${schemaName})]";
+CREATE TABLE "[(${tableName})]"([(${tableCode})]);
