@@ -25,6 +25,10 @@ public class SnowflakeDDLExecutor implements DDLExecutor {
 
     @Override
     public void execute(String query) throws SQLException {
+        if (query == null || query.isEmpty()) {
+            return;
+        }
+
         Driver driver = driverProvider.getDriver(connection);
         Properties properties = JDBCUtils.setJDBCAuth(connection);
 

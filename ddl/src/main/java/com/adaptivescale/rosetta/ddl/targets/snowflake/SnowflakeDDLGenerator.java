@@ -10,13 +10,11 @@ import com.adaptivescale.rosetta.ddl.DDL;
 import com.adaptivescale.rosetta.ddl.change.model.ColumnChange;
 import com.adaptivescale.rosetta.ddl.change.model.ForeignKeyChange;
 import com.adaptivescale.rosetta.ddl.targets.ColumnSQLDecoratorFactory;
+import com.adaptivescale.rosetta.ddl.utils.TemplateEngine;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.DatabaseMetaData;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -25,6 +23,30 @@ import java.util.stream.Collectors;
         type= RosettaModuleTypes.DDL_GENERATOR
 )
 public class SnowflakeDDLGenerator implements DDL {
+
+    private final static String TABLE_CREATE_TEMPLATE = "snowflake/table/create";
+
+    private final static String TABLE_ALTER_TEMPLATE = "snowflake/table/alter";
+
+    private final static String TABLE_ALTER_DROP_PRIMARY_KEY_TEMPLATE = "snowflake/table/alter_drop_primary_key";
+
+    private final static String TABLE_ALTER_ADD_PRIMARY_KEY_TEMPLATE = "snowflake/table/alter_add_primary_key";
+
+    private final static String TABLE_DROP_TEMPLATE = "snowflake/table/drop";
+
+    private final static String SCHEMA_CREATE_TEMPLATE = "snowflake/schema/create";
+
+    private final static String FOREIGN_KEY_CREATE_TEMPLATE = "snowflake/foreignkey/create";
+
+    private final static String FOREIGN_KEY_DROP_TEMPLATE = "snowflake/foreignkey/drop";
+
+    private final static String COLUMN_ADD_TEMPLATE = "snowflake/column/add";
+
+    private final static String COLUMN_ALTER_TYPE_TEMPLATE = "snowflake/column/alter_column_type";
+
+    private final static String COLUMN_ALTER_NULL_TEMPLATE = "snowflake/column/alter_column_null";
+
+    private final static String COLUMN_DROP_TEMPLATE = "snowflake/column/drop";
 
     private final ColumnSQLDecoratorFactory columnSQLDecoratorFactory;
 
@@ -39,26 +61,26 @@ public class SnowflakeDDLGenerator implements DDL {
 
     @Override
     public String createTable(Table table, boolean dropTableIfExists) {
+        Map<String, Object> createParams = new HashMap<>();
+
         List<String> definitions = table.getColumns().stream().map(this::createColumn).collect(Collectors.toList());
 
         Optional<String> primaryKeysForTable = createPrimaryKeysForTable(table);
         primaryKeysForTable.ifPresent(definitions::add);
         String definitionAsString = String.join(", ", definitions);
 
-        StringBuilder builder = new StringBuilder();
+        StringBuilder stringBuilder = new StringBuilder();
 
         if (dropTableIfExists) {
-            builder.append("DROP TABLE IF EXISTS ");
-            builder.append(tableNameWithSchema(table));
-            builder.append("; \n");
+            stringBuilder.append(dropTable(table));
         }
-        builder.append("CREATE TABLE ");
-        builder.append(tableNameWithSchema(table))
-                .append("(")
-                .append(definitionAsString)
-                .append(");");
 
-        return builder.toString();
+        createParams.put("schemaName", table.getSchema());
+        createParams.put("tableName", table.getName());
+        createParams.put("tableCode", definitionAsString);
+        stringBuilder.append(TemplateEngine.process(TABLE_CREATE_TEMPLATE, createParams));
+
+        return stringBuilder.toString();
     }
 
     @Override
@@ -70,26 +92,25 @@ public class SnowflakeDDLGenerator implements DDL {
         if (!schemas.isEmpty()) {
             stringBuilder.append(
                     schemas
-                            .stream()
-                            .map(schema -> "CREATE SCHEMA IF NOT EXISTS " + schema)
-                            .collect(Collectors.joining(";\r\r"))
-
+                        .stream()
+                        .map(this::createSchema)
+                        .collect(Collectors.joining())
             );
-            stringBuilder.append(";\r");
+            stringBuilder.append("\r");
         }
 
         stringBuilder.append(database.getTables()
-                .stream()
-                .map(table -> createTable(table, dropTableIfExists))
-                .collect(Collectors.joining("\r\r")));
+            .stream()
+            .map(table -> createTable(table, dropTableIfExists))
+            .collect(Collectors.joining("\r")));
 
         String foreignKeys = database
-                .getTables()
-                .stream()
-                .map(this::foreignKeys)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.joining("\r"));
+            .getTables()
+            .stream()
+            .map(this::foreignKeys)
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .collect(Collectors.joining("\r"));
 
         if (!foreignKeys.isEmpty()) {
             stringBuilder.append("\r").append(foreignKeys).append("\r");
@@ -106,18 +127,11 @@ public class SnowflakeDDLGenerator implements DDL {
 
     @Override
     public String dropForeignKey(ForeignKey actual) {
-        StringBuilder stringBuilder = new StringBuilder().append("ALTER TABLE ");
-        if (actual.getSchema() != null && !actual.getSchema().isEmpty()) {
-            stringBuilder.append(escapeName(actual.getSchema())).append(".");
-        }
-
-        stringBuilder
-                .append(escapeName(actual.getTableName()))
-                .append(" DROP CONSTRAINT ")
-                .append(escapeName(actual.getName()))
-                .append(";");
-
-        return stringBuilder.toString();
+        Map<String, Object> params = new HashMap<>();
+        params.put("schemaName", actual.getSchema());
+        params.put("tableName", actual.getTableName());
+        params.put("foreignkeyName", actual.getName());
+        return TemplateEngine.process(FOREIGN_KEY_DROP_TEMPLATE, params);
     }
 
     @Override
@@ -125,30 +139,29 @@ public class SnowflakeDDLGenerator implements DDL {
         boolean doesPKExist = actual.getColumns().stream().map(Column::isPrimaryKey).reduce((aBoolean, aBoolean2) -> aBoolean || aBoolean2).orElse(false);
         boolean doWeNeedToCreatePk = expected.getColumns().stream().map(Column::isPrimaryKey).reduce((aBoolean, aBoolean2) -> aBoolean || aBoolean2).orElse(false);
 
+        Map<String, Object> params = new HashMap<>();
         StringBuilder stringBuilder = new StringBuilder();
 
-
         if (doesPKExist) {
-            stringBuilder.append("ALTER TABLE ").append(tableNameWithSchema(expected)).append(" DROP PRIMARY KEY;");
+            params.put("schemaName", expected.getSchema());
+            params.put("tableName", tableNameWithSchema(expected));
+            stringBuilder.append(
+                TemplateEngine.process(TABLE_ALTER_DROP_PRIMARY_KEY_TEMPLATE, params)
+            );
         }
 
         if (doWeNeedToCreatePk) {
             Optional<String> primaryKeysForTable = createPrimaryKeysForTable(expected);
             if (primaryKeysForTable.isPresent()) {
-                if (doesPKExist) {
-                    stringBuilder.append(", ");
-                }
-                if(stringBuilder.length()>0){
-                    stringBuilder.append("\r").append(tableNameWithSchema(expected));
-                }
-                stringBuilder.append("ALTER TABLE ")
-                        .append(tableNameWithSchema(expected))
-                        .append(" ADD ")
-                        .append(primaryKeysForTable.get());
+                params.put("schemaName", expected.getSchema());
+                params.put("tableName", tableNameWithSchema(expected));
+                params.put("primaryKeyDefinition", primaryKeysForTable.get());
+                stringBuilder.append(
+                    TemplateEngine.process(TABLE_ALTER_ADD_PRIMARY_KEY_TEMPLATE, params)
+                );
             }
         }
 
-        stringBuilder.append(";");
         return stringBuilder.toString();
     }
 
@@ -156,58 +169,70 @@ public class SnowflakeDDLGenerator implements DDL {
     public String alterColumn(ColumnChange change) {
         Column actual = change.getActual();
         Column expected = change.getExpected();
+        Map<String, Object> params = new HashMap<>();
+        params.put("schemaName", change.getTable().getSchema());
+        params.put("tableName", change.getTable().getName());
+        params.put("columnName", expected.getName());
 
         if (!Objects.equals(expected.getTypeName(), actual.getTypeName())) {
-            return String.format("ALTER TABLE %s ALTER  \"%s\" SET DATA TYPE %s;",
-                    tableNameWithSchema(change.getTable()),
-                    expected.getName(),
-                    expected.getTypeName());
+            params.put("dataType", expected.getTypeName());
+            return TemplateEngine.process(COLUMN_ALTER_TYPE_TEMPLATE, params);
         }
 
         if (!Objects.equals(expected.isNullable(), actual.isNullable())) {
             if (expected.isNullable()) {
-                return String.format("ALTER TABLE %s ALTER  \"%s\" DROP NOT NULL;",
-                        tableNameWithSchema(change.getTable()),
-                        expected.getName());
+                params.put("nullDefinition", "DROP NOT NULL");
+                return TemplateEngine.process(COLUMN_ALTER_NULL_TEMPLATE, params);
             } else {
-                return String.format("ALTER TABLE %s ALTER  \"%s\" SET NOT NULL;",
-                        tableNameWithSchema(change.getTable()),
-                        expected.getName());
+                params.put("nullDefinition", "SET NOT NULL");
+                return TemplateEngine.process(COLUMN_ALTER_NULL_TEMPLATE, params);
             }
         }
 
         log.info("No action taken for changes detected in column: {}.{}.{}", change.getTable().getSchema(),
                 change.getTable().getName(),
                 expected.getName());
+
         return "";
     }
 
     @Override
     public String dropColumn(ColumnChange change) {
-        return "ALTER TABLE " + tableNameWithSchema(change.getTable()) + " DROP " + escapeName(change.getActual().getName()) + ";";
+        Map<String, Object> params = new HashMap<>();
+        params.put("schemaName", change.getTable().getSchema());
+        params.put("tableName", tableNameWithSchema(change.getTable()));
+        params.put("columnName", change.getActual().getName());
+        return TemplateEngine.process(COLUMN_DROP_TEMPLATE, params);
     }
 
     @Override
     public String addColumn(ColumnChange change) {
-        Table table = change.getTable();
         String columnNameWithType = columnSQLDecoratorFactory.decoratorFor(change.getExpected()).expressSQl();
-        return "ALTER TABLE " + tableNameWithSchema(table) + " add " + columnNameWithType + ";";
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("schemaName", change.getTable().getSchema());
+        params.put("tableName", change.getTable().getName());
+        params.put("columnDefinition", columnNameWithType);
+        return TemplateEngine.process(COLUMN_ADD_TEMPLATE, params);
     }
 
     @Override
     public String dropTable(Table actual) {
-        return "DROP TABLE " + tableNameWithSchema(actual) + ";";
+        Map<String, Object> params = new HashMap<>();
+        params.put("schemaName", actual.getSchema());
+        params.put("tableName", actual.getName());
+        return TemplateEngine.process(TABLE_DROP_TEMPLATE, params);
     }
 
     private Optional<String> createPrimaryKeysForTable(Table table) {
         List<String> primaryKeys = table
-                .getColumns()
-                .stream()
-                .filter(Column::isPrimaryKey)
-                .sorted((o1, o2) -> o1.getPrimaryKeySequenceId() < o2.getPrimaryKeySequenceId() ? -1 : 1)
-                .map(Column::getName)
-                .map(it -> "\"" + it + "\"")
-                .collect(Collectors.toList());
+            .getColumns()
+            .stream()
+            .filter(Column::isPrimaryKey)
+            .sorted((o1, o2) -> o1.getPrimaryKeySequenceId() < o2.getPrimaryKeySequenceId() ? -1 : 1)
+            .map(Column::getName)
+            .map(it -> "\"" + it + "\"")
+            .collect(Collectors.toList());
 
         if (primaryKeys.isEmpty()) {
             return Optional.empty();
@@ -230,43 +255,20 @@ public class SnowflakeDDLGenerator implements DDL {
 
     @Override
     public String createForeignKey(ForeignKey foreignKey) {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("ALTER TABLE ");
-
-        if (foreignKey.getSchema() != null && !foreignKey.getSchema().isEmpty()) {
-            stringBuilder.append(escapeName(foreignKey.getSchema())).append(".");
-        }
-
-        stringBuilder
-                .append(escapeName(foreignKey.getTableName()))
-                .append(" ADD CONSTRAINT ")
-                .append(escapeName(foreignKey.getName()))
-                .append(" FOREIGN KEY (")
-                .append(escapeName(foreignKey.getColumnName()))
-                .append(") REFERENCES ");
-
-        if (foreignKey.getPrimaryTableSchema() != null && !foreignKey.getPrimaryTableSchema().isEmpty()) {
-            stringBuilder.append("\"").append(foreignKey.getPrimaryTableSchema()).append("\".");
-        }
-
-        stringBuilder
-                .append(escapeName(foreignKey.getPrimaryTableName()))
-                .append("(")
-                .append(escapeName(foreignKey.getPrimaryColumnName()))
-                .append(")");
-
+        Map<String, Object> params = new HashMap<>();
+        params.put("schemaName", foreignKey.getSchema());
+        params.put("tableName", foreignKey.getTableName());
+        params.put("foreignkeyColumn", foreignKey.getColumnName());
+        params.put("primaryTableSchema", foreignKey.getPrimaryTableSchema());
+        params.put("primaryTableName", foreignKey.getPrimaryTableName());
+        params.put("foreignKeyPrimaryColumnName", foreignKey.getPrimaryColumnName());
+        params.put("foreignkeyName", foreignKey.getName());
+        params.put("deleteRule", "");
         String deleteRule = foreignKeyDeleteRule(foreignKey);
-
         if (deleteRule != null) {
-            stringBuilder.append(" ").append(deleteRule);
+            params.put("deleteRule", deleteRule);
         }
-        stringBuilder.append(";\r");
-
-        return stringBuilder.toString();
-    }
-
-    private String escapeName(String name) {
-        return "\"" + name + "\"";
+        return TemplateEngine.process(FOREIGN_KEY_CREATE_TEMPLATE, params);
     }
 
     protected String foreignKeyDeleteRule(ForeignKey foreignKey) {
@@ -291,12 +293,13 @@ public class SnowflakeDDLGenerator implements DDL {
 
     private String tableNameWithSchema(Table table) {
         StringBuilder builder = new StringBuilder();
-
-        if (table.getSchema() != null && !table.getSchema().isEmpty()) {
-            builder.append("\"").append(table.getSchema()).append("\".");
-        }
-        builder.append("\"").append(table.getName()).append("\"");
-
+        builder.append(table.getName());
         return builder.toString();
+    }
+
+    private String createSchema(String schema) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("schemaName", schema);
+        return TemplateEngine.process(SCHEMA_CREATE_TEMPLATE, params);
     }
 }

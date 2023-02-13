@@ -84,12 +84,20 @@ public class ColumnsExtractor implements ColumnExtractor<java.sql.Connection, Co
         while (exportedKeys.next()) {
             ForeignKey foreignKey = new ForeignKey();
             foreignKey.setName(exportedKeys.getString("FK_NAME"));
-            foreignKey.setSchema(exportedKeys.getString("FKTABLE_SCHEM"));
+            String fkTableSchema = exportedKeys.getString("FKTABLE_SCHEM");
+            if (fkTableSchema == null) {
+                fkTableSchema = exportedKeys.getString("FKTABLE_CAT");
+            }
+            foreignKey.setSchema(fkTableSchema);
             foreignKey.setTableName(exportedKeys.getString("FKTABLE_NAME"));
             foreignKey.setColumnName(exportedKeys.getString("FKCOLUMN_NAME"));
             foreignKey.setDeleteRule(exportedKeys.getString("DELETE_RULE"));
 
-            foreignKey.setPrimaryTableSchema(exportedKeys.getString("PKTABLE_SCHEM"));
+            String pkTableScehma = exportedKeys.getString("PKTABLE_SCHEM");
+            if (pkTableScehma == null) {
+                pkTableScehma = exportedKeys.getString("PKTABLE_CAT");
+            }
+            foreignKey.setPrimaryTableSchema(pkTableScehma);
             foreignKey.setPrimaryTableName(exportedKeys.getString("PKTABLE_NAME"));
             foreignKey.setPrimaryColumnName(exportedKeys.getString("PKCOLUMN_NAME"));
 
