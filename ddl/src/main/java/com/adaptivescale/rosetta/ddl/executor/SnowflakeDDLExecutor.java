@@ -25,14 +25,16 @@ public class SnowflakeDDLExecutor implements DDLExecutor {
 
     @Override
     public void execute(String query) throws SQLException {
+        if (query == null || query.isEmpty()) {
+            return;
+        }
+
         Driver driver = driverProvider.getDriver(connection);
         Properties properties = JDBCUtils.setJDBCAuth(connection);
 
         java.sql.Connection jdbcConnection = driver.connect(connection.getUrl(), properties);
         jdbcConnection.createStatement().execute("alter session set MULTI_STATEMENT_COUNT = 0;");
-        if (query != null && !query.isEmpty()) {
-            jdbcConnection.createStatement().executeUpdate(query);
-        }
+        jdbcConnection.createStatement().executeUpdate(query);
         jdbcConnection.close();
     }
 }

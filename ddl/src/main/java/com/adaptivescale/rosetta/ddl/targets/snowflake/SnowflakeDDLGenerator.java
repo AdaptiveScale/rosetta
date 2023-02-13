@@ -293,13 +293,7 @@ public class SnowflakeDDLGenerator implements DDL {
 
     private String tableNameWithSchema(Table table) {
         StringBuilder builder = new StringBuilder();
-
-//        if (table.getSchema() != null && !table.getSchema().isEmpty()) {
-//            builder.append("\"").append(table.getSchema()).append("\".");
-//        }
-//        builder.append("\"").append(table.getName()).append("\"");
         builder.append(table.getName());
-
         return builder.toString();
     }
 

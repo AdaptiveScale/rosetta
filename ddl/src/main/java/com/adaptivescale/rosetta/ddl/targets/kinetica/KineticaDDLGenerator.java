@@ -194,7 +194,6 @@ public class KineticaDDLGenerator implements DDL {
     }
 
     @Override
-
     public String alterTable(Table expected, Table actual) {
         return "";
     }
