@@ -1,0 +1,2 @@
+USE SCHEMA "[(${schemaName})]";
+ALTER TABLE "[(${tableName})]" ALTER "[(${columnName})]" SET DATA TYPE [(${dataType})];
