@@ -90,6 +90,24 @@
         },
         {
           "typeName": "bpchar"
+        },
+        {
+          "typeName": "jsonb"
+        },
+        {
+          "typeName": "tsquery"
+        },
+        {
+          "typeName": "tsvector"
+        },
+        {
+          "typeName": "txid_snapshot"
+        },
+        {
+          "typeName": "uuid"
+        },
+        {
+          "typeName": "xml"
         }
       ]
     },

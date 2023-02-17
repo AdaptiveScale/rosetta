@@ -21,6 +21,9 @@
         },
         {
           "typeName": "enum"
+        },
+        {
+          "typeName": "longtext"
         }
       ]
     },
@@ -35,6 +38,15 @@
         },
         {
          "typeName": "mediumblob"
+        },
+        {
+          "typeName": "binary"
+        },
+        {
+          "typeName": "varbinary"
+        },
+        {
+          "typeName": "longblob"
         }
       ]
     },
@@ -107,10 +119,16 @@
       ]
     },
     {
-      "targetTypeName": "integer",
+      "targetTypeName": "int64",
       "compatibleTypes": [
         {
           "typeName": "integer"
+        },
+        {
+          "typeName": "int unsigned"
+        },
+        {
+          "typeName": "bigint unsigned"
         }
       ]
     },
@@ -123,10 +141,16 @@
       ]
     },
     {
-      "targetTypeName": "float",
+      "targetTypeName": "float64",
       "compatibleTypes": [
         {
           "typeName": "float"
+        },
+        {
+          "typeName": "float unsigned"
+        },
+        {
+          "typeName": "double unsigned"
         }
       ]
     },
@@ -138,6 +162,23 @@
         },
         {
           "typeName": "double precision"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "geography",
+      "compatibleTypes": [
+        {
+          "typeName": "geometry"
+        },
+        {
+          "typeName": "point"
+        },
+        {
+          "typeName": "linestring"
+        },
+        {
+          "typeName": "polygon"
         }
       ]
     },
@@ -173,6 +214,14 @@
         },
         {
           "typeName": "time"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "json",
+      "compatibleTypes": [
+        {
+          "typeName": "json"
         }
       ]
     },

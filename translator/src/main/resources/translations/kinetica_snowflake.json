@@ -36,6 +36,9 @@
         },
         {
           "typeName": "ipv4"
+        },
+        {
+          "typeName": "uuid"
         }
       ]
     },
@@ -116,6 +119,22 @@
       "compatibleTypes": [
         {
           "typeName": "datetime"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "binary",
+      "compatibleTypes": [
+        {
+          "typeName": "bytes"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "boolean",
+      "compatibleTypes": [
+        {
+          "typeName": "boolean"
         }
       ]
     },

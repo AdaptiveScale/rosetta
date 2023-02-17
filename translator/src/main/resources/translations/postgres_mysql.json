@@ -82,6 +82,9 @@
         },
         {
           "typeName": "bpchar"
+        },
+        {
+          "typeName": "txid_snapshot"
         }
       ]
     },
@@ -210,8 +213,7 @@
           "typeName": "bigint"
         },
         {
-          "typeName":"big serial"
-
+          "typeName":"bigserial"
         }
       ]
     },
@@ -225,7 +227,62 @@
          }
        ]
     },
-
+    {
+      "targetTypeName": "polygon",
+      "compatibleTypes": [
+        {
+          "typeName": "box"
+        },
+        {
+          "typeName": "circle"
+        },
+        {
+          "typeName": "polygon"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "linestring",
+      "compatibleTypes": [
+        {
+          "typeName": "path"
+        },
+        {
+          "typeName": "line"
+        },
+        {
+          "typeName": "lseg"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "bit",
+      "compatibleTypes": [
+        {
+          "typeName": "bit"
+        },
+        {
+          "typeName": "bit varying"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "longtext",
+      "compatibleTypes": [
+        {
+          "typeName": "xml"
+        },
+        {
+          "typeName": "tsvector"
+        },
+        {
+          "typeName": "tsquery"
+        },
+        {
+          "typeName": "uuid"
+        }
+      ]
+    },
     {
       "targetTypeName": "LONGBLOB",
       "compatibleTypes": [

@@ -42,6 +42,9 @@
       "compatibleTypes": [
         {
           "typeName": "bigint"
+        },
+        {
+          "typeName": "bigint unsigned"
         }
       ]
     },
@@ -63,6 +66,9 @@
         },
         {
           "typeName": "year"
+        },
+        {
+          "typeName": "int unsigned"
         }
       ]
     },
@@ -72,6 +78,9 @@
       "compatibleTypes": [
         {
           "typeName": "float"
+        },
+        {
+          "typeName": "float unsigned"
         }
       ]
     },
@@ -84,6 +93,9 @@
         },
         {
           "typeName": "decimal"
+        },
+        {
+          "typeName": "double unsigned"
         }
       ]
     },
@@ -96,9 +108,30 @@
         }
       ]
     },
-
-
-
+    {
+      "targetTypeName": "point",
+      "compatibleTypes": [
+        {
+          "typeName": "point"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "lseg",
+      "compatibleTypes": [
+        {
+          "typeName": "linestring"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "polygon",
+      "compatibleTypes": [
+        {
+          "typeName": "polygon"
+        }
+      ]
+    },
     {
       "targetTypeName": "character varying",
       "compatibleTypes": [
@@ -128,6 +161,9 @@
         },
         {
           "typeName": "mediumtext"
+        },
+        {
+          "typeName": "longtext"
         }
       ]
     },
@@ -145,6 +181,15 @@
         },
         {
           "typeName": "mediumblob"
+        },
+        {
+          "typeName": "binary"
+        },
+        {
+          "typeName": "varbinary"
+        },
+        {
+          "typeName": "longblob"
         }
       ]
     },
@@ -166,7 +211,30 @@
         }
       ]
     },
-
+    {
+      "targetTypeName": "point",
+      "compatibleTypes": [
+        {
+          "typeName": "point"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "linestring",
+      "compatibleTypes": [
+        {
+          "typeName": "lseg"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "polygon",
+      "compatibleTypes": [
+        {
+          "typeName": "polygon"
+        }
+      ]
+    },
     {
       "targetTypeName": "date",
       "compatibleTypes": [
@@ -187,6 +255,15 @@
         },
         {
           "typeName": "time"
+        }
+      ]
+    },
+
+    {
+      "targetTypeName": "json",
+      "compatibleTypes": [
+        {
+          "typeName": "json"
         }
       ]
     }

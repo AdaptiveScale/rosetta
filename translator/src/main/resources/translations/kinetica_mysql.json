@@ -20,6 +20,30 @@
         }
       ]
     },
+    {
+      "targetTypeName": "BIT",
+      "compatibleTypes": [
+        {
+          "typeName": "boolean"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "DOUBLE",
+      "compatibleTypes": [
+        {
+          "typeName": "double"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "DECIMAL",
+      "compatibleTypes": [
+        {
+          "typeName": "decimal"
+        }
+      ]
+    },
 
     {
       "targetTypeName": "TEXT",
@@ -68,6 +92,22 @@
         }
       ]
 
+    },
+    {
+      "targetTypeName": "BIGINT",
+      "compatibleTypes": [
+        {
+          "typeName": "long"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "BIGINT UNSIGNED",
+      "compatibleTypes": [
+        {
+          "typeName": "ulong"
+        }
+      ]
     },
     {
       "targetTypeName": "TIMESTAMP",

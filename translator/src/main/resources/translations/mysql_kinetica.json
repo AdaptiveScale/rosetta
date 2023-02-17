@@ -57,6 +57,20 @@
       ]
     },
     {
+      "targetTypeName": "geometry",
+      "compatibleTypes": [
+        {
+          "typeName": "point"
+        },
+        {
+          "typeName": "linestring"
+        },
+        {
+          "typeName": "polygon"
+        }
+      ]
+    },
+    {
       "targetTypeName": "int8",
       "compatibleTypes": [
         {
@@ -88,6 +102,9 @@
           "typeName": "mediumint"
         },
         {
+          "typeName": "int unsigned"
+        },
+        {
           "typeName": "mediumint unsigned"
         },
         {
@@ -103,6 +120,9 @@
       "compatibleTypes": [
         {
           "typeName": "bigint"
+        },
+        {
+          "typeName": "bigint unsigned"
         }
       ]
     },
@@ -111,6 +131,9 @@
       "compatibleTypes": [
         {
           "typeName": "float"
+        },
+        {
+          "typeName": "float unsigned"
         }
       ]
     },
@@ -125,6 +148,9 @@
         },
         {
           "typeName": "decimal"
+        },
+        {
+          "typeName": "double unsigned"
         }
       ]
     },
@@ -149,6 +175,17 @@
       "compatibleTypes": [
         {
           "typeName": "time"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "bytes",
+      "compatibleTypes": [
+        {
+          "typeName": "binary"
+        },
+        {
+          "typeName": "varbinary"
         }
       ]
     },

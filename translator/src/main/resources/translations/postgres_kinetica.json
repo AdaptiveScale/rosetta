@@ -51,6 +51,15 @@
         },
         {
           "typeName": "bpchar"
+        },
+        {
+          "typeName": "interval"
+        },
+        {
+          "typeName": "txid_snapshot"
+        },
+        {
+          "typeName": "jsonb"
         }
       ]
     },
@@ -123,6 +132,9 @@
       "compatibleTypes": [
         {
           "typeName": "real"
+        },
+        {
+          "typeName": "money"
         }
       ]
     },
