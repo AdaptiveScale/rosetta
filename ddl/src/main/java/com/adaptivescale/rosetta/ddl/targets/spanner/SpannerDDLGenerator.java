@@ -7,6 +7,7 @@ import com.adaptivescale.rosetta.ddl.DDL;
 import com.adaptivescale.rosetta.ddl.change.model.ColumnChange;
 import com.adaptivescale.rosetta.ddl.change.model.ForeignKeyChange;
 import com.adaptivescale.rosetta.ddl.targets.ColumnSQLDecoratorFactory;
+import com.adaptivescale.rosetta.ddl.utils.TemplateEngine;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
@@ -20,6 +21,7 @@ import static com.adaptivescale.rosetta.ddl.targets.spanner.Constants.DEFAULT_WR
         type = RosettaModuleTypes.DDL_GENERATOR
 )
 public class SpannerDDLGenerator implements DDL {
+    private static String VIEW_CREATE_TEMPLATE = "spanner/view/create";
 
     private final ColumnSQLDecoratorFactory columnSQLDecoratorFactory = new SpannerColumnDecoratorFactory();
 
@@ -271,6 +273,22 @@ public class SpannerDDLGenerator implements DDL {
     @Override
     public String dropIndex(Index index) {
         return "DROP INDEX " + index.getName() + ";\r";
+    }
+
+    @Override
+    public String createView(View view, boolean dropViewIfExists) {
+        StringBuilder builder = new StringBuilder();
+
+        if (dropViewIfExists) {
+            dropView(view);
+            builder.append(dropView(view));
+        }
+        Map<String, Object> createParams = new HashMap<>();
+        createParams.put("viewName", view.getName());
+        createParams.put("viewCode", view.getCode());
+        builder.append(TemplateEngine.process(VIEW_CREATE_TEMPLATE, createParams));
+
+        return builder.toString();
     }
 
     private String handleNullSchema(String schema, String tableName) {
