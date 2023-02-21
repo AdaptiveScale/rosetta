@@ -22,6 +22,8 @@ import static com.adaptivescale.rosetta.ddl.targets.spanner.Constants.DEFAULT_WR
 )
 public class SpannerDDLGenerator implements DDL {
     private static String VIEW_CREATE_TEMPLATE = "spanner/view/create";
+    private static String VIEW_ALTER_TEMPLATE = "spanner/view/alter";
+    private static String VIEW_DROP_TEMPLATE = "spanner/view/drop";
 
     private final ColumnSQLDecoratorFactory columnSQLDecoratorFactory = new SpannerColumnDecoratorFactory();
 
@@ -289,6 +291,22 @@ public class SpannerDDLGenerator implements DDL {
         builder.append(TemplateEngine.process(VIEW_CREATE_TEMPLATE, createParams));
 
         return builder.toString();
+    }
+
+    @Override
+    public String alterView(View expected, View actual) {
+        Map<String, Object> createParams = new HashMap<>();
+        createParams.put("viewName", expected.getName());
+        createParams.put("viewCode", expected.getCode());
+        return TemplateEngine.process(VIEW_ALTER_TEMPLATE, createParams);
+    }
+
+    @Override
+    public String dropView(View actual) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("viewName", actual.getName());
+        params.put("viewCode", actual.getCode());
+        return TemplateEngine.process(VIEW_DROP_TEMPLATE, params);
     }
 
     private String handleNullSchema(String schema, String tableName) {

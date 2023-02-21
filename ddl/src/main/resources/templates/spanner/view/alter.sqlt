@@ -1,0 +1,5 @@
+CREATE OR REPLACE VIEW `[(${viewName})]`
+SQL SECURITY INVOKER
+AS
+[(${viewCode})]
+;
