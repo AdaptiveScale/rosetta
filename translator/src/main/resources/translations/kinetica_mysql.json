@@ -129,9 +129,27 @@
         },
         {
           "typeName": "int8"
+        },
+        {
+          "typeName": "integer"
         }
       ]
-
+    },
+    {
+      "targetTypeName": "VARCHAR",
+      "compatibleTypes": [
+        {
+          "typeName": "varchar"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "DATETIME",
+      "compatibleTypes": [
+        {
+          "typeName": "datetime"
+        }
+      ]
     },
 
     {

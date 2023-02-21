@@ -26,6 +26,9 @@
       "compatibleTypes": [
         {
           "typeName": "money"
+        },
+        {
+          "typeName": "float8"
         }
       ]
     },
@@ -66,7 +69,7 @@
           "typeName": "smallint"
         },
         {
-          "typeName": "small serial"
+          "typeName": "smallserial"
         }
       ]
     },
@@ -85,6 +88,12 @@
         },
         {
           "typeName": "txid_snapshot"
+        },
+        {
+          "typeName": "_numeric"
+        },
+        {
+          "typeName": "_interval"
         }
       ]
     },
@@ -124,6 +133,9 @@
         },
         {
           "typeName": "int4"
+        },
+        {
+          "typeName": "int8"
         }
       ]
 
@@ -283,6 +295,7 @@
         }
       ]
     },
+
     {
       "targetTypeName": "LONGBLOB",
       "compatibleTypes": [

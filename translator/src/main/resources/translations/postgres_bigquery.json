@@ -39,6 +39,9 @@
         },
         {
           "typeName": "bit"
+        },
+        {
+          "typeName": "int8"
         }
       ]
     },
@@ -130,6 +133,9 @@
         },
         {
           "typeName": "real"
+        },
+        {
+          "typeName": "float8"
         }
       ]
     },
@@ -179,6 +185,12 @@
       "compatibleTypes": [
         {
           "typeName": "_text"
+        },
+        {
+          "typeName": "_numeric"
+        },
+        {
+          "typeName": "_interval"
         }
       ]
     }
