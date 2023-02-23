@@ -117,6 +117,13 @@ public class SpannerDDLGenerator implements DDL {
             stringBuilder.append("\r").append(indices).append("\r");
         }
 
+        if (database.getViews() != null && !database.getViews().isEmpty()) {
+            stringBuilder.append("\r").append(database.getViews()
+                    .stream()
+                    .map(view -> createView(view, dropTableIfExists))
+                    .collect(Collectors.joining("\r\r")));
+        }
+
         return stringBuilder.toString();
     }
 
