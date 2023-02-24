@@ -87,6 +87,15 @@
         }
       ]
     },
+
+    {
+      "targetTypeName": "json",
+      "compatibleTypes": [
+        {
+          "typeName": "json"
+        }
+      ]
+    },
     {
       "targetTypeName": "integer",
       "compatibleTypes": [
@@ -114,10 +123,17 @@
       "compatibleTypes": [
         {
           "typeName": "decimal"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "numeric",
+      "compatibleTypes": [
+        {
+          "typeName": "FLOAT64"
         },
         {
-
-          "typeName": "float64"
+          "typeName": "bignumeric"
         }
       ]
     },

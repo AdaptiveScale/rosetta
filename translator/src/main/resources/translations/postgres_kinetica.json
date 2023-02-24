@@ -51,6 +51,21 @@
         },
         {
           "typeName": "bpchar"
+        },
+        {
+          "typeName": "interval"
+        },
+        {
+          "typeName": "txid_snapshot"
+        },
+        {
+          "typeName": "jsonb"
+        },
+        {
+          "typeName": "_numeric"
+        },
+        {
+          "typeName": "_interval"
         }
       ]
     },
@@ -70,6 +85,9 @@
         },
         {
           "typeName": "bit varying"
+        },
+        {
+          "typeName": "int8"
         }
       ]
     },
@@ -123,6 +141,9 @@
       "compatibleTypes": [
         {
           "typeName": "real"
+        },
+        {
+          "typeName": "money"
         }
       ]
     },
@@ -161,6 +182,14 @@
       "compatibleTypes": [
         {
           "typeName": "time"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "float",
+      "compatibleTypes": [
+        {
+          "typeName": "float8"
         }
       ]
     },
