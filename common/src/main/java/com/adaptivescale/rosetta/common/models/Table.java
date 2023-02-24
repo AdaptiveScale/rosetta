@@ -9,6 +9,9 @@ public class Table {
     private String description;
     private String type;
     private String schema;
+
+    private Interleave interleave;
+
     private List<Index> indices;
 
     private Collection<Column> columns;
@@ -52,6 +55,14 @@ public class Table {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Interleave getInterleave() {
+        return interleave;
+    }
+
+    public void setInterleave(Interleave interleave) {
+        this.interleave = interleave;
     }
 
     public List<Index> getIndices() {
