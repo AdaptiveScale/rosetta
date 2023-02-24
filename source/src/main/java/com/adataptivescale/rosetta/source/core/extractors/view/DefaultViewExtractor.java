@@ -35,7 +35,7 @@ public class DefaultViewExtractor implements ViewExtractor<Collection<View>, Con
         return views;
     }
 
-    private Collection<View> extractViews(Connection target, java.sql.Connection connection) throws SQLException {
+    protected Collection<View> extractViews(Connection target, java.sql.Connection connection) throws SQLException {
         DatabaseMetaData metaData = connection.getMetaData();
 
         ResultSet resultSet = metaData.getTables(target.getDatabaseName(), target.getSchemaName(), null, ArrayUtils.toArray("VIEW"));
@@ -59,7 +59,7 @@ public class DefaultViewExtractor implements ViewExtractor<Collection<View>, Con
         // No op
     }
 
-    private View map(ResultSet resultSet) throws SQLException {
+    protected View map(ResultSet resultSet) throws SQLException {
         View view = new View();
         view.setName(resultSet.getString("TABLE_NAME"));
         view.setType(resultSet.getString("TABLE_TYPE"));

@@ -164,6 +164,17 @@
       ]
     },
     {
+      "targetTypeName": "jsonb",
+      "compatibleTypes": [
+        {
+          "typeName": "variant"
+        },
+        {
+          "typeName": "object"
+        }
+      ]
+    },
+    {
       "targetTypeName": "boolean",
       "compatibleTypes": [
         {

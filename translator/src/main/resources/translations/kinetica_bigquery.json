@@ -36,6 +36,15 @@
         },
         {
           "typeName": "ipv4"
+        },
+        {
+          "typeName": "wkt"
+        },
+        {
+          "typeName": "uuid"
+        },
+        {
+          "typeName": "varchar"
         }
       ]
     },
@@ -76,6 +85,9 @@
       "compatibleTypes": [
         {
           "typeName": "int"
+        },
+        {
+          "typeName": "integer"
         }
       ]
     },
@@ -119,6 +131,22 @@
       "compatibleTypes": [
         {
           "typeName": "datetime"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "int64",
+      "compatibleTypes": [
+        {
+          "typeName": "long"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "bool",
+      "compatibleTypes": [
+        {
+          "typeName": "boolean"
         }
       ]
     },

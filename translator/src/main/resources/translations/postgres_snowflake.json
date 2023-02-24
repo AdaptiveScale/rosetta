@@ -55,17 +55,26 @@
       "compatibleTypes": [
         {
           "typeName": "uuid"
+        },
+        {
+          "typeName": "mpaa_rating"
+        },
+        {
+          "typeName": "tsvector"
         }
       ]
     },
     {
-      "targetTypeName": "char",
+      "targetTypeName": "character",
       "compatibleTypes": [
         {
           "typeName": "bpchar"
         },
         {
-          "typeName": "char"
+          "typeName": "character"
+        },
+        {
+          "typeName": "character varying"
         }
       ]
     },
@@ -74,6 +83,14 @@
       "compatibleTypes": [
         {
           "typeName": "bit"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "double precision",
+      "compatibleTypes": [
+        {
+          "typeName": "double precision"
         }
       ]
     },
@@ -89,10 +106,13 @@
       ]
     },
     {
-      "targetTypeName": "float4",
+      "targetTypeName": "float",
       "compatibleTypes": [
         {
           "typeName": "float4"
+        },
+        {
+          "typeName": "real"
         }
       ]
     },
@@ -148,6 +168,18 @@
       "compatibleTypes": [
         {
           "typeName": "varchar"
+        },
+        {
+          "typeName": "interval"
+        },
+        {
+          "typeName": "txid_snapshot"
+        },
+        {
+          "typeName": "tsvector"
+        },
+        {
+          "typeName": "tsquery"
         }
       ]
     },
@@ -173,6 +205,9 @@
         },
         {
           "typeName": "serial"
+        },
+        {
+          "typeName": "year"
         }
       ]
     },

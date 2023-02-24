@@ -1,0 +1,5 @@
+---
+safeMode: false
+databaseProductName: "Google Cloud Spanner"
+databaseType: "spanner"
+operationLevel: "database"

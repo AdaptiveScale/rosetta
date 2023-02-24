@@ -563,7 +563,7 @@ tables:
 Description: Our actual database does not contain `first_name` so we expect it to alter the table and add the column, inside the source directory there will be the executed DDL and a snapshot of the current database.
 
 #### generate
-This command will generate Spark Python (file) or Spark Scala (file), firstly it extracts a schema from a source database and gets connection properties form the source connection, then it creates a python (file) or scala (file) that translates schemas, which is ready to transfer data from source to target.
+This command will generate Spark Python (file) or Spark Scala (file), firstly it extracts a schema from a source database and gets connection properties from the source connection, then it creates a python (file) or scala (file) that translates schemas, which is ready to transfer data from source to target.
 
     rosetta [-c, --config CONFIG_FILE] generate [-h, --help] [-s, --source CONNECTION_NAME] [-t, --target CONNECTION_NAME] [--pyspark] [--scala]
 

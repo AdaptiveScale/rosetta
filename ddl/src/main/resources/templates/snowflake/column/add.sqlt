@@ -1,0 +1,2 @@
+USE SCHEMA "[(${schemaName})]";
+ALTER TABLE "[(${tableName})]" ADD [(${columnDefinition})];

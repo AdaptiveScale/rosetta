@@ -1,0 +1,115 @@
+---
+safeMode: false
+tables:
+  - name: "Singers"
+    type: "TABLE"
+    schema: ""
+    indices:
+      - name: "PRIMARY_KEY"
+        schema: ""
+        tableName: "Singers"
+        columnNames:
+          - "SingerId"
+        nonUnique: false
+        indexQualifier: ""
+        type: 1
+        ascOrDesc: "A"
+        cardinality: -1
+    columns:
+      - name: "SingerId"
+        typeName: "STRING(1024)"
+        ordinalPosition: 0
+        primaryKeySequenceId: 1
+        columnDisplaySize: 1024
+        scale: 0
+        precision: 1024
+        autoincrement: false
+        primaryKey: true
+        nullable: false
+      - name: "FirstName"
+        typeName: "STRING(1024)"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 1024
+        scale: 0
+        precision: 1024
+        autoincrement: false
+        primaryKey: false
+        nullable: true
+      - name: "LastName"
+        typeName: "STRING(1024)"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 1024
+        scale: 0
+        precision: 1024
+        autoincrement: false
+        primaryKey: false
+        nullable: true
+views:
+  - name: "SingerNames"
+    type: "VIEW"
+    schema: ""
+    indices: []
+    columns:
+      - name: "SingerId"
+        typeName: "STRING(MAX)"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 2621440
+        scale: 0
+        precision: 2621440
+        autoincrement: false
+        primaryKey: false
+        nullable: true
+      - name: "FirstName"
+        typeName: "STRING(1024)"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 1024
+        scale: 0
+        precision: 1024
+        autoincrement: false
+        primaryKey: false
+        nullable: true
+      - name: "LastName"
+        typeName: "STRING(1024)"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 1024
+        scale: 0
+        precision: 1024
+        autoincrement: false
+        primaryKey: false
+        nullable: true
+    code: "SELECT\n   Singers.SingerId AS SingerId,\n   Singers.FirstName || ' ' ||\
+    \ Singers.LastName AS Name\nFROM Singers"
+  - name: "NamesSinger"
+    type: "VIEW"
+    schema: ""
+    indices: []
+    columns:
+      - name: "SingerId"
+        typeName: "STRING(MAX)"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 2621440
+        scale: 0
+        precision: 2621440
+        autoincrement: false
+        primaryKey: false
+        nullable: true
+      - name: "Name"
+        typeName: "STRING(MAX)"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 2621440
+        scale: 0
+        precision: 2621440
+        autoincrement: false
+        primaryKey: false
+        nullable: true
+    code: "SELECT\n   Singers.SingerId AS SingerId,\n   Singers.FirstName,\n  Singers.LastName\nFROM Singers"
+databaseProductName: "Google Cloud Spanner"
+databaseType: "spanner"
+operationLevel: "database"
