@@ -6,7 +6,6 @@ import com.adaptivescale.rosetta.common.types.RosettaModuleTypes;
 import com.adaptivescale.rosetta.ddl.change.model.Change;
 import com.adaptivescale.rosetta.ddl.change.model.ChangeFactory;
 import com.adaptivescale.rosetta.ddl.change.model.ColumnChange;
-import com.adaptivescale.rosetta.ddl.change.model.IndexChange;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
@@ -70,9 +69,52 @@ public class SpannerChangeFinder implements ChangeFinder {
             changes.add(tableChange);
         }
 
+        // Process view changes
+        viewChanges(expected, actual, changes);
+
         List<Change<?>> result = filterDuplicates(changes);
         log.info("Found {} changes", result.size());
         return result;
+    }
+
+    private void viewChanges(Database expected, Database actual, List<Change<?>> changes) {
+        // Backwards compatibility
+        if (actual.getViews() == null) {
+            return;
+        }
+        // View changes
+        Collection<View> actualViews = new ArrayList<>(actual.getViews());
+        List<ForeignKey> allForeignKeys = findAllForeignKeys(actual.getViews());
+
+        for (View expectedView : expected.getViews()) {
+            List<View> foundViews = actualViews
+              .stream()
+              .filter(view -> Objects.equals(expectedView.getName(), view.getName()) && Objects.equals(expectedView.getSchema(), view.getSchema()))
+              .collect(Collectors.toList());
+
+            if (foundViews.size() == 0) {
+                Change<View> viewChange = ChangeFactory.viewChange(expectedView, null, Change.Status.ADD);
+                changes.add(viewChange);
+            } else if (foundViews.size() == 1) {
+                View view = foundViews.get(0);
+                actualViews.remove(view);
+                //change in view - TODO -currently using table function as they identical - split in future
+                List<Change<?>> changesFromView = findChangesInColumnsForTable(expectedView, view, allForeignKeys);
+                if(!changesFromView.isEmpty()) {
+                    Change<View> viewChange = ChangeFactory.viewChange(expectedView, null, Change.Status.ALTER);
+                    changes.add(viewChange);
+                }
+            } else {
+                throw new RuntimeException(String.format("Found %d view with name '%s' and schema '%s'",
+                                                         foundViews.size(), expectedView.getName(), expectedView.getSchema()));
+            }
+        }
+
+        //mark all for deletion
+        for (View actualView : actualViews) {
+            Change<View> viewChange = ChangeFactory.viewChange(null, actualView, Change.Status.DROP);
+            changes.add(viewChange);
+        }
     }
 
     private List<Change<?>> findChangesInIndicesForTable(Table expected, Table actual) {
@@ -346,7 +388,7 @@ public class SpannerChangeFinder implements ChangeFinder {
         return foreignKeysToDrop;
     }
 
-    private List<ForeignKey> findAllForeignKeys(Collection<Table> tables) {
+    private List<ForeignKey> findAllForeignKeys(Collection<? extends Table> tables) {
         return tables.stream().flatMap((Function<Table, Stream<ForeignKey>>) table
                         -> table.getColumns().stream().flatMap((Function<Column, Stream<ForeignKey>>) column -> column.getForeignKeys() == null ? Stream.empty() : column.getForeignKeys().stream()))
                 .collect(Collectors.toList());

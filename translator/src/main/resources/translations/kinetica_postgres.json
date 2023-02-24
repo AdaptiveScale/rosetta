@@ -7,6 +7,9 @@
       "compatibleTypes": [
         {
           "typeName": "int16"
+        },
+        {
+          "typeName": "int8"
         }
       ]
     },
@@ -16,6 +19,33 @@
       "compatibleTypes": [
         {
           "typeName": "long"
+        },
+        {
+          "typeName": "ulong"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "uuid",
+      "compatibleTypes": [
+        {
+          "typeName":"uuid"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "character varying",
+      "compatibleTypes": [
+        {
+          "typeName":"varchar"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "geometry",
+      "compatibleTypes": [
+        {
+          "typeName": "geometry"
         }
       ]
     },
@@ -25,6 +55,9 @@
       "compatibleTypes": [
         {
           "typeName": "int"
+        },
+        {
+          "typeName": "integer"
         }
       ]
     },
@@ -106,6 +139,14 @@
         }
       ]
     },
+    {
+      "targetTypeName": "boolean",
+      "compatibleTypes": [
+        {
+          "typeName": "boolean"
+        }
+      ]
+    },
 
     {
       "targetTypeName": "timestamp",
@@ -121,7 +162,5 @@
         }
       ]
     }
-
-
   ]
 }

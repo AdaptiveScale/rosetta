@@ -144,7 +144,30 @@
         }
       ]
     },
-
+    {
+      "targetTypeName": "bigint",
+      "compatibleTypes": [
+        {
+          "typeName": "int64"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "blob",
+      "compatibleTypes": [
+        {
+          "typeName": "bytes"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "geometry",
+      "compatibleTypes": [
+        {
+          "typeName": "geography"
+        }
+      ]
+    },
     {
       "targetTypeName": "tinyint",
       "compatibleTypes": [
