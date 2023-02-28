@@ -27,6 +27,11 @@ public class DefaultTester implements Diff<List<String>, Database, Database> {
     private static final String VIEW_REMOVED_FORMAT = "View '%s' exists in the model, but it does not exist in the target database.";
     private static final String VIEW_ADDED_FORMAT = "View '%s' does not exist in the model, but it exists in the target database.";
 
+    private static final String INTERLEAVED_CHANGED_FORMAT = "Interleaved Changed: Table '%s'";
+    private static final String INTERLEAVED_REMOVED_FORMAT = "Interleaved '%s' table exists in the model, but it does not exist in the target database.";
+    private static final String INTERLEAVED_ADDED_FORMAT = "Interleaved '%s' table does not exist in the model, but it exists in the target database.";
+
+
     @Override
     public List<String> find(Database localValue, Database targetValue) {
 
@@ -41,6 +46,9 @@ public class DefaultTester implements Diff<List<String>, Database, Database> {
                 changes.add(String.format(TABLE_REMOVED_FORMAT, table.getName()));
                 continue;
             }
+
+            List<String> tableInterleaveChanges = checkForInterleaveChanges(table, targetTable.get());
+            changes.addAll(tableInterleaveChanges);
 
             Collection<Column> columns = table.getColumns();
             for (Column localColumn : columns) {
@@ -145,6 +153,24 @@ public class DefaultTester implements Diff<List<String>, Database, Database> {
 
         // Check views for changes
         testViews(localValue, targetValue, changes);
+        return changes;
+    }
+
+    private List<String> checkForInterleaveChanges(Table localTable, Table targetTable) {
+        List<String> changes = new ArrayList<>();
+        if (localTable.getInterleave() != null && targetTable.getInterleave() == null) {
+            changes.add(String.format(INTERLEAVED_REMOVED_FORMAT, localTable.getName()));
+        }
+        if (localTable.getInterleave() == null && targetTable.getInterleave() != null) {
+            changes.add(String.format(INTERLEAVED_ADDED_FORMAT, localTable.getName()));
+        }
+
+        if (localTable.getInterleave() != null &&
+            targetTable.getInterleave() != null &&
+            !localTable.getInterleave().equals(targetTable.getInterleave())) {
+            changes.add(String.format(INTERLEAVED_CHANGED_FORMAT, localTable.getName()));
+        }
+
         return changes;
     }
 
@@ -262,7 +288,6 @@ public class DefaultTester implements Diff<List<String>, Database, Database> {
                 .collect(Collectors.toList());
         viewsAdded.forEach(view -> changes.add(String.format(VIEW_ADDED_FORMAT, view.getName())));
     }
-
 
 
     private List<String> sameIndices(List<Index> localIndices, List<Index> targetIndices) {

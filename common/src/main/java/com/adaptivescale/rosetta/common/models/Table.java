@@ -2,6 +2,7 @@ package com.adaptivescale.rosetta.common.models;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 public class Table {
 
@@ -71,5 +72,18 @@ public class Table {
 
     public void setIndices(List<Index> indices) {
         this.indices = indices;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Table table = (Table) o;
+        return Objects.equals(name, table.name) && Objects.equals(description, table.description) && Objects.equals(type, table.type) && Objects.equals(schema, table.schema) && Objects.equals(interleave, table.interleave) && Objects.equals(indices, table.indices) && Objects.equals(columns, table.columns);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, description, type, schema, interleave, indices, columns);
     }
 }
