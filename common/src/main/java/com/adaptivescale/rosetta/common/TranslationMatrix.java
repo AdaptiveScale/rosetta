@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
 import java.sql.*;
+import java.util.List;
 
 @Slf4j
 public class TranslationMatrix {
@@ -30,12 +31,20 @@ public class TranslationMatrix {
 
     void initTables() throws IOException {
         String translationTable = "CREATE TABLE "+TABLE_NAME+"(id INT PRIMARY KEY AUTO_INCREMENT, " +
-                "source_type VARCHAR(255), " +
-                "source_column_type VARCHAR(255), " +
-                "target_type VARCHAR(255), " +
-                "target_column_type VARCHAR(255)" +
+                "source_type VARCHAR(255) not null, " +
+                "source_column_type VARCHAR(255) not null, " +
+                "target_type VARCHAR(255) not null, " +
+                "target_column_type VARCHAR(255) not null" +
                 ");";
         execute(translationTable);
+////        String uniqueIndex = "ALTER TABLE "+TABLE_NAME+" ADD CONSTRAINT unique_translation_index UNIQUE (source_type, source_column_type, target_type)";
+////        execute(uniqueIndex);
+        String index = "CREATE INDEX source_translation_index " +
+                "ON "+TABLE_NAME+" (source_type, source_column_type)";
+        String uniqueIndex = "CREATE UNIQUE INDEX unique_translation_index " +
+        "ON "+TABLE_NAME+" (source_type, source_column_type, target_type)";
+        execute(index);
+        execute(uniqueIndex);
         loadCSVData();
     }
 
@@ -56,7 +65,9 @@ public class TranslationMatrix {
             translationModel.setTargetColumnType(translation[4]);
 //            System.out.println(translationModel);
             String insertStatement = translationModel.generateInsertStatement(TABLE_NAME);
+
             dataInsertQuery.append(insertStatement);
+
 //            System.out.println("Employee [First Name=" + employee[0] + ", Last Name=" + employee[1] + ", Designation=" + employee[2] + ", Contact=" + employee[3] + ", Salary= " + employee[4] +"]");
         }
         execute(dataInsertQuery.toString());
@@ -136,7 +147,7 @@ public class TranslationMatrix {
 
     public TranslationModel get(String sourceType, String sourceColumnType, String targetType) {
         String query = String.format("SELECT * from %s where source_type='%s' and source_column_type='%s' and target_type='%s'",
-                TABLE_NAME, sourceType, sourceColumnType, targetType);
+                TABLE_NAME, sourceType, sourceColumnType.toLowerCase(), targetType);
         return getSingleRecord(query);
     }
 

@@ -212,26 +212,10 @@
       ]
     },
     {
-      "targetTypeName": "point",
-      "compatibleTypes": [
-        {
-          "typeName": "point"
-        }
-      ]
-    },
-    {
       "targetTypeName": "linestring",
       "compatibleTypes": [
         {
           "typeName": "lseg"
-        }
-      ]
-    },
-    {
-      "targetTypeName": "polygon",
-      "compatibleTypes": [
-        {
-          "typeName": "polygon"
         }
       ]
     },
