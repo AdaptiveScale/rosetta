@@ -16,7 +16,6 @@
 
 package com.adataptivescale.rosetta.source.core.extractors.table;
 
-import com.adaptivescale.rosetta.common.models.Interleave;
 import com.adaptivescale.rosetta.common.models.Table;
 import com.adaptivescale.rosetta.common.models.input.Connection;
 import com.adataptivescale.rosetta.source.core.interfaces.TableExtractor;
@@ -27,10 +26,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 public class DefaultTablesExtractor implements TableExtractor<Collection<Table>, Connection, java.sql.Connection> {
-
     @Override
     public Collection<Table> extract(Connection target, java.sql.Connection connection) throws SQLException {
         DatabaseMetaData metaData = connection.getMetaData();
@@ -49,17 +46,11 @@ public class DefaultTablesExtractor implements TableExtractor<Collection<Table>,
         if (!resultSet.isClosed()) {
             resultSet.close();
         }
-        List<Interleave> interlevedTables = getInterleavedTables(connection);
-        for (Interleave interleave: interlevedTables) {
-            Table table = tables.stream().filter(it -> it.getName().equals(interleave.getTableName())).findFirst().orElse(null);
-            if (table != null) {
-                table.setInterleave(interleave);
-            }
-        }
+
         return tables;
     }
 
-    private Table map(ResultSet resultSet) throws SQLException {
+    protected Table map(ResultSet resultSet) throws SQLException {
         Table table = new Table();
         table.setName(resultSet.getString("TABLE_NAME"));
         table.setType(resultSet.getString("TABLE_TYPE"));
@@ -69,30 +60,6 @@ public class DefaultTablesExtractor implements TableExtractor<Collection<Table>,
         }
         table.setSchema(tableSchema);
         return table;
-    }
-
-    private List<Interleave> getInterleavedTables(java.sql.Connection connection) throws SQLException {
-        ResultSet resultSet = connection.createStatement().executeQuery("SELECT\n" +
-            " TABLE_NAME, PARENT_TABLE_NAME, ON_DELETE_ACTION, table_type, SPANNER_STATE, INTERLEAVE_TYPE\n" +
-            "  FROM\n" +
-            "    information_schema.tables\n" +
-            "  WHERE\n" +
-            "    table_schema = '' AND PARENT_TABLE_NAME IS NOT NULL");
-
-        List<Interleave> interleavedTables = new ArrayList<>();
-
-        while (resultSet.next()) {
-            Interleave interleave = new Interleave();
-            interleave.setTableName(resultSet.getString("TABLE_NAME"));
-            interleave.setParentName(resultSet.getString("PARENT_TABLE_NAME"));
-            interleave.setOnDeleteAction(resultSet.getString("ON_DELETE_ACTION"));
-            interleavedTables.add(interleave);
-        }
-
-        if (!resultSet.isClosed()) {
-            resultSet.close();
-        }
-        return interleavedTables;
     }
 
 }
