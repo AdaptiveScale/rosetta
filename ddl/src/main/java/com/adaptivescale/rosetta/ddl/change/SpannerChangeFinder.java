@@ -53,21 +53,7 @@ public class SpannerChangeFinder implements ChangeFinder {
                 changes.addAll(changesFromTables);
                 changes.addAll(changesFromIndices);
 
-                if (table.getInterleave() == null && expectedTable.getInterleave() != null) {
-                    Change<Table> tableChangeDrop = ChangeFactory.tableChange(null, table, Change.Status.DROP);
-                    Change<Table> tableChangeAdd = ChangeFactory.tableChange(expectedTable, null, Change.Status.ADD);
-                    changes.add(tableChangeDrop);
-                    changes.add(tableChangeAdd);
-                }
-
-                if (table.getInterleave() != null && expectedTable.getInterleave() == null) {
-                    Change<Table> tableChangeDrop = ChangeFactory.tableChange(null, table, Change.Status.DROP);
-                    Change<Table> tableChangeAdd = ChangeFactory.tableChange(expectedTable, null, Change.Status.ADD);
-                    changes.add(tableChangeDrop);
-                    changes.add(tableChangeAdd);
-                }
-
-                if (table.getInterleave() != null && expectedTable.getInterleave() != null && !table.getInterleave().equals(expectedTable.getInterleave())) {
+                if (checkInterleaveChanges(table, expectedTable)) {
                     Change<Table> tableChangeDrop = ChangeFactory.tableChange(null, table, Change.Status.DROP);
                     Change<Table> tableChangeAdd = ChangeFactory.tableChange(expectedTable, null, Change.Status.ADD);
                     changes.add(tableChangeDrop);
@@ -96,6 +82,15 @@ public class SpannerChangeFinder implements ChangeFinder {
         List<Change<?>> result = filterDuplicates(changes);
         log.info("Found {} changes", result.size());
         return result;
+    }
+
+    private boolean checkInterleaveChanges(Table table, Table expectedTable) {
+        if ((table.getInterleave() == null && expectedTable.getInterleave() != null) ||
+                (table.getInterleave() != null && expectedTable.getInterleave() == null) ||
+                (table.getInterleave() != null && expectedTable.getInterleave() != null && !table.getInterleave().equals(expectedTable.getInterleave()))) {
+            return true;
+        }
+        return false;
     }
 
     private void viewChanges(Database expected, Database actual, List<Change<?>> changes) {
