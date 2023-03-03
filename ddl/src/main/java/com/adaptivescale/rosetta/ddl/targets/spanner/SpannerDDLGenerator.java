@@ -14,6 +14,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.adaptivescale.rosetta.ddl.targets.spanner.Constants.DEFAULT_WRAPPER;
+import static java.util.Comparator.*;
 
 @Slf4j
 @RosettaModule(
@@ -55,7 +56,7 @@ public class SpannerDDLGenerator implements DDL {
 
         if (table.getSchema() != null && !table.getSchema().isBlank()) {
             stringBuilder.append(DEFAULT_WRAPPER)
-                    .append(table.getSchema()).append(DEFAULT_WRAPPER).append(".");
+                .append(table.getSchema()).append(DEFAULT_WRAPPER).append(".");
         }
 
         stringBuilder.append(DEFAULT_WRAPPER).append(table.getName()).append(DEFAULT_WRAPPER)
@@ -65,6 +66,16 @@ public class SpannerDDLGenerator implements DDL {
             stringBuilder.append(primaryKeysForTable.get());
         }
 
+        if (table.getInterleave() != null) {
+            stringBuilder.append(",\r");
+            stringBuilder.append("INTERLEAVE IN PARENT ")
+                    .append(table.getInterleave().getParentName());
+
+            final String onDeleteAction = table.getInterleave().getOnDeleteAction();
+            if (onDeleteAction != null && !onDeleteAction.isEmpty()) {
+                stringBuilder.append(" ON DELETE ").append(table.getInterleave().getOnDeleteAction());
+            }
+        }
         stringBuilder.append(";");
         return stringBuilder.toString();
     }
@@ -85,21 +96,29 @@ public class SpannerDDLGenerator implements DDL {
         });
         if(!missingPrimaryKeys.isEmpty()){
             throw new RuntimeException(
-                    String.format("Tables %s are missing primary key. Spanner does not allow table without primary key.",
-                            missingPrimaryKeys.stream().collect(Collectors.joining(","))));
+                String.format("Tables %s are missing primary key. Spanner does not allow table without primary key.",
+                    missingPrimaryKeys.stream().collect(Collectors.joining(","))));
         }
-        stringBuilder.append(database.getTables()
-                .stream()
-                .map(table -> createTable(table, dropTableIfExists))
-                .collect(Collectors.joining("\r\r")));
+        List<Table> tablesToCreate = database.getTables().stream().collect(Collectors.toList());
+
+        //Make sure you create interleaved tables at the end
+        tablesToCreate.sort(nullsFirst(
+            comparing(it -> Optional.ofNullable(it.getInterleave())
+                .map(Interleave::getTableName)
+                .orElse(null), nullsFirst(naturalOrder()))));
+
+        stringBuilder.append(tablesToCreate
+            .stream()
+            .map(table -> createTable(table, dropTableIfExists))
+            .collect(Collectors.joining("\r\r")));
 
         String foreignKeys = database
-                .getTables()
-                .stream()
-                .map(this::foreignKeys)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.joining());
+            .getTables()
+            .stream()
+            .map(this::foreignKeys)
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .collect(Collectors.joining());
 
         if (!foreignKeys.isEmpty()) {
             stringBuilder.append("\r").append(foreignKeys).append("\r");
@@ -129,6 +148,11 @@ public class SpannerDDLGenerator implements DDL {
 
     @Override
     public String createForeignKey(ForeignKey foreignKey) {
+        //For foreign keys returned as result of interleave table, JDBC returns no name.
+        // Those are created automatically by JDBC once we specify that the table is interleaved.
+        if (foreignKey.getName() == null) {
+            return "";
+        }
         return "ALTER TABLE" + handleNullSchema(foreignKey.getSchema(), foreignKey.getTableName()) + " ADD CONSTRAINT "
                 + foreignKey.getName() + " FOREIGN KEY ("+ DEFAULT_WRAPPER + foreignKey.getColumnName() + DEFAULT_WRAPPER +") REFERENCES "
                 + foreignKey.getPrimaryTableName()
@@ -246,10 +270,21 @@ public class SpannerDDLGenerator implements DDL {
 
     private Optional<String> foreignKeys(Table table) {
         String result = table.getColumns().stream()
-                .filter(column -> column.getForeignKeys() != null && !column.getForeignKeys().isEmpty())
-                .map(this::createForeignKeys).collect(Collectors.joining());
+            .filter(column -> column.getForeignKeys() != null && !column.getForeignKeys().isEmpty())
+            .filter(column -> !checkColumnIsInterleaved(table, column))
+            .map(this::createForeignKeys).collect(Collectors.joining());
 
         return result.isEmpty() ? Optional.empty() : Optional.of(result);
+    }
+
+    private boolean checkColumnIsInterleaved(Table table, Column column) {
+        if (table.getInterleave() != null &&
+            column.isPrimaryKey() &&
+            table.getInterleave().getParentName().equals(column.getForeignKeys().get(0).getPrimaryTableName())) {
+            return true;
+        }
+
+        return false;
     }
 
     //ALTER TABLE rosetta.contacts ADD CONSTRAINT contacts_fk FOREIGN KEY (contact_id) REFERENCES rosetta."user"(user_id);
