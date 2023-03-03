@@ -27,6 +27,14 @@
       ]
     },
     {
+      "targetTypeName": "geometry",
+      "compatibleTypes": [
+        {
+          "typeName": "geometry"
+        }
+      ]
+    },
+    {
       "targetTypeName": "NUMERIC",
       "compatibleTypes": [
         {

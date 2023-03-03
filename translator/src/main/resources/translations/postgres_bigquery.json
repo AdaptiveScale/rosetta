@@ -39,6 +39,9 @@
         },
         {
           "typeName": "bit"
+        },
+        {
+          "typeName": "int8"
         }
       ]
     },
@@ -90,6 +93,24 @@
         },
         {
           "typeName": "bpchar"
+        },
+        {
+          "typeName": "jsonb"
+        },
+        {
+          "typeName": "tsquery"
+        },
+        {
+          "typeName": "tsvector"
+        },
+        {
+          "typeName": "txid_snapshot"
+        },
+        {
+          "typeName": "uuid"
+        },
+        {
+          "typeName": "xml"
         }
       ]
     },
@@ -112,6 +133,9 @@
         },
         {
           "typeName": "real"
+        },
+        {
+          "typeName": "float8"
         }
       ]
     },
@@ -161,6 +185,12 @@
       "compatibleTypes": [
         {
           "typeName": "_text"
+        },
+        {
+          "typeName": "_numeric"
+        },
+        {
+          "typeName": "_interval"
         }
       ]
     }

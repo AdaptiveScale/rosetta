@@ -31,6 +31,9 @@
         },
         {
           "typeName": "ENUM"
+        },
+        {
+          "typeName": "MEDIUMTEXT"
         }
       ]
     },
@@ -128,6 +131,9 @@
       "compatibleTypes": [
         {
           "typeName": "FLOAT"
+        },
+        {
+          "typeName": "FLOAT UNSIGNED"
         }
       ]
     },
@@ -136,6 +142,9 @@
       "compatibleTypes": [
         {
           "typeName": "DOUBLE"
+        },
+        {
+          "typeName": "DOUBLE UNSIGNED"
         }
       ]
     },
@@ -203,6 +212,37 @@
       "compatibleTypes": [
         {
           "typeName": "SET"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "VARIANT",
+      "compatibleTypes": [
+        {
+          "typeName": "TINYBLOB"
+        },
+        {
+          "typeName": "MEDIUMBLOB"
+        },
+        {
+          "typeName": "LONGBLOB"
+        },
+        {
+          "typeName": "JSON"
+        }
+      ]
+    },
+    {
+      "targetTypeName": "OBJECT",
+      "compatibleTypes": [
+        {
+          "typeName": "POINT"
+        },
+        {
+          "typeName": "LINESTRING"
+        },
+        {
+          "typeName": "POLYGON"
         }
       ]
     }
