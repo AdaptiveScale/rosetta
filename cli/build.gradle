@@ -28,7 +28,6 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.12'
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
     implementation 'org.thymeleaf:thymeleaf:3.1.0.RELEASE'
-//    implementation files('/home/femi/Downloads/h2-2.1.214.jar')
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
@@ -38,7 +37,6 @@ dependencies {
     testImplementation "org.testcontainers:mysql:1.17.5"
     testImplementation 'mysql:mysql-connector-java:8.0.30'
     testImplementation 'org.postgresql:postgresql:42.5.0'
-//    implementation files('/home/femi/Downloads/kinetica-jdbc-7.1.7.7-jar-with-dependencies.jar')
 
     testImplementation group: 'com.github.stefanbirkner', name: 'system-rules', version: '1.19.0'
     testImplementation group: 'org.junit-pioneer', name: 'junit-pioneer', version: '1.8.0'

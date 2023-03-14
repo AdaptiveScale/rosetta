@@ -7,11 +7,9 @@ repositories {
 }
 
 dependencies {
-//    implementation project(':translator')
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.3'
     implementation group: 'com.h2database', name: 'h2', version: '2.1.214'
     implementation 'org.reflections:reflections:0.10.2'
-//    implementation files('/home/femi/Downloads/h2-2.1.214.jar')
     compileOnly 'org.projectlombok:lombok:1.18.12'
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
 

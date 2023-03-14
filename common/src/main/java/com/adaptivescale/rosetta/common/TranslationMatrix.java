@@ -1,17 +1,19 @@
 package com.adaptivescale.rosetta.common;
 
-//import com.adaptivescale.rosetta.translator.model.TranslateInfo;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.adaptivescale.rosetta.common.models.TranslationModel;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
 import java.sql.*;
-import java.util.List;
 
 @Slf4j
 public class TranslationMatrix {
-    static String URL = "jdbc:h2:mem:translation;DB_CLOSE_DELAY=-1";
-    static String TABLE_NAME = "TRANSLATION";
+
+    private static final String TRANSLATION_MATRIX_FILE = "translation.csv";
+    private static final String URL = "jdbc:h2:mem:translation;DB_CLOSE_DELAY=-1";
+    private static final String TABLE_NAME = "TRANSLATION";
+    private static final String DELIMITER = ";;";
+
     private static TranslationMatrix instance = null;
 
     public TranslationMatrix() {
@@ -37,12 +39,11 @@ public class TranslationMatrix {
                 "target_column_type VARCHAR(255) not null" +
                 ");";
         execute(translationTable);
-////        String uniqueIndex = "ALTER TABLE "+TABLE_NAME+" ADD CONSTRAINT unique_translation_index UNIQUE (source_type, source_column_type, target_type)";
-////        execute(uniqueIndex);
+
         String index = "CREATE INDEX source_translation_index " +
                 "ON "+TABLE_NAME+" (source_type, source_column_type)";
         String uniqueIndex = "CREATE UNIQUE INDEX unique_translation_index " +
-        "ON "+TABLE_NAME+" (source_type, source_column_type, target_type)";
+                "ON "+TABLE_NAME+" (source_type, source_column_type, target_type)";
         execute(index);
         execute(uniqueIndex);
         loadCSVData();
@@ -50,38 +51,26 @@ public class TranslationMatrix {
 
     void loadCSVData() throws IOException {
         String line = "";
-        String splitBy = ";;";
-        //parsing a CSV file into BufferedReader class constructor
-        BufferedReader br = new BufferedReader(new FileReader("translation.csv"));
+
+        BufferedReader br = readTranslationMatrixFile();
         StringBuilder dataInsertQuery = new StringBuilder();
-        while ((line = br.readLine()) != null)   //returns a Boolean value
+        while ((line = br.readLine()) != null)
         {
-            String[] translation = line.split(splitBy);    // use comma as separator
+            String[] translation = line.split(DELIMITER);
             TranslationModel translationModel = new TranslationModel();
             translationModel.setId(Integer.valueOf(translation[0]));
             translationModel.setSourceType(translation[1]);
             translationModel.setSourceColumnType(translation[2]);
             translationModel.setTargetType(translation[3]);
             translationModel.setTargetColumnType(translation[4]);
-//            System.out.println(translationModel);
             String insertStatement = translationModel.generateInsertStatement(TABLE_NAME);
 
             dataInsertQuery.append(insertStatement);
-
-//            System.out.println("Employee [First Name=" + employee[0] + ", Last Name=" + employee[1] + ", Designation=" + employee[2] + ", Contact=" + employee[3] + ", Salary= " + employee[4] +"]");
         }
         execute(dataInsertQuery.toString());
-//    Scanner sc = new Scanner(new File("translation.csv"));
-//        sc.useDelimiter(",");   //sets the delimiter pattern
-//        while (sc.hasNext())  //returns a boolean value
-//        {
-//            System.out.print(sc.next());  //find and returns the next complete token from this scanner
-//        }
-//        sc.close();  //closes the scanner
     }
 
     void execute(String sql) {
-//        System.out.printf("Executing sql:%s\n",sql);
         try {
             Connection connection = DriverManager.getConnection(URL);
             Statement statement = connection.createStatement();
@@ -89,27 +78,6 @@ public class TranslationMatrix {
             connection.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    void executeQuery(String query) throws SQLException {
-        Connection connection = null;
-        try {
-            connection = DriverManager.getConnection(URL);
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(query);
-            connection.close();
-
-//            if (resultSet.next()) {
-//
-//                System.out.println(resultSet.getInt(1));
-//            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            if(connection!=null) {
-                connection.close();
-            }
         }
     }
 
@@ -135,95 +103,32 @@ public class TranslationMatrix {
         return null;
     }
 
-    public TranslationModel get(Integer id) {
+    public TranslationModel findById(Integer id) {
         String query = String.format("SELECT TOP 1 * from %s where id=%s", TABLE_NAME, id);
         return getSingleRecord(query);
     }
 
-    public TranslationModel get(String sourceType, String sourceColumnType) {
+    public TranslationModel findBySourceTypeAndSourceColumnType(String sourceType, String sourceColumnType) {
         String query = String.format("SELECT * from %s where source_type='%s' and source_column_type='%s'", TABLE_NAME, sourceType, sourceColumnType);
         return getSingleRecord(query);
     }
 
-    public TranslationModel get(String sourceType, String sourceColumnType, String targetType) {
+    public TranslationModel findBySourceTypeAndSourceColumnTypeAndTargetType(String sourceType, String sourceColumnType, String targetType) {
         String query = String.format("SELECT * from %s where source_type='%s' and source_column_type='%s' and target_type='%s'",
                 TABLE_NAME, sourceType, sourceColumnType.toLowerCase(), targetType);
         return getSingleRecord(query);
     }
 
-
-
-
-    public class TranslationModel {
-        private Integer id;
-        private String sourceType;
-        private String sourceColumnType;
-        private String targetType;
-        private String targetColumnType;
-
-        public Integer getId() {
-            return id;
+    private BufferedReader readTranslationMatrixFile() throws FileNotFoundException {
+        //Check for the translation file in the project
+        File translationFile = new File(TRANSLATION_MATRIX_FILE);
+        if (translationFile.exists()) {
+            InputStream targetStream = new FileInputStream(translationFile);
+            return new BufferedReader(new InputStreamReader(targetStream));
         }
 
-        public void setId(Integer id) {
-            this.id = id;
-        }
-
-        public String getSourceType() {
-            return sourceType;
-        }
-
-        public void setSourceType(String sourceType) {
-            this.sourceType = sourceType;
-        }
-
-        public String getSourceColumnType() {
-            return sourceColumnType;
-        }
-
-        public void setSourceColumnType(String sourceColumnType) {
-            this.sourceColumnType = sourceColumnType;
-        }
-
-        public String getTargetType() {
-            return targetType;
-        }
-
-        public void setTargetType(String targetType) {
-            this.targetType = targetType;
-        }
-
-        public String getTargetColumnType() {
-            return targetColumnType;
-        }
-
-        public void setTargetColumnType(String targetColumnType) {
-            this.targetColumnType = targetColumnType;
-        }
-
-        @Override
-        public String toString() {
-            return "TranslationModel{" +
-                    "id=" + id +
-                    ", sourceType='" + sourceType + '\'' +
-                    ", sourceColumnType='" + sourceColumnType + '\'' +
-                    ", targetType='" + targetType + '\'' +
-                    ", targetColumnType='" + targetColumnType + '\'' +
-                    '}';
-        }
-
-        public String generateInsertStatement(String tableName) {
-            StringBuilder builder = new StringBuilder();
-            builder.append("insert into ").append(tableName)
-                    .append(" values (")
-                    .append(id)
-                    .append(", '").append(sourceType).append("' ")
-                    .append(", '").append(sourceColumnType).append("' ")
-                    .append(", '").append(targetType).append("' ")
-                    .append(", '").append(targetColumnType).append("' ")
-                    .append(");");
-            return builder.toString();
-        }
+        //If the file is not provided in the project read it from the resources
+        InputStream resourceAsStream = TranslationMatrix.class.getClassLoader().getResourceAsStream(String.format("%s/%s", "translations", TRANSLATION_MATRIX_FILE));
+        return new BufferedReader(new InputStreamReader(resourceAsStream));
     }
-
 }
