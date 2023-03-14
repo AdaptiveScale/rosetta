@@ -52,6 +52,13 @@ public class SpannerChangeFinder implements ChangeFinder {
                 List<Change<?>> changesFromIndices = findChangesInIndicesForTable(expectedTable, table);
                 changes.addAll(changesFromTables);
                 changes.addAll(changesFromIndices);
+
+                if (checkInterleaveChanges(table, expectedTable)) {
+                    Change<Table> tableChangeDrop = ChangeFactory.tableChange(null, table, Change.Status.DROP);
+                    Change<Table> tableChangeAdd = ChangeFactory.tableChange(expectedTable, null, Change.Status.ADD);
+                    changes.add(tableChangeDrop);
+                    changes.add(tableChangeAdd);
+                }
             } else {
                 throw new RuntimeException(String.format("Found %d table with name '%s' and schema '%s'",
                         foundedTables.size(), expectedTable.getName(), expectedTable.getSchema()));
@@ -75,6 +82,15 @@ public class SpannerChangeFinder implements ChangeFinder {
         List<Change<?>> result = filterDuplicates(changes);
         log.info("Found {} changes", result.size());
         return result;
+    }
+
+    private boolean checkInterleaveChanges(Table table, Table expectedTable) {
+        if ((table.getInterleave() == null && expectedTable.getInterleave() != null) ||
+                (table.getInterleave() != null && expectedTable.getInterleave() == null) ||
+                (table.getInterleave() != null && expectedTable.getInterleave() != null && !table.getInterleave().equals(expectedTable.getInterleave()))) {
+            return true;
+        }
+        return false;
     }
 
     private void viewChanges(Database expected, Database actual, List<Change<?>> changes) {

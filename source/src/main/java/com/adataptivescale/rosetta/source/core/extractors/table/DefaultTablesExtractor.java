@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class DefaultTablesExtractor implements TableExtractor<Collection<Table>, Connection, java.sql.Connection> {
-
     @Override
     public Collection<Table> extract(Connection target, java.sql.Connection connection) throws SQLException {
         DatabaseMetaData metaData = connection.getMetaData();
@@ -47,10 +46,11 @@ public class DefaultTablesExtractor implements TableExtractor<Collection<Table>,
         if (!resultSet.isClosed()) {
             resultSet.close();
         }
+
         return tables;
     }
 
-    private Table map(ResultSet resultSet) throws SQLException {
+    protected Table map(ResultSet resultSet) throws SQLException {
         Table table = new Table();
         table.setName(resultSet.getString("TABLE_NAME"));
         table.setType(resultSet.getString("TABLE_TYPE"));
