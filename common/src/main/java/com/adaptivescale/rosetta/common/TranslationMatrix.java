@@ -10,9 +10,10 @@ import java.sql.*;
 public class TranslationMatrix {
 
     private static final String TRANSLATION_MATRIX_FILE = "translation.csv";
+    private static final String DELIMITER = ";;";
+
     private static final String URL = "jdbc:h2:mem:translation;DB_CLOSE_DELAY=-1";
     private static final String TABLE_NAME = "TRANSLATION";
-    private static final String DELIMITER = ";;";
 
     private static TranslationMatrix instance = null;
 
@@ -128,7 +129,7 @@ public class TranslationMatrix {
         }
 
         //If the file is not provided in the project read it from the resources
-        InputStream resourceAsStream = TranslationMatrix.class.getClassLoader().getResourceAsStream(String.format("%s/%s", "translations", TRANSLATION_MATRIX_FILE));
+        InputStream resourceAsStream = TranslationMatrix.class.getClassLoader().getResourceAsStream(String.format("%s/%s", "translation_matrix", TRANSLATION_MATRIX_FILE));
         return new BufferedReader(new InputStreamReader(resourceAsStream));
     }
 }
