@@ -121,7 +121,7 @@ public class TranslationMatrix {
     }
 
     private BufferedReader readTranslationMatrixFile() throws FileNotFoundException {
-        //Check for the translation file in the project
+        //Check for the translation file from the ENV variable EXTERNAL_TRANSLATION_FILE
         String externalTranslationFile = System.getenv(EXTERNAL_TRANSLATION_FILE_ENV);
         if (externalTranslationFile != null) {
             File translationFile = new File(externalTranslationFile);

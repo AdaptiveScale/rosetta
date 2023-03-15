@@ -51,7 +51,7 @@ public class DefaultTranslator implements Translator<Database, Database> {
         if (translationModel == null) {
             throw new RuntimeException("There is no match for column name: " + column.getName() + " and type: " + column.getTypeName() + ".");
         }
-        //todo find a way to create deep copy (faster way)
+
         try {
             String s = new ObjectMapper().writeValueAsString(column);
             Column result = new ObjectMapper().readValue(s, Column.class);
