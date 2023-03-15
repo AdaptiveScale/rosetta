@@ -9,9 +9,9 @@ import java.sql.*;
 @Slf4j
 public class TranslationMatrix {
 
-    private static final String TRANSLATION_MATRIX_FILE = "translation.csv";
+    private static final String EXTERNAL_TRANSLATION_FILE_ENV = "EXTERNAL_TRANSLATION_FILE";
+    private static final String DEFAULT_TRANSLATION_MATRIX_FILE = "translation_matrix/translation.csv";
     private static final String DELIMITER = ";;";
-
     private static final String URL = "jdbc:h2:mem:translation;DB_CLOSE_DELAY=-1";
     private static final String TABLE_NAME = "TRANSLATION";
 
@@ -122,14 +122,15 @@ public class TranslationMatrix {
 
     private BufferedReader readTranslationMatrixFile() throws FileNotFoundException {
         //Check for the translation file in the project
-        File translationFile = new File(TRANSLATION_MATRIX_FILE);
-        if (translationFile.exists()) {
+        String externalTranslationFile = System.getenv(EXTERNAL_TRANSLATION_FILE_ENV);
+        if (externalTranslationFile != null) {
+            File translationFile = new File(externalTranslationFile);
             InputStream targetStream = new FileInputStream(translationFile);
             return new BufferedReader(new InputStreamReader(targetStream));
         }
 
         //If the file is not provided in the project read it from the resources
-        InputStream resourceAsStream = TranslationMatrix.class.getClassLoader().getResourceAsStream(String.format("%s/%s", "translation_matrix", TRANSLATION_MATRIX_FILE));
+        InputStream resourceAsStream = TranslationMatrix.class.getClassLoader().getResourceAsStream(DEFAULT_TRANSLATION_MATRIX_FILE);
         return new BufferedReader(new InputStreamReader(resourceAsStream));
     }
 }
