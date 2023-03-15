@@ -12,30 +12,21 @@ Generate DDL from a given source and transpile to the desired target.
 [Join RosettaDB Slack](https://join.slack.com/t/rosettadb/shared_invite/zt-1fq6ajsl3-h8FOI7oJX3T4eI1HjcpPbw)
 
 ## Translation
-This module will read the database structure from the source and map it to a target type. For example, source metadata was BigQuery and we want to convert it to Snowflake. This will be done with preset JSON files that contain mapping like in the following example:
-```json
-{
-  "version": "0.0.1",
-  "converters": [
-    {
-      "targetTypeName": "STRING",
-      "length": 20,
-      "compatibleTypes": [
-        {
-          "typeName": "STRING"
-        }
-      ]
-    },
-    {
-      "targetTypeName": "INTEGER",
-      "compatibleTypes": [
-        {
-          "typeName": "INT64"
-        }
-      ]
-    }
-  ]
-}
+This module will read the database structure from the source and map it to a target type. For example, source metadata was BigQuery and we want to convert it to Snowflake. This will be done by using a CSV file that contain mappings like in the following example:
+```344;;bigquery;;string;;snowflake;;string
+345;;bigquery;;timestamp;;snowflake;;timestamp
+346;;bigquery;;int64;;snowflake;;integer
+347;;bigquery;;float64;;snowflake;;float
+348;;bigquery;;array;;snowflake;;array
+349;;bigquery;;date;;snowflake;;date
+350;;bigquery;;datetime;;snowflake;;datetime
+351;;bigquery;;boolean;;snowflake;;boolean
+352;;bigquery;;time;;snowflake;;time
+353;;bigquery;;geography;;snowflake;;geography
+354;;bigquery;;numeric;;snowflake;;numeric
+355;;bigquery;;bignumeric;;snowflake;;number
+356;;bigquery;;bytes;;snowflake;;binary
+357;;bigquery;;struct;;snowflake;;object
 ```
 
 Currently, supported databases for translation are shown below in the table.
@@ -49,6 +40,26 @@ Currently, supported databases for translation are shown below in the table.
 | **Kinetica** |     ✅     |     ✅     |    ✅    |     ✅    |     /      |    ❌  |
 | **Google Cloud Spanner** |     ❌     |     ❌     |    ❌    |     ❌    |     ❌     |    /  |
 
+
+### Using external translator
+
+RosettaDB allows users to use their own translator. For the supported databases you can extend or create your version
+of translation CSV file. To use an external translator you need to set the `EXTERNAL_TRANSLATION_FILE` ENV variable
+to point to the external file.
+
+Set the ENV variable `EXTERNAL_TRANSLATION_FILE` to point to the location of your custom translator CSV file.
+
+```
+export EXTERNAL_TRANSLATION_FILE=<path_to_csv_translator>
+```
+
+example:
+
+```
+export EXTERNAL_TRANSLATION_FILE=/Users/adaptivescale/translation.csv
+```
+
+Make sure you keep the same format as the CSV example given above.
 
 ## Indices (Index)
 
