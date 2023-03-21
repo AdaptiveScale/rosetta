@@ -2,13 +2,14 @@ package com.adaptivescale.rosetta.common.models;
 
 import com.adaptivescale.rosetta.common.models.enums.OperationLevelEnum;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class Database {
 
     private Boolean safeMode = false;
     private Collection<Table> tables;
-    private Collection<View> views;
+    private Collection<View> views = new ArrayList<>();
     private String databaseProductName;
     private String databaseType;
 

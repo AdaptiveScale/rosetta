@@ -56,14 +56,6 @@
       ]
     },
     {
-      "targetTypeName": "json",
-      "compatibleTypes": [
-        {
-          "typeName": "json"
-        }
-      ]
-    },
-    {
       "targetTypeName": "bytea",
       "compatibleTypes": [
         {
