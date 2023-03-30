@@ -149,7 +149,6 @@ public class TranslationMatrix {
         return getSingleRecord(query);
     }
 
-    //Document this function
     public String findBySourceTypeAndSourceColumnType(String sourceType, String sourceColumnType) {
         String query = String.format("SELECT * from %s where source_type='%s' and source_column_type='%s' and target_type='%s'", TRANSLATION_TABLE_NAME, sourceType, sourceColumnType, sourceType);
         TranslationModel translationModel = getSingleRecord(query);
