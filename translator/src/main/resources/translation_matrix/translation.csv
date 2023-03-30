@@ -742,3 +742,10 @@
 742;;sqlserver;;geography;;snowflake;;geography
 743;;sqlserver;;xml;;snowflake;;variant
 745;;sqlserver;;int identity;;snowflake;;int
+746;;mysql;;tinyint unsigned;;mysql;;tinyint
+747;;mysql;;smallint unsigned;;mysql;;smallint
+748;;mysql;;int unsigned;;mysql;;int
+749;;mysql;;mediumint unsigned;;mysql;;mediumint
+750;;mysql;;bigint unsigned;;mysql;;bigint
+751;;mysql;;float unsigned;;mysql;;float
+752;;mysql;;double unsigned;;mysql;;double

@@ -61,6 +61,41 @@ export EXTERNAL_TRANSLATION_FILE=/Users/adaptivescale/translation.csv
 
 Make sure you keep the same format as the CSV example given above.
 
+### Translation Attributes
+
+Rosetta uses an additional file to maintain translation specific attributes.
+It stores translation_id, the attribute_name and attribute_value:
+
+```
+1;;302;;columnDisplaySize;;38
+2;;404;;columnDisplaySize;;30
+3;;434;;columnDisplaySize;;17
+```
+
+The supported attribute names are:
+- ordinalPosition
+- autoincrement
+- nullable
+- primaryKey
+- primaryKeySequenceId
+- columnDisplaySize
+- scale
+- precision
+
+Set the ENV variable `EXTERNAL_TRANSLATION_ATTRIBUTE_FILE` to point to the location of your custom translation attribute CSV file.
+
+```
+export EXTERNAL_TRANSLATION_ATTRIBUTE_FILE=<path_to_csv_translator>
+```
+
+example:
+
+```
+export EXTERNAL_TRANSLATION_ATTRIBUTE_FILE=/Users/adaptivescale/translation_attributes.csv
+```
+
+Make sure you keep the same format as the CSV example given above.
+
 ## Indices (Index)
 
 Indices are supported in Google Cloud Spanner. An example on how they are represented in model.yaml

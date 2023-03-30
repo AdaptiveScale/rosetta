@@ -1,11 +1,15 @@
 package com.adaptivescale.rosetta.common.models;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TranslationModel {
     private Integer id;
     private String sourceType;
     private String sourceColumnType;
     private String targetType;
     private String targetColumnType;
+    private List<TranslationAttributeModel> attributes = new ArrayList<>();
 
     public Integer getId() {
         return id;
@@ -45,6 +49,14 @@ public class TranslationModel {
 
     public void setTargetColumnType(String targetColumnType) {
         this.targetColumnType = targetColumnType;
+    }
+
+    public List<TranslationAttributeModel> getAttributes() {
+        return attributes;
+    }
+
+    public void setAttributes(List<TranslationAttributeModel> attributes) {
+        this.attributes = attributes;
     }
 
     public String generateInsertStatement(String tableName) {

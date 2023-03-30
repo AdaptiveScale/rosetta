@@ -1,20 +1,17 @@
 package com.adaptivescale.rosetta.translator;
 
 import com.adaptivescale.rosetta.common.TranslationMatrix;
-import com.adaptivescale.rosetta.common.models.Column;
-import com.adaptivescale.rosetta.common.models.Database;
-import com.adaptivescale.rosetta.common.models.Table;
-import com.adaptivescale.rosetta.common.models.TranslationModel;
+import com.adaptivescale.rosetta.common.models.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class DefaultTranslator implements Translator<Database, Database> {
 
-    private final String targetDatabaseName;
-
     private final String sourceDatabaseName;
+    private final String targetDatabaseName;
 
     public DefaultTranslator(String sourceDatabaseName, String targetDatabaseName) {
         this.sourceDatabaseName = sourceDatabaseName;
@@ -47,6 +44,8 @@ public class DefaultTranslator implements Translator<Database, Database> {
     private Column translateColumn(Column column) {
         TranslationMatrix translationMatrix = TranslationMatrix.getInstance();
         TranslationModel translationModel = translationMatrix.findBySourceTypeAndSourceColumnTypeAndTargetType(sourceDatabaseName, column.getTypeName(), targetDatabaseName);
+        List<TranslationAttributeModel> translationAttributes = translationMatrix.findByTranslationAttributesByTranslationIds(translationModel.getId());
+        translationModel.setAttributes(translationAttributes);
 
         if (translationModel == null) {
             throw new RuntimeException("There is no match for column name: " + column.getName() + " and type: " + column.getTypeName() + ".");
@@ -56,7 +55,37 @@ public class DefaultTranslator implements Translator<Database, Database> {
             String s = new ObjectMapper().writeValueAsString(column);
             Column result = new ObjectMapper().readValue(s, Column.class);
             result.setTypeName(translationModel.getTargetColumnType());
-            result.setColumnDisplaySize(0);
+
+            for (TranslationAttributeModel attribute : translationModel.getAttributes()) {
+                String value = attribute.getAttributeValue();
+                switch(attribute.getAttributeName()) {
+                    case "ordinalPosition":
+                        result.setOrdinalPosition(Integer.valueOf(value));
+                        break;
+                    case "autoincrement":
+                        result.setAutoincrement(Boolean.valueOf(value));
+                        break;
+                    case "nullable":
+                        result.setNullable(Boolean.valueOf(value));
+                        break;
+                    case "primaryKey":
+                        result.setPrimaryKey(Boolean.valueOf(value));
+                        break;
+                    case "primaryKeySequenceId":
+                        result.setPrimaryKeySequenceId(Integer.valueOf(value));
+                        break;
+                    case "columnDisplaySize":
+                        result.setColumnDisplaySize(Integer.valueOf(value));
+                        break;
+                    case "scale":
+                        result.setScale(Integer.valueOf(value));
+                        break;
+                    case "precision":
+                        result.setPrecision(Integer.valueOf(value));
+                        break;
+                }
+            }
+
             return result;
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
