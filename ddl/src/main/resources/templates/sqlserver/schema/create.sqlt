@@ -1,0 +1,4 @@
+IF NOT EXISTS (SELECT  *
+    FROM sys.schemas
+    WHERE name = N'[(${schemaName})]')
+EXEC('CREATE SCHEMA [[(${schemaName})]]');
