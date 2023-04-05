@@ -741,11 +741,14 @@
 741;;sqlserver;;uniqueidentifier;;snowflake;;text
 742;;sqlserver;;geography;;snowflake;;geography
 743;;sqlserver;;xml;;snowflake;;variant
-745;;sqlserver;;int identity;;snowflake;;int
-746;;mysql;;tinyint unsigned;;mysql;;tinyint
-747;;mysql;;smallint unsigned;;mysql;;smallint
-748;;mysql;;int unsigned;;mysql;;int
-749;;mysql;;mediumint unsigned;;mysql;;mediumint
-750;;mysql;;bigint unsigned;;mysql;;bigint
-751;;mysql;;float unsigned;;mysql;;float
-752;;mysql;;double unsigned;;mysql;;double
+744;;sqlserver;;int identity;;snowflake;;int
+745;;mysql;;tinyint unsigned;;mysql;;tinyint
+746;;mysql;;smallint unsigned;;mysql;;smallint
+747;;mysql;;int unsigned;;mysql;;int
+748;;mysql;;mediumint unsigned;;mysql;;mediumint
+749;;mysql;;bigint unsigned;;mysql;;bigint
+750;;mysql;;float unsigned;;mysql;;float
+751;;mysql;;double unsigned;;mysql;;double
+752;;postgres;;year;;postgres;;integer
+753;;postgres;;mpaa_rating;;postgres;;text
+754;;postgres;;_text;;mysql;;text

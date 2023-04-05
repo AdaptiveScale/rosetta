@@ -152,7 +152,7 @@ public class TranslationMatrix {
     public String findBySourceTypeAndSourceColumnType(String sourceType, String sourceColumnType) {
         String query = String.format("SELECT * from %s where source_type='%s' and source_column_type='%s' and target_type='%s'", TRANSLATION_TABLE_NAME, sourceType, sourceColumnType, sourceType);
         TranslationModel translationModel = getSingleRecord(query);
-        return translationModel != null ? translationModel.getSourceType() : sourceType;
+        return translationModel != null ? translationModel.getTargetColumnType() : sourceColumnType;
     }
 
     public TranslationModel findBySourceTypeAndSourceColumnTypeAndTargetType(String sourceType, String sourceColumnType, String targetType) {
