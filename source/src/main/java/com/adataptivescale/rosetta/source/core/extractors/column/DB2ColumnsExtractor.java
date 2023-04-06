@@ -58,7 +58,7 @@ public class DB2ColumnsExtractor extends ColumnsExtractor {
     protected void extract(ResultSet resultSet, Column column) throws SQLException {
         column.setName(resultSet.getString("COLUMN_NAME"));
         column.setTypeName(String.valueOf(resultSet.getString("TYPE_NAME")));
-        column.setNullable(resultSet.getBoolean("IS_NULLABLE"));
+        column.setNullable(resultSet.getString("IS_NULLABLE").equals("YES"));
         column.setColumnDisplaySize(resultSet.getInt("COLUMN_SIZE"));
         column.setScale(resultSet.getInt("DECIMAL_DIGITS"));
         column.setPrecision(resultSet.getInt("COLUMN_SIZE"));

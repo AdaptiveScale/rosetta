@@ -32,21 +32,21 @@ public class DB2DDLGenerator implements DDL {
 
     private final static String TABLE_ALTER_ADD_PRIMARY_KEY_TEMPLATE = "db2/table/alter_add_primary_key";
 
-    private final static String TABLE_DROP_TEMPLATE = "db2table/drop";
+    private final static String TABLE_DROP_TEMPLATE = "db2/table/drop";
 
-    private final static String SCHEMA_CREATE_TEMPLATE = "db2schema/create";
+    private final static String SCHEMA_CREATE_TEMPLATE = "db2/schema/create";
 
-    private final static String FOREIGN_KEY_CREATE_TEMPLATE = "db2foreignkey/create";
+    private final static String FOREIGN_KEY_CREATE_TEMPLATE = "db2/foreignkey/create";
 
-    private final static String FOREIGN_KEY_DROP_TEMPLATE = "db2foreignkey/drop";
+    private final static String FOREIGN_KEY_DROP_TEMPLATE = "db2/foreignkey/drop";
 
-    private final static String COLUMN_ADD_TEMPLATE = "db2column/add";
+    private final static String COLUMN_ADD_TEMPLATE = "db2/column/add";
 
-    private final static String COLUMN_ALTER_TYPE_TEMPLATE = "db2column/alter_column_type";
+    private final static String COLUMN_ALTER_TYPE_TEMPLATE = "db2/column/alter_column_type";
 
-    private final static String COLUMN_ALTER_NULL_TEMPLATE = "db2column/alter_column_null";
+    private final static String COLUMN_ALTER_NULL_TEMPLATE = "db2/column/alter_column_null";
 
-    private final static String COLUMN_DROP_TEMPLATE = "db2column/drop";
+    private final static String COLUMN_DROP_TEMPLATE = "db2/column/drop";
 
     private final ColumnSQLDecoratorFactory columnSQLDecoratorFactory = new DB2ColumnDecoratorFactory();
 
