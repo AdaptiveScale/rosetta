@@ -84,9 +84,6 @@
       "targetTypeName": "integer",
       "compatibleTypes": [
         {
-          "typeName": "int"
-        },
-        {
           "typeName": "integer"
         }
       ]

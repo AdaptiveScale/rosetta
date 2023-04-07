@@ -32,10 +32,10 @@ public class TranslationTypoTest {
         if (!failedToParseMap.isEmpty()) {
             StringBuilder msg = new StringBuilder();
             failedToParseMap.forEach((fileName, e) -> msg.append("Failed to parse translation: '")
-                    .append(fileName)
-                    .append("' cause:  ")
-                    .append(e.getMessage())
-                    .append("\n"));
+                .append(fileName)
+                .append("' cause:  ")
+                .append(e.getMessage())
+                .append("\n"));
             Assertions.fail(msg.toString());
         }
     }

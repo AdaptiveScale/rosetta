@@ -6,9 +6,6 @@
       "compatibleTypes": [
         {
           "typeName": "string"
-        },
-        {
-          "typeName": "bytes"
         }
       ]
     },
@@ -118,9 +115,6 @@
     {
       "targetTypeName": "integer",
       "compatibleTypes": [
-        {
-          "typeName": "int64"
-        },
         {
           "typeName": "integer"
         }
