@@ -1,0 +1,3 @@
+ALTER SESSION SET CURRENT_SCHEMA = "[(${schemaName})]";
+ALTER TABLE "[(${tableName})]"
+DROP CONSTRAINT "[(${foreignkeyName})]";
