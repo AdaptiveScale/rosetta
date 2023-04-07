@@ -176,9 +176,6 @@
           "typeName": "txid_snapshot"
         },
         {
-          "typeName": "tsvector"
-        },
-        {
           "typeName": "tsquery"
         }
       ]

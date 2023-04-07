@@ -16,6 +16,7 @@
 
 package com.adataptivescale.rosetta.source.core.extractors.column;
 
+import com.adaptivescale.rosetta.common.TranslationMatrix;
 import com.adaptivescale.rosetta.common.annotations.RosettaModule;
 import com.adaptivescale.rosetta.common.models.Column;
 import com.adaptivescale.rosetta.common.models.input.Connection;
@@ -38,7 +39,10 @@ public class BigQueryColumnsExtractor extends ColumnsExtractor {
     @Override
     protected void extract(ResultSet resultSet, Column column) throws SQLException {
         column.setName(resultSet.getString("COLUMN_NAME"));
-        column.setTypeName(String.valueOf(resultSet.getString("TYPE_NAME")));
+
+        String columnType = String.valueOf(resultSet.getString("TYPE_NAME"));
+        column.setTypeName(TranslationMatrix.getInstance().findBySourceTypeAndSourceColumnType("bigquery", columnType));
+
         column.setNullable(resultSet.getBoolean("IS_NULLABLE"));
         column.setColumnDisplaySize(resultSet.getInt("COLUMN_SIZE"));
         column.setScale(resultSet.getInt("DECIMAL_DIGITS"));

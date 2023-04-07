@@ -229,16 +229,6 @@
         }
       ]
     },
-
-    {
-      "targetTypeName": "VARBINARY",
-      "compatibleTypes": [
-        {
-          "typeName": "bytea"
-
-         }
-       ]
-    },
     {
       "targetTypeName": "polygon",
       "compatibleTypes": [

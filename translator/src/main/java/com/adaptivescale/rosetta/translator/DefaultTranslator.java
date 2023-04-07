@@ -1,23 +1,20 @@
 package com.adaptivescale.rosetta.translator;
 
-import com.adaptivescale.rosetta.common.models.Column;
-import com.adaptivescale.rosetta.common.models.Database;
-import com.adaptivescale.rosetta.common.models.Table;
-import com.adaptivescale.rosetta.translator.model.ConvertType;
-import com.adaptivescale.rosetta.translator.model.TranslateInfo;
+import com.adaptivescale.rosetta.common.TranslationMatrix;
+import com.adaptivescale.rosetta.common.models.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.util.Optional;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class DefaultTranslator implements Translator<Database, Database> {
 
-    private final TranslateInfo translateInfo;
+    private final String sourceDatabaseName;
     private final String targetDatabaseName;
 
-    public DefaultTranslator(TranslateInfo translateInfo, String targetDatabaseName) {
-        this.translateInfo = translateInfo;
+    public DefaultTranslator(String sourceDatabaseName, String targetDatabaseName) {
+        this.sourceDatabaseName = sourceDatabaseName;
         this.targetDatabaseName = targetDatabaseName;
     }
 
@@ -36,35 +33,59 @@ public class DefaultTranslator implements Translator<Database, Database> {
         newTable.setType(table.getType());
         newTable.setSchema(table.getSchema());
         newTable.setColumns(table
-                .getColumns()
-                .stream()
-                .map(this::translateColumn)
-                .collect(Collectors.toList()));
+            .getColumns()
+            .stream()
+            .map(this::translateColumn)
+            .collect(Collectors.toList()));
         return newTable;
     }
 
 
     private Column translateColumn(Column column) {
-        String sourceName = column.getTypeName();
-        //find in which target this source name is there
-        Optional<ConvertType> match = translateInfo.getConverters().stream()
-                .filter(convertType ->
-                        convertType.getCompatibleTypes()
-                                .stream()
-                                .anyMatch(compatibleType
-                                        -> compatibleType.getTypeName()
-                                        .equalsIgnoreCase(sourceName)))
-                .findFirst();
+        TranslationModel translationModel = TranslationMatrix.getInstance().findBySourceTypeAndSourceColumnTypeAndTargetType(sourceDatabaseName, column.getTypeName(), targetDatabaseName);
 
-        if (match.isEmpty()) {
+        if (translationModel == null) {
             throw new RuntimeException("There is no match for column name: " + column.getName() + " and type: " + column.getTypeName() + ".");
         }
-        //todo find a way to create deep copy (faster way)
+
+        List<TranslationAttributeModel> translationAttributes = TranslationMatrix.getInstance().findByTranslationAttributesByTranslationIds(translationModel.getId());
+        translationModel.setAttributes(translationAttributes);
+
         try {
             String s = new ObjectMapper().writeValueAsString(column);
             Column result = new ObjectMapper().readValue(s, Column.class);
-            result.setTypeName(match.get().getTargetTypeName());
-            result.setColumnDisplaySize(match.get().getLength());
+            result.setTypeName(translationModel.getTargetColumnType());
+
+            for (TranslationAttributeModel attribute : translationModel.getAttributes()) {
+                String value = attribute.getAttributeValue();
+                switch(attribute.getAttributeName()) {
+                    case "ordinalPosition":
+                        result.setOrdinalPosition(Integer.valueOf(value));
+                        break;
+                    case "autoincrement":
+                        result.setAutoincrement(Boolean.valueOf(value));
+                        break;
+                    case "nullable":
+                        result.setNullable(Boolean.valueOf(value));
+                        break;
+                    case "primaryKey":
+                        result.setPrimaryKey(Boolean.valueOf(value));
+                        break;
+                    case "primaryKeySequenceId":
+                        result.setPrimaryKeySequenceId(Integer.valueOf(value));
+                        break;
+                    case "columnDisplaySize":
+                        result.setColumnDisplaySize(Integer.valueOf(value));
+                        break;
+                    case "scale":
+                        result.setScale(Integer.valueOf(value));
+                        break;
+                    case "precision":
+                        result.setPrecision(Integer.valueOf(value));
+                        break;
+                }
+            }
+
             return result;
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);

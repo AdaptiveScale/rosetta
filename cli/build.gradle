@@ -23,6 +23,7 @@ dependencies {
     implementation group: 'org.apache.commons', name: 'commons-text', version: '1.10.0'
     implementation group: 'org.reflections', name: 'reflections', version: '0.10.2'
     implementation group: 'org.thymeleaf', name: 'thymeleaf', version: '3.1.0.RELEASE'
+    implementation group: 'com.h2database', name: 'h2', version: '2.1.214'
 
     compileOnly 'org.projectlombok:lombok:1.18.12'
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
@@ -35,6 +36,7 @@ dependencies {
     testImplementation "org.testcontainers:mysql:1.17.5"
     testImplementation 'mysql:mysql-connector-java:8.0.30'
     testImplementation 'org.postgresql:postgresql:42.5.0'
+
     testImplementation group: 'com.github.stefanbirkner', name: 'system-rules', version: '1.19.0'
     testImplementation group: 'org.junit-pioneer', name: 'junit-pioneer', version: '1.8.0'
 

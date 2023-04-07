@@ -134,15 +134,6 @@
     },
 
     {
-      "targetTypeName": "string",
-      "compatibleTypes": [
-        {
-          "typeName": "text"
-        }
-      ]
-    },
-
-    {
       "targetTypeName": "text",
       "compatibleTypes": [
         {
