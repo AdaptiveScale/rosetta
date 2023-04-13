@@ -2,5 +2,5 @@ ALTER SESSION SET CURRENT_SCHEMA = "[(${schemaName})]";
 ALTER TABLE "[(${tableName})]"
 ADD CONSTRAINT "[(${foreignkeyName})]"
 FOREIGN KEY ("[(${foreignkeyColumn})]")
-REFERENCES "[(${primaryTableName})]"("[(${foreignKeyPrimaryColumnName})]")
-ON DELETE [(${deleteRule})];
+REFERENCES "[(${primaryTableName})]"("[(${foreignKeyPrimaryColumnName})]");
+

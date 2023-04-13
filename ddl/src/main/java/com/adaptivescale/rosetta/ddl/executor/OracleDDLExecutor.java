@@ -8,6 +8,8 @@ import com.adaptivescale.rosetta.common.types.RosettaModuleTypes;
 
 import java.sql.Driver;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 @RosettaModule(
@@ -28,17 +30,28 @@ public class OracleDDLExecutor implements DDLExecutor {
     public void execute(String query) throws SQLException {
         Driver driver = driverProvider.getDriver(connection);
         Properties properties = JDBCUtils.setJDBCAuth(connection);
-
-//        properties.setProperty("allowMultiQueries", "true");
+        java.sql.Connection jdbcConnection = driver.connect(connection.getUrl(), properties);
 
         // Postgres supports transaction - wrapping the ddl in  transaction
         StringBuilder transaction = new StringBuilder();
-//        transaction.append("begin transaction;");
         transaction.append(query);
-//        transaction.append("commit;");
 
-        java.sql.Connection jdbcConnection = driver.connect(connection.getUrl(), properties);
-        jdbcConnection.createStatement().executeUpdate(transaction.toString());
+        List<String> queryParts = parseQuery(query);
+        for (String queryPart : queryParts) {
+            jdbcConnection.createStatement().executeUpdate(queryPart);
+        }
         jdbcConnection.close();
+    }
+
+    private List<String> parseQuery(String query) {
+        String sanitizedQuery = query.replaceAll("\r", "").replaceAll("\n\n", "\n");
+        String[] split = sanitizedQuery.split(";");
+        List<String> queryParts = new ArrayList<>();
+        for (String s : split) {
+            if (!s.trim().isEmpty()){
+                queryParts.add(s);
+            }
+        }
+        return queryParts;
     }
 }
