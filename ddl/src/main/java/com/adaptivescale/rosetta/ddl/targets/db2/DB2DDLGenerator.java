@@ -76,6 +76,12 @@ public class DB2DDLGenerator implements DDL {
         createParams.put("tableCode", definitionAsString);
         stringBuilder.append(TemplateEngine.process(TABLE_CREATE_TEMPLATE, createParams));
 
+        Optional.ofNullable(table)
+            .map(this::foreignKeys)
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .ifPresent(it -> stringBuilder.append("\r").append(it));
+
         return stringBuilder.toString();
     }
 
@@ -95,21 +101,9 @@ public class DB2DDLGenerator implements DDL {
         }
 
         stringBuilder.append(database.getTables()
-                .stream()
-                .map(table -> createTable(table, dropTableIfExists))
-                .collect(Collectors.joining("\r\r")));
-
-        String foreignKeys = database
-                .getTables()
-                .stream()
-                .map(this::foreignKeys)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.joining("\r"));
-
-        if (!foreignKeys.isEmpty()) {
-            stringBuilder.append("\r").append(foreignKeys).append("\r");
-        }
+            .stream()
+            .map(table -> createTable(table, dropTableIfExists))
+            .collect(Collectors.joining("\r\r")));
 
         return stringBuilder.toString();
     }
@@ -124,6 +118,9 @@ public class DB2DDLGenerator implements DDL {
         params.put("primaryTableName", foreignKey.getPrimaryTableName());
         params.put("foreignKeyPrimaryColumnName", foreignKey.getPrimaryColumnName());
         params.put("foreignkeyName", foreignKey.getName());
+        params.put("deleteRule", foreignKeyDeleteRule(foreignKey));
+        //TODO: This is hardcoded at the moment. Check if we need an attribute in the model. This is specific to DB2
+        params.put("enforced", "NOT ENFORCED");
         return TemplateEngine.process(FOREIGN_KEY_CREATE_TEMPLATE, params);
     }
 
@@ -237,13 +234,13 @@ public class DB2DDLGenerator implements DDL {
 
     private Optional<String> createPrimaryKeysForTable(Table table) {
         List<String> primaryKeys = table
-                .getColumns()
-                .stream()
-                .filter(Column::isPrimaryKey)
-                .sorted((o1, o2) -> o1.getPrimaryKeySequenceId() < o2.getPrimaryKeySequenceId() ? -1 : 1)
-                .map(Column::getName)
-                .map(it -> "\"" + it + "\"")
-                .collect(Collectors.toList());
+            .getColumns()
+            .stream()
+            .filter(Column::isPrimaryKey)
+            .sorted((o1, o2) -> o1.getPrimaryKeySequenceId() < o2.getPrimaryKeySequenceId() ? -1 : 1)
+            .map(Column::getName)
+            .map(it -> "\"" + it + "\"")
+            .collect(Collectors.toList());
 
         if (primaryKeys.isEmpty()) {
             return Optional.empty();
@@ -254,8 +251,8 @@ public class DB2DDLGenerator implements DDL {
 
     private Optional<String> foreignKeys(Table table) {
         String result = table.getColumns().stream()
-                .filter(column -> column.getForeignKeys() != null && !column.getForeignKeys().isEmpty())
-                .map(this::createForeignKeys).collect(Collectors.joining());
+            .filter(column -> column.getForeignKeys() != null && !column.getForeignKeys().isEmpty())
+            .map(this::createForeignKeys).collect(Collectors.joining());
 
         return result.isEmpty() ? Optional.empty() : Optional.of(result);
     }

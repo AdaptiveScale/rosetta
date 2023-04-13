@@ -28,7 +28,6 @@ public class DB2ColumnsExtractor extends ColumnsExtractor {
             Collection<Column> columns = new ArrayList<>();
             Map<String, Integer> primaryKeysData = extractPrimaryKeys(connection, table);
             Map<String, List<ForeignKey>> foreignKeys = extractForeignKeys(connection, table);
-            Map<String, List<Index>> indices = extractIndices(connection, table);
             ResultSet resultSet = connection.getMetaData().getColumns(null, table.getSchema(), table.getName(), null);
 
             while (resultSet.next()) {
@@ -43,10 +42,6 @@ public class DB2ColumnsExtractor extends ColumnsExtractor {
                 }
                 columns.add(column);
                 table.setColumns(columns);
-            }
-
-            if (indices.containsKey(table.getName())) {
-                table.setIndices(indices.get(table.getName()));
             }
 
             if (!resultSet.isClosed()) {
