@@ -4,7 +4,7 @@ import com.adaptivescale.rosetta.common.models.Column;
 import com.adaptivescale.rosetta.ddl.targets.ColumnDataTypeName;
 import com.adaptivescale.rosetta.ddl.targets.ColumnSQLDecorator;
 
-import static com.adaptivescale.rosetta.ddl.targets.oracle.Constants.DEFAULT_WRAPPER;
+import static com.adaptivescale.rosetta.ddl.targets.postgres.Constants.DEFAULT_WRAPPER;
 
 public class DefaultOracleColumnSQLDecorator implements ColumnSQLDecorator {
 

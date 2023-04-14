@@ -7,7 +7,6 @@ import static com.adaptivescale.rosetta.ddl.targets.db2.Constants.PRECISION_DEFA
 import static com.adaptivescale.rosetta.ddl.targets.db2.Constants.PRECISION_TYPES;
 
 public class DB2ColumnTypeName implements ColumnDataTypeName {
-
     @Override
     public String nameForColumn(Column column) {
         StringBuilder builder = new StringBuilder();
