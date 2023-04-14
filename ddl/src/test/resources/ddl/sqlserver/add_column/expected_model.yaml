@@ -63,6 +63,16 @@ tables:
         nullable: false
         autoincrement: false
         primaryKey: false
+      - name: "Description_NEW"
+        typeName: "ntext"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 1073741823
+        scale: 0
+        precision: 1073741823
+        nullable: false
+        autoincrement: false
+        primaryKey: false
       - name: "Picture"
         typeName: "image"
         ordinalPosition: 0
@@ -2063,16 +2073,6 @@ views:
         autoincrement: false
         primaryKey: false
       - name: "Country"
-        typeName: "nvarchar"
-        ordinalPosition: 0
-        primaryKeySequenceId: 0
-        columnDisplaySize: 15
-        scale: 0
-        precision: 15
-        nullable: false
-        autoincrement: false
-        primaryKey: false
-      - name: "Country_NEW"
         typeName: "nvarchar"
         ordinalPosition: 0
         primaryKeySequenceId: 0
