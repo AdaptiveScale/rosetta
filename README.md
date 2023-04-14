@@ -31,14 +31,17 @@ This module will read the database structure from the source and map it to a tar
 
 Currently, supported databases for translation are shown below in the table.
 
-|         | **BigQuery** | **Snowflake** |  **MySQL**  | **Postgres** | **Kinetica** | **Google Cloud Spanner** |
-|---------|:--------:|:--------:|:-------:|:--------:|:--------:|:--------:|
-| **BigQuery** |     /     |     ✅     |    ✅     |     ✅     |   ✅      |    ❌  |
-| **Snowflake** |    ✅     |     /     |   ✅      |    ✅      |   ✅      |    ❌  |
-| **MySQL**   |      ✅    |     ✅     |    /    |      ✅     |    ✅      |    ❌  |
-| **Postgres** |     ✅     |     ✅     |    ✅    |    /     |     ✅      |    ✅  |
-| **Kinetica** |     ✅     |     ✅     |    ✅    |     ✅    |     /      |    ❌  |
-| **Google Cloud Spanner** |     ❌     |     ❌     |    ❌    |     ❌    |     ❌     |    /  |
+|                          | **BigQuery** | **Snowflake** |  **MySQL**  | **Postgres** | **Kinetica** | **Google Cloud Spanner** |**SQL Server**| **DB2** | **Oracle** |
+|--------------------------|:------------:|:-------------:|:-------:|:--------:|:--------:|:------------------------:|:------------:|:-------:|:----------:|
+| **BigQuery**             |      /       |       ✅       |    ✅     |     ✅     |   ✅      |            -             |      -       |     -    |      -      |
+| **Snowflake**            |      ✅       |       /       |   ✅      |    ✅      |   ✅      |            -             |       -       |      -   |       -     |
+| **MySQL**                |      ✅       |       ✅       |    /    |      ✅     |    ✅      |            -             |      -       |    -     |      -      |
+| **Postgres**             |      ✅       |       ✅       |    ✅    |    /     |     ✅      |            ✅             |      -       |     -    |       -     |
+| **Kinetica**             |      ✅       |       ✅       |    ✅    |     ✅    |     /      |            -             |      -       |      -   |        -    |
+| **Google Cloud Spanner** |      -       |       -       |    -    |     -    |     -     |            /             |      -       |      -   |         -   |
+| **SQL Server**           |      -       |       ✅       |    -    |     -    |     -     |             -             |          /    |      ✅   |      ✅      |
+| **DB2**                  |      -       |       -       |    -    |     -    |     -     |              -            |         ✅     |     /    |      ✅      |
+| **Oracle**               |      -       |       -       |    -    |     -    |     -     |              -            |         ✅     |    ✅     |      /      |
 
 
 ### Using external translator
@@ -153,6 +156,9 @@ The JDBC drivers for the rosetta supported databases can be downloaded from the 
 - [MySQL JDBC 8.0.30](https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-8.0.30.zip)
 - [Kinetica JDBC 7.1.7.7](https://github.com/kineticadb/kinetica-client-jdbc/archive/refs/tags/v7.1.7.7.zip)
 - [Google Cloud Spanner JDBC 2.6.2](https://search.maven.org/remotecontent?filepath=com/google/cloud/google-cloud-spanner-jdbc/2.6.2/google-cloud-spanner-jdbc-2.6.2-single-jar-with-dependencies.jar)
+- [SQL Server JDBC 12.2.0](https://go.microsoft.com/fwlink/?linkid=2223050)
+- [DB2 JDBC jcc4](https://repo1.maven.org/maven2/com/ibm/db2/jcc/db2jcc/db2jcc4/db2jcc-db2jcc4.jar)
+- [Oracle JDBC 23.2.0.0](https://download.oracle.com/otn-pub/otn_software/jdbc/232-DeveloperRel/ojdbc11.jar)
 
 **Note:** If you face one of the following errors with Google Cloud Spanner JDBC
 
@@ -311,6 +317,21 @@ url: jdbc:cloudspanner:/projects/my-project/instances/my-instance/databases/my-d
 ### Google CLoud Spanner (Emulator)
 ```
 url: jdbc:cloudspanner://localhost:9010/projects/test/instances/test/databases/test?autoConfigEmulator=true
+```
+
+### SQL Server
+```
+url: jdbc:sqlserver://<HOST>:1433;databaseName=<DATABASE>
+```
+
+### DB2
+```
+url: jdbc:db2://<HOST>:50000;<DATABASE>
+```
+
+### ORACLE
+```
+url: jdbc:oracle:thin:<HOST>:1521:<SID>
 ```
 
 ## Rosetta Commands
