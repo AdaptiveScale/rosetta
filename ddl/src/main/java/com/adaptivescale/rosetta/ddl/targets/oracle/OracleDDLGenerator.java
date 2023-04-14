@@ -75,6 +75,12 @@ public class OracleDDLGenerator implements DDL {
         createParams.put("tableCode", definitionAsString);
         stringBuilder.append(TemplateEngine.process(TABLE_CREATE_TEMPLATE, createParams));
 
+        Optional.ofNullable(table)
+            .map(this::foreignKeys)
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .ifPresent(it -> stringBuilder.append("\r").append(it));
+
         return stringBuilder.toString();
     }
 
@@ -97,18 +103,6 @@ public class OracleDDLGenerator implements DDL {
                 .stream()
                 .map(table -> createTable(table, dropTableIfExists))
                 .collect(Collectors.joining("\r\r")));
-
-        String foreignKeys = database
-                .getTables()
-                .stream()
-                .map(this::foreignKeys)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.joining("\r"));
-
-        if (!foreignKeys.isEmpty()) {
-            stringBuilder.append("\r").append(foreignKeys).append("\r");
-        }
 
         return stringBuilder.toString();
     }
