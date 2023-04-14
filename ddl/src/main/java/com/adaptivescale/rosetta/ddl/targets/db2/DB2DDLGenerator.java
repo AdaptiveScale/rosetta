@@ -224,7 +224,7 @@ public class DB2DDLGenerator implements DDL {
                 params.put("tableName", tableNameWithSchema(expected));
                 params.put("primaryKeyDefinition", primaryKeysForTable.get());
                 stringBuilder.append(
-                        TemplateEngine.process(TABLE_ALTER_ADD_PRIMARY_KEY_TEMPLATE, params)
+                    TemplateEngine.process(TABLE_ALTER_ADD_PRIMARY_KEY_TEMPLATE, params)
                 );
             }
         }
