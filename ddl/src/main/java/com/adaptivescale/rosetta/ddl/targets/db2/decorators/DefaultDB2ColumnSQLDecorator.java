@@ -23,7 +23,7 @@ public class DefaultDB2ColumnSQLDecorator implements ColumnSQLDecorator {
         builder.append(DEFAULT_WRAPPER).append(column.getName()).append(DEFAULT_WRAPPER).append(" ");
         builder.append(columnDataTypeName.nameForColumn(column));
         if(!column.isNullable()) {
-            builder.append(" NOT NULL ");
+            builder.append(" NOT NULL WITH DEFAULT ");
         }
         return builder.toString();
     }

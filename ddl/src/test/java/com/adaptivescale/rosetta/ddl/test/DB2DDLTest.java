@@ -21,20 +21,20 @@ public class DB2DDLTest {
     public void createDB() throws IOException {
         String ddl = generateDDL("clean_database");
         Assertions.assertEquals("\r" +
-                "CREATE TABLE \"WEBSTORE\".\"CUSTOMER\"(\"C_SALUTATION\" VARCHAR(5), \"C_LAST_NAME\" VARCHAR(20), \"C_FIRST_NAME\" VARCHAR(20), \"C_CUSTOMER_SK\" INTEGER NOT NULL , PRIMARY KEY (\"C_CUSTOMER_SK\"));\r" +
+                "CREATE TABLE \"WEBSTORE\".\"CUSTOMER\"(\"C_SALUTATION\" VARCHAR(5), \"C_LAST_NAME\" VARCHAR(20), \"C_FIRST_NAME\" VARCHAR(20), \"C_CUSTOMER_SK\" INTEGER NOT NULL WITH DEFAULT , PRIMARY KEY (\"C_CUSTOMER_SK\"));\r" +
                 "\r" +
-                "CREATE TABLE \"WEBSTORE\".\"INVENTORY\"(\"INV_ITEM_SK\" INTEGER NOT NULL , \"INV_QUANTITY_ON_HAND\" INTEGER NOT NULL , PRIMARY KEY (\"INV_ITEM_SK\"));\r" +
+                "CREATE TABLE \"WEBSTORE\".\"INVENTORY\"(\"INV_ITEM_SK\" INTEGER NOT NULL WITH DEFAULT , \"INV_QUANTITY_ON_HAND\" INTEGER NOT NULL WITH DEFAULT , PRIMARY KEY (\"INV_ITEM_SK\"));\r" +
                 "\r" +
                 "CREATE TABLE \"WEBSTORE\".\"TESTJSON\"(\"JSON_FIELD\" BLOB);\r" +
                 "\r" +
-                "CREATE TABLE \"WEBSTORE\".\"WEBSALES\"(\"WS_ORDER_NUMBER\" INTEGER NOT NULL , \"WS_CUSTOMER_SK\" INTEGER, \"WS_QUANTITY\" INTEGER NOT NULL , \"WS_ITEM_SK\" INTEGER, PRIMARY KEY (\"WS_ORDER_NUMBER\"));\r" +
+                "CREATE TABLE \"WEBSTORE\".\"WEBSALES\"(\"WS_ORDER_NUMBER\" INTEGER NOT NULL WITH DEFAULT , \"WS_CUSTOMER_SK\" INTEGER, \"WS_QUANTITY\" INTEGER NOT NULL WITH DEFAULT , \"WS_ITEM_SK\" INTEGER, PRIMARY KEY (\"WS_ORDER_NUMBER\"));\r" +
                 "ALTER TABLE \"WEBSTORE\".\"WEBSALES\" ADD CONSTRAINT \"CUSTOMER_SK\" FOREIGN KEY (\"WS_CUSTOMER_SK\") REFERENCES \"WEBSTORE\".\"CUSTOMER\"(\"C_CUSTOMER_SK\") ON DELETE NO ACTION NOT ENFORCED;\n" +
                 "ALTER TABLE \"WEBSTORE\".\"WEBSALES\" ADD CONSTRAINT \"ITEM_SK\" FOREIGN KEY (\"WS_ITEM_SK\") REFERENCES \"WEBSTORE\".\"INVENTORY\"(\"INV_ITEM_SK\") ON DELETE NO ACTION NOT ENFORCED;\n" +
                 "\r" +
                 "\r" +
-                "CREATE TABLE \"WEBSTORE\".\"CUSTOMER_NEW\"(\"C_SALUTATION\" VARCHAR(5), \"C_LAST_NAME\" VARCHAR(20), \"C_FIRST_NAME\" VARCHAR(20), \"C_CUSTOMER_SK\" INTEGER NOT NULL , \"C_AGE_NEW\" INTEGER, PRIMARY KEY (\"C_CUSTOMER_SK\"));\r" +
+                "CREATE TABLE \"WEBSTORE\".\"CUSTOMER_NEW\"(\"C_SALUTATION\" VARCHAR(5), \"C_LAST_NAME\" VARCHAR(20), \"C_FIRST_NAME\" VARCHAR(20), \"C_CUSTOMER_SK\" INTEGER NOT NULL WITH DEFAULT , \"C_AGE_NEW\" INTEGER, PRIMARY KEY (\"C_CUSTOMER_SK\"));\r" +
                 "\r" +
-                "CREATE TABLE \"WEBSTORE\".\"WEBSALES_NEW\"(\"WS_ORDER_NUMBER\" INTEGER NOT NULL , \"WS_CUSTOMER_SK\" INTEGER, \"WS_ITEM_SK\" INTEGER, PRIMARY KEY (\"WS_ORDER_NUMBER\"));\r" +
+                "CREATE TABLE \"WEBSTORE\".\"WEBSALES_NEW\"(\"WS_ORDER_NUMBER\" INTEGER NOT NULL WITH DEFAULT , \"WS_CUSTOMER_SK\" INTEGER, \"WS_ITEM_SK\" INTEGER, PRIMARY KEY (\"WS_ORDER_NUMBER\"));\r" +
                 "ALTER TABLE \"WEBSTORE\".\"WEBSALES_NEW\" ADD CONSTRAINT \"CUSTOMER_SK\" FOREIGN KEY (\"WS_CUSTOMER_SK\") REFERENCES \"WEBSTORE\".\"CUSTOMER\"(\"C_CUSTOMER_SK\") ON DELETE NO ACTION NOT ENFORCED;\n" +
                 "ALTER TABLE \"WEBSTORE\".\"WEBSALES_NEW\" ADD CONSTRAINT \"ITEM_SK\" FOREIGN KEY (\"WS_ITEM_SK\") REFERENCES \"WEBSTORE\".\"INVENTORY\"(\"INV_ITEM_SK\") ON DELETE NO ACTION NOT ENFORCED;\n", ddl);
     }
@@ -42,7 +42,7 @@ public class DB2DDLTest {
     @Test
     public void addTable() throws IOException {
         String ddl = generateDDL("add_table");
-        Assertions.assertEquals("CREATE TABLE \"WEBSTORE\".\"WEBSALES_NEW\"(\"WS_ORDER_NUMBER\" INTEGER NOT NULL , \"WS_CUSTOMER_SK\" INTEGER, \"WS_ITEM_SK\" INTEGER, PRIMARY KEY (\"WS_ORDER_NUMBER\"));\r" +
+        Assertions.assertEquals("CREATE TABLE \"WEBSTORE\".\"WEBSALES_NEW\"(\"WS_ORDER_NUMBER\" INTEGER NOT NULL WITH DEFAULT , \"WS_CUSTOMER_SK\" INTEGER, \"WS_ITEM_SK\" INTEGER, PRIMARY KEY (\"WS_ORDER_NUMBER\"));\r" +
                 "ALTER TABLE \"WEBSTORE\".\"WEBSALES_NEW\" ADD CONSTRAINT \"CUSTOMER_SK\" FOREIGN KEY (\"WS_CUSTOMER_SK\") REFERENCES \"WEBSTORE\".\"CUSTOMER\"(\"C_CUSTOMER_SK\") ON DELETE NO ACTION NOT ENFORCED;\n" +
                 "ALTER TABLE \"WEBSTORE\".\"WEBSALES_NEW\" ADD CONSTRAINT \"ITEM_SK\" FOREIGN KEY (\"WS_ITEM_SK\") REFERENCES \"WEBSTORE\".\"INVENTORY\"(\"INV_ITEM_SK\") ON DELETE NO ACTION NOT ENFORCED;\n", ddl);
     }
@@ -65,12 +65,15 @@ public class DB2DDLTest {
         Assertions.assertEquals("ALTER TABLE \"WEBSTORE\".\"WEBSALES_NEW\" ADD CONSTRAINT \"ITEM_SK\" FOREIGN KEY (\"WS_ITEM_SK\") REFERENCES \"WEBSTORE\".\"INVENTORY\"(\"INV_ITEM_SK\") ON DELETE NO ACTION NOT ENFORCED;\n", ddl);
     }
 
-//    @Test
-//    public void addColumnAsPrimaryKey() throws IOException {
-//        String ddl = generateDDL("add_column_as_primary_key");
-//        Assertions.assertEquals("ALTER TABLE \"PLAYER\" ADD COLUMN \"ID\" numeric NOT NULL ;\r" +
-//                "ALTER TABLE \"PLAYER\" ADD PRIMARY KEY (\"ID\");", ddl);
-//    }
+    @Test
+    public void addColumnAsPrimaryKey() throws IOException {
+        String ddl = generateDDL("add_column_as_primary_key");
+        Assertions.assertEquals("ALTER TABLE \"WEBSTORE\".\"WEBSALES_NEW\" ADD \"WS_ORDER_NUMBER2\" INTEGER NOT NULL WITH DEFAULT ;\r" +
+                "ALTER TABLE \"WEBSTORE\".\"WEBSALES_NEW\" DROP PRIMARY KEY;\n" +
+                "ALTER TABLE \"WEBSTORE\".\"WEBSALES_NEW\"\n" +
+                "ADD CONSTRAINT PK_WEBSALES_NEW\n" +
+                "PRIMARY KEY (\"WS_ORDER_NUMBER\", \"WS_ORDER_NUMBER2\");", ddl);
+    }
 
     @Test
     public void dropColumn() throws IOException {
@@ -99,23 +102,26 @@ public class DB2DDLTest {
     @Test
     public void dropColumnWithForeignKey() throws IOException {
         String ddl = generateDDL("drop_column_with_foreign_key");
-        Assertions.assertEquals("ALTER TABLE \"WEBSTORE\".\"WEBSALES_NEW\" DROP COLUMN \"WS_ITEM_SK\";", ddl);
+        Assertions.assertEquals("ALTER TABLE \"WEBSTORE\".\"WEBSALES_NEW\" DROP CONSTRAINT \"ITEM_SK\";\r" +
+                "ALTER TABLE \"WEBSTORE\".\"WEBSALES_NEW\" DROP COLUMN \"WS_ITEM_SK\";", ddl);
     }
-//
-//    @Test
-//    public void dropColumnWithPrimaryKeyReferenced() throws IOException {
-//        String ddl = generateDDL("drop_column_with_primary_key_referenced");
-//        Assertions.assertEquals("ALTER TABLE \"TEAMPLAYERS\" DROP CONSTRAINT \"TEAMPLAYERS_FK\";\r" +
-//                "ALTER TABLE \"PLAYER\" DROP COLUMN \"ID\";", ddl);
-//    }
-//
-//    @Test
-//    public void dropTableWhereColumnIsReferenced() throws IOException {
-//        String ddl = generateDDL("drop_table_where_column_is_referenced");
-//        Assertions.assertEquals("ALTER TABLE \"TEAMPLAYERS\" DROP CONSTRAINT \"TEAMPLAYERS_FK_TEAM\";\r" +
-//                "DROP TABLE \"TEAM\";", ddl);
-//    }
-//
+
+    @Test
+    public void dropColumnWithPrimaryKeyReferenced() throws IOException {
+        String ddl = generateDDL("drop_column_with_primary_key_referenced");
+        Assertions.assertEquals("ALTER TABLE \"WEBSTORE\".\"WEBSALES\" DROP CONSTRAINT \"ITEM_SK\";\r" +
+                "ALTER TABLE \"WEBSTORE\".\"WEBSALES_NEW\" DROP CONSTRAINT \"ITEM_SK\";\r" +
+                "ALTER TABLE \"WEBSTORE\".\"INVENTORY\" DROP COLUMN \"INV_ITEM_SK\";", ddl);
+    }
+
+    @Test
+    public void dropTableWhereColumnIsReferenced() throws IOException {
+        String ddl = generateDDL("drop_table_where_column_is_referenced");
+        Assertions.assertEquals("ALTER TABLE \"WEBSTORE\".\"WEBSALES\" DROP CONSTRAINT \"ITEM_SK\";\r" +
+                "ALTER TABLE \"WEBSTORE\".\"WEBSALES_NEW\" DROP CONSTRAINT \"ITEM_SK\";\r" +
+                "DROP TABLE \"WEBSTORE\".\"INVENTORY\";", ddl);
+    }
+
     @Test
     public void addForeignKey() throws IOException {
         String ddl = generateDDL("add_foreign_key");
@@ -127,27 +133,32 @@ public class DB2DDLTest {
         String ddl = generateDDL("drop_foreign_key");
         Assertions.assertEquals("ALTER TABLE \"WEBSTORE\".\"WEBSALES_NEW\" DROP CONSTRAINT \"ITEM_SK\";", ddl);
     }
-//
-//    @Test
-//    public void dropPrimaryKey() throws IOException {
-//        String ddl = generateDDL("drop_primary_key");
-//        Assertions.assertEquals("ALTER TABLE \"TEAMPLAYERS\" DROP CONSTRAINT \"TEAMPLAYERS_FK\";\r" +
-//                "ALTER TABLE \"PLAYER\" DROP PRIMARY KEY;", ddl);
-//    }
-//
-//    @Test
-//    public void addPrimaryKey() throws IOException {
-//        String ddl = generateDDL("add_primary_key");
-//        Assertions.assertEquals("ALTER TABLE \"PLAYER\" ADD PRIMARY KEY (\"ID\");", ddl);
-//    }
-//
-//    @Test
-//    public void alterPrimaryKey() throws IOException {
-//        String ddl = generateDDL("alter_primary_key");
-//        Assertions.assertEquals("\r" +
-//                "ALTER TABLE \"PLAYER\" DROP PRIMARY KEY, ADD PRIMARY KEY (\"ID\", \"POSITION_ID\");\r", ddl);
-//    }
-//
+
+    @Test
+    public void dropPrimaryKey() throws IOException {
+        String ddl = generateDDL("drop_primary_key");
+        Assertions.assertEquals("ALTER TABLE \"WEBSTORE\".\"WEBSALES\" DROP CONSTRAINT \"CUSTOMER_SK\";\r" +
+                "ALTER TABLE \"WEBSTORE\".\"WEBSALES_NEW\" DROP CONSTRAINT \"CUSTOMER_SK\";\r" +
+                "ALTER TABLE \"WEBSTORE\".\"CUSTOMER\" DROP PRIMARY KEY;\n", ddl);
+    }
+
+    @Test
+    public void addPrimaryKey() throws IOException {
+        String ddl = generateDDL("add_primary_key");
+        Assertions.assertEquals("ALTER TABLE \"WEBSTORE\".\"CUSTOMER\"\n" +
+                "ADD CONSTRAINT PK_CUSTOMER\n" +
+                "PRIMARY KEY (\"C_CUSTOMER_SK\");", ddl);
+    }
+
+    @Test
+    public void alterPrimaryKey() throws IOException {
+        String ddl = generateDDL("alter_primary_key");
+        Assertions.assertEquals("ALTER TABLE \"WEBSTORE\".\"CUSTOMER\" DROP PRIMARY KEY;\n" +
+                "ALTER TABLE \"WEBSTORE\".\"CUSTOMER\"\n" +
+                "ADD CONSTRAINT PK_CUSTOMER\n" +
+                "PRIMARY KEY (\"C_CUSTOMER_SK\", \"C_CUSTOMER_SK2\");", ddl);
+    }
+
     @Test
     public void alterForeignKeyName() throws IOException {
         String ddl = generateDDL("alter_foreign_key_name");
@@ -161,28 +172,29 @@ public class DB2DDLTest {
         Assertions.assertEquals("ALTER TABLE \"WEBSTORE\".\"WEBSALES_NEW\" DROP CONSTRAINT \"ITEM_SK\";\r" +
                 "ALTER TABLE \"WEBSTORE\".\"WEBSALES_NEW\" ADD CONSTRAINT \"ITEM_SK\" FOREIGN KEY (\"WS_ITEM_SK\") REFERENCES \"WEBSTORE\".\"INVENTORY\"(\"INV_ITEM_SK\") ON DELETE SET NULL NOT ENFORCED;\n", ddl);
     }
-//
-//    @Test
-//    public void dropPrimaryKeyColumnAndAlterForeignKey() throws IOException {
-//        String ddl = generateDDL("drop_pk_column_and_alter_fk");
-//        Assertions.assertEquals("ALTER TABLE \"TEAMPLAYERS\" DROP CONSTRAINT \"TEAMPLAYERS_FK\";\r" +
-//                "ALTER TABLE \"PLAYER\" DROP COLUMN \"ID\";\r" +
-//                "ALTER TABLE \"TEAMPLAYERS\" ADD CONSTRAINT TEAMPLAYERS_FK FOREIGN KEY (\"PLAYERID\") REFERENCES  \"POSITION\"(\"ID\");\r", ddl);
-//    }
-//
-//    @Test
-//    public void dropTableWithPrimaryKeyColumnAndAlterForeignKey() throws IOException {
-//        String ddl = generateDDL("drop_table_with_pk_column_and_alter_fk");
-//        Assertions.assertEquals("ALTER TABLE \"TEAMPLAYERS\" DROP CONSTRAINT \"TEAMPLAYERS_FK\";\r" +
-//                "DROP TABLE \"PLAYER\";\r" +
-//                "ALTER TABLE \"TEAMPLAYERS\" ADD CONSTRAINT TEAMPLAYERS_FK FOREIGN KEY (\"PLAYERID\") REFERENCES  \"POSITION\"(\"ID\");\r", ddl);
-//    }
+
+    @Test
+    public void dropPrimaryKeyColumnAndAlterForeignKey() throws IOException {
+        String ddl = generateDDL("drop_pk_column_and_alter_fk");
+        Assertions.assertEquals("ALTER TABLE \"WEBSTORE\".\"WEBSALES\" DROP CONSTRAINT \"ITEM_SK\";\r" +
+                "ALTER TABLE \"WEBSTORE\".\"WEBSALES_NEW\" DROP CONSTRAINT \"ITEM_SK\";\r" +
+                "ALTER TABLE \"WEBSTORE\".\"INVENTORY\" DROP COLUMN \"INV_ITEM_SK\";\r" +
+                "ALTER TABLE \"WEBSTORE\".\"WEBSALES_NEW\" ADD CONSTRAINT \"CUSTOMER_SK\" FOREIGN KEY (\"WS_CUSTOMER_SK\") REFERENCES \"WEBSTORE\".\"CUSTOMER\"(\"C_CUSTOMER_SK\") ON DELETE NO ACTION NOT ENFORCED;\n", ddl);
+    }
+
+    @Test
+    public void dropTableWithPrimaryKeyColumnAndAlterForeignKey() throws IOException {
+        String ddl = generateDDL("drop_table_with_pk_column_and_alter_fk");
+        Assertions.assertEquals("ALTER TABLE \"WEBSTORE\".\"WEBSALES\" DROP CONSTRAINT \"ITEM_SK\";\r" +
+                "ALTER TABLE \"WEBSTORE\".\"WEBSALES_NEW\" DROP CONSTRAINT \"ITEM_SK\";\r" +
+                "DROP TABLE \"WEBSTORE\".\"INVENTORY\";", ddl);
+    }
 
     private String generateDDL(String testType) throws IOException {
         Database actual = Utils.getDatabase(resourceDirectory.resolve(testType), "actual_model.yaml");
         Database expected = Utils.getDatabase(resourceDirectory.resolve(testType), "expected_model.yaml");
-        ChangeFinder defaultChangeFinder = new DefaultChangeFinder();
-        List<Change<?>> changes = defaultChangeFinder.findChanges(expected, actual);
+        ChangeFinder db2ChangeFinder = new DB2ChangeFinder();
+        List<Change<?>> changes = db2ChangeFinder.findChanges(expected, actual);
         ChangeHandler handler = new ChangeHandlerImplementation(new DB2DDLGenerator(), new DB2ForeignKeyChangeComparator());
         return handler.createDDLForChanges(changes);
     }

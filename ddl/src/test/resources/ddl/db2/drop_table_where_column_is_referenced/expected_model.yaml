@@ -1,107 +1,233 @@
 ---
+safeMode: false
 tables:
-  - name: "PLAYER"
+  - name: "CUSTOMER"
     type: "TABLE"
+    schema: "WEBSTORE"
     columns:
-      - name: "name"
+      - name: "C_SALUTATION"
         typeName: "VARCHAR"
         ordinalPosition: 0
         primaryKeySequenceId: 0
-        columnDisplaySize: 100
+        columnDisplaySize: 5
         scale: 0
-        precision: 100
+        precision: 5
         nullable: true
         primaryKey: false
         autoincrement: false
-      - name: "POSITION_ID"
-        typeName: "NUMBER"
+      - name: "C_LAST_NAME"
+        typeName: "VARCHAR"
         ordinalPosition: 0
         primaryKeySequenceId: 0
-        columnDisplaySize: 38
+        columnDisplaySize: 20
         scale: 0
-        precision: 38
-        foreignKeys:
-          - name: "PLAYER_FK"
-            tableName: "PLAYER"
-            columnName: "POSITION_ID"
-            deleteRule: "3"
-            primaryTableName: "Position"
-            primaryColumnName: "ID"
+        precision: 20
         nullable: true
         primaryKey: false
         autoincrement: false
-      - name: "ID"
-        typeName: "NUMBER"
+      - name: "C_FIRST_NAME"
+        typeName: "VARCHAR"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 20
+        scale: 0
+        precision: 20
+        nullable: true
+        primaryKey: false
+        autoincrement: false
+      - name: "C_CUSTOMER_SK"
+        typeName: "INTEGER"
         ordinalPosition: 0
         primaryKeySequenceId: 1
-        columnDisplaySize: 38
+        columnDisplaySize: 10
         scale: 0
-        precision: 38
+        precision: 10
         nullable: false
         primaryKey: true
         autoincrement: false
-  - name: "Position"
+  - name: "CUSTOMER_NEW"
     type: "TABLE"
+    schema: "WEBSTORE"
     columns:
-      - name: "ID"
-        typeName: "NUMBER"
+      - name: "C_SALUTATION"
+        typeName: "VARCHAR"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 5
+        scale: 0
+        precision: 5
+        nullable: true
+        primaryKey: false
+        autoincrement: false
+      - name: "C_LAST_NAME"
+        typeName: "VARCHAR"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 20
+        scale: 0
+        precision: 20
+        nullable: true
+        primaryKey: false
+        autoincrement: false
+      - name: "C_FIRST_NAME"
+        typeName: "VARCHAR"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 20
+        scale: 0
+        precision: 20
+        nullable: true
+        primaryKey: false
+        autoincrement: false
+      - name: "C_CUSTOMER_SK"
+        typeName: "INTEGER"
         ordinalPosition: 0
         primaryKeySequenceId: 1
-        columnDisplaySize: 38
+        columnDisplaySize: 10
         scale: 0
-        precision: 38
+        precision: 10
         nullable: false
         primaryKey: true
         autoincrement: false
-      - name: "DESCRIPTION"
-        typeName: "VARCHAR"
+      - name: "C_AGE_NEW"
+        typeName: "INTEGER"
         ordinalPosition: 0
         primaryKeySequenceId: 0
-        columnDisplaySize: 100
+        columnDisplaySize: 10
         scale: 0
-        precision: 100
+        precision: 10
         nullable: true
         primaryKey: false
         autoincrement: false
-      - name: "Name"
-        typeName: "VARCHAR"
-        ordinalPosition: 0
-        primaryKeySequenceId: 0
-        columnDisplaySize: 100
-        scale: 0
-        precision: 100
-        nullable: true
-        primaryKey: false
-        autoincrement: false
-  - name: "TEAMPLAYERS"
+  - name: "TESTJSON"
     type: "TABLE"
+    schema: "WEBSTORE"
     columns:
-      - name: "TEAMID"
-        typeName: "NUMBER"
+      - name: "JSON_FIELD"
+        typeName: "BLOB"
         ordinalPosition: 0
         primaryKeySequenceId: 0
-        columnDisplaySize: 38
+        columnDisplaySize: 1048576
         scale: 0
-        precision: 38
+        precision: 1048576
+        nullable: true
+        primaryKey: false
+        autoincrement: false
+  - name: "WEBSALES"
+    type: "TABLE"
+    schema: "WEBSTORE"
+    columns:
+      - name: "WS_ORDER_NUMBER"
+        typeName: "INTEGER"
+        ordinalPosition: 0
+        primaryKeySequenceId: 1
+        columnDisplaySize: 10
+        scale: 0
+        precision: 10
+        nullable: false
+        primaryKey: true
+        autoincrement: false
+      - name: "WS_CUSTOMER_SK"
+        typeName: "INTEGER"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 10
+        scale: 0
+        precision: 10
         foreignKeys:
-          - name: "TEAMPLAYERS_FK_TEAM"
-            tableName: "TEAMPLAYERS"
-            columnName: "TEAMID"
+          - name: "CUSTOMER_SK"
+            schema: "WEBSTORE"
+            tableName: "WEBSALES"
+            columnName: "WS_CUSTOMER_SK"
             deleteRule: "3"
-            primaryTableName: "TEAM"
-            primaryColumnName: "ID"
+            primaryTableSchema: "WEBSTORE"
+            primaryTableName: "CUSTOMER"
+            primaryColumnName: "C_CUSTOMER_SK"
         nullable: true
         primaryKey: false
         autoincrement: false
-      - name: "PLAYERID"
-        typeName: "NUMBER"
+      - name: "WS_QUANTITY"
+        typeName: "INTEGER"
         ordinalPosition: 0
         primaryKeySequenceId: 0
-        columnDisplaySize: 38
+        columnDisplaySize: 10
         scale: 0
-        precision: 38
+        precision: 10
+        nullable: false
+        primaryKey: false
+        autoincrement: false
+      - name: "WS_ITEM_SK"
+        typeName: "INTEGER"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 10
+        scale: 0
+        precision: 10
+        foreignKeys:
+          - name: "ITEM_SK"
+            schema: "WEBSTORE"
+            tableName: "WEBSALES"
+            columnName: "WS_ITEM_SK"
+            deleteRule: "3"
+            primaryTableSchema: "WEBSTORE"
+            primaryTableName: "INVENTORY"
+            primaryColumnName: "INV_ITEM_SK"
         nullable: true
         primaryKey: false
         autoincrement: false
-databaseProductName: "Snowflake"
-databaseType: "postgres"
+  - name: "WEBSALES_NEW"
+    type: "TABLE"
+    schema: "WEBSTORE"
+    columns:
+      - name: "WS_ORDER_NUMBER"
+        typeName: "INTEGER"
+        ordinalPosition: 0
+        primaryKeySequenceId: 1
+        columnDisplaySize: 10
+        scale: 0
+        precision: 10
+        nullable: false
+        primaryKey: true
+        autoincrement: false
+      - name: "WS_CUSTOMER_SK"
+        typeName: "INTEGER"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 10
+        scale: 0
+        precision: 10
+        foreignKeys:
+          - name: "CUSTOMER_SK"
+            schema: "WEBSTORE"
+            tableName: "WEBSALES_NEW"
+            columnName: "WS_CUSTOMER_SK"
+            deleteRule: "3"
+            primaryTableSchema: "WEBSTORE"
+            primaryTableName: "CUSTOMER"
+            primaryColumnName: "C_CUSTOMER_SK"
+        nullable: true
+        primaryKey: false
+        autoincrement: false
+      - name: "WS_ITEM_SK"
+        typeName: "INTEGER"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 10
+        scale: 0
+        precision: 10
+        foreignKeys:
+          - name: "ITEM_SK"
+            schema: "WEBSTORE"
+            tableName: "WEBSALES_NEW"
+            columnName: "WS_ITEM_SK"
+            deleteRule: "3"
+            primaryTableSchema: "WEBSTORE"
+            primaryTableName: "INVENTORY"
+            primaryColumnName: "INV_ITEM_SK"
+        nullable: true
+        primaryKey: false
+        autoincrement: false
+views: []
+databaseProductName: "DB2/LINUXX8664"
+databaseType: "db2"
+operationLevel: "database"

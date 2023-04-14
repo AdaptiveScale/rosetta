@@ -1,2 +1,3 @@
-USE SCHEMA "[(${schemaName})]";
-ALTER TABLE "[(${tableName})]" ADD [(${primaryKeyDefinition})];
+ALTER TABLE "[(${schemaName})]"."[(${tableName})]"
+ADD CONSTRAINT PK_[(${tableName})]
+[(${primaryKeyDefinition})];

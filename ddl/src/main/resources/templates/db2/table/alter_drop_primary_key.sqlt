@@ -1,2 +1,1 @@
-USE SCHEMA "[(${schemaName})]";
-ALTER TABLE "[(${tableName})]" DROP PRIMARY KEY;
+ALTER TABLE "[(${schemaName})]"."[(${tableName})]" DROP PRIMARY KEY;
