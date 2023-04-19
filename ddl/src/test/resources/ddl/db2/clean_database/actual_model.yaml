@@ -1,0 +1,7 @@
+---
+safeMode: false
+tables: []
+views: []
+databaseProductName: "DB2/LINUXX8664"
+databaseType: "db2"
+operationLevel: "database"
