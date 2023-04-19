@@ -1,0 +1,7 @@
+---
+safeMode: false
+tables: []
+views: []
+databaseProductName: "Oracle"
+databaseType: "oracle"
+operationLevel: "database"

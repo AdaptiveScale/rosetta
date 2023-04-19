@@ -1,0 +1,7 @@
+---
+safeMode: false
+tables: []
+views: []
+databaseProductName: "Microsoft SQL Server"
+databaseType: "sqlserver"
+operationLevel: "database"

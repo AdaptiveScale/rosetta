@@ -1,0 +1,1846 @@
+---
+safeMode: false
+tables:
+  - name: "Categories"
+    type: "TABLE"
+    schema: "test"
+    indices:
+      - schema: "test"
+        tableName: "Categories"
+        columnNames:
+          - null
+        nonUnique: false
+        type: 0
+        cardinality: 8
+      - name: "PK_Categories"
+        schema: "test"
+        tableName: "Categories"
+        columnNames:
+          - "CategoryID"
+        nonUnique: false
+        indexQualifier: "Categories"
+        type: 1
+        ascOrDesc: "A"
+        cardinality: 8
+      - name: "CategoryName"
+        schema: "test"
+        tableName: "Categories"
+        columnNames:
+          - "CategoryName"
+        nonUnique: true
+        indexQualifier: "Categories"
+        type: 3
+        ascOrDesc: "A"
+        cardinality: 0
+    columns:
+      - name: "CategoryID"
+        typeName: "int identity"
+        ordinalPosition: 0
+        primaryKeySequenceId: 1
+        columnDisplaySize: 10
+        scale: 0
+        precision: 10
+        nullable: false
+        autoincrement: false
+        primaryKey: true
+      - name: "CategoryName"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 15
+        scale: 0
+        precision: 15
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "Description"
+        typeName: "ntext"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 1073741823
+        scale: 0
+        precision: 1073741823
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "Picture"
+        typeName: "image"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 2147483647
+        scale: 0
+        precision: 2147483647
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+  - name: "CustomerCustomerDemo"
+    type: "TABLE"
+    schema: "test"
+    indices:
+      - schema: "test"
+        tableName: "CustomerCustomerDemo"
+        columnNames:
+          - null
+        nonUnique: false
+        type: 0
+        cardinality: 0
+      - name: "PK_CustomerCustomerDemo"
+        schema: "test"
+        tableName: "CustomerCustomerDemo"
+        columnNames:
+          - "CustomerID"
+          - "CustomerTypeID"
+        nonUnique: false
+        indexQualifier: "CustomerCustomerDemo"
+        type: 3
+        ascOrDesc: "A"
+        cardinality: 0
+    columns:
+      - name: "CustomerID"
+        typeName: "nchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 1
+        columnDisplaySize: 5
+        scale: 0
+        precision: 5
+        foreignKeys:
+          - name: "FK_CustomerCustomerDemo_Customers"
+            schema: "test"
+            tableName: "CustomerCustomerDemo"
+            columnName: "CustomerID"
+            deleteRule: "3"
+            primaryTableSchema: "test"
+            primaryTableName: "Customers"
+            primaryColumnName: "CustomerID"
+        nullable: false
+        autoincrement: false
+        primaryKey: true
+      - name: "CustomerTypeID"
+        typeName: "nchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 2
+        columnDisplaySize: 10
+        scale: 0
+        precision: 10
+        foreignKeys:
+          - name: "FK_CustomerCustomerDemo"
+            schema: "test"
+            tableName: "CustomerCustomerDemo"
+            columnName: "CustomerTypeID"
+            deleteRule: "3"
+            primaryTableSchema: "test"
+            primaryTableName: "CustomerDemographics"
+            primaryColumnName: "CustomerTypeID"
+        nullable: false
+        autoincrement: false
+        primaryKey: true
+  - name: "CustomerDemographics"
+    type: "TABLE"
+    schema: "test"
+    indices:
+      - schema: "test"
+        tableName: "CustomerDemographics"
+        columnNames:
+          - null
+        nonUnique: false
+        type: 0
+        cardinality: 0
+      - name: "PK_CustomerDemographics"
+        schema: "test"
+        tableName: "CustomerDemographics"
+        columnNames:
+          - "CustomerTypeID"
+        nonUnique: false
+        indexQualifier: "CustomerDemographics"
+        type: 3
+        ascOrDesc: "A"
+        cardinality: 0
+    columns:
+      - name: "CustomerTypeID"
+        typeName: "nchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 1
+        columnDisplaySize: 10
+        scale: 0
+        precision: 10
+        nullable: false
+        autoincrement: false
+        primaryKey: true
+      - name: "CustomerDesc"
+        typeName: "ntext"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 1073741823
+        scale: 0
+        precision: 1073741823
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+  - name: "Customers"
+    type: "TABLE"
+    schema: "test"
+    indices:
+      - schema: "test"
+        tableName: "Customers"
+        columnNames:
+          - null
+        nonUnique: false
+        type: 0
+        cardinality: 91
+      - name: "CompanyName"
+        schema: "test"
+        tableName: "Customers"
+        columnNames:
+          - "CompanyName"
+        nonUnique: true
+        indexQualifier: "Customers"
+        type: 3
+        ascOrDesc: "A"
+        cardinality: 0
+      - name: "PK_Customers"
+        schema: "test"
+        tableName: "Customers"
+        columnNames:
+          - "CustomerID"
+        nonUnique: false
+        indexQualifier: "Customers"
+        type: 1
+        ascOrDesc: "A"
+        cardinality: 91
+      - name: "PostalCode"
+        schema: "test"
+        tableName: "Customers"
+        columnNames:
+          - "PostalCode"
+        nonUnique: true
+        indexQualifier: "Customers"
+        type: 3
+        ascOrDesc: "A"
+        cardinality: 0
+      - name: "Region"
+        schema: "test"
+        tableName: "Customers"
+        columnNames:
+          - "Region"
+        nonUnique: true
+        indexQualifier: "Customers"
+        type: 3
+        ascOrDesc: "A"
+        cardinality: 0
+      - name: "City"
+        schema: "test"
+        tableName: "Customers"
+        columnNames:
+          - "City"
+        nonUnique: true
+        indexQualifier: "Customers"
+        type: 3
+        ascOrDesc: "A"
+        cardinality: 0
+    columns:
+      - name: "CustomerID"
+        typeName: "nchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 1
+        columnDisplaySize: 5
+        scale: 0
+        precision: 5
+        nullable: false
+        autoincrement: false
+        primaryKey: true
+      - name: "CompanyName"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 40
+        scale: 0
+        precision: 40
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "ContactName"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 30
+        scale: 0
+        precision: 30
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "ContactTitle"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 30
+        scale: 0
+        precision: 30
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "Address"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 60
+        scale: 0
+        precision: 60
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "City"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 15
+        scale: 0
+        precision: 15
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "Region"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 15
+        scale: 0
+        precision: 15
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "PostalCode"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 10
+        scale: 0
+        precision: 10
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "Country"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 15
+        scale: 0
+        precision: 15
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "Phone"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 24
+        scale: 0
+        precision: 24
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "Fax"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 24
+        scale: 0
+        precision: 24
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+  - name: "EmployeeTerritories"
+    type: "TABLE"
+    schema: "test"
+    indices:
+      - schema: "test"
+        tableName: "EmployeeTerritories"
+        columnNames:
+          - null
+        nonUnique: false
+        type: 0
+        cardinality: 49
+      - name: "PK_EmployeeTerritories"
+        schema: "test"
+        tableName: "EmployeeTerritories"
+        columnNames:
+          - "EmployeeID"
+          - "TerritoryID"
+        nonUnique: false
+        indexQualifier: "EmployeeTerritories"
+        type: 3
+        ascOrDesc: "A"
+        cardinality: 0
+    columns:
+      - name: "EmployeeID"
+        typeName: "int"
+        ordinalPosition: 0
+        primaryKeySequenceId: 1
+        columnDisplaySize: 10
+        scale: 0
+        precision: 10
+        foreignKeys:
+          - name: "FK_EmployeeTerritories_Employees"
+            schema: "test"
+            tableName: "EmployeeTerritories"
+            columnName: "EmployeeID"
+            deleteRule: "3"
+            primaryTableSchema: "test"
+            primaryTableName: "Employees"
+            primaryColumnName: "EmployeeID"
+        nullable: false
+        autoincrement: false
+        primaryKey: true
+      - name: "TerritoryID"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 2
+        columnDisplaySize: 20
+        scale: 0
+        precision: 20
+        foreignKeys:
+          - name: "FK_EmployeeTerritories_Territories"
+            schema: "test"
+            tableName: "EmployeeTerritories"
+            columnName: "TerritoryID"
+            deleteRule: "3"
+            primaryTableSchema: "test"
+            primaryTableName: "Territories"
+            primaryColumnName: "TerritoryID"
+        nullable: false
+        autoincrement: false
+        primaryKey: true
+  - name: "OrderDetails"
+    type: "TABLE"
+    schema: "test"
+    indices:
+      - schema: "test"
+        tableName: "OrderDetails"
+        columnNames:
+          - null
+        nonUnique: false
+        type: 0
+        cardinality: 2155
+      - name: "OrdersOrder_Details"
+        schema: "test"
+        tableName: "OrderDetails"
+        columnNames:
+          - "OrderID"
+        nonUnique: true
+        indexQualifier: "OrderDetails"
+        type: 3
+        ascOrDesc: "A"
+        cardinality: 0
+      - name: "ProductsOrder_Details"
+        schema: "test"
+        tableName: "OrderDetails"
+        columnNames:
+          - "ProductID"
+        nonUnique: true
+        indexQualifier: "OrderDetails"
+        type: 3
+        ascOrDesc: "A"
+        cardinality: 0
+      - name: "ProductID"
+        schema: "test"
+        tableName: "OrderDetails"
+        columnNames:
+          - "ProductID"
+        nonUnique: true
+        indexQualifier: "OrderDetails"
+        type: 3
+        ascOrDesc: "A"
+        cardinality: 0
+      - name: "OrderID"
+        schema: "test"
+        tableName: "OrderDetails"
+        columnNames:
+          - "OrderID"
+        nonUnique: true
+        indexQualifier: "OrderDetails"
+        type: 3
+        ascOrDesc: "A"
+        cardinality: 0
+      - name: "PK_Order_Details"
+        schema: "test"
+        tableName: "OrderDetails"
+        columnNames:
+          - "OrderDetailsID"
+        nonUnique: false
+        indexQualifier: "OrderDetails"
+        type: 1
+        ascOrDesc: "A"
+        cardinality: 2155
+    columns:
+      - name: "OrderDetailsID"
+        typeName: "int identity"
+        ordinalPosition: 0
+        primaryKeySequenceId: 1
+        columnDisplaySize: 10
+        scale: 0
+        precision: 10
+        nullable: false
+        autoincrement: false
+        primaryKey: true
+      - name: "OrderID"
+        typeName: "int"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 10
+        scale: 0
+        precision: 10
+        foreignKeys:
+          - name: "FK_Order_Details_Orders"
+            schema: "test"
+            tableName: "OrderDetails"
+            columnName: "OrderID"
+            deleteRule: "3"
+            primaryTableSchema: "test"
+            primaryTableName: "Orders"
+            primaryColumnName: "OrderID"
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "ProductID"
+        typeName: "int"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 10
+        scale: 0
+        precision: 10
+        foreignKeys:
+          - name: "FK_Order_Details_Products"
+            schema: "test"
+            tableName: "OrderDetails"
+            columnName: "ProductID"
+            deleteRule: "3"
+            primaryTableSchema: "test"
+            primaryTableName: "Products"
+            primaryColumnName: "ProductID"
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "UnitPrice"
+        typeName: "money"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 19
+        scale: 4
+        precision: 19
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "Quantity"
+        typeName: "smallint"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 5
+        scale: 0
+        precision: 5
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "Discount"
+        typeName: "real"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 24
+        scale: 0
+        precision: 24
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+  - name: "Orders"
+    type: "TABLE"
+    schema: "test"
+    indices:
+      - schema: "test"
+        tableName: "Orders"
+        columnNames:
+          - null
+        nonUnique: false
+        type: 0
+        cardinality: 830
+      - name: "CustomersOrders"
+        schema: "test"
+        tableName: "Orders"
+        columnNames:
+          - "CustomerID"
+        nonUnique: true
+        indexQualifier: "Orders"
+        type: 3
+        ascOrDesc: "A"
+        cardinality: 0
+      - name: "ShippersOrders"
+        schema: "test"
+        tableName: "Orders"
+        columnNames:
+          - "ShipVia"
+        nonUnique: true
+        indexQualifier: "Orders"
+        type: 3
+        ascOrDesc: "A"
+        cardinality: 0
+      - name: "EmployeesOrders"
+        schema: "test"
+        tableName: "Orders"
+        columnNames:
+          - "EmployeeID"
+        nonUnique: true
+        indexQualifier: "Orders"
+        type: 3
+        ascOrDesc: "A"
+        cardinality: 0
+      - name: "PK_Orders"
+        schema: "test"
+        tableName: "Orders"
+        columnNames:
+          - "OrderID"
+        nonUnique: false
+        indexQualifier: "Orders"
+        type: 1
+        ascOrDesc: "A"
+        cardinality: 830
+      - name: "ShippedDate"
+        schema: "test"
+        tableName: "Orders"
+        columnNames:
+          - "ShippedDate"
+        nonUnique: true
+        indexQualifier: "Orders"
+        type: 3
+        ascOrDesc: "A"
+        cardinality: 0
+      - name: "CustomerID"
+        schema: "test"
+        tableName: "Orders"
+        columnNames:
+          - "CustomerID"
+        nonUnique: true
+        indexQualifier: "Orders"
+        type: 3
+        ascOrDesc: "A"
+        cardinality: 0
+      - name: "ShipPostalCode"
+        schema: "test"
+        tableName: "Orders"
+        columnNames:
+          - "ShipPostalCode"
+        nonUnique: true
+        indexQualifier: "Orders"
+        type: 3
+        ascOrDesc: "A"
+        cardinality: 0
+      - name: "EmployeeID"
+        schema: "test"
+        tableName: "Orders"
+        columnNames:
+          - "EmployeeID"
+        nonUnique: true
+        indexQualifier: "Orders"
+        type: 3
+        ascOrDesc: "A"
+        cardinality: 0
+      - name: "OrderDate"
+        schema: "test"
+        tableName: "Orders"
+        columnNames:
+          - "OrderDate"
+        nonUnique: true
+        indexQualifier: "Orders"
+        type: 3
+        ascOrDesc: "A"
+        cardinality: 0
+    columns:
+      - name: "OrderID"
+        typeName: "int identity"
+        ordinalPosition: 0
+        primaryKeySequenceId: 1
+        columnDisplaySize: 10
+        scale: 0
+        precision: 10
+        nullable: false
+        autoincrement: false
+        primaryKey: true
+      - name: "CustomerID"
+        typeName: "nchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 5
+        scale: 0
+        precision: 5
+        foreignKeys:
+          - name: "FK_Orders_Customers"
+            schema: "test"
+            tableName: "Orders"
+            columnName: "CustomerID"
+            deleteRule: "3"
+            primaryTableSchema: "test"
+            primaryTableName: "Customers"
+            primaryColumnName: "CustomerID"
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "EmployeeID"
+        typeName: "int"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 10
+        scale: 0
+        precision: 10
+        foreignKeys:
+          - name: "FK_Orders_Employees"
+            schema: "test"
+            tableName: "Orders"
+            columnName: "EmployeeID"
+            deleteRule: "3"
+            primaryTableSchema: "test"
+            primaryTableName: "Employees"
+            primaryColumnName: "EmployeeID"
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "OrderDate"
+        typeName: "datetime"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 23
+        scale: 3
+        precision: 23
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "RequiredDate"
+        typeName: "datetime"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 23
+        scale: 3
+        precision: 23
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "ShippedDate"
+        typeName: "datetime"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 23
+        scale: 3
+        precision: 23
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "ShipVia"
+        typeName: "int"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 10
+        scale: 0
+        precision: 10
+        foreignKeys:
+          - name: "FK_Orders_Shippers"
+            schema: "test"
+            tableName: "Orders"
+            columnName: "ShipVia"
+            deleteRule: "3"
+            primaryTableSchema: "test"
+            primaryTableName: "Shippers"
+            primaryColumnName: "ShipperID"
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "Freight"
+        typeName: "money"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 19
+        scale: 4
+        precision: 19
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "ShipName"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 40
+        scale: 0
+        precision: 40
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "ShipAddress"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 60
+        scale: 0
+        precision: 60
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "ShipCity"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 15
+        scale: 0
+        precision: 15
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "ShipRegion"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 15
+        scale: 0
+        precision: 15
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "ShipPostalCode"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 10
+        scale: 0
+        precision: 10
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "ShipCountry"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 15
+        scale: 0
+        precision: 15
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+  - name: "Products"
+    type: "TABLE"
+    schema: "test"
+    indices:
+      - schema: "test"
+        tableName: "Products"
+        columnNames:
+          - null
+        nonUnique: false
+        type: 0
+        cardinality: 77
+      - name: "CategoryID"
+        schema: "test"
+        tableName: "Products"
+        columnNames:
+          - "CategoryID"
+        nonUnique: true
+        indexQualifier: "Products"
+        type: 3
+        ascOrDesc: "A"
+        cardinality: 0
+      - name: "SupplierID"
+        schema: "test"
+        tableName: "Products"
+        columnNames:
+          - "SupplierID"
+        nonUnique: true
+        indexQualifier: "Products"
+        type: 3
+        ascOrDesc: "A"
+        cardinality: 0
+      - name: "SuppliersProducts"
+        schema: "test"
+        tableName: "Products"
+        columnNames:
+          - "SupplierID"
+        nonUnique: true
+        indexQualifier: "Products"
+        type: 3
+        ascOrDesc: "A"
+        cardinality: 0
+      - name: "ProductName"
+        schema: "test"
+        tableName: "Products"
+        columnNames:
+          - "ProductName"
+        nonUnique: true
+        indexQualifier: "Products"
+        type: 3
+        ascOrDesc: "A"
+        cardinality: 0
+      - name: "CategoriesProducts"
+        schema: "test"
+        tableName: "Products"
+        columnNames:
+          - "CategoryID"
+        nonUnique: true
+        indexQualifier: "Products"
+        type: 3
+        ascOrDesc: "A"
+        cardinality: 0
+      - name: "PK_Products"
+        schema: "test"
+        tableName: "Products"
+        columnNames:
+          - "ProductID"
+        nonUnique: false
+        indexQualifier: "Products"
+        type: 1
+        ascOrDesc: "A"
+        cardinality: 77
+    columns:
+      - name: "ProductID"
+        typeName: "int identity"
+        ordinalPosition: 0
+        primaryKeySequenceId: 1
+        columnDisplaySize: 10
+        scale: 0
+        precision: 10
+        nullable: false
+        autoincrement: false
+        primaryKey: true
+      - name: "ProductName"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 40
+        scale: 0
+        precision: 40
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "SupplierID"
+        typeName: "int"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 10
+        scale: 0
+        precision: 10
+        foreignKeys:
+          - name: "FK_Products_Suppliers"
+            schema: "test"
+            tableName: "Products"
+            columnName: "SupplierID"
+            deleteRule: "3"
+            primaryTableSchema: "test"
+            primaryTableName: "Suppliers"
+            primaryColumnName: "SupplierID"
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "CategoryID"
+        typeName: "int"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 10
+        scale: 0
+        precision: 10
+        foreignKeys:
+          - name: "FK_Products_Categories"
+            schema: "test"
+            tableName: "Products"
+            columnName: "CategoryID"
+            deleteRule: "3"
+            primaryTableSchema: "test"
+            primaryTableName: "Categories"
+            primaryColumnName: "CategoryID"
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "QuantityPerUnit"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 20
+        scale: 0
+        precision: 20
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "UnitPrice"
+        typeName: "money"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 19
+        scale: 4
+        precision: 19
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "UnitsInStock"
+        typeName: "smallint"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 5
+        scale: 0
+        precision: 5
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "UnitsOnOrder"
+        typeName: "smallint"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 5
+        scale: 0
+        precision: 5
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "ReorderLevel"
+        typeName: "smallint"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 5
+        scale: 0
+        precision: 5
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "Discontinued"
+        typeName: "bit"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 1
+        scale: 0
+        precision: 1
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+  - name: "Region"
+    type: "TABLE"
+    schema: "test"
+    indices:
+      - schema: "test"
+        tableName: "Region"
+        columnNames:
+          - null
+        nonUnique: false
+        type: 0
+        cardinality: 4
+      - name: "PK_Region"
+        schema: "test"
+        tableName: "Region"
+        columnNames:
+          - "RegionID"
+        nonUnique: false
+        indexQualifier: "Region"
+        type: 3
+        ascOrDesc: "A"
+        cardinality: 0
+    columns:
+      - name: "RegionID"
+        typeName: "int"
+        ordinalPosition: 0
+        primaryKeySequenceId: 1
+        columnDisplaySize: 10
+        scale: 0
+        precision: 10
+        nullable: false
+        autoincrement: false
+        primaryKey: true
+      - name: "RegionDescription"
+        typeName: "nchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 50
+        scale: 0
+        precision: 50
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+  - name: "Shippers"
+    type: "TABLE"
+    schema: "test"
+    indices:
+      - schema: "test"
+        tableName: "Shippers"
+        columnNames:
+          - null
+        nonUnique: false
+        type: 0
+        cardinality: 3
+      - name: "PK_Shippers"
+        schema: "test"
+        tableName: "Shippers"
+        columnNames:
+          - "ShipperID"
+        nonUnique: false
+        indexQualifier: "Shippers"
+        type: 1
+        ascOrDesc: "A"
+        cardinality: 3
+    columns:
+      - name: "ShipperID"
+        typeName: "int identity"
+        ordinalPosition: 0
+        primaryKeySequenceId: 1
+        columnDisplaySize: 10
+        scale: 0
+        precision: 10
+        nullable: false
+        autoincrement: false
+        primaryKey: true
+      - name: "CompanyName"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 40
+        scale: 0
+        precision: 40
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "Phone"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 24
+        scale: 0
+        precision: 24
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+  - name: "Suppliers"
+    type: "TABLE"
+    schema: "test"
+    indices:
+      - schema: "test"
+        tableName: "Suppliers"
+        columnNames:
+          - null
+        nonUnique: false
+        type: 0
+        cardinality: 29
+      - name: "CompanyName"
+        schema: "test"
+        tableName: "Suppliers"
+        columnNames:
+          - "CompanyName"
+        nonUnique: true
+        indexQualifier: "Suppliers"
+        type: 3
+        ascOrDesc: "A"
+        cardinality: 0
+      - name: "PK_Suppliers"
+        schema: "test"
+        tableName: "Suppliers"
+        columnNames:
+          - "SupplierID"
+        nonUnique: false
+        indexQualifier: "Suppliers"
+        type: 1
+        ascOrDesc: "A"
+        cardinality: 29
+      - name: "PostalCode"
+        schema: "test"
+        tableName: "Suppliers"
+        columnNames:
+          - "PostalCode"
+        nonUnique: true
+        indexQualifier: "Suppliers"
+        type: 3
+        ascOrDesc: "A"
+        cardinality: 0
+    columns:
+      - name: "SupplierID"
+        typeName: "int identity"
+        ordinalPosition: 0
+        primaryKeySequenceId: 1
+        columnDisplaySize: 10
+        scale: 0
+        precision: 10
+        nullable: false
+        autoincrement: false
+        primaryKey: true
+      - name: "CompanyName"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 40
+        scale: 0
+        precision: 40
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "ContactName"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 30
+        scale: 0
+        precision: 30
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "ContactTitle"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 30
+        scale: 0
+        precision: 30
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "Address"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 60
+        scale: 0
+        precision: 60
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "City"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 15
+        scale: 0
+        precision: 15
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "Region"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 15
+        scale: 0
+        precision: 15
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "PostalCode"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 10
+        scale: 0
+        precision: 10
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "Country"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 15
+        scale: 0
+        precision: 15
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "Phone"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 24
+        scale: 0
+        precision: 24
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "Fax"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 24
+        scale: 0
+        precision: 24
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "HomePage"
+        typeName: "ntext"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 1073741823
+        scale: 0
+        precision: 1073741823
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+  - name: "Territories"
+    type: "TABLE"
+    schema: "test"
+    indices:
+      - schema: "test"
+        tableName: "Territories"
+        columnNames:
+          - null
+        nonUnique: false
+        type: 0
+        cardinality: 53
+      - name: "PK_Territories"
+        schema: "test"
+        tableName: "Territories"
+        columnNames:
+          - "TerritoryID"
+        nonUnique: false
+        indexQualifier: "Territories"
+        type: 3
+        ascOrDesc: "A"
+        cardinality: 0
+    columns:
+      - name: "TerritoryID"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 1
+        columnDisplaySize: 20
+        scale: 0
+        precision: 20
+        nullable: false
+        autoincrement: false
+        primaryKey: true
+      - name: "TerritoryDescription"
+        typeName: "nchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 50
+        scale: 0
+        precision: 50
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "RegionID"
+        typeName: "int"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 10
+        scale: 0
+        precision: 10
+        foreignKeys:
+          - name: "FK_Territories_Region"
+            schema: "test"
+            tableName: "Territories"
+            columnName: "RegionID"
+            deleteRule: "3"
+            primaryTableSchema: "test"
+            primaryTableName: "Region"
+            primaryColumnName: "RegionID"
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+views:
+  - name: "Alphabetical list of products"
+    type: "VIEW"
+    schema: "test"
+    indices: []
+    columns:
+      - name: "ProductID"
+        typeName: "int"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 10
+        scale: 0
+        precision: 10
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "ProductName"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 40
+        scale: 0
+        precision: 40
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "SupplierID"
+        typeName: "int"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 10
+        scale: 0
+        precision: 10
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "CategoryID"
+        typeName: "int"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 10
+        scale: 0
+        precision: 10
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "QuantityPerUnit"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 20
+        scale: 0
+        precision: 20
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "UnitPrice"
+        typeName: "money"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 19
+        scale: 4
+        precision: 19
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "UnitsInStock"
+        typeName: "smallint"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 5
+        scale: 0
+        precision: 5
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "UnitsOnOrder"
+        typeName: "smallint"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 5
+        scale: 0
+        precision: 5
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "ReorderLevel"
+        typeName: "smallint"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 5
+        scale: 0
+        precision: 5
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "Discontinued"
+        typeName: "bit"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 1
+        scale: 0
+        precision: 1
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "CategoryName"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 15
+        scale: 0
+        precision: 15
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+  - name: "Current Product List"
+    type: "VIEW"
+    schema: "test"
+    indices: []
+    columns:
+      - name: "ProductID"
+        typeName: "int identity"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 10
+        scale: 0
+        precision: 10
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "ProductName"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 40
+        scale: 0
+        precision: 40
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+  - name: "Customer and Suppliers by City"
+    type: "VIEW"
+    schema: "test"
+    indices: []
+    columns:
+      - name: "City"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 15
+        scale: 0
+        precision: 15
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "CompanyName"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 40
+        scale: 0
+        precision: 40
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "ContactName"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 30
+        scale: 0
+        precision: 30
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "Relationship"
+        typeName: "varchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 9
+        scale: 0
+        precision: 9
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+  - name: "Orders Qry"
+    type: "VIEW"
+    schema: "test"
+    indices: []
+    columns:
+      - name: "OrderID"
+        typeName: "int"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 10
+        scale: 0
+        precision: 10
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "CustomerID"
+        typeName: "nchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 5
+        scale: 0
+        precision: 5
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "EmployeeID"
+        typeName: "int"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 10
+        scale: 0
+        precision: 10
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "OrderDate"
+        typeName: "datetime"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 23
+        scale: 3
+        precision: 23
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "RequiredDate"
+        typeName: "datetime"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 23
+        scale: 3
+        precision: 23
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "ShippedDate"
+        typeName: "datetime"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 23
+        scale: 3
+        precision: 23
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "ShipVia"
+        typeName: "int"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 10
+        scale: 0
+        precision: 10
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "Freight"
+        typeName: "money"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 19
+        scale: 4
+        precision: 19
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "ShipName"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 40
+        scale: 0
+        precision: 40
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "ShipAddress"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 60
+        scale: 0
+        precision: 60
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "ShipCity"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 15
+        scale: 0
+        precision: 15
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "ShipRegion"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 15
+        scale: 0
+        precision: 15
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "ShipPostalCode"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 10
+        scale: 0
+        precision: 10
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "ShipCountry"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 15
+        scale: 0
+        precision: 15
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "CompanyName"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 40
+        scale: 0
+        precision: 40
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "Address"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 60
+        scale: 0
+        precision: 60
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "City"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 15
+        scale: 0
+        precision: 15
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "Region"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 15
+        scale: 0
+        precision: 15
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "PostalCode"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 10
+        scale: 0
+        precision: 10
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "Country"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 15
+        scale: 0
+        precision: 15
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+  - name: "Products Above Average Price"
+    type: "VIEW"
+    schema: "test"
+    indices: []
+    columns:
+      - name: "ProductName"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 40
+        scale: 0
+        precision: 40
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "UnitPrice"
+        typeName: "money"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 19
+        scale: 4
+        precision: 19
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+  - name: "Products by Category"
+    type: "VIEW"
+    schema: "test"
+    indices: []
+    columns:
+      - name: "CategoryName"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 15
+        scale: 0
+        precision: 15
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "ProductName"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 40
+        scale: 0
+        precision: 40
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "QuantityPerUnit"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 20
+        scale: 0
+        precision: 20
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "UnitsInStock"
+        typeName: "smallint"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 5
+        scale: 0
+        precision: 5
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "Discontinued"
+        typeName: "bit"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 1
+        scale: 0
+        precision: 1
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+  - name: "Quarterly Orders"
+    type: "VIEW"
+    schema: "test"
+    indices: []
+    columns:
+      - name: "CustomerID"
+        typeName: "nchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 5
+        scale: 0
+        precision: 5
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "CompanyName"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 40
+        scale: 0
+        precision: 40
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "City"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 15
+        scale: 0
+        precision: 15
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+      - name: "Country"
+        typeName: "nvarchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 15
+        scale: 0
+        precision: 15
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+databaseProductName: "Microsoft SQL Server"
+databaseType: "sqlserver"
+operationLevel: "database"

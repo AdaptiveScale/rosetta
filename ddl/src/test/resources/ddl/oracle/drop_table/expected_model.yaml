@@ -1,0 +1,154 @@
+---
+safeMode: false
+tables:
+  - name: "CUSTOMERS"
+    type: "TABLE"
+    schema: "ROSETTA"
+    indices:
+      - schema: "ROSETTA"
+        tableName: "CUSTOMERS"
+        columnNames:
+          - null
+        nonUnique: false
+        type: 0
+        cardinality: 0
+      - name: "SYS_C008315"
+        schema: "ROSETTA"
+        tableName: "CUSTOMERS"
+        columnNames:
+          - "CUSTOMER_ID"
+        nonUnique: false
+        type: 1
+        cardinality: 0
+      - name: "SYS_C008316"
+        schema: "ROSETTA"
+        tableName: "CUSTOMERS"
+        columnNames:
+          - "CUSTOMER_EMAIL"
+        nonUnique: false
+        type: 1
+        cardinality: 0
+    columns:
+      - name: "CUSTOMER_ID"
+        typeName: "NUMBER"
+        ordinalPosition: 0
+        primaryKeySequenceId: 1
+        columnDisplaySize: 10
+        scale: 0
+        precision: 10
+        autoincrement: false
+        primaryKey: true
+        nullable: false
+      - name: "CUSTOMER_NAME"
+        typeName: "VARCHAR2"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 100
+        scale: 0
+        precision: 100
+        autoincrement: false
+        primaryKey: false
+        nullable: false
+      - name: "CUSTOMER_EMAIL"
+        typeName: "VARCHAR2"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 100
+        scale: 0
+        precision: 100
+        autoincrement: false
+        primaryKey: false
+        nullable: true
+      - name: "CUSTOMER_ADDRESS"
+        typeName: "VARCHAR2"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 200
+        scale: 0
+        precision: 200
+        autoincrement: false
+        primaryKey: false
+        nullable: true
+      - name: "CUSTOMER_PHONE"
+        typeName: "VARCHAR2"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 20
+        scale: 0
+        precision: 20
+        autoincrement: false
+        primaryKey: false
+        nullable: true
+  - name: "ORDERS"
+    type: "TABLE"
+    schema: "ROSETTA"
+    indices:
+      - schema: "ROSETTA"
+        tableName: "ORDERS"
+        columnNames:
+          - null
+        nonUnique: false
+        type: 0
+        cardinality: 0
+      - name: "SYS_C008317"
+        schema: "ROSETTA"
+        tableName: "ORDERS"
+        columnNames:
+          - "ORDER_ID"
+        nonUnique: false
+        type: 1
+        cardinality: 0
+    columns:
+      - name: "ORDER_ID"
+        typeName: "NUMBER"
+        ordinalPosition: 0
+        primaryKeySequenceId: 1
+        columnDisplaySize: 10
+        scale: 0
+        precision: 10
+        autoincrement: false
+        primaryKey: true
+        nullable: false
+      - name: "ORDER_DATE"
+        typeName: "DATE"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 7
+        scale: 0
+        precision: 7
+        autoincrement: false
+        primaryKey: false
+        nullable: true
+      - name: "ORDER_TOTAL"
+        typeName: "NUMBER"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 10
+        scale: 2
+        precision: 10
+        autoincrement: false
+        primaryKey: false
+        nullable: true
+      - name: "CUSTOMER_ID"
+        typeName: "NUMBER"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 10
+        scale: 0
+        precision: 10
+        foreignKeys:
+          - name: "FK_CUSTOMER_ID"
+            schema: "ROSETTA"
+            tableName: "ORDERS"
+            columnName: "CUSTOMER_ID"
+            deleteRule: "1"
+            primaryTableSchema: "ROSETTA"
+            primaryTableName: "CUSTOMERS"
+            primaryColumnName: "CUSTOMER_ID"
+        autoincrement: false
+        primaryKey: false
+        nullable: true
+views: []
+databaseProductName: "Oracle"
+databaseType: "oracle"
+operationLevel: "database"

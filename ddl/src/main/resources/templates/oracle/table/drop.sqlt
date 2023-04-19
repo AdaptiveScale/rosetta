@@ -1,0 +1,2 @@
+ALTER SESSION SET CURRENT_SCHEMA = "[(${schemaName})]";
+DROP TABLE "[(${tableName})]";
