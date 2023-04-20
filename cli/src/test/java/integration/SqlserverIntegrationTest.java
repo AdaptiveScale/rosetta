@@ -102,7 +102,7 @@ public class SqlserverIntegrationTest {
             "    TestNumeric numeric(18, 4), " +
             "    TestSmallMoney smallmoney, " +
             "    TestMoney money, " +
-            "    TestFloat float(10), " +
+            "    TestFloat float, " +
             "    TestReal real, " +
             "    TestIntIdentity int identity, " +
             "  PRIMARY KEY (TestInt) " +
@@ -240,7 +240,7 @@ public class SqlserverIntegrationTest {
     @Order(1)
     void textExtract() throws Exception {
         Database sourceModel = getDatabaseModel(mssqlserver);
-        assertSame("Comparing table count.", 8, sourceModel.getTables().size());
+        assertSame("Comparing table count.", 16, sourceModel.getTables().size());
         assertSame("Comparing Categories table column count.", 4, getTableColumns(sourceModel, "Categories").size());
     }
 
@@ -267,8 +267,6 @@ public class SqlserverIntegrationTest {
     @Test
     @DisplayName("Test apply changes")
     @Order(3)
-//    @Ignore
-//    @Disabled
     void testApply() throws Exception {
         Database sourceModel = getDatabaseModel(mssqlserver);
         ObjectMapper objectMapper = new ObjectMapper();
@@ -300,24 +298,39 @@ public class SqlserverIntegrationTest {
             if(table.getName().equals("date_time")){
                 table.getColumns().forEach(column -> {
                    switch (column.getName()){
-                       case "c_date":
-                           assertEquals("","DATE", column.getTypeName());
-                           break;
-                       case "c_year":
-                           assertEquals("","YEAR", column.getTypeName());
-                           break;
-                       case "c_time":
-                           assertEquals("","TIME", column.getTypeName());
-                           break;
-                       case "c_timest":
-                           assertEquals("","TIMESTAMP", column.getTypeName());
-                           break;
-                       case "c_datetime":
-                           assertEquals("","DATETIME", column.getTypeName());
-                           break;
-                       case "user_date":
-                           assertEquals("","DATE",column.getTypeName());
+                       case "TestDateTime":
+                           assertEquals("","datetime", column.getTypeName());
                            assertEquals("",true, column.isPrimaryKey());
+                           break;
+                       case "TestDateTime2":
+                           assertEquals("","datetime2", column.getTypeName());
+                           break;
+                       case "TestDateTimeOffset":
+                           assertEquals("","datetimeoffset", column.getTypeName());
+                           break;
+                       case "TestImage":
+                           assertEquals("","image", column.getTypeName());
+                           break;
+                       case "TestUniqueIdentifier":
+                           assertEquals("","uniqueidentifier", column.getTypeName());
+                           break;
+                       case "TestXml":
+                           assertEquals("","xml",column.getTypeName());
+                           break;
+                       case "TestHierarchyId":
+                           assertEquals("","hierarchyid", column.getTypeName());
+                           break;
+                       case "TestSqlVariant":
+                           assertEquals("","sql_variant", column.getTypeName());
+                           break;
+                       case "TestGeometry":
+                           assertEquals("","geometry",column.getTypeName());
+                           break;
+                       case "TestGeography":
+                           assertEquals("","geography", column.getTypeName());
+                           break;
+                       case "TestRowVersion":
+                           assertEquals("","rowversion",column.getTypeName());
                            break;
                    }
                 });
@@ -325,102 +338,72 @@ public class SqlserverIntegrationTest {
             if(table.getName().equals("numeric")){
                 table.getColumns().forEach(column -> {
                     switch (column.getName()){
-                        case "c_bigint":
-                            assertEquals("","BIGINT", column.getTypeName());
+                        case "TestBit":
+                            assertEquals("","bit", column.getTypeName());
                             break;
-                        case "c_boolean":
-                            assertEquals("","BIT", column.getTypeName());
+                        case "TestTinyInt":
+                            assertEquals("","tinyint", column.getTypeName());
                             break;
-                        case "c_decimal":
-                            assertEquals("","DECIMAL", column.getTypeName());
+                        case "TestSmallInt":
+                            assertEquals("","smallint", column.getTypeName());
                             break;
-                        case "c_float":
-                            assertEquals("","FLOAT", column.getTypeName());
-                            break;
-                        case "c_integer":
-                            assertEquals("","INT", column.getTypeName());
-                            break;
-                        case "mediumint_unsigned":
-                            assertEquals("","MEDIUMINT UNSIGNED", column.getTypeName());
-                            break;
-                        case "c_smallint":
-                            assertEquals("","SMALLINT", column.getTypeName());
-                            break;
-                        case "smallint_unsigned":
-                            assertEquals("","SMALLINT UNSIGNED", column.getTypeName());
-                            break;
-                        case "tinyint_unsigned":
-                            assertEquals("","TINYINT UNSIGNED", column.getTypeName());
-                            break;
-                        case "c_tinyint":
-                            assertEquals("","TINYINT", column.getTypeName());
-                            break;
-                        case "c_mediumint":
-                            assertEquals("","MEDIUMINT", column.getTypeName());
-                            break;
-                        case "c_int":
-                            assertEquals("", "INT", column.getTypeName());
-                            break;
-                        case "int_usnigned":
-                            assertEquals("", "INT UNSIGNED", column.getTypeName());
-                            break;
-                        case "c_double":
-                            assertEquals("", "DOUBLE", column.getTypeName());
-                            break;
-                        case "c_bool":
-                            assertEquals("","BIT", column.getTypeName());
-                            break;
-                        case "useri_id":
-                            assertEquals("","INT", column.getTypeName());
+                        case "TestInt":
+                            assertEquals("","int", column.getTypeName());
                             assertEquals("", true, column.isPrimaryKey());
+                            break;
+                        case "TestBigInt":
+                            assertEquals("","bigint", column.getTypeName());
+                            break;
+                        case "TestDecimal":
+                            assertEquals("","decimal", column.getTypeName());
+                            break;
+                        case "TestNumeric":
+                            assertEquals("","numeric", column.getTypeName());
+                            break;
+                        case "TestSmallMoney":
+                            assertEquals("","smallmoney", column.getTypeName());
+                            break;
+                        case "TestMoney":
+                            assertEquals("","money", column.getTypeName());
+                            break;
+                        case "TestFloat":
+                            assertEquals("","float", column.getTypeName());
+                            break;
+                        case "TestReal":
+                            assertEquals("","real", column.getTypeName());
+                            break;
+                        case "TestIntIdentity":
+                            assertEquals("", "int identity", column.getTypeName());
+                            break;
                     }
                 });
             }
             if (table.getName().equals("string_binary")){
                 table.getColumns().forEach(column -> {
                     switch (column.getName()){
-                        case "c_varchar":
-                            assertEquals("","VARCHAR", column.getTypeName());
+                        case "TestChar":
+                            assertEquals("","char", column.getTypeName());
                             break;
-                        case "c_character":
-                            assertEquals("","CHAR", column.getTypeName());
+                        case "TestVarChar":
+                            assertEquals("","varchar", column.getTypeName());
                             break;
-                        case "c_binary":
-                            assertEquals("","BINARY", column.getTypeName());
+                        case "TestText":
+                            assertEquals("","text", column.getTypeName());
                             break;
-                        case "c_blob":
-                            assertEquals("","BLOB", column.getTypeName());
+                        case "TestNChar":
+                            assertEquals("","nchar", column.getTypeName());
                             break;
-                        case "c_varbin":
-                            assertEquals("","VARBINARY", column.getTypeName());
+                        case "TestNVarChar":
+                            assertEquals("","nvarchar", column.getTypeName());
                             break;
-                        case "c_tinyblob":
-                            assertEquals("","TINYBLOB", column.getTypeName());
+                        case "TestNText":
+                            assertEquals("","ntext", column.getTypeName());
                             break;
-                        case "c_text":
-                            assertEquals("","TEXT", column.getTypeName());
+                        case "TestBinary":
+                            assertEquals("","binary", column.getTypeName());
                             break;
-                        case "c_medtext":
-                            assertEquals("","MEDIUMTEXT", column.getTypeName());
-                            break;
-                        case "c_medblob":
-                            assertEquals("","MEDIUMBLOB", column.getTypeName());
-                            break;
-                        case "c_longtext":
-                            assertEquals("","LONGTEXT", column.getTypeName());
-                            break;
-                        case "c_longblob":
-                            assertEquals("","LONGBLOB", column.getTypeName());
-                            break;
-                        case "c_longvch":
-                            assertEquals("","MEDIUMTEXT", column.getTypeName());
-                            break;
-                        case "VCH_nosize":
-                            assertEquals("","VARCHAR", column.getTypeName());
-                            break;
-                        case "c_name":
-                            assertEquals("","CHAR", column.getTypeName());
-                            assertEquals("",true, column.isPrimaryKey());
+                        case "TestVarBinary":
+                            assertEquals("","varbinary", column.getTypeName());
                             break;
                     }
                 });
@@ -428,7 +411,7 @@ public class SqlserverIntegrationTest {
             if (table.getName().equals("user")){
                 table.getColumns().forEach(column -> {
                     if ("user_addr".equals(column.getName())) {
-                        assertEquals("", "VARCHAR", column.getTypeName());
+                        assertEquals("", "varchar", column.getTypeName());
                         assertEquals("", true, column.isPrimaryKey());
                     }
                 });
@@ -436,7 +419,7 @@ public class SqlserverIntegrationTest {
             if (table.getName().equals("user1")){
                 table.getColumns().forEach(column -> {
                     if ("user_salary".equals(column.getName())) {
-                        assertEquals("", "DECIMAL", column.getTypeName());
+                        assertEquals("", "decimal", column.getTypeName());
                         assertEquals("", true, column.isPrimaryKey());
                     }
                 });
@@ -444,7 +427,7 @@ public class SqlserverIntegrationTest {
             if (table.getName().equals("user2")){
                 table.getColumns().forEach(column -> {
                     if ("student_id".equals(column.getName())) {
-                        assertEquals("", "BIGINT UNSIGNED", column.getTypeName());
+                        assertEquals("", "int identity", column.getTypeName());
                         assertEquals("", true, column.isPrimaryKey());
                     }
                 });
@@ -465,12 +448,6 @@ public class SqlserverIntegrationTest {
                 table.getColumns().forEach(column -> {
                     switch (column.getName()) {
                         case "user_id":
-                            assertEquals("", 1L, column.getForeignKeys().size());
-                            break;
-                        case "name_t":
-                            assertEquals("", 1L, column.getForeignKeys().size());
-                            break;
-                        case "useri_date":
                             assertEquals("", 1L, column.getForeignKeys().size());
                             break;
                         case "user_address":
