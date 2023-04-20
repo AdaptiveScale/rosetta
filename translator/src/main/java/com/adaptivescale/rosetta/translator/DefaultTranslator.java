@@ -42,14 +42,13 @@ public class DefaultTranslator implements Translator<Database, Database> {
 
 
     private Column translateColumn(Column column) {
-        TranslationMatrix translationMatrix = TranslationMatrix.getInstance();
-        TranslationModel translationModel = translationMatrix.findBySourceTypeAndSourceColumnTypeAndTargetType(sourceDatabaseName, column.getTypeName(), targetDatabaseName);
+        TranslationModel translationModel = TranslationMatrix.getInstance().findBySourceTypeAndSourceColumnTypeAndTargetType(sourceDatabaseName, column.getTypeName(), targetDatabaseName);
 
         if (translationModel == null) {
             throw new RuntimeException("There is no match for column name: " + column.getName() + " and type: " + column.getTypeName() + ".");
         }
 
-        List<TranslationAttributeModel> translationAttributes = translationMatrix.findByTranslationAttributesByTranslationIds(translationModel.getId());
+        List<TranslationAttributeModel> translationAttributes = TranslationMatrix.getInstance().findByTranslationAttributesByTranslationIds(translationModel.getId());
         translationModel.setAttributes(translationAttributes);
 
         try {
