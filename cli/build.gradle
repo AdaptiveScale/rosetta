@@ -38,7 +38,8 @@ dependencies {
     testImplementation 'org.postgresql:postgresql:42.5.0'
     testImplementation "org.testcontainers:mssqlserver:1.18.0"
     testImplementation 'com.microsoft.sqlserver:mssql-jdbc:12.2.0.jre11'
-
+    testImplementation "org.testcontainers:db2:1.18.0"
+    testImplementation 'com.ibm.db2:jcc:11.5.8.0'
 
     testImplementation group: 'com.github.stefanbirkner', name: 'system-rules', version: '1.19.0'
     testImplementation group: 'org.junit-pioneer', name: 'junit-pioneer', version: '1.8.0'
