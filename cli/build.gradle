@@ -38,6 +38,8 @@ dependencies {
     testImplementation 'org.postgresql:postgresql:42.5.0'
     testImplementation "org.testcontainers:mssqlserver:1.18.0"
     testImplementation 'com.microsoft.sqlserver:mssql-jdbc:12.2.0.jre11'
+    testImplementation "org.testcontainers:oracle-xe:1.18.0"
+    testImplementation 'com.oracle.database.jdbc:ojdbc8:19.6.0.0'
 
 
     testImplementation group: 'com.github.stefanbirkner', name: 'system-rules', version: '1.19.0'
