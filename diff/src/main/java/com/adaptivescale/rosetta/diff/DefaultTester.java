@@ -15,7 +15,7 @@ public class DefaultTester implements Diff<List<String>, Database, Database> {
     private static final String COLUMN_REMOVED_FORMAT = "Column '%s' in table '%s' exists in the model, but it does not exist in the target database.";
     private static final String COLUMN_ADDED_FORMAT = "Column '%s' in table '%s' does not exist in the model, but it exists in the target database.";
 
-    private static final String COLUMN_FOREIGN_KEY_CHANGED = "Foreign Key Changed: FK '%s' on Column '%s' in table '%s' changed '%s'. Old value: '%s', new value: '%s'";
+    private static final String COLUMN_FOREIGN_KEY_CHANGED = "Foreign Key Changed: FK '%s' on Column '%s' in table '%s' changed '%s'. New value: '%s', old value: '%s'";
     private static final String COLUMN_FOREIGN_KEY_REMOVED = "ForeignKey '%s' on Column '%s' in table '%s' exists in the model, but it does not exist in the target database.";
     private static final String COLUMN_FOREIGN_KEY_ADDED = "ForeignKey '%s' on Column '%s' in table '%s' does not exist in the model, but it exists in the target database.";
 
