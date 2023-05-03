@@ -12,7 +12,7 @@ public class Database {
     private Collection<View> views = new ArrayList<>();
     private String databaseProductName;
     private String databaseType;
-    private OperationLevelEnum operationLevel = OperationLevelEnum.database;
+    private OperationLevelEnum operationLevel = OperationLevelEnum.schema;
 
     public Collection<Table> getTables() {
         return tables;
