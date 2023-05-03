@@ -20,6 +20,12 @@ public class AssertionSqlGeneratorFactory {
             return new DefaultAssertionSqlGenerator();
         } else if ("spanner".equals(connection.getDbType())) {
             return new SpannerAssertionSqlGenerator();
+        } else if ("sqlserver".equals(connection.getDbType())) {
+            return new DefaultAssertionSqlGenerator();
+        } else if ("oracle".equals(connection.getDbType())) {
+            return new DefaultAssertionSqlGenerator();
+        } else if ("db2".equals(connection.getDbType())) {
+            return new DefaultAssertionSqlGenerator();
         }
         String msg = String.format("Database type '%s' not supported for assertion testing.", connection.getDbType());
         log.error(msg);

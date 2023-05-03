@@ -471,10 +471,10 @@ Example:
 ```
 There are changes between local model and targeted source
 Table Changed: Table 'actor' columns changed
-Column Changed: Column 'actor_id' in table 'actor' changed 'Precision'. Old value: '1', new value: '5'
-Column Changed: Column 'actor_id' in table 'actor' changed 'Autoincrement'. Old value: 'true', new value: 'false'
-Column Changed: Column 'actor_id' in table 'actor' changed 'Primary key'. Old value: 'false', new value: 'true'
-Column Changed: Column 'actor_id' in table 'actor' changed 'Nullable'. Old value: 'true', new value: 'false'
+Column Changed: Column 'actor_id' in table 'actor' changed 'Precision'. New value: '1', old value: '5'
+Column Changed: Column 'actor_id' in table 'actor' changed 'Autoincrement'. New value: 'true', old value: 'false'
+Column Changed: Column 'actor_id' in table 'actor' changed 'Primary key'. New value: 'false', old value: 'true'
+Column Changed: Column 'actor_id' in table 'actor' changed 'Nullable'. New value: 'true', old value: 'false'
 Table Added: Table 'address'
 ```
 
@@ -649,7 +649,7 @@ In `model.yaml` you can find the attribute `safeMode` which is by default disabl
 `apply` command, set `safeMode: true`.
 
 ### Operation level
-In `model.yaml` you can find the attribute `operationLevel` which is by default set to `database`. If you want to apply changes on to schemas in your model instead of the whole database in 
+In `model.yaml` you can find the attribute `operationLevel` which is by default set to `schema`. If you want to apply changes on to database level in your model instead of the specific schema in 
 `apply` command, set `operationLevel: schema`.
 
 ## Copyright and License Information

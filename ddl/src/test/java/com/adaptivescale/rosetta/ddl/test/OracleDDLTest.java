@@ -22,10 +22,10 @@ public class OracleDDLTest {
         String ddl = generateDDL("clean_database");
         Assertions.assertEquals(("\n" +
                 "ALTER SESSION SET CURRENT_SCHEMA = \"ROSETTA\";\n" +
-                "CREATE TABLE \"CUSTOMERS\"(\"CUSTOMER_ID\" NUMBER NOT NULL , \"CUSTOMER_NAME\" VARCHAR2 NOT NULL , \"CUSTOMER_EMAIL\" VARCHAR2, \"CUSTOMER_ADDRESS\" VARCHAR2, \"CUSTOMER_PHONE\" VARCHAR2, PRIMARY KEY (\"CUSTOMER_ID\"));\n" +
+                "CREATE TABLE \"CUSTOMERS\"(\"CUSTOMER_ID\" NUMBER(10) NOT NULL , \"CUSTOMER_NAME\" VARCHAR2(100) NOT NULL , \"CUSTOMER_EMAIL\" VARCHAR2(100), \"CUSTOMER_ADDRESS\" VARCHAR2(200), \"CUSTOMER_PHONE\" VARCHAR2(20), PRIMARY KEY (\"CUSTOMER_ID\"));\n" +
                 "\n" +
                 "ALTER SESSION SET CURRENT_SCHEMA = \"ROSETTA\";\n" +
-                "CREATE TABLE \"ORDERS\"(\"ORDER_ID\" NUMBER NOT NULL , \"ORDER_DATE\" DATE, \"ORDER_TOTAL\" NUMBER, \"CUSTOMER_ID\" NUMBER, PRIMARY KEY (\"ORDER_ID\"));\n" +
+                "CREATE TABLE \"ORDERS\"(\"ORDER_ID\" NUMBER(10) NOT NULL , \"ORDER_DATE\" DATE, \"ORDER_TOTAL\" NUMBER(10), \"CUSTOMER_ID\" NUMBER(10), PRIMARY KEY (\"ORDER_ID\"));\n" +
                 "ALTER SESSION SET CURRENT_SCHEMA = \"ROSETTA\";\n" +
                 "ALTER TABLE \"ORDERS\"\n" +
                 "ADD CONSTRAINT \"FK_CUSTOMER_ID\"\n" +
@@ -35,7 +35,7 @@ public class OracleDDLTest {
                 "\n" +
                 "\n" +
                 "ALTER SESSION SET CURRENT_SCHEMA = \"ROSETTA\";\n" +
-                "CREATE TABLE \"ORDER_ITEMS\"(\"ITEM_ID\" NUMBER NOT NULL , \"ORDER_ID\" NUMBER, \"PRODUCT_NAME\" VARCHAR2, \"QUANTITY\" NUMBER, \"PRICE_PER_UNIT\" NUMBER, PRIMARY KEY (\"ITEM_ID\"));\n" +
+                "CREATE TABLE \"ORDER_ITEMS\"(\"ITEM_ID\" NUMBER(10) NOT NULL , \"ORDER_ID\" NUMBER(10), \"PRODUCT_NAME\" VARCHAR2(100), \"QUANTITY\" NUMBER(5), \"PRICE_PER_UNIT\" NUMBER(10), PRIMARY KEY (\"ITEM_ID\"));\n" +
                 "ALTER SESSION SET CURRENT_SCHEMA = \"ROSETTA\";\n" +
                 "ALTER TABLE \"ORDER_ITEMS\"\n" +
                 "ADD CONSTRAINT \"FK_ORDER_ID\"\n" +
@@ -48,7 +48,7 @@ public class OracleDDLTest {
     public void addTable() throws IOException {
         String ddl = generateDDL("add_table");
         Assertions.assertEquals(("ALTER SESSION SET CURRENT_SCHEMA = \"ROSETTA\";\n" +
-                "CREATE TABLE \"ORDER_ITEMS_NEW\"(\"ITEM_ID\" NUMBER NOT NULL , \"ORDER_ID\" NUMBER, \"PRODUCT_NAME\" VARCHAR2, \"QUANTITY\" NUMBER, \"PRICE_PER_UNIT\" NUMBER, PRIMARY KEY (\"ITEM_ID\"));\n" +
+                "CREATE TABLE \"ORDER_ITEMS_NEW\"(\"ITEM_ID\" NUMBER(10) NOT NULL , \"ORDER_ID\" NUMBER(10), \"PRODUCT_NAME\" VARCHAR2(100), \"QUANTITY\" NUMBER(5), \"PRICE_PER_UNIT\" NUMBER(10), PRIMARY KEY (\"ITEM_ID\"));\n" +
                 "ALTER SESSION SET CURRENT_SCHEMA = \"ROSETTA\";\n" +
                 "ALTER TABLE \"ORDER_ITEMS\"\n" +
                 "ADD CONSTRAINT \"FK_ORDER_ID\"\n" +
@@ -68,7 +68,7 @@ public class OracleDDLTest {
         String ddl = generateDDL("add_column");
         Assertions.assertEquals("ALTER SESSION SET CURRENT_SCHEMA = \"ROSETTA\";\n" +
                 "ALTER TABLE \"ORDER_ITEMS\"\n" +
-                "ADD \"QUANTITY_NEW\" NUMBER;", ddl);
+                "ADD \"QUANTITY_NEW\" NUMBER(5);", ddl);
     }
 
     @Test
@@ -76,7 +76,7 @@ public class OracleDDLTest {
         String ddl = generateDDL("add_column_with_foreign_key");
         Assertions.assertEquals(("ALTER SESSION SET CURRENT_SCHEMA = \"ROSETTA\";\n" +
                 "ALTER TABLE \"ORDERS\"\n" +
-                "ADD \"CUSTOMER_ID_NEW\" NUMBER;\r" +
+                "ADD \"CUSTOMER_ID_NEW\" NUMBER(10);\r" +
                 "ALTER SESSION SET CURRENT_SCHEMA = \"ROSETTA\";\r" +
                 "ALTER TABLE \"ORDERS\"\n" +
                 "ADD CONSTRAINT \"FK_CUSTOMER_ID_NEW\"\n" +
@@ -89,7 +89,7 @@ public class OracleDDLTest {
         String ddl = generateDDL("add_column_as_primary_key");
         Assertions.assertEquals(("ALTER SESSION SET CURRENT_SCHEMA = \"ROSETTA\";\n" +
                 "ALTER TABLE \"ORDER_ITEMS\"\n" +
-                "ADD \"ITEM_ID_2\" NUMBER NOT NULL ;\n" +
+                "ADD \"ITEM_ID_2\" NUMBER(10) NOT NULL ;\n" +
                 "ALTER SESSION SET CURRENT_SCHEMA = \"ROSETTA\";\n" +
                 "ALTER TABLE \"ORDER_ITEMS\"\n" +
                 "DROP PRIMARY KEY;\n" +
