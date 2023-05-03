@@ -40,7 +40,8 @@ dependencies {
     testImplementation 'com.microsoft.sqlserver:mssql-jdbc:12.2.0.jre11'
     testImplementation "org.testcontainers:oracle-xe:1.18.0"
     testImplementation 'com.oracle.database.jdbc:ojdbc8:19.6.0.0'
-
+    testImplementation "org.testcontainers:db2:1.18.0"
+    testImplementation 'com.ibm.db2:jcc:11.5.8.0'
 
     testImplementation group: 'com.github.stefanbirkner', name: 'system-rules', version: '1.19.0'
     testImplementation group: 'org.junit-pioneer', name: 'junit-pioneer', version: '1.8.0'
