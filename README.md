@@ -471,10 +471,10 @@ Example:
 ```
 There are changes between local model and targeted source
 Table Changed: Table 'actor' columns changed
-Column Changed: Column 'actor_id' in table 'actor' changed 'Precision'. Old value: '1', new value: '5'
-Column Changed: Column 'actor_id' in table 'actor' changed 'Autoincrement'. Old value: 'true', new value: 'false'
-Column Changed: Column 'actor_id' in table 'actor' changed 'Primary key'. Old value: 'false', new value: 'true'
-Column Changed: Column 'actor_id' in table 'actor' changed 'Nullable'. Old value: 'true', new value: 'false'
+Column Changed: Column 'actor_id' in table 'actor' changed 'Precision'. New value: '1', old value: '5'
+Column Changed: Column 'actor_id' in table 'actor' changed 'Autoincrement'. New value: 'true', old value: 'false'
+Column Changed: Column 'actor_id' in table 'actor' changed 'Primary key'. New value: 'false', old value: 'true'
+Column Changed: Column 'actor_id' in table 'actor' changed 'Nullable'. New value: 'true', old value: 'false'
 Table Added: Table 'address'
 ```
 
