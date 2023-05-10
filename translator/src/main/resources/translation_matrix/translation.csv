@@ -710,10 +710,10 @@
 710;;sqlserver;;bit;;snowflake;;byteint
 711;;sqlserver;;decimal;;snowflake;;decimal
 712;;sqlserver;;int;;snowflake;;int
-713;;sqlserver;;money;;snowflake;;number(16,4)
+713;;sqlserver;;money;;snowflake;;number
 714;;sqlserver;;numeric;;snowflake;;numeric
 715;;sqlserver;;smallint;;snowflake;;smallint
-716;;sqlserver;;smallmoney;;snowflake;;number(6,4)
+716;;sqlserver;;smallmoney;;snowflake;;number
 717;;sqlserver;;tinyint;;snowflake;;tinyint
 718;;sqlserver;;float;;snowflake;;float
 719;;sqlserver;;real;;snowflake;;real
@@ -756,10 +756,10 @@
 756;;sqlserver;;bit;;db2;;smallint
 757;;sqlserver;;decimal;;db2;;decimal
 758;;sqlserver;;int;;db2;;int
-759;;sqlserver;;money;;db2;;numeric(16,4)
+759;;sqlserver;;money;;db2;;numeric
 760;;sqlserver;;numeric;;db2;;numeric
 761;;sqlserver;;smallint;;db2;;smallint
-762;;sqlserver;;smallmoney;;db2;;numeric(6,4)
+762;;sqlserver;;smallmoney;;db2;;numeric
 763;;sqlserver;;tinyint;;db2;;smallint
 764;;sqlserver;;float;;db2;;decfloat
 765;;sqlserver;;real;;db2;;real
@@ -809,10 +809,10 @@
 809;;db2;;graphic;;oracle;;nchar
 810;;db2;;vargraphic;;oracle;;nvarchar2
 811;;db2;;blob;;oracle;;blob
-812;;db2;;smallint;;oracle;;number(5)
-813;;db2;;integer;;oracle;;number(10)
-814;;db2;;int;;oracle;;number(10)
-815;;db2;;bigint;;oracle;;number(19)
+812;;db2;;smallint;;oracle;;number
+813;;db2;;integer;;oracle;;number
+814;;db2;;int;;oracle;;number
+815;;db2;;bigint;;oracle;;number
 816;;db2;;decimal;;oracle;;number
 817;;db2;;numeric;;oracle;;number
 818;;db2;;decfloat;;oracle;;binary_double
@@ -845,18 +845,18 @@
 845;;postgres;;smallint;;sqlserver;;smallint
 846;;postgres;;integer;;sqlserver;;int
 847;;postgres;;bigint;;sqlserver;;bigint
-848;;postgres;;decimal;;sqlserver;;decimal(p, s)
-849;;postgres;;numeric;;sqlserver;;numeric(p, s)
+848;;postgres;;decimal;;sqlserver;;decimal
+849;;postgres;;numeric;;sqlserver;;numeric
 850;;postgres;;real;;sqlserver;;real
-851;;postgres;;double precision;;sqlserver;;float(53)
-852;;postgres;;smallserial;;sqlserver;;smallint identity(1,1)
-853;;postgres;;serial;;sqlserver;;int identity(1,1)
-854;;postgres;;bigserial;;sqlserver;;bigint identity(1,1)
+851;;postgres;;double precision;;sqlserver;;float
+852;;postgres;;smallserial;;sqlserver;;smallint identity
+853;;postgres;;serial;;sqlserver;;int identity
+854;;postgres;;bigserial;;sqlserver;;bigint identity
 855;;postgres;;boolean;;sqlserver;;bit
-856;;postgres;;text;;sqlserver;;varchar(max)
-857;;postgres;;varchar;;sqlserver;;varchar(n)
-858;;postgres;;char;;sqlserver;;char(n)
-859;;postgres;;bytea;;sqlserver;;varbinary(max)
+856;;postgres;;text;;sqlserver;;varchar
+857;;postgres;;varchar;;sqlserver;;varchar
+858;;postgres;;char;;sqlserver;;char
+859;;postgres;;bytea;;sqlserver;;varbinary
 860;;postgres;;date;;sqlserver;;date
 861;;postgres;;time;;sqlserver;;time
 862;;postgres;;timestamp;;sqlserver;;datetime2
@@ -883,20 +883,20 @@
 883;;postgres;;geometry;;sqlserver;;n/a
 884;;postgres;;geography;;sqlserver;;n/a
 885;;postgres;;citext;;sqlserver;;n/a
-886;;postgres;;smallint;;oracle;;number(5,0)
-887;;postgres;;integer;;oracle;;number(10,0)
-888;;postgres;;bigint;;oracle;;number(19,0)
-889;;postgres;;decimal;;oracle;;number(p,s)
-890;;postgres;;numeric;;oracle;;number(p,s)
+886;;postgres;;smallint;;oracle;;number
+887;;postgres;;integer;;oracle;;number
+888;;postgres;;bigint;;oracle;;number
+889;;postgres;;decimal;;oracle;;number
+890;;postgres;;numeric;;oracle;;number
 891;;postgres;;real;;oracle;;binary_float
 892;;postgres;;double precision;;oracle;;binary_double
-893;;postgres;;smallserial;;oracle;;number(5,0)
-894;;postgres;;serial;;oracle;;number(10,0)
-895;;postgres;;bigserial;;oracle;;number(19,0)
-896;;postgres;;boolean;;oracle;;char(1)
+893;;postgres;;smallserial;;oracle;;number
+894;;postgres;;serial;;oracle;;number
+895;;postgres;;bigserial;;oracle;;number
+896;;postgres;;boolean;;oracle;;char
 897;;postgres;;text;;oracle;;clob
-898;;postgres;;varchar;;oracle;;varchar2(n)
-899;;postgres;;char;;oracle;;char(n)
+898;;postgres;;varchar;;oracle;;varchar2
+899;;postgres;;char;;oracle;;char
 900;;postgres;;bytea;;oracle;;blob
 901;;postgres;;date;;oracle;;date
 902;;postgres;;time;;oracle;;date
@@ -912,32 +912,32 @@
 912;;postgres;;inet;;oracle;;n/a
 913;;postgres;;cidr;;oracle;;n/a
 914;;postgres;;macaddr;;oracle;;n/a
-915;;postgres;;uuid;;oracle;;raw(16)
+915;;postgres;;uuid;;oracle;;raw
 916;;postgres;;xml;;oracle;;xmltype
 917;;postgres;;json;;oracle;;clob
 918;;postgres;;jsonb;;oracle;;clob
 919;;postgres;;array;;oracle;;n/a
-920;;postgres;;enum;;oracle;;varchar2(n)
+920;;postgres;;enum;;oracle;;varchar2
 921;;postgres;;tsvector;;oracle;;n/a
 922;;postgres;;tsquery;;oracle;;n/a
 923;;postgres;;box2d;;oracle;;n/a
 924;;postgres;;geometry;;oracle;;n/a
 925;;postgres;;geography;;oracle;;n/a
-926;;postgres;;citext;;oracle;;varchar2(n)
+926;;postgres;;citext;;oracle;;varchar2
 927;;postgres;;smallint;;db2;;smallint
 928;;postgres;;integer;;db2;;integer
 929;;postgres;;bigint;;db2;;bigint
-930;;postgres;;decimal;;db2;;decimal(p,s)
-931;;postgres;;numeric;;db2;;decimal(p,s)
+930;;postgres;;decimal;;db2;;decimal
+931;;postgres;;numeric;;db2;;decimal
 932;;postgres;;real;;db2;;real
 933;;postgres;;double precision;;db2;;double
-934;;postgres;;smallserial;;db2;;integer generated always as identity
-935;;postgres;;serial;;db2;;bigint generated always as identity
-936;;postgres;;bigserial;;db2;;decimal(20,0) generated always as identity
-937;;postgres;;boolean;;db2;;char(1)
+934;;postgres;;smallserial;;db2;;integer
+935;;postgres;;serial;;db2;;bigint
+936;;postgres;;bigserial;;db2;;decimal
+937;;postgres;;boolean;;db2;;char
 938;;postgres;;text;;db2;;clob
-939;;postgres;;varchar;;db2;;varchar(n)
-940;;postgres;;char;;db2;;char(n)
+939;;postgres;;varchar;;db2;;varchar
+940;;postgres;;char;;db2;;char
 941;;postgres;;bytea;;db2;;blob
 942;;postgres;;date;;db2;;date
 943;;postgres;;time;;db2;;time
@@ -953,32 +953,32 @@
 953;;postgres;;inet;;db2;;n/a
 954;;postgres;;cidr;;db2;;n/a
 955;;postgres;;macaddr;;db2;;n/a
-956;;postgres;;uuid;;db2;;char(16) for UUID or char(36) for UUID-CHAR
+956;;postgres;;uuid;;db2;;varchar
 957;;postgres;;xml;;db2;;xml
 958;;postgres;;json;;db2;;clob
 959;;postgres;;jsonb;;db2;;clob
 960;;postgres;;array;;db2;;n/a
-961;;postgres;;enum;;db2;;varchar(n)
+961;;postgres;;enum;;db2;;varchar
 962;;postgres;;tsvector;;db2;;n/a
 963;;postgres;;tsquery;;db2;;n/a
 964;;postgres;;box2d;;db2;;n/a
 965;;postgres;;geometry;;db2;;n/a
 966;;postgres;;geography;;db2;;n/a
-967;;postgres;;citext;;db2;;varchar(n)
+967;;postgres;;citext;;db2;;varchar
 968;;sqlserver;;tinyint;;postgres;;smallint
 969;;sqlserver;;smallint;;postgres;;smallint
 970;;sqlserver;;int;;postgres;;integer
 971;;sqlserver;;bigint;;postgres;;bigint
-972;;sqlserver;;decimal;;postgres;;numeric(p,s)
-973;;sqlserver;;numeric;;postgres;;numeric(p,s)
+972;;sqlserver;;decimal;;postgres;;numeric
+973;;sqlserver;;numeric;;postgres;;numeric
 974;;sqlserver;;real;;postgres;;real
 975;;sqlserver;;float;;postgres;;double precision
 976;;sqlserver;;bit;;postgres;;boolean
-977;;sqlserver;;char;;postgres;;char(n)
-978;;sqlserver;;varchar;;postgres;;varchar(n)
+977;;sqlserver;;char;;postgres;;char
+978;;sqlserver;;varchar;;postgres;;varchar
 979;;sqlserver;;text;;postgres;;text
-980;;sqlserver;;nchar;;postgres;;nchar(n)
-981;;sqlserver;;nvarchar;;postgres;;nvarchar(n)
+980;;sqlserver;;nchar;;postgres;;nchar
+981;;sqlserver;;nvarchar;;postgres;;nvarchar
 982;;sqlserver;;ntext;;postgres;;text
 983;;sqlserver;;binary;;postgres;;bytea
 984;;sqlserver;;varbinary;;postgres;;bytea
@@ -993,16 +993,16 @@
 993;;sqlserver;;uniqueidentifier;;postgres;;uuid
 994;;sqlserver;;xml;;postgres;;xml
 995;;sqlserver;;json;;postgres;;json
-996;;sqlserver;;varchar(max);;postgres;;text
-997;;sqlserver;;nvarchar(max);;postgres;;text
-998;;sqlserver;;varbinary(max);;postgres;;bytea
-999;;oracle;;NUMBER;;postgres;;numeric(p,s)
+996;;sqlserver;;varchar;;postgres;;text
+997;;sqlserver;;nvarchar;;postgres;;text
+998;;sqlserver;;varbinary;;postgres;;bytea
+999;;oracle;;NUMBER;;postgres;;numeric
 1000;;oracle;;BINARY_FLOAT;;postgres;;real
 1001;;oracle;;BINARY_DOUBLE;;postgres;;double precision
-1002;;oracle;;CHAR;;postgres;;char(n)
-1003;;oracle;;VARCHAR2;;postgres;;varchar(n)
-1004;;oracle;;NCHAR;;postgres;;nchar(n)
-1005;;oracle;;NVARCHAR2;;postgres;;nvarchar(n)
+1002;;oracle;;CHAR;;postgres;;char
+1003;;oracle;;VARCHAR2;;postgres;;varchar
+1004;;oracle;;NCHAR;;postgres;;nchar
+1005;;oracle;;NVARCHAR2;;postgres;;nvarchar
 1006;;oracle;;LONG;;postgres;;text
 1007;;oracle;;RAW;;postgres;;bytea
 1008;;oracle;;LONG RAW;;postgres;;bytea
@@ -1011,7 +1011,7 @@
 1011;;oracle;;TIMESTAMP WITH TIME ZONE;;postgres;;timestamp with time zone
 1012;;oracle;;TIMESTAMP WITH LOCAL TIME ZONE;;postgres;;timestamp with time zone
 1013;;oracle;;INTERVAL YEAR TO MONTH;;postgres;;interval year to month
-1014;;oracle;;INTERVAL DAY TO SECOND;;postgres;;interval day to second(p)
+1014;;oracle;;INTERVAL DAY TO SECOND;;postgres;;interval day to second
 1015;;oracle;;BLOB;;postgres;;bytea
 1016;;oracle;;CLOB;;postgres;;text
 1017;;oracle;;NCLOB;;postgres;;text
@@ -1020,17 +1020,17 @@
 1020;;db2;;SMALLINT;;postgres;;smallint
 1021;;db2;;INTEGER;;postgres;;integer
 1022;;db2;;BIGINT;;postgres;;bigint
-1023;;db2;;DECIMAL;;postgres;;numeric(p,s)
-1024;;db2;;NUMERIC;;postgres;;numeric(p,s)
+1023;;db2;;DECIMAL;;postgres;;numeric
+1024;;db2;;NUMERIC;;postgres;;numeric
 1025;;db2;;REAL;;postgres;;real
 1026;;db2;;DOUBLE;;postgres;;double precision
 1027;;db2;;FLOAT;;postgres;;double precision
 1028;;db2;;BOOLEAN;;postgres;;boolean
-1029;;db2;;CHAR;;postgres;;char(n)
-1030;;db2;;VARCHAR;;postgres;;varchar(n)
+1029;;db2;;CHAR;;postgres;;char
+1030;;db2;;VARCHAR;;postgres;;varchar
 1031;;db2;;LONG VARCHAR;;postgres;;text
-1032;;db2;;GRAPHIC;;postgres;;nchar(n)
-1033;;db2;;VARGRAPHIC;;postgres;;nvarchar(n)
+1032;;db2;;GRAPHIC;;postgres;;nchar
+1033;;db2;;VARGRAPHIC;;postgres;;nvarchar
 1034;;db2;;LONG VARGRAPHIC;;postgres;;text
 1035;;db2;;BLOB;;postgres;;bytea
 1036;;db2;;CLOB;;postgres;;text
@@ -1045,39 +1045,39 @@
 1045;;mysql;;mediumint;;sqlserver;;int
 1046;;mysql;;int;;sqlserver;;int
 1047;;mysql;;bigint;;sqlserver;;bigint
-1048;;mysql;;float;;sqlserver;;float(p)
-1049;;mysql;;double;;sqlserver;;float(p)
-1050;;mysql;;decimal(p,s);;sqlserver;;decimal(p,s)
-1051;;mysql;;numeric(p,s);;sqlserver;;numeric(p,s)
+1048;;mysql;;float;;sqlserver;;float
+1049;;mysql;;double;;sqlserver;;float
+1050;;mysql;;decimal;;sqlserver;;decimal
+1051;;mysql;;numeric;;sqlserver;;numeric
 1052;;mysql;;bit;;sqlserver;;bit
-1053;;mysql;;char(n);;sqlserver;;char(n)
-1054;;mysql;;varchar(n);;sqlserver;;varchar(n)
-1055;;mysql;;binary(n);;sqlserver;;binary(n)
-1056;;mysql;;varbinary(n);;sqlserver;;varbinary(n)
+1053;;mysql;;char;;sqlserver;;char
+1054;;mysql;;varchar;;sqlserver;;varchar
+1055;;mysql;;binary;;sqlserver;;binary
+1056;;mysql;;varbinary;;sqlserver;;varbinary
 1057;;mysql;;date;;sqlserver;;date
 1058;;mysql;;time;;sqlserver;;time
 1059;;mysql;;datetime;;sqlserver;;datetime
 1060;;mysql;;timestamp;;sqlserver;;datetime
 1061;;mysql;;year;;sqlserver;;smallint
-1062;;mysql;;tinyint;;oracle;;number(3)
-1063;;mysql;;smallint;;oracle;;number(5)
-1064;;mysql;;mediumint;;oracle;;number(7)
-1065;;mysql;;int;;oracle;;number(10)
-1066;;mysql;;bigint;;oracle;;number(19)
-1067;;mysql;;float(p);;oracle;;float(p)
-1068;;mysql;;double;;oracle;;float(126)
-1069;;mysql;;decimal(p,s);;oracle;;number(p,s)
-1070;;mysql;;numeric(p,s);;oracle;;number(p,s)
-1071;;mysql;;bit;;oracle;;raw(n)
-1072;;mysql;;char(n);;oracle;;char(n)
-1073;;mysql;;varchar(n);;oracle;;varchar2(n)
-1074;;mysql;;binary(n);;oracle;;raw(n)
-1075;;mysql;;varbinary(n);;oracle;;raw(n)
+1062;;mysql;;tinyint;;oracle;;number
+1063;;mysql;;smallint;;oracle;;number
+1064;;mysql;;mediumint;;oracle;;number
+1065;;mysql;;int;;oracle;;number
+1066;;mysql;;bigint;;oracle;;number
+1067;;mysql;;float;;oracle;;float
+1068;;mysql;;double;;oracle;;float
+1069;;mysql;;decimal;;oracle;;number
+1070;;mysql;;numeric;;oracle;;number
+1071;;mysql;;bit;;oracle;;raw
+1072;;mysql;;char;;oracle;;char
+1073;;mysql;;varchar;;oracle;;varchar2
+1074;;mysql;;binary;;oracle;;raw
+1075;;mysql;;varbinary;;oracle;;raw
 1076;;mysql;;date;;oracle;;date
 1077;;mysql;;time;;oracle;;date
 1078;;mysql;;datetime;;oracle;;date
 1079;;mysql;;timestamp;;oracle;;date
-1080;;mysql;;year;;oracle;;number(4)
+1080;;mysql;;year;;oracle;;number
 1081;;mysql;;tinyint;;db2;;smallint
 1082;;mysql;;smallint;;db2;;smallint
 1083;;mysql;;mediumint;;db2;;integer
@@ -1162,7 +1162,7 @@
 1162;;db2;;long varbinary;;mysql;;longblob
 1163;;db2;;clob;;mysql;;text
 1164;;db2;;blob;;mysql;;longblob
-1165;;db2;;boolean;;mysql;;tinyint(1)
+1165;;db2;;boolean;;mysql;;tinyint
 1166;;db2;;xml;;mysql;;longtext
 1167;;bigquery;;string;;sqlserver;;varchar
 1168;;bigquery;;bytes;;sqlserver;;varbinary
@@ -1265,13 +1265,13 @@
 1265;;db2;;blob;;bigquery;;bytes
 1266;;db2;;clob;;bigquery;;string
 1267;;bigquery;;bool;;db2;;smallint
-1268;;bigquery;;bytes;;db2;;varbinary(65531)
+1268;;bigquery;;bytes;;db2;;varbinary
 1269;;bigquery;;date;;db2;;date
 1270;;bigquery;;datetime;;db2;;timestamp
 1271;;bigquery;;float64;;db2;;float
 1272;;bigquery;;int64;;db2;;bigint
 1273;;bigquery;;numeric;;db2;;decimal
-1274;;bigquery;;string;;db2;;varchar(65531)
+1274;;bigquery;;string;;db2;;varchar
 1275;;bigquery;;time;;db2;;time
 1276;;bigquery;;timestamp;;db2;;timestamp
 1277;;bigquery;;bool;;spanner;;bool
@@ -1395,13 +1395,13 @@
 1395;;db2;;blob;;spanner;;bytes
 1396;;db2;;clob;;spanner;;string
 1397;;spanner;;bool;;db2;;smallint
-1398;;spanner;;bytes;;db2;;varbinary(65531)
+1398;;spanner;;bytes;;db2;;varbinary
 1399;;spanner;;timestamp;;db2;;date
 1400;;spanner;;timestamp;;db2;;timestamp
 1401;;spanner;;float64;;db2;;float
 1402;;spanner;;int64;;db2;;bigint
 1403;;spanner;;numeric;;db2;;decimal
-1404;;spanner;;string;;db2;;varchar(65531)
+1404;;spanner;;string;;db2;;varchar
 1405;;spanner;;time;;db2;;time
 1406;;spanner;;timestamp;;db2;;timestamp
 1407;;snowflake;;number;;spanner;;bignumeric
@@ -1627,10 +1627,10 @@
 1627;;kinetica;;boolean;;spanner;;bool
 1628;;kinetica;;timestamp;;spanner;;timestamp
 1629;;kinetica;;time;;spanner;;timestamp
-1630;;snowflake;;boolean;;oracle;;number(1)
+1630;;snowflake;;boolean;;oracle;;number
 1631;;snowflake;;integer;;oracle;;number
-1632;;snowflake;;smallint;;oracle;;number(5)
-1633;;snowflake;;bigint;;oracle;;number(19)
+1632;;snowflake;;smallint;;oracle;;number
+1633;;snowflake;;bigint;;oracle;;number
 1634;;snowflake;;float;;oracle;;number
 1635;;snowflake;;double precision;;oracle;;number
 1636;;snowflake;;decimal;;oracle;;number
@@ -1643,26 +1643,26 @@
 1643;;snowflake;;timestamp_tz;;oracle;;timestamp with time zone
 1644;;snowflake;;interval year to month;;oracle;;interval year to month
 1645;;snowflake;;interval day to second;;oracle;;interval day to second
-1646;;oracle;;number(1);;snowflake;;boolean
+1646;;oracle;;number;;snowflake;;boolean
 1647;;oracle;;number;;snowflake;;number
-1648;;oracle;;number(5);;snowflake;;smallint
-1649;;oracle;;number(19);;snowflake;;bigint
+1648;;oracle;;number;;snowflake;;smallint
+1649;;oracle;;number;;snowflake;;bigint
 1650;;oracle;;float;;snowflake;;float
-1651;;oracle;;number(*,0);;snowflake;;integer
-1652;;oracle;;number(*,n);;snowflake;;number
+1651;;oracle;;number;;snowflake;;integer
+1652;;oracle;;number;;snowflake;;number
 1653;;oracle;;date;;snowflake;;date
 1654;;oracle;;timestamp;;snowflake;;timestamp_ntz
 1655;;oracle;;timestamp with time zone;;snowflake;;timestamp_tz
 1656;;oracle;;interval year to month;;snowflake;;interval year to month
-1657;;oracle;;interval day to second(*,n);;snowflake;;interval day to second
-1658;;oracle;;varchar2(*);;snowflake;;varchar
-1659;;oracle;;char(*);;snowflake;;char
-1660;;oracle;;nchar(*);;snowflake;;nchar
-1661;;oracle;;nvarchar2(*);;snowflake;;nvarchar
+1657;;oracle;;interval day to second;;snowflake;;interval day to second
+1658;;oracle;;varchar2;;snowflake;;varchar
+1659;;oracle;;char;;snowflake;;char
+1660;;oracle;;nchar;;snowflake;;nchar
+1661;;oracle;;nvarchar2;;snowflake;;nvarchar
 1662;;oracle;;nclob;;snowflake;;text
 1663;;oracle;;clob;;snowflake;;text
 1664;;oracle;;blob;;snowflake;;binary
-1665;;oracle;;raw(*);;snowflake;;binary
+1665;;oracle;;raw;;snowflake;;binary
 1666;;oracle;;long;;snowflake;;text
 1667;;oracle;;long raw;;snowflake;;binary
 1668;;snowflake;;boolean;;db2;;smallint
@@ -1706,11 +1706,11 @@
 1706;;snowflake;;varchar;;sqlserver;;nvarchar
 1707;;snowflake;;char;;sqlserver;;nchar
 1708;;snowflake;;string;;sqlserver;;nvarchar
-1709;;snowflake;;text;;sqlserver;;nvarchar(max)
+1709;;snowflake;;text;;sqlserver;;nvarchar
 1710;;snowflake;;binary;;sqlserver;;varbinary
 1711;;snowflake;;varbinary;;sqlserver;;varbinary
-1712;;snowflake;;object;;sqlserver;;nvarchar(max)
-1713;;snowflake;;array;;sqlserver;;nvarchar(max)
+1712;;snowflake;;object;;sqlserver;;nvarchar
+1713;;snowflake;;array;;sqlserver;;nvarchar
 1714;;kinetica;;wkt;;oracle;;raw
 1715;;kinetica;;bytes;;oracle;;raw
 1716;;kinetica;;float;;oracle;;float
