@@ -993,9 +993,6 @@
 993;;sqlserver;;uniqueidentifier;;postgres;;uuid
 994;;sqlserver;;xml;;postgres;;xml
 995;;sqlserver;;json;;postgres;;json
-996;;sqlserver;;varchar;;postgres;;text
-997;;sqlserver;;nvarchar;;postgres;;text
-998;;sqlserver;;varbinary;;postgres;;bytea
 999;;oracle;;NUMBER;;postgres;;numeric
 1000;;oracle;;BINARY_FLOAT;;postgres;;real
 1001;;oracle;;BINARY_DOUBLE;;postgres;;double precision
@@ -1232,21 +1229,9 @@
 1232;;bigquery;;float64;;oracle;;float
 1233;;bigquery;;date;;oracle;;date
 1234;;bigquery;;timestamp;;oracle;;timestamp
-1235;;bigquery;;timestamp;;oracle;;timestamp with time zone
-1236;;bigquery;;timestamp;;oracle;;timestamp with local time zone
 1237;;bigquery;;interval;;oracle;;interval year to month
-1238;;bigquery;;interval;;oracle;;interval day to second
-1239;;bigquery;;string;;oracle;;char
-1240;;bigquery;;string;;oracle;;nchar
 1241;;bigquery;;string;;oracle;;varchar2
-1242;;bigquery;;string;;oracle;;nvarchar2
-1243;;bigquery;;string;;oracle;;long
-1244;;bigquery;;string;;oracle;;clob
-1245;;bigquery;;string;;oracle;;nclob
-1246;;bigquery;;string;;oracle;;rowid
-1247;;bigquery;;string;;oracle;;urowid
 1248;;bigquery;;bytes;;oracle;;raw
-1249;;bigquery;;bytes;;oracle;;blob
 1250;;db2;;bigint;;bigquery;;int64
 1251;;db2;;character;;bigquery;;string
 1252;;db2;;char;;bigquery;;string
@@ -1293,7 +1278,6 @@
 1293;;spanner;;bytes;;bigquery;;bytes
 1294;;spanner;;date;;bigquery;;date
 1295;;spanner;;timestamp;;bigquery;;datetime
-1296;;spanner;;timestamp;;bigquery;;time
 1297;;spanner;;string;;sqlserver;;varchar
 1298;;spanner;;bytes;;sqlserver;;varbinary
 1299;;spanner;;integer;;sqlserver;;int
@@ -1302,9 +1286,7 @@
 1302;;spanner;;bignumeric;;sqlserver;;decimal
 1303;;spanner;;boolean;;sqlserver;;bit
 1304;;spanner;;timestamp;;sqlserver;;datetime2
-1305;;spanner;;timestamp;;sqlserver;;date
 1306;;spanner;;time;;sqlserver;;time
-1307;;spanner;;timestamp;;sqlserver;;datetime2
 1308;;spanner;;timestamp64;;sqlserver;;datetime2
 1309;;spanner;;time64;;sqlserver;;time
 1310;;spanner;;array;;sqlserver;;nvarchar
@@ -1360,23 +1342,10 @@
 1360;;oracle;;blob;;spanner;;bytes
 1361;;spanner;;numeric;;oracle;;number
 1362;;spanner;;float64;;oracle;;float
-1363;;spanner;;timestamp;;oracle;;date
 1364;;spanner;;timestamp;;oracle;;timestamp
-1365;;spanner;;timestamp;;oracle;;timestamp with time zone
-1366;;spanner;;timestamp;;oracle;;timestamp with local time zone
 1367;;spanner;;interval;;oracle;;interval year to month
-1368;;spanner;;interval;;oracle;;interval day to second
-1369;;spanner;;string;;oracle;;char
-1370;;spanner;;string;;oracle;;nchar
 1371;;spanner;;string;;oracle;;varchar2
-1372;;spanner;;string;;oracle;;nvarchar2
-1373;;spanner;;string;;oracle;;long
-1374;;spanner;;string;;oracle;;clob
-1375;;spanner;;string;;oracle;;nclob
-1376;;spanner;;string;;oracle;;rowid
-1377;;spanner;;string;;oracle;;urowid
 1378;;spanner;;bytes;;oracle;;raw
-1379;;spanner;;bytes;;oracle;;blob
 1380;;db2;;bigint;;spanner;;int64
 1381;;db2;;character;;spanner;;string
 1382;;db2;;char;;spanner;;string
@@ -1396,8 +1365,6 @@
 1396;;db2;;clob;;spanner;;string
 1397;;spanner;;bool;;db2;;smallint
 1398;;spanner;;bytes;;db2;;varbinary
-1399;;spanner;;timestamp;;db2;;date
-1400;;spanner;;timestamp;;db2;;timestamp
 1401;;spanner;;float64;;db2;;float
 1402;;spanner;;int64;;db2;;bigint
 1403;;spanner;;numeric;;db2;;decimal
@@ -1487,10 +1454,8 @@
 1487;;spanner;;string;;kinetica;;string
 1488;;spanner;;boolean;;kinetica;;string
 1489;;spanner;;bool;;kinetica;;string
-1490;;spanner;;timestamp;;kinetica;;timestamp
 1491;;spanner;;int64;;kinetica;;int
 1492;;spanner;;float64;;kinetica;;double
-1493;;spanner;;timestamp;;kinetica;;date
 1494;;spanner;;timestamp;;kinetica;;datetime
 1495;;spanner;;time;;kinetica;;time
 1496;;spanner;;numeric;;kinetica;;decimal
@@ -1499,8 +1464,6 @@
 1499;;spanner;;string;;mysql;;text
 1500;;spanner;;decimal;;mysql;;decimal
 1501;;spanner;;bigdecimal;;mysql;;varchar
-1502;;spanner;;timestamp;;mysql;;date
-1503;;spanner;;timestamp;;mysql;;datetime
 1504;;spanner;;float64;;mysql;;float
 1505;;spanner;;numeric;;mysql;;numeric
 1506;;spanner;;bignumeric;;mysql;;numeric
@@ -1538,15 +1501,11 @@
 1538;;spanner;;decimal;;postgres;;decimal
 1539;;spanner;;float64;;postgres;;numeric
 1540;;spanner;;bignumeric;;postgres;;numeric
-1541;;spanner;;timestamp;;postgres;;timestamp
-1542;;spanner;;timestamp;;postgres;;timestamp
 1543;;spanner;;string;;snowflake;;string
 1544;;spanner;;timestamp;;snowflake;;timestamp
 1545;;spanner;;int64;;snowflake;;integer
 1546;;spanner;;float64;;snowflake;;float
 1547;;spanner;;array;;snowflake;;array
-1548;;spanner;;timestamp;;snowflake;;date
-1549;;spanner;;timestamp;;snowflake;;datetime
 1550;;spanner;;boolean;;snowflake;;boolean
 1551;;spanner;;time;;snowflake;;time
 1552;;spanner;;geography;;snowflake;;geography
@@ -1643,18 +1602,12 @@
 1643;;snowflake;;timestamp_tz;;oracle;;timestamp with time zone
 1644;;snowflake;;interval year to month;;oracle;;interval year to month
 1645;;snowflake;;interval day to second;;oracle;;interval day to second
-1646;;oracle;;number;;snowflake;;boolean
 1647;;oracle;;number;;snowflake;;number
-1648;;oracle;;number;;snowflake;;smallint
-1649;;oracle;;number;;snowflake;;bigint
 1650;;oracle;;float;;snowflake;;float
-1651;;oracle;;number;;snowflake;;integer
-1652;;oracle;;number;;snowflake;;number
 1653;;oracle;;date;;snowflake;;date
 1654;;oracle;;timestamp;;snowflake;;timestamp_ntz
 1655;;oracle;;timestamp with time zone;;snowflake;;timestamp_tz
 1656;;oracle;;interval year to month;;snowflake;;interval year to month
-1657;;oracle;;interval day to second;;snowflake;;interval day to second
 1658;;oracle;;varchar2;;snowflake;;varchar
 1659;;oracle;;char;;snowflake;;char
 1660;;oracle;;nchar;;snowflake;;nchar
