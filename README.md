@@ -39,9 +39,9 @@ Currently, supported databases for translation are shown below in the table.
 | **Postgres**             |       ✅        |       ✅       |      ✅       |        /        |      ✅       |             ✅              |        ✅        |      ✅      |       ✅        |
 | **Kinetica**             |       ✅        |       ✅       |      ✅       |        ✅        |      /       |             ✅              |        ✅        |      ✅      |       ✅        |
 | **Google Cloud Spanner** |       ✅        |       ✅       |        ✅       |         ✅         |        ✅       |             /              |        ✅        |      ✅      |       ✅        |
-| **SQL Server**           |       ✅        |       ✅       |      ✅       |        ✅        |      -       |             ✅              |        /        |      ✅      |       ✅        |
-| **DB2**                  |       ✅        |       ✅       |      ✅       |        ✅        |      -       |             ✅              |        ✅        |      /      |       ✅        |
-| **Oracle**               |       ✅        |       ✅        |      ✅       |        ✅        |      -       |             ✅              |        ✅        |      ✅      |       /        |
+| **SQL Server**           |       ✅        |       ✅       |      ✅       |        ✅        |      ✅       |             ✅              |        /        |      ✅      |       ✅        |
+| **DB2**                  |       ✅        |       ✅       |      ✅       |        ✅        |      ✅       |             ✅              |        ✅        |      /      |       ✅        |
+| **Oracle**               |       ✅        |       ✅        |      ✅       |        ✅        |      ✅       |             ✅              |        ✅        |      ✅      |       /        |
 
 
 ### Using external translator
