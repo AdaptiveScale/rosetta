@@ -1358,7 +1358,6 @@
 1483;;postgres;;numeric;;spanner;;numeric
 1487;;spanner;;string;;kinetica;;string
 1488;;spanner;;bool;;kinetica;;string
-1489;;spanner;;bool;;kinetica;;string
 1491;;spanner;;int64;;kinetica;;int
 1492;;spanner;;float64;;kinetica;;double
 1494;;spanner;;timestamp;;kinetica;;datetime
@@ -1368,7 +1367,6 @@
 1504;;spanner;;float64;;mysql;;float
 1505;;spanner;;numeric;;mysql;;numeric
 1507;;spanner;;bool;;mysql;;bool
-1508;;spanner;;bool;;mysql;;bool
 1509;;spanner;;json;;mysql;;json
 1510;;spanner;;array;;mysql;;json
 1511;;spanner;;timestamp;;mysql;;timestamp
@@ -1383,7 +1381,6 @@
 1524;;spanner;;int64;;postgres;;bigint
 1526;;spanner;;timestamp;;postgres;;date
 1527;;spanner;;bool;;postgres;;boolean
-1528;;spanner;;bool;;postgres;;boolean
 1530;;spanner;;bytes;;postgres;;bytea
 1531;;spanner;;numeric;;postgres;;numeric
 1533;;spanner;;json;;postgres;;json
