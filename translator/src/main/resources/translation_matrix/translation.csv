@@ -1185,7 +1185,7 @@
 1278;;bigquery;;int64;;spanner;;int64
 1279;;bigquery;;float64;;spanner;;float64
 1280;;bigquery;;numeric;;spanner;;numeric
-1281;;bigquery;;bignumeric;;spanner;;bignumeric
+1281;;bigquery;;bignumeric;;spanner;;numeric
 1282;;bigquery;;string;;spanner;;string
 1283;;bigquery;;bytes;;spanner;;bytes
 1284;;bigquery;;date;;spanner;;date
@@ -1195,26 +1195,19 @@
 1288;;spanner;;int64;;bigquery;;int64
 1289;;spanner;;float64;;bigquery;;float64
 1290;;spanner;;numeric;;bigquery;;numeric
-1291;;spanner;;bignumeric;;bigquery;;bignumeric
 1292;;spanner;;string;;bigquery;;string
 1293;;spanner;;bytes;;bigquery;;bytes
 1294;;spanner;;date;;bigquery;;date
 1295;;spanner;;timestamp;;bigquery;;datetime
 1297;;spanner;;string;;sqlserver;;varchar
 1298;;spanner;;bytes;;sqlserver;;varbinary
-1299;;spanner;;integer;;sqlserver;;int
-1300;;spanner;;float;;sqlserver;;float
+1299;;spanner;;int64;;sqlserver;;int
+1300;;spanner;;float64;;sqlserver;;float
 1301;;spanner;;numeric;;sqlserver;;numeric
-1302;;spanner;;bignumeric;;sqlserver;;decimal
-1303;;spanner;;boolean;;sqlserver;;bit
+1303;;spanner;;bool;;sqlserver;;bit
 1304;;spanner;;timestamp;;sqlserver;;datetime2
-1306;;spanner;;time;;sqlserver;;time
-1308;;spanner;;timestamp64;;sqlserver;;datetime2
-1309;;spanner;;time64;;sqlserver;;time
 1310;;spanner;;array;;sqlserver;;nvarchar
 1311;;spanner;;struct;;sqlserver;;nvarchar
-1312;;spanner;;geography;;sqlserver;;geography
-1313;;spanner;;geometry;;sqlserver;;geometry
 1314;;sqlserver;;varchar;;spanner;;string
 1315;;sqlserver;;char;;spanner;;string
 1316;;sqlserver;;text;;spanner;;string
@@ -1223,24 +1216,22 @@
 1319;;sqlserver;;ntext;;spanner;;string
 1320;;sqlserver;;varbinary;;spanner;;bytes
 1321;;sqlserver;;binary;;spanner;;bytes
-1322;;sqlserver;;bit;;spanner;;boolean
-1323;;sqlserver;;tinyint;;spanner;;integer
-1324;;sqlserver;;smallint;;spanner;;integer
-1325;;sqlserver;;int;;spanner;;integer
-1326;;sqlserver;;bigint;;spanner;;integer
+1322;;sqlserver;;bit;;spanner;;bool
+1323;;sqlserver;;tinyint;;spanner;;int64
+1324;;sqlserver;;smallint;;spanner;;int64
+1325;;sqlserver;;int;;spanner;;int64
+1326;;sqlserver;;bigint;;spanner;;int64
 1327;;sqlserver;;decimal;;spanner;;numeric
 1328;;sqlserver;;numeric;;spanner;;numeric
 1329;;sqlserver;;money;;spanner;;numeric
 1330;;sqlserver;;smallmoney;;spanner;;numeric
-1331;;sqlserver;;float;;spanner;;float
-1332;;sqlserver;;real;;spanner;;float
+1331;;sqlserver;;float;;spanner;;float64
+1332;;sqlserver;;real;;spanner;;float64
 1333;;sqlserver;;datetime;;spanner;;timestamp
 1334;;sqlserver;;smalldatetime;;spanner;;timestamp
 1335;;sqlserver;;datetime2;;spanner;;timestamp
 1336;;sqlserver;;date;;spanner;;timestamp
-1337;;sqlserver;;time;;spanner;;time
-1338;;sqlserver;;geography;;spanner;;geography
-1339;;sqlserver;;geometry;;spanner;;geometry
+1337;;sqlserver;;time;;spanner;;timestamp
 1340;;oracle;;number;;spanner;;numeric
 1341;;oracle;;float;;spanner;;float64
 1342;;oracle;;binary_float;;spanner;;float64
@@ -1249,8 +1240,8 @@
 1345;;oracle;;timestamp;;spanner;;timestamp
 1346;;oracle;;timestamp with time zone;;spanner;;timestamp
 1347;;oracle;;timestamp with local time zone;;spanner;;timestamp
-1348;;oracle;;interval year to month;;spanner;;interval
-1349;;oracle;;interval day to second;;spanner;;interval
+1348;;oracle;;interval year to month;;spanner;;timestamp
+1349;;oracle;;interval day to second;;spanner;;timestamp
 1350;;oracle;;char;;spanner;;string
 1351;;oracle;;nchar;;spanner;;string
 1352;;oracle;;varchar2;;spanner;;string
@@ -1265,7 +1256,6 @@
 1361;;spanner;;numeric;;oracle;;number
 1362;;spanner;;float64;;oracle;;float
 1364;;spanner;;timestamp;;oracle;;timestamp
-1367;;spanner;;interval;;oracle;;interval year to month
 1371;;spanner;;string;;oracle;;varchar2
 1378;;spanner;;bytes;;oracle;;raw
 1380;;db2;;bigint;;spanner;;int64
@@ -1279,7 +1269,7 @@
 1388;;db2;;numeric;;spanner;;numeric
 1389;;db2;;real;;spanner;;float64
 1390;;db2;;smallint;;spanner;;int64
-1391;;db2;;time;;spanner;;time
+1391;;db2;;time;;spanner;;timestamp
 1392;;db2;;timestamp;;spanner;;timestamp
 1393;;db2;;varchar;;spanner;;string
 1394;;db2;;varbinary;;spanner;;bytes
@@ -1291,20 +1281,18 @@
 1402;;spanner;;int64;;db2;;bigint
 1403;;spanner;;numeric;;db2;;decimal
 1404;;spanner;;string;;db2;;varchar
-1405;;spanner;;time;;db2;;time
 1406;;spanner;;timestamp;;db2;;timestamp
-1407;;snowflake;;number;;spanner;;bignumeric
-1408;;snowflake;;decimal;;spanner;;decimal
-1409;;snowflake;;double;;spanner;;decimal
-1410;;snowflake;;double precision;;spanner;;decimal
-1411;;snowflake;;real;;spanner;;decimal
+1407;;snowflake;;number;;spanner;;numeric
+1408;;snowflake;;decimal;;spanner;;numeric
+1409;;snowflake;;double;;spanner;;numeric
+1410;;snowflake;;double precision;;spanner;;numeric
+1411;;snowflake;;real;;spanner;;numeric
 1412;;snowflake;;numeric;;spanner;;numeric
-1413;;snowflake;;int;;spanner;;int
-1414;;snowflake;;integer;;spanner;;integer
-1415;;snowflake;;bigint;;spanner;;bigint
-1416;;snowflake;;smallint;;spanner;;smallint
-1417;;snowflake;;tinyint;;spanner;;tinyint
-1418;;snowflake;;byteint;;spanner;;byteint
+1413;;snowflake;;int;;spanner;;int64
+1414;;snowflake;;integer;;spanner;;int64
+1415;;snowflake;;bigint;;spanner;;int64
+1416;;snowflake;;smallint;;spanner;;int64
+1417;;snowflake;;tinyint;;spanner;;int64
 1419;;snowflake;;float;;spanner;;float64
 1420;;snowflake;;float4;;spanner;;float64
 1421;;snowflake;;float8;;spanner;;float64
@@ -1318,15 +1306,13 @@
 1429;;snowflake;;boolean;;spanner;;bool
 1430;;snowflake;;date;;spanner;;timestamp
 1431;;snowflake;;datetime;;spanner;;timestamp
-1432;;snowflake;;time;;spanner;;time
+1432;;snowflake;;time;;spanner;;timestamp
 1433;;snowflake;;timestamp;;spanner;;timestamp
 1434;;snowflake;;timestampltz;;spanner;;timestamp
 1435;;snowflake;;timestampntz;;spanner;;timestamp
 1436;;snowflake;;timestamptz;;spanner;;timestamp
 1437;;snowflake;;object;;spanner;;json
 1438;;snowflake;;variant;;spanner;;json
-1439;;snowflake;;array;;spanner;;array
-1440;;snowflake;;geography;;spanner;;geography
 1441;;postgres;;bigint;;spanner;;int64
 1442;;postgres;;bigserial;;spanner;;int64
 1443;;postgres;;cidr;;spanner;;int64
@@ -1367,71 +1353,50 @@
 1478;;postgres;;interval;;spanner;;timestamp
 1479;;postgres;;timestamp;;spanner;;timestamp
 1480;;postgres;;timestamptz;;spanner;;timestamp
-1481;;postgres;;timetz;;spanner;;time
-1482;;postgres;;time;;spanner;;time
+1481;;postgres;;timetz;;spanner;;timestamp
+1482;;postgres;;time;;spanner;;timestamp
 1483;;postgres;;numeric;;spanner;;numeric
-1484;;postgres;;_text;;spanner;;array
-1485;;postgres;;_numeric;;spanner;;array
-1486;;postgres;;_interval;;spanner;;array
 1487;;spanner;;string;;kinetica;;string
-1488;;spanner;;boolean;;kinetica;;string
+1488;;spanner;;bool;;kinetica;;string
 1489;;spanner;;bool;;kinetica;;string
 1491;;spanner;;int64;;kinetica;;int
 1492;;spanner;;float64;;kinetica;;double
 1494;;spanner;;timestamp;;kinetica;;datetime
-1495;;spanner;;time;;kinetica;;time
 1496;;spanner;;numeric;;kinetica;;decimal
-1497;;spanner;;bignumeric;;kinetica;;decimal
 1498;;spanner;;bytes;;kinetica;;bytes
 1499;;spanner;;string;;mysql;;text
-1500;;spanner;;decimal;;mysql;;decimal
-1501;;spanner;;bigdecimal;;mysql;;varchar
 1504;;spanner;;float64;;mysql;;float
 1505;;spanner;;numeric;;mysql;;numeric
-1506;;spanner;;bignumeric;;mysql;;numeric
-1507;;spanner;;boolean;;mysql;;bool
+1507;;spanner;;bool;;mysql;;bool
 1508;;spanner;;bool;;mysql;;bool
 1509;;spanner;;json;;mysql;;json
 1510;;spanner;;array;;mysql;;json
 1511;;spanner;;timestamp;;mysql;;timestamp
-1512;;spanner;;interval;;mysql;;timestamp
-1513;;spanner;;time;;mysql;;time
-1514;;spanner;;integer;;mysql;;integer
-1515;;spanner;;bigint;;mysql;;bigint
-1516;;spanner;;smallint;;mysql;;smallint
+1514;;spanner;;int64;;mysql;;integer
+1515;;spanner;;int64;;mysql;;bigint
+1516;;spanner;;int64;;mysql;;smallint
 1517;;spanner;;int64;;mysql;;bigint
 1518;;spanner;;bytes;;mysql;;blob
-1519;;spanner;;geography;;mysql;;geometry
-1520;;spanner;;tinyint;;mysql;;tinyint
-1521;;spanner;;byteint;;mysql;;tinyint
+1520;;spanner;;int64;;mysql;;tinyint
 1522;;spanner;;string;;postgres;;character varying
 1523;;spanner;;int64;;postgres;;bigint
-1524;;spanner;;bigint;;postgres;;bigint
+1524;;spanner;;int64;;postgres;;bigint
 1526;;spanner;;timestamp;;postgres;;date
-1527;;spanner;;boolean;;postgres;;boolean
+1527;;spanner;;bool;;postgres;;boolean
 1528;;spanner;;bool;;postgres;;boolean
-1529;;spanner;;time;;postgres;;time
 1530;;spanner;;bytes;;postgres;;bytea
 1531;;spanner;;numeric;;postgres;;numeric
-1532;;spanner;;interval;;postgres;;interval
 1533;;spanner;;json;;postgres;;json
-1534;;spanner;;int;;postgres;;integer
-1535;;spanner;;integer;;postgres;;integer
-1536;;spanner;;tinyint;;postgres;;smallint
-1537;;spanner;;byteint;;postgres;;smallint
-1538;;spanner;;decimal;;postgres;;decimal
+1535;;spanner;;int64;;postgres;;integer
+1536;;spanner;;int64;;postgres;;smallint
 1539;;spanner;;float64;;postgres;;numeric
-1540;;spanner;;bignumeric;;postgres;;numeric
 1543;;spanner;;string;;snowflake;;string
 1544;;spanner;;timestamp;;snowflake;;timestamp
 1545;;spanner;;int64;;snowflake;;integer
 1546;;spanner;;float64;;snowflake;;float
 1547;;spanner;;array;;snowflake;;array
-1550;;spanner;;boolean;;snowflake;;boolean
-1551;;spanner;;time;;snowflake;;time
-1552;;spanner;;geography;;snowflake;;geography
+1550;;spanner;;bool;;snowflake;;boolean
 1553;;spanner;;numeric;;snowflake;;numeric
-1554;;spanner;;bignumeric;;snowflake;;number
 1555;;spanner;;bytes;;snowflake;;binary
 1556;;spanner;;struct;;snowflake;;object
 1557;;mysql;;char;;spanner;;string
@@ -1447,37 +1412,32 @@
 1567;;mysql;;binary;;spanner;;bytes
 1568;;mysql;;varbinary;;spanner;;bytes
 1569;;mysql;;longblob;;spanner;;bytes
-1570;;mysql;;tinyint;;spanner;;tinyint
-1571;;mysql;;bit;;spanner;;tinyint
-1572;;mysql;;tinyint unsigned;;spanner;;tinyint
+1570;;mysql;;tinyint;;spanner;;int64
+1571;;mysql;;bit;;spanner;;int64
+1572;;mysql;;tinyint unsigned;;spanner;;int64
 1573;;mysql;;bool;;spanner;;bool
-1574;;mysql;;boolean;;spanner;;boolean
-1575;;mysql;;smallint;;spanner;;smallint
-1576;;mysql;;smallint unsigned;;spanner;;smallint
-1577;;mysql;;mediumint;;spanner;;int
-1578;;mysql;;mediumint unsigned;;spanner;;int
-1579;;mysql;;int;;spanner;;int
-1580;;mysql;;year;;spanner;;int
+1574;;mysql;;boolean;;spanner;;bool
+1575;;mysql;;smallint;;spanner;;int64
+1576;;mysql;;smallint unsigned;;spanner;;int64
+1577;;mysql;;mediumint;;spanner;;int64
+1578;;mysql;;mediumint unsigned;;spanner;;int64
+1579;;mysql;;int;;spanner;;int64
+1580;;mysql;;year;;spanner;;int64
 1581;;mysql;;integer;;spanner;;int64
 1582;;mysql;;int unsigned;;spanner;;int64
 1583;;mysql;;bigint unsigned;;spanner;;int64
-1584;;mysql;;bigint;;spanner;;bigint
+1584;;mysql;;bigint;;spanner;;int64
 1585;;mysql;;float;;spanner;;float64
 1586;;mysql;;float unsigned;;spanner;;float64
 1587;;mysql;;double unsigned;;spanner;;float64
-1588;;mysql;;double;;spanner;;decimal
-1589;;mysql;;double precision;;spanner;;decimal
-1590;;mysql;;geometry;;spanner;;geography
-1591;;mysql;;point;;spanner;;geography
-1592;;mysql;;linestring;;spanner;;geography
-1593;;mysql;;polygon;;spanner;;geography
-1594;;mysql;;decimal;;spanner;;bigdecimal
+1588;;mysql;;double;;spanner;;numeric
+1589;;mysql;;double precision;;spanner;;numeric
+1594;;mysql;;decimal;;spanner;;numeric
 1595;;mysql;;date;;spanner;;timestamp
 1596;;mysql;;datetime;;spanner;;timestamp
 1597;;mysql;;timestamp;;spanner;;timestamp
 1598;;mysql;;time;;spanner;;timestamp
 1599;;mysql;;json;;spanner;;json
-1600;;mysql;;set;;spanner;;array
 1601;;kinetica;;string;;spanner;;string
 1602;;kinetica;;char256;;spanner;;string
 1603;;kinetica;;char128;;spanner;;string
@@ -1493,14 +1453,14 @@
 1613;;kinetica;;uuid;;spanner;;string
 1614;;kinetica;;varchar;;spanner;;string
 1615;;kinetica;;bytes;;spanner;;bytes
-1616;;kinetica;;int8;;spanner;;tinyint
-1617;;kinetica;;int16;;spanner;;smallint
-1618;;kinetica;;int;;spanner;;int
-1619;;kinetica;;integer;;spanner;;integer
-1620;;kinetica;;float;;spanner;;float
-1621;;kinetica;;double;;spanner;;decimal
-1622;;kinetica;;double precision;;spanner;;decimal
-1623;;kinetica;;decimal;;spanner;;bigdecimal
+1616;;kinetica;;int8;;spanner;;int64
+1617;;kinetica;;int16;;spanner;;int64
+1618;;kinetica;;int;;spanner;;int64
+1619;;kinetica;;integer;;spanner;;int64
+1620;;kinetica;;float;;spanner;;float64
+1621;;kinetica;;double;;spanner;;numeric
+1622;;kinetica;;double precision;;spanner;;numeric
+1623;;kinetica;;decimal;;spanner;;numeric
 1624;;kinetica;;date;;spanner;;timestamp
 1625;;kinetica;;datetime;;spanner;;timestamp
 1626;;kinetica;;long;;spanner;;int64
