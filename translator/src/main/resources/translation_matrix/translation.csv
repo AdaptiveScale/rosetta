@@ -45,7 +45,7 @@
 45;;kinetica;;int16;;bigquery;;smallint
 46;;kinetica;;int;;bigquery;;int
 47;;kinetica;;integer;;bigquery;;integer
-48;;kinetica;;float;;bigquery;;float
+48;;kinetica;;float;;bigquery;;float64
 49;;kinetica;;double;;bigquery;;decimal
 50;;kinetica;;double precision;;bigquery;;decimal
 51;;kinetica;;decimal;;bigquery;;bigdecimal
@@ -196,7 +196,6 @@
 196;;mysql;;timestamp;;bigquery;;timestamp
 197;;mysql;;time;;bigquery;;timestamp
 198;;mysql;;json;;bigquery;;json
-199;;mysql;;set;;bigquery;;array
 200;;mysql;;bit;;postgres;;bit
 201;;mysql;;bool;;postgres;;boolean
 202;;mysql;;boolean;;postgres;;boolean
@@ -485,9 +484,6 @@
 490;;postgres;;timetz;;bigquery;;time
 491;;postgres;;time;;bigquery;;time
 492;;postgres;;numeric;;bigquery;;numeric
-493;;postgres;;_text;;bigquery;;array
-494;;postgres;;_numeric;;bigquery;;array
-495;;postgres;;_interval;;bigquery;;array
 496;;postgres;;timestamp;;snowflake;;timestamp
 497;;postgres;;timestamptz;;snowflake;;timestamp
 498;;postgres;;int2;;snowflake;;smallint
@@ -667,7 +663,6 @@
 672;;snowflake;;timestamptz;;bigquery;;timestamp
 673;;snowflake;;object;;bigquery;;json
 674;;snowflake;;variant;;bigquery;;json
-675;;snowflake;;array;;bigquery;;array
 676;;snowflake;;geography;;bigquery;;geography
 677;;snowflake;;number;;postgres;;numeric
 678;;snowflake;;numeric;;postgres;;numeric
@@ -1101,7 +1096,7 @@
 1167;;bigquery;;string;;sqlserver;;varchar
 1168;;bigquery;;bytes;;sqlserver;;varbinary
 1169;;bigquery;;integer;;sqlserver;;int
-1170;;bigquery;;float;;sqlserver;;float
+1170;;bigquery;;float64;;sqlserver;;float
 1171;;bigquery;;numeric;;sqlserver;;numeric
 1172;;bigquery;;bignumeric;;sqlserver;;decimal
 1173;;bigquery;;boolean;;sqlserver;;bit
@@ -1109,12 +1104,9 @@
 1175;;bigquery;;date;;sqlserver;;date
 1176;;bigquery;;time;;sqlserver;;time
 1177;;bigquery;;datetime;;sqlserver;;datetime2
-1178;;bigquery;;datetime64;;sqlserver;;datetime2
-1179;;bigquery;;time64;;sqlserver;;time
 1180;;bigquery;;array;;sqlserver;;nvarchar
 1181;;bigquery;;struct;;sqlserver;;nvarchar
 1182;;bigquery;;geography;;sqlserver;;geography
-1183;;bigquery;;geometry;;sqlserver;;geometry
 1184;;sqlserver;;varchar;;bigquery;;string
 1185;;sqlserver;;char;;bigquery;;string
 1186;;sqlserver;;text;;bigquery;;string
@@ -1132,15 +1124,15 @@
 1198;;sqlserver;;numeric;;bigquery;;numeric
 1199;;sqlserver;;money;;bigquery;;numeric
 1200;;sqlserver;;smallmoney;;bigquery;;numeric
-1201;;sqlserver;;float;;bigquery;;float
-1202;;sqlserver;;real;;bigquery;;float
+1201;;sqlserver;;float;;bigquery;;float64
+1202;;sqlserver;;real;;bigquery;;float64
 1203;;sqlserver;;datetime;;bigquery;;datetime
 1204;;sqlserver;;smalldatetime;;bigquery;;datetime
 1205;;sqlserver;;datetime2;;bigquery;;timestamp
 1206;;sqlserver;;date;;bigquery;;date
 1207;;sqlserver;;time;;bigquery;;time
 1208;;sqlserver;;geography;;bigquery;;geography
-1209;;sqlserver;;geometry;;bigquery;;geometry
+1209;;sqlserver;;geometry;;bigquery;;geography
 1210;;oracle;;number;;bigquery;;numeric
 1211;;oracle;;float;;bigquery;;float64
 1212;;oracle;;binary_float;;bigquery;;float64
