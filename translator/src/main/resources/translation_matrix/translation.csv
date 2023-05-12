@@ -705,10 +705,10 @@
 710;;sqlserver;;bit;;snowflake;;byteint
 711;;sqlserver;;decimal;;snowflake;;decimal
 712;;sqlserver;;int;;snowflake;;int
-713;;sqlserver;;money;;snowflake;;number(16,4)
+713;;sqlserver;;money;;snowflake;;number
 714;;sqlserver;;numeric;;snowflake;;numeric
 715;;sqlserver;;smallint;;snowflake;;smallint
-716;;sqlserver;;smallmoney;;snowflake;;number(6,4)
+716;;sqlserver;;smallmoney;;snowflake;;number
 717;;sqlserver;;tinyint;;snowflake;;tinyint
 718;;sqlserver;;float;;snowflake;;float
 719;;sqlserver;;real;;snowflake;;real
@@ -751,10 +751,10 @@
 756;;sqlserver;;bit;;db2;;smallint
 757;;sqlserver;;decimal;;db2;;decimal
 758;;sqlserver;;int;;db2;;int
-759;;sqlserver;;money;;db2;;numeric(16,4)
+759;;sqlserver;;money;;db2;;numeric
 760;;sqlserver;;numeric;;db2;;numeric
 761;;sqlserver;;smallint;;db2;;smallint
-762;;sqlserver;;smallmoney;;db2;;numeric(6,4)
+762;;sqlserver;;smallmoney;;db2;;numeric
 763;;sqlserver;;tinyint;;db2;;smallint
 764;;sqlserver;;float;;db2;;decfloat
 765;;sqlserver;;real;;db2;;real
@@ -804,10 +804,10 @@
 809;;db2;;graphic;;oracle;;nchar
 810;;db2;;vargraphic;;oracle;;nvarchar2
 811;;db2;;blob;;oracle;;blob
-812;;db2;;smallint;;oracle;;number(5)
-813;;db2;;integer;;oracle;;number(10)
-814;;db2;;int;;oracle;;number(10)
-815;;db2;;bigint;;oracle;;number(19)
+812;;db2;;smallint;;oracle;;number
+813;;db2;;integer;;oracle;;number
+814;;db2;;int;;oracle;;number
+815;;db2;;bigint;;oracle;;number
 816;;db2;;decimal;;oracle;;number
 817;;db2;;numeric;;oracle;;number
 818;;db2;;decfloat;;oracle;;binary_double
@@ -835,8 +835,8 @@
 840;;oracle;;blob;;db2;;blob
 841;;oracle;;bfile;;db2;;dbclob
 842;;oracle;;long raw;;db2;;varchar
-843;;oracle;;interval year;;db2;;timestamp
-844;;oracle;;interval day;;db2;;timestamp
+843;;oracle;;interval year to month;;db2;;timestamp
+844;;oracle;;interval day to second;;db2;;timestamp
 845;;postgres;;smallint;;sqlserver;;smallint
 846;;postgres;;integer;;sqlserver;;int
 847;;postgres;;bigint;;sqlserver;;bigint
@@ -855,24 +855,8 @@
 860;;postgres;;date;;sqlserver;;date
 861;;postgres;;time;;sqlserver;;time
 862;;postgres;;timestamp;;sqlserver;;datetime2
-863;;postgres;;interval;;sqlserver;;n/a
-864;;postgres;;point;;sqlserver;;n/a
-865;;postgres;;line;;sqlserver;;n/a
-866;;postgres;;lseg;;sqlserver;;n/a
-867;;postgres;;box;;sqlserver;;n/a
-868;;postgres;;path;;sqlserver;;n/a
-869;;postgres;;polygon;;sqlserver;;n/a
-870;;postgres;;circle;;sqlserver;;n/a
-871;;postgres;;inet;;sqlserver;;n/a
-872;;postgres;;cidr;;sqlserver;;n/a
-873;;postgres;;macaddr;;sqlserver;;n/a
 874;;postgres;;uuid;;sqlserver;;uniqueidentifier
 875;;postgres;;xml;;sqlserver;;xml
-876;;postgres;;json;;sqlserver;;n/a
-877;;postgres;;jsonb;;sqlserver;;n/a
-880;;postgres;;tsvector;;sqlserver;;n/a
-881;;postgres;;tsquery;;sqlserver;;n/a
-882;;postgres;;box;;sqlserver;;n/a
 886;;postgres;;smallint;;oracle;;number
 887;;postgres;;integer;;oracle;;number
 888;;postgres;;bigint;;oracle;;number
@@ -891,24 +875,11 @@
 901;;postgres;;date;;oracle;;date
 902;;postgres;;time;;oracle;;date
 903;;postgres;;timestamp;;oracle;;timestamp
-904;;postgres;;interval;;oracle;;interval year to month/interval day to second
-905;;postgres;;point;;oracle;;n/a
-906;;postgres;;line;;oracle;;n/a
-907;;postgres;;lseg;;oracle;;n/a
-908;;postgres;;box;;oracle;;n/a
-909;;postgres;;path;;oracle;;n/a
-910;;postgres;;polygon;;oracle;;n/a
-911;;postgres;;circle;;oracle;;n/a
-912;;postgres;;inet;;oracle;;n/a
-913;;postgres;;cidr;;oracle;;n/a
-914;;postgres;;macaddr;;oracle;;n/a
+904;;postgres;;interval;;oracle;;interval day to second
 915;;postgres;;uuid;;oracle;;raw
 916;;postgres;;xml;;oracle;;xmltype
 917;;postgres;;json;;oracle;;clob
 918;;postgres;;jsonb;;oracle;;clob
-921;;postgres;;tsvector;;oracle;;n/a
-922;;postgres;;tsquery;;oracle;;n/a
-923;;postgres;;box;;oracle;;n/a
 927;;postgres;;smallint;;db2;;smallint
 928;;postgres;;integer;;db2;;integer
 929;;postgres;;bigint;;db2;;bigint
@@ -927,24 +898,10 @@
 942;;postgres;;date;;db2;;date
 943;;postgres;;time;;db2;;time
 944;;postgres;;timestamp;;db2;;timestamp
-945;;postgres;;interval;;db2;;n/a
-946;;postgres;;point;;db2;;n/a
-947;;postgres;;line;;db2;;n/a
-948;;postgres;;lseg;;db2;;n/a
-949;;postgres;;box;;db2;;n/a
-950;;postgres;;path;;db2;;n/a
-951;;postgres;;polygon;;db2;;n/a
-952;;postgres;;circle;;db2;;n/a
-953;;postgres;;inet;;db2;;n/a
-954;;postgres;;cidr;;db2;;n/a
-955;;postgres;;macaddr;;db2;;n/a
 956;;postgres;;uuid;;db2;;varchar
 957;;postgres;;xml;;db2;;xml
 958;;postgres;;json;;db2;;clob
 959;;postgres;;jsonb;;db2;;clob
-962;;postgres;;tsvector;;db2;;n/a
-963;;postgres;;tsquery;;db2;;n/a
-964;;postgres;;box;;db2;;n/a
 968;;sqlserver;;tinyint;;postgres;;smallint
 969;;sqlserver;;smallint;;postgres;;smallint
 970;;sqlserver;;int;;postgres;;integer
@@ -973,50 +930,50 @@
 993;;sqlserver;;uniqueidentifier;;postgres;;uuid
 994;;sqlserver;;xml;;postgres;;xml
 995;;sqlserver;;json;;postgres;;json
-999;;oracle;;NUMBER;;postgres;;numeric
-1000;;oracle;;BINARY_FLOAT;;postgres;;real
-1001;;oracle;;BINARY_DOUBLE;;postgres;;double precision
-1002;;oracle;;CHAR;;postgres;;char
-1003;;oracle;;VARCHAR2;;postgres;;varchar
-1004;;oracle;;NCHAR;;postgres;;nchar
-1005;;oracle;;NVARCHAR2;;postgres;;varchar
-1006;;oracle;;LONG;;postgres;;text
-1007;;oracle;;RAW;;postgres;;bytea
-1008;;oracle;;LONG RAW;;postgres;;bytea
-1009;;oracle;;DATE;;postgres;;timestamp without time zone
-1010;;oracle;;TIMESTAMP;;postgres;;timestamp with time zone
-1011;;oracle;;TIMESTAMP WITH TIME ZONE;;postgres;;timestamp with time zone
-1012;;oracle;;TIMESTAMP WITH LOCAL TIME ZONE;;postgres;;timestamp with time zone
-1013;;oracle;;INTERVAL YEAR TO MONTH;;postgres;;interval year to month
-1014;;oracle;;INTERVAL DAY TO SECOND;;postgres;;interval day to second
-1015;;oracle;;BLOB;;postgres;;bytea
-1016;;oracle;;CLOB;;postgres;;text
-1017;;oracle;;NCLOB;;postgres;;text
-1018;;oracle;;XMLTYPE;;postgres;;xml
-1019;;oracle;;JSON;;postgres;;json
-1020;;db2;;SMALLINT;;postgres;;smallint
-1021;;db2;;INTEGER;;postgres;;integer
-1022;;db2;;BIGINT;;postgres;;bigint
-1023;;db2;;DECIMAL;;postgres;;numeric
-1024;;db2;;NUMERIC;;postgres;;numeric
-1025;;db2;;REAL;;postgres;;real
-1026;;db2;;DOUBLE;;postgres;;double precision
-1027;;db2;;FLOAT;;postgres;;double precision
-1028;;db2;;BOOLEAN;;postgres;;boolean
-1029;;db2;;CHAR;;postgres;;char
-1030;;db2;;VARCHAR;;postgres;;varchar
-1031;;db2;;LONG VARCHAR;;postgres;;text
-1032;;db2;;GRAPHIC;;postgres;;nchar
-1033;;db2;;VARGRAPHIC;;postgres;;varchar
-1034;;db2;;LONG VARGRAPHIC;;postgres;;text
-1035;;db2;;BLOB;;postgres;;bytea
-1036;;db2;;CLOB;;postgres;;text
-1037;;db2;;DBCLOB;;postgres;;text
-1038;;db2;;DATE;;postgres;;date
-1039;;db2;;TIME;;postgres;;time
-1040;;db2;;TIMESTAMP;;postgres;;timestamp
-1041;;db2;;XML;;postgres;;xml
-1042;;db2;;JSON;;postgres;;json
+999;;oracle;;number;;postgres;;numeric
+1000;;oracle;;binary_float;;postgres;;real
+1001;;oracle;;binary_double;;postgres;;double precision
+1002;;oracle;;char;;postgres;;char
+1003;;oracle;;varchar2;;postgres;;varchar
+1004;;oracle;;nchar;;postgres;;nchar
+1005;;oracle;;nvarchar2;;postgres;;varchar
+1006;;oracle;;long;;postgres;;text
+1007;;oracle;;raw;;postgres;;bytea
+1008;;oracle;;long raw;;postgres;;bytea
+1009;;oracle;;date;;postgres;;timestamp without time zone
+1010;;oracle;;timestamp;;postgres;;timestamp with time zone
+1011;;oracle;;timestamp with time zone;;postgres;;timestamp with time zone
+1012;;oracle;;timestamp with local time zone;;postgres;;timestamp with time zone
+1013;;oracle;;interval year to month;;postgres;;interval year to month
+1014;;oracle;;interval day to second;;postgres;;interval day to second
+1015;;oracle;;blob;;postgres;;bytea
+1016;;oracle;;clob;;postgres;;text
+1017;;oracle;;nclob;;postgres;;text
+1018;;oracle;;xmltype;;postgres;;xml
+1019;;oracle;;json;;postgres;;json
+1020;;db2;;smallint;;postgres;;smallint
+1021;;db2;;integer;;postgres;;integer
+1022;;db2;;bigint;;postgres;;bigint
+1023;;db2;;decimal;;postgres;;numeric
+1024;;db2;;numeric;;postgres;;numeric
+1025;;db2;;real;;postgres;;real
+1026;;db2;;double;;postgres;;double precision
+1027;;db2;;float;;postgres;;double precision
+1028;;db2;;boolean;;postgres;;boolean
+1029;;db2;;char;;postgres;;char
+1030;;db2;;varchar;;postgres;;varchar
+1031;;db2;;long varchar;;postgres;;text
+1032;;db2;;graphic;;postgres;;nchar
+1033;;db2;;vargraphic;;postgres;;varchar
+1034;;db2;;long vargraphic;;postgres;;text
+1035;;db2;;blob;;postgres;;bytea
+1036;;db2;;clob;;postgres;;text
+1037;;db2;;dbclob;;postgres;;text
+1038;;db2;;date;;postgres;;date
+1039;;db2;;time;;postgres;;time
+1040;;db2;;timestamp;;postgres;;timestamp
+1041;;db2;;xml;;postgres;;xml
+1042;;db2;;json;;postgres;;json
 1043;;mysql;;tinyint;;sqlserver;;tinyint
 1044;;mysql;;smallint;;sqlserver;;smallint
 1045;;mysql;;mediumint;;sqlserver;;int
@@ -1727,16 +1684,16 @@
 1795;;kinetica;;varchar;;db2;;varchar
 1796;;kinetica;;datetime;;db2;;timestamp
 1797;;kinetica;;date;;db2;;timestamp
-1798;;oracle;;number(p,s);;kinetica;;int
+1798;;oracle;;number;;kinetica;;int
 1799;;oracle;;float;;kinetica;;float
 1800;;oracle;;binary_float;;kinetica;;float
 1801;;oracle;;binary_double;;kinetica;;double
 1802;;oracle;;long;;kinetica;;long
 1803;;oracle;;urowid;;kinetica;;string
-1804;;oracle;;char(n);;kinetica;;char
-1805;;oracle;;varchar2(n);;kinetica;;varchar
-1806;;oracle;;nchar(n);;kinetica;;string
-1807;;oracle;;nvarchar2(n);;kinetica;;varchar
+1804;;oracle;;char;;kinetica;;char
+1805;;oracle;;varchar2;;kinetica;;varchar
+1806;;oracle;;nchar;;kinetica;;string
+1807;;oracle;;nvarchar2;;kinetica;;varchar
 1808;;oracle;;clob;;kinetica;;string
 1809;;oracle;;nclob;;kinetica;;string
 1810;;oracle;;xmltype;;kinetica;;string
@@ -1748,15 +1705,15 @@
 1816;;oracle;;blob;;kinetica;;blob
 1817;;oracle;;bfile;;kinetica;;binary
 1818;;oracle;;long raw;;kinetica;;blob
-1819;;db2;;character(n);;kinetica;;char
-1820;;db2;;varchar(n);;kinetica;;varchar
-1821;;db2;;clob(n);;kinetica;;string
-1822;;db2;;graphic(n);;kinetica;;string
-1823;;db2;;vargraphic(n);;kinetica;;string
-1824;;db2;;dbclob(n);;kinetica;;string
-1825;;db2;;binary(n);;kinetica;;binary
-1826;;db2;;varbinary(n);;kinetica;;varbinary
-1827;;db2;;blob(n);;kinetica;;blob
+1819;;db2;;character;;kinetica;;char
+1820;;db2;;varchar;;kinetica;;varchar
+1821;;db2;;clob;;kinetica;;string
+1822;;db2;;graphic;;kinetica;;string
+1823;;db2;;vargraphic;;kinetica;;string
+1824;;db2;;dbclob;;kinetica;;string
+1825;;db2;;binary;;kinetica;;binary
+1826;;db2;;varbinary;;kinetica;;varbinary
+1827;;db2;;blob;;kinetica;;blob
 1828;;db2;;smallint;;kinetica;;int8
 1829;;db2;;integer;;kinetica;;int
 1830;;db2;;int;;kinetica;;int8
