@@ -825,7 +825,7 @@
 836;;oracle;;xmltype;;db2;;xml
 837;;oracle;;date;;db2;;date
 838;;oracle;;timestamp;;db2;;timestamp
-839;;oracle;;rowid;;db2;;rowid
+839;;oracle;;rowid;;db2;;varchar
 840;;oracle;;blob;;db2;;blob
 841;;oracle;;bfile;;db2;;dbclob
 842;;oracle;;long raw;;db2;;varchar
@@ -955,10 +955,8 @@
 1028;;db2;;boolean;;postgres;;boolean
 1029;;db2;;char;;postgres;;char
 1030;;db2;;varchar;;postgres;;varchar
-1031;;db2;;long varchar;;postgres;;text
 1032;;db2;;graphic;;postgres;;nchar
 1033;;db2;;vargraphic;;postgres;;varchar
-1034;;db2;;long vargraphic;;postgres;;text
 1035;;db2;;blob;;postgres;;bytea
 1036;;db2;;clob;;postgres;;text
 1037;;db2;;dbclob;;postgres;;text
@@ -966,7 +964,6 @@
 1039;;db2;;time;;postgres;;time
 1040;;db2;;timestamp;;postgres;;timestamp
 1041;;db2;;xml;;postgres;;xml
-1042;;db2;;json;;postgres;;json
 1043;;mysql;;tinyint;;sqlserver;;tinyint
 1044;;mysql;;smallint;;sqlserver;;smallint
 1045;;mysql;;mediumint;;sqlserver;;int
@@ -1080,13 +1077,11 @@
 1153;;db2;;double precision;;mysql;;double
 1154;;db2;;char;;mysql;;char
 1155;;db2;;varchar;;mysql;;varchar
-1156;;db2;;long varchar;;mysql;;longtext
 1157;;db2;;date;;mysql;;date
 1158;;db2;;time;;mysql;;time
 1159;;db2;;timestamp;;mysql;;timestamp
 1160;;db2;;binary;;mysql;;binary
 1161;;db2;;varbinary;;mysql;;varbinary
-1162;;db2;;long varbinary;;mysql;;longblob
 1163;;db2;;clob;;mysql;;text
 1164;;db2;;blob;;mysql;;longblob
 1165;;db2;;boolean;;mysql;;tinyint
