@@ -61,7 +61,7 @@
 61;;kinetica;;ulong;;postgres;;bigint
 62;;kinetica;;uuid;;postgres;;uuid
 63;;kinetica;;varchar;;postgres;;character varying
-64;;kinetica;;geometry;;postgres;;geometry
+64;;kinetica;;geometry;;postgres;;polygon
 65;;kinetica;;int;;postgres;;integer
 66;;kinetica;;integer;;postgres;;integer
 67;;kinetica;;float;;postgres;;real
@@ -232,9 +232,6 @@
 232;;mysql;;binary;;postgres;;bytea
 233;;mysql;;varbinary;;postgres;;bytea
 234;;mysql;;longblob;;postgres;;bytea
-235;;mysql;;enum;;postgres;;enum
-236;;mysql;;set;;postgres;;set
-237;;mysql;;lseg;;postgres;;linestring
 238;;mysql;;date;;postgres;;date
 239;;mysql;;datetime;;postgres;;timestamp
 240;;mysql;;timestamp;;postgres;;timestamp
@@ -323,7 +320,6 @@
 323;;bigquery;;string;;postgres;;character varying
 324;;bigquery;;int64;;postgres;;bigint
 325;;bigquery;;bigint;;postgres;;bigint
-326;;bigquery;;array;;postgres;;array
 327;;bigquery;;date;;postgres;;date
 328;;bigquery;;boolean;;postgres;;boolean
 329;;bigquery;;bool;;postgres;;boolean
@@ -392,7 +388,6 @@
 392;;postgres;;bigserial;;kinetica;;long
 393;;postgres;;real;;kinetica;;float
 394;;postgres;;money;;kinetica;;float
-395;;postgres;;double;;kinetica;;double
 396;;postgres;;double precision;;kinetica;;double
 397;;postgres;;numeric;;kinetica;;double
 398;;postgres;;decimal;;kinetica;;decimal
@@ -875,14 +870,9 @@
 875;;postgres;;xml;;sqlserver;;xml
 876;;postgres;;json;;sqlserver;;n/a
 877;;postgres;;jsonb;;sqlserver;;n/a
-878;;postgres;;array;;sqlserver;;n/a
-879;;postgres;;enum;;sqlserver;;n/a
 880;;postgres;;tsvector;;sqlserver;;n/a
 881;;postgres;;tsquery;;sqlserver;;n/a
-882;;postgres;;box2d;;sqlserver;;n/a
-883;;postgres;;geometry;;sqlserver;;n/a
-884;;postgres;;geography;;sqlserver;;n/a
-885;;postgres;;citext;;sqlserver;;n/a
+882;;postgres;;box;;sqlserver;;n/a
 886;;postgres;;smallint;;oracle;;number
 887;;postgres;;integer;;oracle;;number
 888;;postgres;;bigint;;oracle;;number
@@ -916,14 +906,9 @@
 916;;postgres;;xml;;oracle;;xmltype
 917;;postgres;;json;;oracle;;clob
 918;;postgres;;jsonb;;oracle;;clob
-919;;postgres;;array;;oracle;;n/a
-920;;postgres;;enum;;oracle;;varchar2
 921;;postgres;;tsvector;;oracle;;n/a
 922;;postgres;;tsquery;;oracle;;n/a
-923;;postgres;;box2d;;oracle;;n/a
-924;;postgres;;geometry;;oracle;;n/a
-925;;postgres;;geography;;oracle;;n/a
-926;;postgres;;citext;;oracle;;varchar2
+923;;postgres;;box;;oracle;;n/a
 927;;postgres;;smallint;;db2;;smallint
 928;;postgres;;integer;;db2;;integer
 929;;postgres;;bigint;;db2;;bigint
@@ -957,14 +942,9 @@
 957;;postgres;;xml;;db2;;xml
 958;;postgres;;json;;db2;;clob
 959;;postgres;;jsonb;;db2;;clob
-960;;postgres;;array;;db2;;n/a
-961;;postgres;;enum;;db2;;varchar
 962;;postgres;;tsvector;;db2;;n/a
 963;;postgres;;tsquery;;db2;;n/a
-964;;postgres;;box2d;;db2;;n/a
-965;;postgres;;geometry;;db2;;n/a
-966;;postgres;;geography;;db2;;n/a
-967;;postgres;;citext;;db2;;varchar
+964;;postgres;;box;;db2;;n/a
 968;;sqlserver;;tinyint;;postgres;;smallint
 969;;sqlserver;;smallint;;postgres;;smallint
 970;;sqlserver;;int;;postgres;;integer
@@ -978,7 +958,7 @@
 978;;sqlserver;;varchar;;postgres;;varchar
 979;;sqlserver;;text;;postgres;;text
 980;;sqlserver;;nchar;;postgres;;nchar
-981;;sqlserver;;nvarchar;;postgres;;nvarchar
+981;;sqlserver;;nvarchar;;postgres;;varchar
 982;;sqlserver;;ntext;;postgres;;text
 983;;sqlserver;;binary;;postgres;;bytea
 984;;sqlserver;;varbinary;;postgres;;bytea
@@ -999,7 +979,7 @@
 1002;;oracle;;CHAR;;postgres;;char
 1003;;oracle;;VARCHAR2;;postgres;;varchar
 1004;;oracle;;NCHAR;;postgres;;nchar
-1005;;oracle;;NVARCHAR2;;postgres;;nvarchar
+1005;;oracle;;NVARCHAR2;;postgres;;varchar
 1006;;oracle;;LONG;;postgres;;text
 1007;;oracle;;RAW;;postgres;;bytea
 1008;;oracle;;LONG RAW;;postgres;;bytea
@@ -1027,7 +1007,7 @@
 1030;;db2;;VARCHAR;;postgres;;varchar
 1031;;db2;;LONG VARCHAR;;postgres;;text
 1032;;db2;;GRAPHIC;;postgres;;nchar
-1033;;db2;;VARGRAPHIC;;postgres;;nvarchar
+1033;;db2;;VARGRAPHIC;;postgres;;varchar
 1034;;db2;;LONG VARGRAPHIC;;postgres;;text
 1035;;db2;;BLOB;;postgres;;bytea
 1036;;db2;;CLOB;;postgres;;text
@@ -1485,7 +1465,6 @@
 1522;;spanner;;string;;postgres;;character varying
 1523;;spanner;;int64;;postgres;;bigint
 1524;;spanner;;bigint;;postgres;;bigint
-1525;;spanner;;array;;postgres;;array
 1526;;spanner;;timestamp;;postgres;;date
 1527;;spanner;;boolean;;postgres;;boolean
 1528;;spanner;;bool;;postgres;;boolean
