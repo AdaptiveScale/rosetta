@@ -572,7 +572,7 @@
 581;;snowflake;;double;;kinetica;;decimal
 582;;snowflake;;double precision;;kinetica;;decimal
 583;;snowflake;;real;;kinetica;;decimal
-584;;snowflake;;geometry;;kinetica;;geometry
+584;;snowflake;;geometry;;kinetica;;geography
 585;;snowflake;;numeric;;kinetica;;numeric
 586;;snowflake;;int;;kinetica;;int
 587;;snowflake;;integer;;kinetica;;int
@@ -588,7 +588,6 @@
 597;;snowflake;;character;;kinetica;;string
 598;;snowflake;;string;;kinetica;;string
 599;;snowflake;;text;;kinetica;;string
-600;;snowflake;;bool;;kinetica;;string
 601;;snowflake;;boolean;;kinetica;;string
 602;;snowflake;;binary;;kinetica;;bytes
 603;;snowflake;;varbinary;;kinetica;;bytes
@@ -717,8 +716,8 @@
 727;;sqlserver;;text;;snowflake;;text
 728;;sqlserver;;varchar;;snowflake;;varchar
 729;;sqlserver;;nchar;;snowflake;;nchar
-730;;sqlserver;;ntext;;snowflake;;nvarchar
-731;;sqlserver;;nvarchar;;snowflake;;nvarchar
+730;;sqlserver;;ntext;;snowflake;;varchar
+731;;sqlserver;;nvarchar;;snowflake;;varchar
 732;;sqlserver;;binary;;snowflake;;binary
 733;;sqlserver;;image;;snowflake;;varbinary
 734;;sqlserver;;varbinary;;snowflake;;varbinary
@@ -924,7 +923,6 @@
 992;;sqlserver;;timestamp;;postgres;;timestamp
 993;;sqlserver;;uniqueidentifier;;postgres;;uuid
 994;;sqlserver;;xml;;postgres;;xml
-995;;sqlserver;;json;;postgres;;json
 999;;oracle;;number;;postgres;;numeric
 1000;;oracle;;binary_float;;postgres;;real
 1001;;oracle;;binary_double;;postgres;;double precision
@@ -1528,17 +1526,15 @@
 1641;;snowflake;;timestamp_ntz;;oracle;;timestamp
 1642;;snowflake;;timestamp_ltz;;oracle;;timestamp
 1643;;snowflake;;timestamp_tz;;oracle;;timestamp with time zone
-1644;;snowflake;;interval year to month;;oracle;;interval year to month
-1645;;snowflake;;interval day to second;;oracle;;interval day to second
 1647;;oracle;;number;;snowflake;;number
 1650;;oracle;;float;;snowflake;;float
 1653;;oracle;;date;;snowflake;;date
 1654;;oracle;;timestamp;;snowflake;;timestamp_ntz
 1655;;oracle;;timestamp with time zone;;snowflake;;timestamp_tz
-1656;;oracle;;interval year to month;;snowflake;;interval year to month
+1656;;oracle;;interval year to month;;snowflake;;interval
 1658;;oracle;;varchar2;;snowflake;;varchar
 1659;;oracle;;char;;snowflake;;char
-1660;;oracle;;nchar;;snowflake;;nchar
+1660;;oracle;;nchar;;snowflake;;char
 1661;;oracle;;nvarchar2;;snowflake;;nvarchar
 1662;;oracle;;nclob;;snowflake;;text
 1663;;oracle;;clob;;snowflake;;text
@@ -1576,7 +1572,6 @@
 1695;;snowflake;;real;;sqlserver;;real
 1696;;snowflake;;tinyint;;sqlserver;;tinyint
 1697;;snowflake;;smallint;;sqlserver;;smallint
-1698;;snowflake;;mediumint;;sqlserver;;int
 1699;;snowflake;;integer;;sqlserver;;int
 1700;;snowflake;;bigint;;sqlserver;;bigint
 1701;;snowflake;;date;;sqlserver;;date
