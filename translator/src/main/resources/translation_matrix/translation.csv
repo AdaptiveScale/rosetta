@@ -1694,4 +1694,88 @@
 1866;;sqlserver;;cursor;;kinetica;;varchar
 1867;;sqlserver;;hierarchyid;;kinetica;;varbinary
 1868;;sqlserver;;sql_variant;;kinetica;;varchar
-1869;;sqlserver;;rowversion;;kinetica;;int
+1869;;mysql;;bigint unsigned;;db2;;bigint
+1870;;mysql;;bigint unsigned;;oracle;;number
+1871;;mysql;;bigint unsigned;;sqlserver;;bigint
+1872;;mysql;;bit;;db2;;smallint
+1873;;mysql;;blob;;oracle;;blob
+1874;;mysql;;blob;;sqlserver;;varbinary
+1875;;mysql;;bool;;db2;;char
+1876;;mysql;;bool;;oracle;;char
+1877;;mysql;;bool;;sqlserver;;bit
+1878;;mysql;;boolean;;db2;;char
+1879;;mysql;;boolean;;oracle;;char
+1880;;mysql;;boolean;;sqlserver;;bit
+1881;;mysql;;dec;;bigquery;;decimal
+1882;;mysql;;dec;;kinetica;;decimal
+1883;;mysql;;dec;;oracle;;number
+1884;;mysql;;dec;;postgres;;decimal
+1885;;mysql;;dec;;spanner;;numeric
+1886;;mysql;;double precision;;db2;;double
+1887;;mysql;;double precision;;oracle;;float
+1888;;mysql;;double precision;;sqlserver;;float
+1889;;mysql;;double unsigned;;db2;;double
+1890;;mysql;;double unsigned;;oracle;;float
+1891;;mysql;;double unsigned;;sqlserver;;float
+1892;;mysql;;enum;;db2;;varchar
+1893;;mysql;;enum;;oracle;;varchar2
+1894;;mysql;;enum;;postgres;;text
+1895;;mysql;;enum;;sqlserver;;text
+1896;;mysql;;float unsigned;;db2;;float
+1897;;mysql;;float unsigned;;oracle;;float
+1898;;mysql;;float unsigned;;sqlserver;;float
+1899;;mysql;;geometry;;db2;;varchar
+1900;;mysql;;geometry;;oracle;;varchar2
+1901;;mysql;;geometry;;postgres;;text
+1902;;mysql;;geometry;;sqlserver;;geography
+1903;;mysql;;int unsigned;;db2;;int
+1904;;mysql;;int unsigned;;oracle;;number
+1905;;mysql;;int unsigned;;sqlserver;;int
+1906;;mysql;;integer;;db2;;integer
+1907;;mysql;;integer;;oracle;;number
+1908;;mysql;;integer;;sqlserver;;int
+1909;;mysql;;json;;db2;;clob
+1910;;mysql;;json;;kinetica;;string
+1911;;mysql;;json;;oracle;;clob
+1912;;mysql;;linestring;;sqlserver;;geography
+1913;;mysql;;longblob;;db2;;blob
+1914;;mysql;;longblob;;kinetica;;bytes
+1915;;mysql;;longblob;;oracle;;blob
+1916;;mysql;;longblob;;sqlserver;;varbinary
+1917;;mysql;;longtext;;oracle;;varchar2
+1918;;mysql;;longtext;;sqlserver;;text
+1919;;mysql;;mediumblob;;oracle;;blob
+1920;;mysql;;mediumblob;;sqlserver;;varbinary
+1921;;mysql;;mediumint unsigned;;db2;;int
+1922;;mysql;;mediumint unsigned;;oracle;;number
+1923;;mysql;;mediumint unsigned;;sqlserver;;int
+1924;;mysql;;mediumtext;;oracle;;varchar2
+1925;;mysql;;mediumtext;;sqlserver;;text
+1926;;mysql;;numeric;;bigquery;;numeric
+1927;;mysql;;numeric;;db2;;numeric
+1928;;mysql;;numeric;;kinetica;;decimal
+1929;;mysql;;numeric;;postgres;;numeric
+1930;;mysql;;numeric;;snowflake;;numeric
+1931;;mysql;;numeric;;spanner;;numeric
+1932;;mysql;;point;;sqlserver;;geography
+1933;;mysql;;polygon;;sqlserver;;geography
+1934;;mysql;;set;;bigquery;;string
+1935;;mysql;;set;;db2;;varchar
+1936;;mysql;;set;;oracle;;varchar2
+1937;;mysql;;set;;postgres;;text
+1938;;mysql;;set;;spanner;;string
+1939;;mysql;;set;;sqlserver;;text
+1940;;mysql;;smallint unsigned;;db2;;smallint
+1941;;mysql;;smallint unsigned;;oracle;;number
+1942;;mysql;;smallint unsigned;;sqlserver;;smallint
+1943;;mysql;;text;;oracle;;varchar2
+1944;;mysql;;text;;sqlserver;;text
+1945;;mysql;;tinyblob;;oracle;;blob
+1946;;mysql;;tinyblob;;sqlserver;;varbinary
+1947;;mysql;;tinyint unsigned;;db2;;smallint
+1948;;mysql;;tinyint unsigned;;oracle;;number
+1949;;mysql;;tinyint unsigned;;sqlserver;;tinyint
+1950;;mysql;;tinyint;;postgres;;smallint
+1951;;mysql;;tinytext;;oracle;;varchar2
+1952;;mysql;;tinytext;;sqlserver;;text
+1953;;sqlserver;;rowversion;;kinetica;;int
