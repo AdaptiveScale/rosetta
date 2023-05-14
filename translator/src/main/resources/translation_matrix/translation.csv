@@ -1370,22 +1370,15 @@
 1509;;spanner;;json;;mysql;;json
 1510;;spanner;;array;;mysql;;json
 1511;;spanner;;timestamp;;mysql;;timestamp
-1514;;spanner;;int64;;mysql;;integer
-1515;;spanner;;int64;;mysql;;bigint
-1516;;spanner;;int64;;mysql;;smallint
 1517;;spanner;;int64;;mysql;;bigint
 1518;;spanner;;bytes;;mysql;;blob
-1520;;spanner;;int64;;mysql;;tinyint
 1522;;spanner;;string;;postgres;;character varying
 1523;;spanner;;int64;;postgres;;bigint
-1524;;spanner;;int64;;postgres;;bigint
 1526;;spanner;;timestamp;;postgres;;date
 1527;;spanner;;bool;;postgres;;boolean
 1530;;spanner;;bytes;;postgres;;bytea
 1531;;spanner;;numeric;;postgres;;numeric
 1533;;spanner;;json;;postgres;;json
-1535;;spanner;;int64;;postgres;;integer
-1536;;spanner;;int64;;postgres;;smallint
 1539;;spanner;;float64;;postgres;;numeric
 1543;;spanner;;string;;snowflake;;string
 1544;;spanner;;timestamp;;snowflake;;timestamp
@@ -1882,7 +1875,6 @@
 2054;;postgres;;timetz;;db2;;time
 2055;;postgres;;timetz;;kinetica;;time
 2056;;postgres;;timetz;;mysql;;time
-2057;;postgres;;timetz;;mysql;;timestamp
 2058;;postgres;;timetz;;oracle;;timestamp
 2059;;postgres;;timetz;;sqlserver;;time
 2060;;postgres;;tsquery;;db2;;varchar
@@ -1988,7 +1980,6 @@
 2160;;sqlserver;;varbinary;;oracle;;blob
 2161;;sqlserver;;varchar;;oracle;;varchar2
 2162;;sqlserver;;xml;;bigquery;;string
-2163;;sqlserver;;xml;;mysql;;json
 2164;;sqlserver;;xml;;mysql;;longtext
 2165;;sqlserver;;xml;;oracle;;xmltype
 2166;;sqlserver;;xml;;spanner;;string
@@ -2050,7 +2041,6 @@
 2222;;oracle;;xmltype;;bigquery;;string
 2223;;oracle;;xmltype;;snowflake;;text
 2224;;oracle;;xmltype;;spanner;;string
-2225;;oracle;;xmltype;;sqlserver;;text
 2226;;oracle;;xmltype;;sqlserver;;xml
 2227;;bigquery;;array;;db2;;varchar
 2228;;bigquery;;array;;kinetica;;varchar
@@ -2129,7 +2119,6 @@
 2301;;bigquery;;time;;oracle;;timestamp
 2302;;bigquery;;timestamp;;spanner;;timestamp
 2303;;bigquery;;tinyint;;db2;;smallint
-2304;;bigquery;;tinyint;;kinetica;;int16
 2305;;bigquery;;tinyint;;kinetica;;int8
 2306;;bigquery;;tinyint;;oracle;;number
 2307;;bigquery;;tinyint;;snowflake;;tinyint
@@ -2156,7 +2145,6 @@
 2328;;spanner;;struct;;bigquery;;string
 2329;;spanner;;struct;;db2;;varchar
 2330;;spanner;;struct;;kinetica;;varchar
-2331;;spanner;;struct;;mysql;;json
 2332;;spanner;;struct;;mysql;;varchar
 2333;;spanner;;struct;;postgres;;varchar
 2334;;db2;;binary;;bigquery;;bytes
@@ -2285,7 +2273,6 @@
 2457;;snowflake;;object;;db2;;clob
 2458;;snowflake;;object;;kinetica;;string
 2459;;snowflake;;object;;oracle;;clob
-2460;;snowflake;;real;;db2;;decimal
 2461;;snowflake;;real;;db2;;real
 2462;;snowflake;;real;;oracle;;number
 2463;;snowflake;;smallint;;db2;;smallint
