@@ -2226,3 +2226,20 @@
 2398;;db2;;xml;;kinetica;;string
 2399;;db2;;xml;;snowflake;;text
 2400;;db2;;xml;;spanner;;string
+2401;;kinetica;;double precision;;db2;;decimal
+2402;;kinetica;;double precision;;mysql;;decimal
+2403;;kinetica;;double precision;;oracle;;number
+2404;;kinetica;;double precision;;postgres;;decimal
+2405;;kinetica;;double precision;;snowflake;;numeric
+2406;;kinetica;;double precision;;sqlserver;;numeric
+2407;;kinetica;;geometry;;mysql;;polygon
+2408;;kinetica;;geometry;;snowflake;;geography
+2409;;kinetica;;ulong;;bigquery;;numeric
+2410;;kinetica;;ulong;;snowflake;;numeric
+2411;;kinetica;;ulong;;spanner;;numeric
+2412;;kinetica;;uuid;;db2;;varchar
+2413;;kinetica;;uuid;;mysql;;text
+2414;;kinetica;;uuid;;oracle;;varchar2
+2415;;kinetica;;uuid;;sqlserver;;varchar
+2416;;kinetica;;wkt;;postgres;;bytea
+2417;;kinetica;;wkt;;snowflake;;binary
