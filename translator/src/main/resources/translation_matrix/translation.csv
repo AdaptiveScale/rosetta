@@ -2316,3 +2316,39 @@
 2501;;snowflake;;variant;;kinetica;;string
 2502;;snowflake;;variant;;oracle;;clob
 2503;;snowflake;;variant;;sqlserver;;text
+2504;;mysql;;dec;;db2;;decimal
+2505;;mysql;;dec;;sqlserver;;decimal
+2506;;mysql;;geometry;;spanner;;string
+2507;;mysql;;json;;sqlserver;;text
+2508;;postgres;;box;;sqlserver;;geography
+2509;;postgres;;circle;;sqlserver;;geography
+2510;;postgres;;line;;sqlserver;;geography
+2511;;postgres;;lseg;;sqlserver;;geography
+2512;;postgres;;path;;sqlserver;;geography
+2513;;postgres;;point;;kinetica;;string
+2514;;postgres;;point;;mysql;;geometry
+2515;;postgres;;point;;sqlserver;;geography
+2516;;postgres;;polygon;;sqlserver;;geography
+2517;;postgres;;varbit;;db2;;varbinary
+2518;;postgres;;varbit;;oracle;;blob
+2519;;sqlserver;;hierarchyid;;oracle;;blob
+2520;;sqlserver;;int identity;;db2;;int
+2521;;sqlserver;;int identity;;oracle;;number
+2522;;sqlserver;;xml;;kinetica;;string
+2523;;oracle;;json;;sqlserver;;text
+2524;;oracle;;urowid;;db2;;varchar
+2525;;db2;;timestamp with time zone;;bigquery;;timestamp
+2526;;db2;;timestamp with time zone;;kinetica;;timestamp
+2527;;db2;;timestamp with time zone;;mysql;;datetime
+2528;;db2;;timestamp with time zone;;postgres;;timestamp with time zone
+2529;;db2;;timestamp with time zone;;spanner;;timestamp
+2530;;bigquery;;int;;snowflake;;int
+2531;;bigquery;;json;;sqlserver;;text
+2532;;bigquery;;struct;;oracle;;varchar2
+2533;;spanner;;json;;sqlserver;;text
+2534;;spanner;;struct;;oracle;;varchar2
+2535;;snowflake;;geography;;db2;;varchar
+2536;;snowflake;;geography;;kinetica;;string
+2537;;snowflake;;geography;;oracle;;varchar2
+2538;;kinetica;;geometry;;bigquery;;geography
+2539;;kinetica;;geometry;;sqlserver;;geography
