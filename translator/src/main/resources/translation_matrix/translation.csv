@@ -1992,3 +1992,237 @@
 2164;;sqlserver;;xml;;mysql;;longtext
 2165;;sqlserver;;xml;;oracle;;xmltype
 2166;;sqlserver;;xml;;spanner;;string
+2167;;oracle;;bfile;;bigquery;;string
+2168;;oracle;;bfile;;postgres;;text
+2169;;oracle;;bfile;;snowflake;;varchar
+2170;;oracle;;bfile;;spanner;;string
+2171;;oracle;;bfile;;sqlserver;;varchar
+2172;;oracle;;binary_double;;mysql;;double
+2173;;oracle;;binary_double;;snowflake;;double
+2174;;oracle;;binary_double;;sqlserver;;float
+2175;;oracle;;binary_float;;mysql;;float
+2176;;oracle;;binary_float;;snowflake;;float
+2177;;oracle;;binary_float;;sqlserver;;float
+2178;;oracle;;blob;;sqlserver;;varbinary
+2179;;oracle;;char;;sqlserver;;char
+2180;;oracle;;clob;;sqlserver;;varchar
+2181;;oracle;;date;;sqlserver;;date
+2182;;oracle;;float;;mysql;;float
+2183;;oracle;;float;;postgres;;numeric
+2184;;oracle;;float;;sqlserver;;float
+2185;;oracle;;interval day to second;;snowflake;;datetime
+2186;;oracle;;interval day to second;;sqlserver;;datetime
+2187;;oracle;;interval year to month;;sqlserver;;datetime
+2188;;oracle;;json;;bigquery;;json
+2189;;oracle;;json;;db2;;clob
+2190;;oracle;;json;;kinetica;;string
+2191;;oracle;;json;;mysql;;json
+2192;;oracle;;json;;snowflake;;variant
+2193;;oracle;;json;;spanner;;json
+2194;;oracle;;long raw;;bigquery;;bytes
+2195;;oracle;;long raw;;spanner;;bytes
+2196;;oracle;;long raw;;sqlserver;;varbinary
+2197;;oracle;;long;;sqlserver;;numeric
+2198;;oracle;;nchar;;mysql;;text
+2199;;oracle;;nchar;;sqlserver;;nchar
+2200;;oracle;;nclob;;sqlserver;;nvarchar
+2201;;oracle;;number;;sqlserver;;numeric
+2202;;oracle;;nvarchar2;;mysql;;varchar
+2203;;oracle;;nvarchar2;;sqlserver;;varchar
+2204;;oracle;;raw;;db2;;varbinary
+2205;;oracle;;raw;;kinetica;;bytes
+2206;;oracle;;raw;;sqlserver;;varbinary
+2207;;oracle;;rowid;;postgres;;text
+2208;;oracle;;rowid;;snowflake;;text
+2209;;oracle;;rowid;;sqlserver;;text
+2210;;oracle;;timestamp with local time zone;;db2;;timestamp
+2211;;oracle;;timestamp with local time zone;;kinetica;;timestamp
+2212;;oracle;;timestamp with local time zone;;snowflake;;timestamp
+2213;;oracle;;timestamp with local time zone;;sqlserver;;datetime
+2214;;oracle;;timestamp with time zone;;db2;;timestamp with time zone
+2215;;oracle;;timestamp with time zone;;kinetica;;timestamp
+2216;;oracle;;timestamp with time zone;;sqlserver;;datetime
+2217;;oracle;;timestamp;;sqlserver;;datetime
+2218;;oracle;;urowid;;postgres;;text
+2219;;oracle;;urowid;;snowflake;;text
+2220;;oracle;;urowid;;sqlserver;;text
+2221;;oracle;;varchar2;;sqlserver;;text
+2222;;oracle;;xmltype;;bigquery;;string
+2223;;oracle;;xmltype;;snowflake;;text
+2224;;oracle;;xmltype;;spanner;;string
+2225;;oracle;;xmltype;;sqlserver;;text
+2226;;oracle;;xmltype;;sqlserver;;xml
+2227;;bigquery;;array;;db2;;varchar
+2228;;bigquery;;array;;kinetica;;varchar
+2229;;bigquery;;array;;postgres;;varchar
+2230;;bigquery;;array;;spanner;;string
+2231;;bigquery;;bigdecimal;;db2;;varchar
+2232;;bigquery;;bigdecimal;;kinetica;;string
+2233;;bigquery;;bigdecimal;;oracle;;varchar2
+2234;;bigquery;;bigdecimal;;postgres;;character varying
+2235;;bigquery;;bigdecimal;;snowflake;;varchar
+2236;;bigquery;;bigdecimal;;spanner;;string
+2237;;bigquery;;bigdecimal;;sqlserver;;varchar
+2238;;bigquery;;bigint;;db2;;bigint
+2239;;bigquery;;bigint;;kinetica;;long
+2240;;bigquery;;bigint;;oracle;;number
+2241;;bigquery;;bigint;;snowflake;;bigint
+2242;;bigquery;;bigint;;spanner;;int64
+2243;;bigquery;;bigint;;sqlserver;;bigint
+2244;;bigquery;;bignumeric;;db2;;decimal
+2245;;bigquery;;bignumeric;;oracle;;number
+2246;;bigquery;;bool;;oracle;;char
+2247;;bigquery;;bool;;snowflake;;boolean
+2248;;bigquery;;bool;;sqlserver;;bit
+2249;;bigquery;;boolean;;db2;;char
+2250;;bigquery;;boolean;;oracle;;char
+2251;;bigquery;;boolean;;spanner;;bool
+2252;;bigquery;;byteint;;db2;;smallint
+2253;;bigquery;;byteint;;kinetica;;int8
+2254;;bigquery;;byteint;;oracle;;number
+2255;;bigquery;;byteint;;snowflake;;tinyint
+2256;;bigquery;;byteint;;spanner;;int64
+2257;;bigquery;;byteint;;sqlserver;;smallint
+2258;;bigquery;;datetime;;oracle;;timestamp
+2259;;bigquery;;decimal;;db2;;decimal
+2260;;bigquery;;decimal;;kinetica;;decimal
+2261;;bigquery;;decimal;;oracle;;number
+2262;;bigquery;;decimal;;snowflake;;decimal
+2263;;bigquery;;decimal;;spanner;;numeric
+2264;;bigquery;;decimal;;sqlserver;;decimal
+2265;;bigquery;;geography;;kinetica;;string
+2266;;bigquery;;int64;;oracle;;number
+2267;;bigquery;;int64;;sqlserver;;bigint
+2268;;bigquery;;int;;db2;;integer
+2269;;bigquery;;int;;kinetica;;int
+2270;;bigquery;;int;;mysql;;int
+2271;;bigquery;;int;;oracle;;number
+2272;;bigquery;;int;;spanner;;int64
+2273;;bigquery;;int;;sqlserver;;int
+2274;;bigquery;;integer;;db2;;integer
+2275;;bigquery;;integer;;kinetica;;int
+2276;;bigquery;;integer;;oracle;;number
+2277;;bigquery;;integer;;snowflake;;integer
+2278;;bigquery;;integer;;spanner;;int64
+2279;;bigquery;;interval;;db2;;timestamp
+2280;;bigquery;;interval;;kinetica;;datetime
+2281;;bigquery;;interval;;snowflake;;timestamp
+2282;;bigquery;;interval;;spanner;;timestamp
+2283;;bigquery;;interval;;sqlserver;;datetime
+2284;;bigquery;;json;;db2;;clob
+2285;;bigquery;;json;;kinetica;;string
+2286;;bigquery;;json;;oracle;;clob
+2287;;bigquery;;json;;snowflake;;variant
+2288;;bigquery;;json;;spanner;;json
+2289;;bigquery;;smallint;;db2;;smallint
+2290;;bigquery;;smallint;;kinetica;;int16
+2291;;bigquery;;smallint;;oracle;;number
+2292;;bigquery;;smallint;;postgres;;smallint
+2293;;bigquery;;smallint;;snowflake;;smallint
+2294;;bigquery;;smallint;;spanner;;int64
+2295;;bigquery;;smallint;;sqlserver;;smallint
+2296;;bigquery;;struct;;db2;;varchar
+2297;;bigquery;;struct;;kinetica;;varchar
+2298;;bigquery;;struct;;mysql;;varchar
+2299;;bigquery;;struct;;postgres;;varchar
+2300;;bigquery;;struct;;spanner;;string
+2301;;bigquery;;time;;oracle;;timestamp
+2302;;bigquery;;timestamp;;spanner;;timestamp
+2303;;bigquery;;tinyint;;db2;;smallint
+2304;;bigquery;;tinyint;;kinetica;;int16
+2305;;bigquery;;tinyint;;kinetica;;int8
+2306;;bigquery;;tinyint;;oracle;;number
+2307;;bigquery;;tinyint;;snowflake;;tinyint
+2308;;bigquery;;tinyint;;spanner;;int64
+2309;;bigquery;;tinyint;;sqlserver;;tinyint
+2310;;spanner;;array;;bigquery;;string
+2311;;spanner;;array;;db2;;varchar
+2312;;spanner;;array;;kinetica;;varchar
+2313;;spanner;;array;;postgres;;varchar
+2314;;spanner;;bool;;oracle;;char
+2315;;spanner;;date;;db2;;date
+2316;;spanner;;date;;kinetica;;date
+2317;;spanner;;date;;mysql;;date
+2318;;spanner;;date;;oracle;;date
+2319;;spanner;;date;;postgres;;date
+2320;;spanner;;date;;snowflake;;date
+2321;;spanner;;date;;sqlserver;;date
+2322;;spanner;;int64;;oracle;;number
+2323;;spanner;;json;;bigquery;;json
+2324;;spanner;;json;;db2;;clob
+2325;;spanner;;json;;kinetica;;string
+2326;;spanner;;json;;oracle;;clob
+2327;;spanner;;json;;snowflake;;variant
+2328;;spanner;;struct;;bigquery;;string
+2329;;spanner;;struct;;db2;;varchar
+2330;;spanner;;struct;;kinetica;;varchar
+2331;;spanner;;struct;;mysql;;json
+2332;;spanner;;struct;;mysql;;varchar
+2333;;spanner;;struct;;postgres;;varchar
+2334;;db2;;binary;;bigquery;;bytes
+2335;;db2;;binary;;oracle;;raw
+2336;;db2;;binary;;postgres;;bytea
+2337;;db2;;binary;;snowflake;;binary
+2338;;db2;;binary;;spanner;;bytes
+2339;;db2;;blob;;sqlserver;;varbinary
+2340;;db2;;boolean;;bigquery;;bool
+2341;;db2;;boolean;;kinetica;;boolean
+2342;;db2;;boolean;;oracle;;char
+2343;;db2;;boolean;;snowflake;;boolean
+2344;;db2;;boolean;;spanner;;bool
+2345;;db2;;boolean;;sqlserver;;bit
+2346;;db2;;char;;kinetica;;string
+2347;;db2;;char;;oracle;;char
+2348;;db2;;char;;snowflake;;char
+2349;;db2;;char;;sqlserver;;char
+2350;;db2;;character;;mysql;;char
+2351;;db2;;character;;postgres;;char
+2352;;db2;;character;;snowflake;;char
+2353;;db2;;dbclob;;bigquery;;string
+2354;;db2;;dbclob;;mysql;;text
+2355;;db2;;dbclob;;oracle;;clob
+2356;;db2;;dbclob;;snowflake;;text
+2357;;db2;;dbclob;;spanner;;string
+2358;;db2;;dbclob;;sqlserver;;text
+2359;;db2;;decfloat;;bigquery;;float64
+2360;;db2;;decfloat;;mysql;;float
+2361;;db2;;decfloat;;postgres;;real
+2362;;db2;;decfloat;;snowflake;;float
+2363;;db2;;decfloat;;spanner;;float64
+2364;;db2;;double precision;;bigquery;;decimal
+2365;;db2;;double precision;;kinetica;;double
+2366;;db2;;double precision;;oracle;;float
+2367;;db2;;double precision;;postgres;;double precision
+2368;;db2;;double precision;;spanner;;numeric
+2369;;db2;;double precision;;sqlserver;;float
+2370;;db2;;double;;mysql;;double
+2371;;db2;;double;;snowflake;;double
+2372;;db2;;float;;kinetica;;float
+2373;;db2;;float;;oracle;;float
+2374;;db2;;float;;snowflake;;float
+2375;;db2;;float;;sqlserver;;float
+2376;;db2;;graphic;;bigquery;;string
+2377;;db2;;graphic;;mysql;;text
+2378;;db2;;graphic;;snowflake;;text
+2379;;db2;;graphic;;spanner;;string
+2380;;db2;;int;;bigquery;;int
+2381;;db2;;int;;mysql;;int
+2382;;db2;;int;;postgres;;integer
+2383;;db2;;int;;spanner;;int64
+2384;;db2;;integer;;snowflake;;integer
+2385;;db2;;numeric;;mysql;;numeric
+2386;;db2;;numeric;;snowflake;;numeric
+2387;;db2;;timestamp with time zone;;oracle;;timestamp with time zone
+2388;;db2;;timestamp with time zone;;sqlserver;;datetimeoffset
+2389;;db2;;varbinary;;oracle;;raw
+2390;;db2;;varbinary;;postgres;;bytea
+2391;;db2;;varbinary;;snowflake;;varbinary
+2392;;db2;;varchar;;snowflake;;varchar
+2393;;db2;;vargraphic;;bigquery;;string
+2394;;db2;;vargraphic;;mysql;;text
+2395;;db2;;vargraphic;;snowflake;;text
+2396;;db2;;vargraphic;;spanner;;string
+2397;;db2;;xml;;bigquery;;string
+2398;;db2;;xml;;kinetica;;string
+2399;;db2;;xml;;snowflake;;text
+2400;;db2;;xml;;spanner;;string
