@@ -567,7 +567,7 @@
 576;;postgres;;_tsquery;;snowflake;;array
 577;;postgres;;_tsvector;;snowflake;;array
 578;;postgres;;_txid_snapshot;;snowflake;;array
-579;;snowflake;;number;;kinetica;;bignumeric
+579;;snowflake;;number;;kinetica;;numeric
 580;;snowflake;;decimal;;kinetica;;decimal
 581;;snowflake;;double;;kinetica;;decimal
 582;;snowflake;;double precision;;kinetica;;decimal
