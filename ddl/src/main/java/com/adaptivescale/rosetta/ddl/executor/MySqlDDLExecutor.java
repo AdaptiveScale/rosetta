@@ -29,6 +29,11 @@ public class MySqlDDLExecutor implements DDLExecutor {
         Properties properties = JDBCUtils.setJDBCAuth(connection);
         properties.setProperty("allowMultiQueries", "true");
 
+        StringBuilder transaction = new StringBuilder();
+        transaction.append("BEGIN WORK;");
+        transaction.append(query);
+        transaction.append("commit;");
+
         java.sql.Connection jdbcConnection = driver.connect(connection.getUrl(), properties);
         jdbcConnection.createStatement().executeUpdate(query);
         jdbcConnection.close();
