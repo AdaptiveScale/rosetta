@@ -94,6 +94,7 @@ connections:
 
       rosetta extract -s pg -t mysql
 
+
 The extract command will create two directories `pg` and `mysql`. `pg` directory will have the extracted schema 
 from Postgres DB. The `mysql` directory will contain the translated YAML which is ready to be used in MySQL DB.
 
@@ -101,6 +102,7 @@ from Postgres DB. The `mysql` directory will contain the translated YAML which i
 
 
      rosetta apply -s mysql
+
 
 The apply command will migrate the translated Postgres schema to MySQL.
 
