@@ -56,7 +56,7 @@ example:
 export ROSETTA_DRIVERS=/Users/adaptivescale/drivers/*
 ```
 
-### rosetta binary (Recommended)
+### rosetta binary
 
 1. Download the rosetta binary for the supported OS ([releases page](https://github.com/AdaptiveScale/rosetta/releases)).
    ```
@@ -68,22 +68,42 @@ export ROSETTA_DRIVERS=/Users/adaptivescale/drivers/*
 2. Unzip the downloaded file
 3. Run rosetta commands using `./rosetta` which is located inside `bin` directory.
 4. On the first run it will create a directory for storing your JDBC drivers, if you haven't set already the ENV variable `ROSETTA_DRIVERS` from the previous step.
-
-
-**Note:** If you face one of the following errors with Google Cloud Spanner JDBC
+5. Configure connections in `main.conf`
+example: connections for postgres and mysql
 
 ```
-java.sql.SQLException: No suitable driver
-
-or
-
-java.lang.SecurityException: Invalid signature file digest for Manifest main attributes
+connections:
+  - name: mysql
+    databaseName: sakila
+    schemaName:
+    dbType: mysql
+    url: jdbc:mysql://root:sakila@localhost:3306/sakila
+    userName: root
+    password: sakila
+  - name: pg
+    databaseName: postgres
+    schemaName: public
+    dbType: postgres
+    url: jdbc:postgresql://localhost:5432/postgres?user=postgres&password=sakila
+    userName: postgres
+    password: sakila
 ```
 
-you can fix it by running the following command where your driver is located:
-```
-zip -d google-cloud-spanner-jdbc-2.6.2-single-jar-with-dependencies.jar 'META-INF/.SF' 'META-INF/.RSA' 'META-INF/*SF'
-```
+6. Extract the schema from postgres and translate it to mysql:
+
+
+      rosetta extract -s pg -t mysql
+
+The extract command will create two directories `pg` and `mysql`. `pg` directory will have the extracted schema 
+from Postgres DB. The `mysql` directory will contain the translated YAML which is ready to be used in MySQL DB.
+
+7. Migrate the translated schema to MySQL DB:
+
+
+     rosetta apply -s mysql
+
+The apply command will migrate the translated Postgres schema to MySQL.
+
 
 ## Rosetta DB YAML Config
 
@@ -656,6 +676,22 @@ alias rosetta='java -cp "/Users/adaptivescale/cli-1.0.0.jar:/Users/adaptivescale
 
 ```gradle binary:runtimeZip```
 
+### Google Cloud Spanner JDBC Fix
+
+**Note:** If you face one of the following errors with Google Cloud Spanner JDBC
+
+```
+java.sql.SQLException: No suitable driver
+
+or
+
+java.lang.SecurityException: Invalid signature file digest for Manifest main attributes
+```
+
+you can fix it by running the following command where your driver is located:
+```
+zip -d google-cloud-spanner-jdbc-2.6.2-single-jar-with-dependencies.jar 'META-INF/.SF' 'META-INF/.RSA' 'META-INF/*SF'
+```
 
 ## Copyright and License Information
 Unless otherwise specified, all content, including all source code files and documentation files in this repository are:
