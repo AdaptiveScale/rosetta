@@ -90,17 +90,6 @@ public class OracleDDLGenerator implements DDL {
     public String createDatabase(Database database, boolean dropTableIfExists) {
         StringBuilder stringBuilder = new StringBuilder();
 
-        Set<String> schemas = database.getTables().stream().map(Table::getSchema).filter(s -> s != null && !s.isEmpty()).collect(Collectors.toSet());
-        if (!schemas.isEmpty()) {
-            stringBuilder.append(
-                    schemas
-                            .stream()
-                            .map(this::createSchema)
-                            .collect(Collectors.joining())
-            );
-            stringBuilder.append("\r");
-        }
-
         stringBuilder.append(database.getTables()
                 .stream()
                 .map(table -> createTable(table, dropTableIfExists))

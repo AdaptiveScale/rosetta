@@ -21,15 +21,17 @@ public class BigQueryDDLTest {
     @Test
     public void createDB() throws IOException {
         String ddl = generateDDL("clean_database");
-        Assertions.assertEquals("CREATE SCHEMA IF NOT EXISTS halis;\r" +
+        Assertions.assertEquals("CREATE SCHEMA IF NOT EXISTS halis;\n" +
                 "CREATE TABLE `halis`.`tableA`(`columnA` STRING, `columnB` INT64);\r" +
+                "CREATE SCHEMA IF NOT EXISTS halis;\n" +
                 "CREATE TABLE `halis`.`tableB`(`columnA` STRING, `columnB` INT64);", ddl);
     }
 
     @Test
     public void addTable() throws IOException {
         String ddl = generateDDL("add_table");
-        Assertions.assertEquals("CREATE TABLE `halis`.`tableB`(`columnA` STRING, `columnB` INT64);", ddl);
+        Assertions.assertEquals("CREATE SCHEMA IF NOT EXISTS halis;\n" +
+                "CREATE TABLE `halis`.`tableB`(`columnA` STRING, `columnB` INT64);", ddl);
     }
 
     @Test

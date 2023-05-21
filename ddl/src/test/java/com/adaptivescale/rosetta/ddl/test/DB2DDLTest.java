@@ -20,7 +20,7 @@ public class DB2DDLTest {
     @Test
     public void createDB() throws IOException {
         String ddl = generateDDL("clean_database");
-        Assertions.assertEquals("\r" +
+        Assertions.assertEquals(
                 "CREATE TABLE \"WEBSTORE\".\"CUSTOMER\"(\"C_SALUTATION\" VARCHAR(5), \"C_LAST_NAME\" VARCHAR(20), \"C_FIRST_NAME\" VARCHAR(20), \"C_CUSTOMER_SK\" INTEGER NOT NULL WITH DEFAULT , PRIMARY KEY (\"C_CUSTOMER_SK\"));\r" +
                 "\r" +
                 "CREATE TABLE \"WEBSTORE\".\"INVENTORY\"(\"INV_ITEM_SK\" INTEGER NOT NULL WITH DEFAULT , \"INV_QUANTITY_ON_HAND\" INTEGER NOT NULL WITH DEFAULT , PRIMARY KEY (\"INV_ITEM_SK\"));\r" +

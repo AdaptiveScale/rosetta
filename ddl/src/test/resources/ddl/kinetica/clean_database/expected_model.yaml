@@ -3,7 +3,6 @@ tables:
   - name: "PLAYER"
     type: "TABLE"
     schema: "ROSETTA"
-    schema: "ROSETTA"
     columns:
       - name: "Name"
         typeName: "VARCHAR"
@@ -37,7 +36,6 @@ tables:
         primaryKey: false
   - name: "USER"
     type: "TABLE"
-    schema: "ROSETTA"
     schema: "ROSETTA"
     columns:
       - name: "USER_ID"

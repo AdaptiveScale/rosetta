@@ -67,7 +67,7 @@ public class KineticaDDLGenerator implements DDL {
             stringBuilder.append(dropTable(table));
         }
 
-        createSchema(table.getSchema());
+        stringBuilder.append(createSchema(table.getSchema()));
 
         createParams.put("schemaName", table.getSchema());
         createParams.put("tableName", table.getName());
@@ -80,17 +80,6 @@ public class KineticaDDLGenerator implements DDL {
     @Override
     public String createDatabase(Database database, boolean dropTableIfExists) {
         StringBuilder stringBuilder = new StringBuilder();
-
-        Set<String> schemas = database.getTables().stream().map(Table::getSchema).filter(s -> s != null && !s.isEmpty()).collect(Collectors.toSet());
-        if (!schemas.isEmpty()) {
-            stringBuilder.append(
-                schemas
-                    .stream()
-                    .map(this::createSchema)
-                    .collect(Collectors.joining())
-            );
-            stringBuilder.append("\r");
-        }
 
         stringBuilder.append(database.getTables()
             .stream()

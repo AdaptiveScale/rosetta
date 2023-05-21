@@ -54,7 +54,7 @@ public class PostgresDDLGenerator implements DDL {
         }
 
         if (table.getSchema() != null && !table.getSchema().isBlank()) {
-            stringBuilder.append("CREATE SCHEMA IF NOT EXISTS " + DEFAULT_WRAPPER + table.getSchema() + DEFAULT_WRAPPER).append("; \n");
+            stringBuilder.append("CREATE SCHEMA IF NOT EXISTS " + DEFAULT_WRAPPER + table.getSchema() + DEFAULT_WRAPPER).append(";\n");
         }
         stringBuilder.append("CREATE TABLE ");
 
@@ -70,18 +70,6 @@ public class PostgresDDLGenerator implements DDL {
     @Override
     public String createDatabase(Database database, boolean dropTableIfExists) {
         StringBuilder stringBuilder = new StringBuilder();
-
-        Set<String> schemas = database.getTables().stream().map(Table::getSchema).filter(s -> s != null && !s.isEmpty()).collect(Collectors.toSet());
-        if (!schemas.isEmpty()) {
-            stringBuilder.append(
-                    schemas
-                            .stream()
-                            .map(schema -> "CREATE SCHEMA IF NOT EXISTS " + DEFAULT_WRAPPER + schema + DEFAULT_WRAPPER)
-                            .collect(Collectors.joining(";\r\r"))
-
-            );
-            stringBuilder.append(";\r");
-        }
 
         stringBuilder.append(database.getTables()
                 .stream()

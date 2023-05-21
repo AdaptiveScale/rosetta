@@ -51,7 +51,7 @@ public class MySqlDDLGenerator implements DDL {
         }
 
         if (table.getSchema() != null && !table.getSchema().isBlank()) {
-            stringBuilder.append("CREATE SCHEMA IF NOT EXISTS `" + table.getSchema() + "`").append("; \n");
+            stringBuilder.append("CREATE SCHEMA IF NOT EXISTS `" + table.getSchema() + "`").append(";\n");
         }
 
         stringBuilder.append("CREATE TABLE ");
@@ -70,30 +70,18 @@ public class MySqlDDLGenerator implements DDL {
     public String createDatabase(Database database, boolean dropTableIfExists) {
         StringBuilder stringBuilder = new StringBuilder();
 
-        Set<String> schemas = database.getTables().stream().map(Table::getSchema).filter(s -> s != null && !s.isEmpty()).collect(Collectors.toSet());
-        if (!schemas.isEmpty()) {
-            stringBuilder.append(
-                    schemas
-                            .stream()
-                            .map(schema -> "CREATE SCHEMA IF NOT EXISTS `" + schema + "`")
-                            .collect(Collectors.joining(";\r\r"))
-
-            );
-            stringBuilder.append(";\r");
-        }
-
         stringBuilder.append(database.getTables()
-                .stream()
-                .map(table -> createTable(table, dropTableIfExists))
-                .collect(Collectors.joining("\r\r")));
+            .stream()
+            .map(table -> createTable(table, dropTableIfExists))
+            .collect(Collectors.joining("\r\r")));
 
         String foreignKeys = database
-                .getTables()
-                .stream()
-                .map(this::foreignKeys)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.joining());
+            .getTables()
+            .stream()
+            .map(this::foreignKeys)
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .collect(Collectors.joining());
 
         if (!foreignKeys.isEmpty()) {
             stringBuilder.append("\r").append(foreignKeys).append("\r");
