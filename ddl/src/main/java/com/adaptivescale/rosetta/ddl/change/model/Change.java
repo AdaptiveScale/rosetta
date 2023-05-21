@@ -45,6 +45,7 @@ public class Change<T> {
     public enum Type {
         DATABASE,
         TABLE,
+        TABLE_SCHEMA,
         COLUMN,
         FOREIGN_KEY,
         INDEX,

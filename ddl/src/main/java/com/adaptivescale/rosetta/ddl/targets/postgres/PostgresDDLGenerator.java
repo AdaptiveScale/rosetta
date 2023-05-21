@@ -57,10 +57,23 @@ public class PostgresDDLGenerator implements DDL {
 
         if (table.getSchema() != null && !table.getSchema().isBlank()) {
             stringBuilder.append(DEFAULT_WRAPPER)
-                    .append(table.getSchema()).append(DEFAULT_WRAPPER).append(".");
+                .append(table.getSchema()).append(DEFAULT_WRAPPER).append(".");
         }
 
         stringBuilder.append(DEFAULT_WRAPPER).append(table.getName()).append(DEFAULT_WRAPPER).append("(").append(definitionAsString).append(");");
+        return stringBuilder.toString();
+    }
+
+    @Override
+    public String createTableSchema(Table table) {
+        StringBuilder stringBuilder = new StringBuilder();
+        if (table.getSchema() != null && !table.getSchema().isBlank()) {
+            stringBuilder
+                .append("CREATE SCHEMA IF NOT EXISTS ")
+                .append(DEFAULT_WRAPPER)
+                .append(table.getSchema())
+                .append(DEFAULT_WRAPPER);
+        }
         return stringBuilder.toString();
     }
 
@@ -71,27 +84,27 @@ public class PostgresDDLGenerator implements DDL {
         Set<String> schemas = database.getTables().stream().map(Table::getSchema).filter(s -> s != null && !s.isEmpty()).collect(Collectors.toSet());
         if (!schemas.isEmpty()) {
             stringBuilder.append(
-                    schemas
-                            .stream()
-                            .map(schema -> "CREATE SCHEMA IF NOT EXISTS " + DEFAULT_WRAPPER + schema + DEFAULT_WRAPPER)
-                            .collect(Collectors.joining(";\r\r"))
+                schemas
+                    .stream()
+                    .map(schema -> "CREATE SCHEMA IF NOT EXISTS " + DEFAULT_WRAPPER + schema + DEFAULT_WRAPPER)
+                    .collect(Collectors.joining(";\r\r"))
 
             );
             stringBuilder.append(";\r");
         }
 
         stringBuilder.append(database.getTables()
-                .stream()
-                .map(table -> createTable(table, dropTableIfExists))
-                .collect(Collectors.joining("\r\r")));
+            .stream()
+            .map(table -> createTable(table, dropTableIfExists))
+            .collect(Collectors.joining("\r\r")));
 
         String foreignKeys = database
-                .getTables()
-                .stream()
-                .map(this::foreignKeys)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.joining());
+            .getTables()
+            .stream()
+            .map(this::foreignKeys)
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .collect(Collectors.joining());
 
         if (!foreignKeys.isEmpty()) {
             stringBuilder.append("\r").append(foreignKeys).append("\r");

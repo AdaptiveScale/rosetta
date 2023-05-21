@@ -13,6 +13,10 @@ public class ChangeFactory {
         return new TableChange(expected, actual, status, Change.Type.TABLE);
     }
 
+    public static Change<Table> tableSchemaChange(Table expected, Table actual, Change.Status status){
+        return new TableSchemaChange(expected, actual, status, Change.Type.TABLE_SCHEMA);
+    }
+
     public static Change<Database> databaseChange(Database expected, Database actual, Change.Status status){
         return new DatabaseChange(expected, actual, status, Change.Type.DATABASE);
     }
