@@ -19,12 +19,14 @@ package com.adaptivescale.rosetta.ddl.utils;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
+import org.thymeleaf.templateresolver.StringTemplateResolver;
 
 import java.util.Map;
 
 public class TemplateEngine {
     private static TemplateEngine instance = null;
     private org.thymeleaf.TemplateEngine engine = null;
+
     private TemplateEngine() {
         ClassLoaderTemplateResolver resolver = new ClassLoaderTemplateResolver();
         resolver.setTemplateMode(TemplateMode.TEXT);
@@ -40,6 +42,17 @@ public class TemplateEngine {
             TemplateEngine.instance = new TemplateEngine();
         }
         return TemplateEngine.instance;
+    }
+
+    public static String processString(String templateName, Map<String, Object> variables) {
+        org.thymeleaf.TemplateEngine templateEngine = new org.thymeleaf.TemplateEngine();
+        StringTemplateResolver templateResolver = new   StringTemplateResolver();
+        templateResolver.setTemplateMode(TemplateMode.HTML);
+        templateEngine.setTemplateResolver(templateResolver);
+
+        Context context = new Context();
+        context.setVariables(variables);
+        return templateEngine.process(templateName, context);
     }
 
     public static String process(String templateName, Map<String, Object> variables) {

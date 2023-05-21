@@ -261,6 +261,42 @@ class Cli implements Callable<Void> {
         }
     }
 
+    @CommandLine.Command(name = "transfer", description = "Transfer data from source to target", mixinStandardHelpOptions = true)
+    private void transfer(@CommandLine.Option(names = {"-s", "--source"}) String sourceName,
+                          @CommandLine.Option(names = {"-t", "--target"}) String targetName) throws Exception {
+        requireConfig(config);
+
+        Optional<Connection> source = config.getConnection(sourceName);
+        if (source.isEmpty()) {
+            throw new RuntimeException("Can not find source with name: " + sourceName + " configured in config.");
+        }
+
+        Optional<Connection> target = config.getConnection(targetName);
+        if (target.isEmpty()) {
+            throw new RuntimeException("Can not find target with name: " + targetName + " configured in config.");
+        }
+        Path sourceWorkspace = Paths.get("./", sourceName);
+        Path targWorkspace = Paths.get("./", targetName);
+
+        if (!Files.isDirectory(sourceWorkspace)) {
+            throw new RuntimeException(String.format("Can not find directory: %s for source name: %s to find" +
+                    " models for translation", sourceWorkspace, sourceName));
+        }
+
+        if (!Files.isDirectory(targWorkspace)) {
+            throw new RuntimeException(String.format("Can not find directory: %s for source name: %s to find" +
+                    " models for translation", sourceWorkspace, sourceName));
+        }
+
+        List<Database> collect = getDatabases(targWorkspace)
+                .map(AbstractMap.SimpleImmutableEntry::getValue)
+                .collect(Collectors.toList());
+        for (Database database : collect) {
+            DefaultSqlExecution defaultSqlExecution = new DefaultSqlExecution(source.get(), new DriverManagerDriverProvider(), database, target.get());
+            defaultSqlExecution.transfer();
+        }
+    }
+
     @CommandLine.Command(name = "init", description = "Creates a sample config (main.conf) and model directory.", mixinStandardHelpOptions = true)
     private void init(@CommandLine.Parameters(index = "0", description = "Project name.", defaultValue = "")
                               String projectName) throws IOException {

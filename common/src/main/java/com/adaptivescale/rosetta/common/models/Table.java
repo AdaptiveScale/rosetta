@@ -17,6 +17,10 @@ public class Table {
 
     private Collection<Column> columns;
 
+    private String extract;
+
+    private String load;
+
     public String getName() {
         return name;
     }
@@ -72,6 +76,22 @@ public class Table {
 
     public void setIndices(List<Index> indices) {
         this.indices = indices;
+    }
+
+    public String getExtract() {
+        return extract;
+    }
+
+    public void setExtract(String extract) {
+        this.extract = extract;
+    }
+
+    public String getLoad() {
+        return load;
+    }
+
+    public void setLoad(String load) {
+        this.load = load;
     }
 
     @Override
