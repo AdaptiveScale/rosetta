@@ -53,6 +53,9 @@ public class PostgresDDLGenerator implements DDL {
             stringBuilder.append(DEFAULT_WRAPPER).append(table.getName()).append(DEFAULT_WRAPPER).append("; \n");
         }
 
+        if (table.getSchema() != null && !table.getSchema().isBlank()) {
+            stringBuilder.append("CREATE SCHEMA IF NOT EXISTS " + DEFAULT_WRAPPER + table.getSchema() + DEFAULT_WRAPPER).append("; \n");
+        }
         stringBuilder.append("CREATE TABLE ");
 
         if (table.getSchema() != null && !table.getSchema().isBlank()) {

@@ -50,6 +50,10 @@ public class MySqlDDLGenerator implements DDL {
             stringBuilder.append("`").append(table.getName()).append("`").append("; \n");
         }
 
+        if (table.getSchema() != null && !table.getSchema().isBlank()) {
+            stringBuilder.append("CREATE SCHEMA IF NOT EXISTS `" + table.getSchema() + "`").append("; \n");
+        }
+
         stringBuilder.append("CREATE TABLE ");
 
         if (table.getSchema() != null && !table.getSchema().isBlank()) {

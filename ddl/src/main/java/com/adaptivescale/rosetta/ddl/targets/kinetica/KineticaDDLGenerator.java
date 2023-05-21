@@ -67,6 +67,8 @@ public class KineticaDDLGenerator implements DDL {
             stringBuilder.append(dropTable(table));
         }
 
+        createSchema(table.getSchema());
+
         createParams.put("schemaName", table.getSchema());
         createParams.put("tableName", table.getName());
         createParams.put("tableCode", definitionAsString);
@@ -249,6 +251,9 @@ public class KineticaDDLGenerator implements DDL {
     }
 
     private String createSchema(String schema) {
+        if (schema == null) {
+            return "";
+        }
         Map<String, Object> params = new HashMap<>();
         params.put("schemaName", schema);
         return TemplateEngine.process(SCHEMA_CREATE_TEMPLATE, params);

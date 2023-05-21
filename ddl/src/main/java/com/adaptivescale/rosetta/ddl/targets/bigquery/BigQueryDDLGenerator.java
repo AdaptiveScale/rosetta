@@ -55,6 +55,10 @@ public class BigQueryDDLGenerator implements DDL {
             builder.append("`").append(table.getName()).append("`; \n");
         }
 
+        if (table.getSchema() != null && !table.getSchema().isBlank()) {
+            builder.append("CREATE SCHEMA IF NOT EXISTS " + table.getSchema()).append("; \n");
+        }
+
         builder.append("CREATE TABLE ");
 
         if (table.getSchema() != null && !table.getSchema().isBlank()) {
