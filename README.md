@@ -67,7 +67,14 @@ export ROSETTA_DRIVERS=/Users/adaptivescale/drivers/*
     ```
 2. Unzip the downloaded file
 3. Run rosetta commands using `./rosetta` which is located inside `bin` directory.
-4. On the first run it will create a directory for storing your JDBC drivers, if you haven't set already the ENV variable `ROSETTA_DRIVERS` from the previous step.
+4. Create new project using `rosetta init` command:
+
+```
+   rosetta init database-migration
+```
+
+The `rosetta init` command will create a new rosetta project within `database-migration` directory containing the `main.conf` (for configuring the connections to data sources).
+
 5. Configure connections in `main.conf`
 example: connections for postgres and mysql
 
