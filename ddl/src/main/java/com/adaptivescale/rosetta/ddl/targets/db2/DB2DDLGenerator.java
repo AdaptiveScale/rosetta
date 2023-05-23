@@ -76,12 +76,6 @@ public class DB2DDLGenerator implements DDL {
         createParams.put("tableCode", definitionAsString);
         stringBuilder.append(TemplateEngine.process(TABLE_CREATE_TEMPLATE, createParams));
 
-        Optional.ofNullable(table)
-            .map(this::foreignKeys)
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .ifPresent(it -> stringBuilder.append("\r").append(it));
-
         return stringBuilder.toString();
     }
 
@@ -104,6 +98,15 @@ public class DB2DDLGenerator implements DDL {
             .stream()
             .map(table -> createTable(table, dropTableIfExists))
             .collect(Collectors.joining("\r\r")));
+
+
+        //Create ForeignKeys
+        stringBuilder.append(database.getTables()
+            .stream()
+            .map(table -> foreignKeys(table))
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .collect(Collectors.joining("\r")));
 
         return stringBuilder.toString();
     }

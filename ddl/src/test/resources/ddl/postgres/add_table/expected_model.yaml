@@ -73,6 +73,23 @@ tables:
         nullable: true
         primaryKey: false
         autoincrement: false
+      - name: "TEAMID"
+        typeName: "DECIMAL"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 10
+        scale: 0
+        precision: 10
+        foreignKeys:
+          - name: "Position_FK_TEAM"
+            tableName: "Position"
+            columnName: "TEAMID"
+            deleteRule: "1"
+            primaryTableName: "TEAM"
+            primaryColumnName: "ID"
+        nullable: true
+        primaryKey: false
+        autoincrement: false
   - name: "TEAM"
     type: "TABLE"
     columns:
@@ -139,6 +156,56 @@ tables:
             columnName: "PLAYERID"
             deleteRule: "1"
             primaryTableName: "PLAYER"
+            primaryColumnName: "ID"
+        nullable: true
+        primaryKey: false
+        autoincrement: false
+  - name: "Position2"
+    type: "TABLE"
+    columns:
+      - name: "ID"
+        typeName: "DECIMAL"
+        ordinalPosition: 0
+        primaryKeySequenceId: 1
+        columnDisplaySize: 10
+        scale: 0
+        precision: 10
+        nullable: false
+        primaryKey: true
+        autoincrement: false
+      - name: "DESCRIPTION"
+        typeName: "VARCHAR"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 0
+        scale: 0
+        precision: 0
+        nullable: true
+        primaryKey: false
+        autoincrement: false
+      - name: "Name"
+        typeName: "VARCHAR"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 0
+        scale: 0
+        precision: 0
+        nullable: true
+        primaryKey: false
+        autoincrement: false
+      - name: "TEAMID"
+        typeName: "DECIMAL"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 10
+        scale: 0
+        precision: 10
+        foreignKeys:
+          - name: "Position2_FK_TEAM"
+            tableName: "Position2"
+            columnName: "TEAMID"
+            deleteRule: "1"
+            primaryTableName: "TEAM"
             primaryColumnName: "ID"
         nullable: true
         primaryKey: false
