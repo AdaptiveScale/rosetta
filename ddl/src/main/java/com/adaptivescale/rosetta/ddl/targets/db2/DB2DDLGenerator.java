@@ -97,8 +97,9 @@ public class DB2DDLGenerator implements DDL {
         stringBuilder.append(database.getTables()
             .stream()
             .map(table -> createTable(table, dropTableIfExists))
-            .collect(Collectors.joining("\r\r")));
+            .collect(Collectors.joining("\r")));
 
+        stringBuilder.append("\r");
 
         //Create ForeignKeys
         stringBuilder.append(database.getTables()
@@ -106,7 +107,7 @@ public class DB2DDLGenerator implements DDL {
             .map(table -> foreignKeys(table))
             .filter(Optional::isPresent)
             .map(Optional::get)
-            .collect(Collectors.joining("\r")));
+            .collect(Collectors.joining()));
 
         return stringBuilder.toString();
     }
