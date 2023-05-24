@@ -99,6 +99,8 @@ public class SQLServerDDLGenerator implements DDL {
             .map(table -> createTable(table, dropTableIfExists))
             .collect(Collectors.joining("\r\r")));
 
+        stringBuilder.append("\r");
+
         //Create ForeignKeys
         stringBuilder.append(database.getTables()
             .stream()
