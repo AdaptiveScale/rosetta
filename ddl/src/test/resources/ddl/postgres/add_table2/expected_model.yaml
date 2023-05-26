@@ -42,6 +42,7 @@ tables:
         autoincrement: false
   - name: "Position"
     type: "TABLE"
+    schema: "new"
     columns:
       - name: "ID"
         typeName: "DECIMAL"

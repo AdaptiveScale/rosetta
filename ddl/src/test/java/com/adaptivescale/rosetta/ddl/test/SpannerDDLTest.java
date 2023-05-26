@@ -35,7 +35,7 @@ public class SpannerDDLTest {
     @Test
     public void addTable() throws IOException {
     String ddl = generateDDL("add_table");
-    Assertions.assertEquals("CREATE TABLE Logs(LogId INT64 NOT NULL , Description STRING(1024)) PRIMARY KEY (LogId);", ddl);
+    Assertions.assertEquals("\rCREATE TABLE Logs(LogId INT64 NOT NULL , Description STRING(1024)) PRIMARY KEY (LogId);", ddl);
     }
 
     @Test

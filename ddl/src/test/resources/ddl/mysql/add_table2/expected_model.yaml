@@ -42,6 +42,7 @@ tables:
         autoincrement: false
   - name: "Position"
     type: "TABLE"
+    schema: "new"
     columns:
       - name: "ID"
         typeName: "DECIMAL"
@@ -144,4 +145,4 @@ tables:
         primaryKey: false
         autoincrement: false
 databaseProductName: "MySQL"
-databaseType: "postgres"
+databaseType: "mysql"

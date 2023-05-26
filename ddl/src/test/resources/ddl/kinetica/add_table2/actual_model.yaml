@@ -2,6 +2,7 @@
 tables:
   - name: "PLAYER"
     type: "TABLE"
+    schema: "ROSETTA"
     columns:
       - name: "name"
         typeName: "VARCHAR"
@@ -40,41 +41,9 @@ tables:
         nullable: false
         primaryKey: true
         autoincrement: false
-  - name: "Position"
-    type: "TABLE"
-    columns:
-      - name: "ID"
-        typeName: "DECIMAL"
-        ordinalPosition: 0
-        primaryKeySequenceId: 1
-        columnDisplaySize: 10
-        scale: 0
-        precision: 10
-        nullable: false
-        primaryKey: true
-        autoincrement: false
-      - name: "DESCRIPTION"
-        typeName: "VARCHAR"
-        ordinalPosition: 0
-        primaryKeySequenceId: 0
-        columnDisplaySize: 0
-        scale: 0
-        precision: 0
-        nullable: true
-        primaryKey: false
-        autoincrement: false
-      - name: "Name"
-        typeName: "VARCHAR"
-        ordinalPosition: 0
-        primaryKeySequenceId: 0
-        columnDisplaySize: 0
-        scale: 0
-        precision: 0
-        nullable: true
-        primaryKey: false
-        autoincrement: false
   - name: "TEAM"
     type: "TABLE"
+    schema: "ROSETTA"
     columns:
       - name: "name"
         typeName: "VARCHAR"
@@ -108,6 +77,7 @@ tables:
         autoincrement: false
   - name: "TEAMPLAYERS"
     type: "TABLE"
+    schema: "ROSETTA"
     columns:
       - name: "TEAMID"
         typeName: "DECIMAL"
@@ -143,5 +113,5 @@ tables:
         nullable: true
         primaryKey: false
         autoincrement: false
-databaseProductName: "MySQL"
-databaseType: "postgres"
+databaseProductName: "kinetica"
+databaseType: "kinetica"

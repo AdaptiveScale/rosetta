@@ -81,7 +81,8 @@ public class BigQueryDDLGenerator implements DDL {
         if (table.getSchema() != null && !table.getSchema().isBlank()) {
             stringBuilder
                     .append("CREATE SCHEMA IF NOT EXISTS ")
-                    .append(table.getSchema());
+                    .append(table.getSchema())
+                    .append(";");
         }
         return stringBuilder.toString();
     }

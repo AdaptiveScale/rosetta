@@ -42,8 +42,6 @@ public class SpannerChangeFinder implements ChangeFinder {
                     .collect(Collectors.toList());
 
             if (foundedTables.size() == 0) {
-                Change<Table> tableSchemaChange = ChangeFactory.tableSchemaChange(expectedTable, null, Change.Status.ADD);
-                changes.add(tableSchemaChange);
                 Change<Table> tableChange = ChangeFactory.tableChange(expectedTable, null, Change.Status.ADD);
                 changes.add(tableChange);
             } else if (foundedTables.size() == 1) {
@@ -358,7 +356,7 @@ public class SpannerChangeFinder implements ChangeFinder {
             }
 
             if (object instanceof Table) {
-                id = "TABLE->" + change.getStatus() + "->" + ((Table) object).getSchema() + "->" + ((Table) object).getName();
+                id = "TABLE->" + change.getStatus() + "->" + change.getType() + "->" + ((Table) object).getSchema() + "->" + ((Table) object).getName();
             }
 
             if (object instanceof Database) {

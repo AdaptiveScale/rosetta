@@ -31,6 +31,14 @@ public class PostgresDDLTest {
     @Test
     public void addTable() throws IOException {
         String ddl = generateDDL("add_table");
+        Assertions.assertEquals(
+                "\rCREATE TABLE \"Position\"(\"ID\" DECIMAL(10) NOT NULL , \"DESCRIPTION\" VARCHAR," +
+                " \"Name\" VARCHAR, PRIMARY KEY (\"ID\"));", ddl);
+    }
+
+    @Test
+    public void addTable2() throws IOException {
+        String ddl = generateDDL("add_table2");
         Assertions.assertEquals("CREATE SCHEMA IF NOT EXISTS \"new\";\r" +
                 "CREATE TABLE \"new\".\"Position\"(\"ID\" DECIMAL(10) NOT NULL , \"DESCRIPTION\" VARCHAR," +
                 " \"Name\" VARCHAR, PRIMARY KEY (\"ID\"));", ddl);

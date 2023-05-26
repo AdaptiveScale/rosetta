@@ -36,6 +36,14 @@ public class SnowflakeDDLTest {
     }
 
     @Test
+    public void addTable2() throws IOException {
+        String ddl = generateDDL("add_table2");
+        Assertions.assertEquals("CREATE SCHEMA IF NOT EXISTS \"NEW\";\r" +
+                "USE SCHEMA \"NEW\";\n" +
+                "CREATE TABLE \"PLAYER\"(\"Name\" VARCHAR, \"Position\" VARCHAR, \"Number\" NUMBER not null);", ddl);
+    }
+
+    @Test
     public void dropTable() throws IOException {
         String ddl = generateDDL("drop_table");
         Assertions.assertEquals("USE SCHEMA \"FBAL\";\n" +

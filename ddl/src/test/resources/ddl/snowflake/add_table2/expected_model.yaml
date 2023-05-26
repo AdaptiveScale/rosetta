@@ -1,0 +1,52 @@
+---
+tables:
+  - name: "PLAYER"
+    type: "TABLE"
+    schema: "NEW"
+    columns:
+      - name: "Name"
+        typeName: "VARCHAR"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 100
+        scale: 0
+        precision: 100
+        nullable: true
+        autoincrement: false
+        primaryKey: false
+      - name: "Position"
+        typeName: "VARCHAR"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 100
+        scale: 0
+        precision: 100
+        nullable: true
+        autoincrement: false
+        primaryKey: false
+      - name: "Number"
+        typeName: "NUMBER"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 38
+        scale: 0
+        precision: 38
+        nullable: false
+        autoincrement: false
+        primaryKey: false
+  - name: "USER"
+    type: "TABLE"
+    schema: "ROSETTA"
+    columns:
+      - name: "USER_ID"
+        typeName: "NUMBER"
+        ordinalPosition: 0
+        primaryKeySequenceId: 1
+        columnDisplaySize: 38
+        scale: 0
+        precision: 38
+        nullable: false
+        autoincrement: false
+        primaryKey: true
+databaseProductName: "Snowflake"
+databaseType: "snowflake"
