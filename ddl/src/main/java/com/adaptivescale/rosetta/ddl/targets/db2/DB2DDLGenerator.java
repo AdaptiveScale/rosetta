@@ -86,6 +86,13 @@ public class DB2DDLGenerator implements DDL {
     }
 
     @Override
+    public String createTableSchema(Table table) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("schemaName", table.getSchema());
+        return TemplateEngine.process(SCHEMA_CREATE_TEMPLATE, params);
+    }
+
+    @Override
     public String createDatabase(Database database, boolean dropTableIfExists) {
         StringBuilder stringBuilder = new StringBuilder();
 

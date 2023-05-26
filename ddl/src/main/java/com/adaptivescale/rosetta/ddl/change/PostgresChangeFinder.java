@@ -253,7 +253,7 @@ public class PostgresChangeFinder implements ChangeFinder {
             }
 
             if (object instanceof Table) {
-                id = "TABLE->" + change.getStatus() + "->" + ((Table) object).getSchema() + "->" + ((Table) object).getName();
+                id = "TABLE->" + change.getStatus() + "->" + change.getType() + "->" + ((Table) object).getSchema() + "->" + ((Table) object).getName();
             }
 
             if (object instanceof Database) {

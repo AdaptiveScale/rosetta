@@ -72,7 +72,8 @@ public class PostgresDDLGenerator implements DDL {
                 .append("CREATE SCHEMA IF NOT EXISTS ")
                 .append(DEFAULT_WRAPPER)
                 .append(table.getSchema())
-                .append(DEFAULT_WRAPPER);
+                .append(DEFAULT_WRAPPER)
+                .append(";");
         }
         return stringBuilder.toString();
     }

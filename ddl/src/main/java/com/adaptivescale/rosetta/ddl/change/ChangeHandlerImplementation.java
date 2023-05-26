@@ -31,6 +31,9 @@ public class ChangeHandlerImplementation implements ChangeHandler {
                 case DATABASE:
                     ddlStatements.add(onDatabaseChange((DatabaseChange) change));
                     break;
+                case TABLE_SCHEMA:
+                    ddlStatements.add(onTableSchemaChange((TableSchemaChange) change));
+                    break;
                 case TABLE:
                     ddlStatements.add(onTableChange((TableChange) change));
                     break;

@@ -42,6 +42,8 @@ public class SpannerChangeFinder implements ChangeFinder {
                     .collect(Collectors.toList());
 
             if (foundedTables.size() == 0) {
+                Change<Table> tableSchemaChange = ChangeFactory.tableSchemaChange(expectedTable, null, Change.Status.ADD);
+                changes.add(tableSchemaChange);
                 Change<Table> tableChange = ChangeFactory.tableChange(expectedTable, null, Change.Status.ADD);
                 changes.add(tableChange);
             } else if (foundedTables.size() == 1) {
