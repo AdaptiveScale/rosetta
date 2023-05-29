@@ -52,6 +52,9 @@ public class DB2ChangeFinder implements ChangeFinder {
                 }
                 Change<Table> tableChange = ChangeFactory.tableChange(expectedTable, null, Change.Status.ADD);
                 changes.add(tableChange);
+
+                List<Change<?>> changesForForeignKeys = findChangesForForeignKeys(findAllForeignKeys(Arrays.asList(expectedTable)), null);
+                changes.addAll(changesForForeignKeys);
             } else if (foundedTables.size() == 1) {
                 Table table = foundedTables.get(0);
                 actualTables.remove(table);

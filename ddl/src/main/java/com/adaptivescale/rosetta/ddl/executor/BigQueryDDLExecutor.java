@@ -28,6 +28,12 @@ public class BigQueryDDLExecutor implements DDLExecutor {
         Driver driver = driverProvider.getDriver(connection);
         Properties properties = JDBCUtils.setJDBCAuth(connection);
 
+
+        StringBuilder transaction = new StringBuilder();
+        transaction.append("BEGIN TRANSACTION;");
+        transaction.append(query);
+        transaction.append("COMMIT TRANSACTION;");
+
         java.sql.Connection jdbcConnection = driver.connect(connection.getUrl(), properties);
         jdbcConnection.createStatement().execute(query);
         jdbcConnection.close();

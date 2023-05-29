@@ -20,23 +20,55 @@ public class SQLServerDDLTest {
     @Test
     public void createDB() throws IOException {
         String ddl = generateDDL("clean_database");
-        Assertions.assertEquals(("IF NOT EXISTS (" +
-                "SELECT  *    FROM sys.schemas    WHERE name = N'test')" +
-                "EXEC('CREATE SCHEMA test');" +
-                "CREATE TABLE \"test\".\"Categories\"(\"CategoryID\" int identity NOT NULL , \"CategoryName\" nvarchar NOT NULL , \"Description\" ntext NOT NULL , \"Picture\" image NOT NULL , PRIMARY KEY (\"CategoryID\"));" +
-                "CREATE TABLE \"test\".\"CustomerCustomerDemo\"(\"CustomerID\" nchar NOT NULL , \"CustomerTypeID\" nchar NOT NULL , PRIMARY KEY (\"CustomerID\", \"CustomerTypeID\"));" +
-                "ALTER TABLE \"test\".\"CustomerCustomerDemo\" ADD CONSTRAINT \"FK_CustomerCustomerDemo_Customers\" FOREIGN KEY (\"CustomerID\") REFERENCES \"test\".\"Customers\"(\"CustomerID\") ;" +
-                "ALTER TABLE \"test\".\"CustomerCustomerDemo\" ADD CONSTRAINT \"FK_CustomerCustomerDemo\" FOREIGN KEY (\"CustomerTypeID\") REFERENCES \"test\".\"CustomerDemographics\"(\"CustomerTypeID\") ;" +
-                "CREATE TABLE \"test\".\"CustomerDemographics\"(\"CustomerTypeID\" nchar NOT NULL , \"CustomerDesc\" ntext NOT NULL , PRIMARY KEY (\"CustomerTypeID\"));" +
-                "CREATE TABLE \"test\".\"Customers\"(\"CustomerID\" nchar NOT NULL , \"CompanyName\" nvarchar NOT NULL , \"ContactName\" nvarchar NOT NULL , \"ContactTitle\" nvarchar NOT NULL , \"Address\" nvarchar NOT NULL , \"City\" nvarchar NOT NULL , \"Region\" nvarchar NOT NULL , \"PostalCode\" nvarchar NOT NULL , \"Country\" nvarchar NOT NULL , \"Phone\" nvarchar NOT NULL , \"Fax\" nvarchar NOT NULL , PRIMARY KEY (\"CustomerID\"));" +
-                "CREATE TABLE \"test\".\"Employees\"(\"EmployeeID\" int identity NOT NULL , \"LastName\" nvarchar NOT NULL , \"FirstName\" nvarchar NOT NULL , \"Title\" nvarchar NOT NULL , \"TitleOfCourtesy\" nvarchar NOT NULL , \"BirthDate\" datetime NOT NULL , \"HireDate\" datetime NOT NULL , \"Address\" nvarchar NOT NULL , \"City\" nvarchar NOT NULL , \"Region\" nvarchar NOT NULL , \"PostalCode\" nvarchar NOT NULL , \"Country\" nvarchar NOT NULL , \"HomePhone\" nvarchar NOT NULL , \"Extension\" nvarchar NOT NULL , \"Photo\" image NOT NULL , \"Notes\" ntext NOT NULL , \"ReportsTo\" int NOT NULL , \"PhotoPath\" nvarchar NOT NULL , PRIMARY KEY (\"EmployeeID\"));" +
-                "ALTER TABLE \"test\".\"Employees\" ADD CONSTRAINT \"FK_Employees_Employees\" FOREIGN KEY (\"ReportsTo\") REFERENCES \"test\".\"Employees\"(\"EmployeeID\") ;CREATE TABLE \"test\".\"EmployeeTerritories\"(\"EmployeeID\" int NOT NULL , \"TerritoryID\" nvarchar NOT NULL , PRIMARY KEY (\"EmployeeID\", \"TerritoryID\"));ALTER TABLE \"test\".\"EmployeeTerritories\" ADD CONSTRAINT \"FK_EmployeeTerritories_Employees\" FOREIGN KEY (\"EmployeeID\") REFERENCES \"test\".\"Employees\"(\"EmployeeID\") ;" +
-                "ALTER TABLE \"test\".\"EmployeeTerritories\" ADD CONSTRAINT \"FK_EmployeeTerritories_Territories\" FOREIGN KEY (\"TerritoryID\") REFERENCES \"test\".\"Territories\"(\"TerritoryID\") ;CREATE TABLE \"test\".\"OrderDetails\"(\"OrderDetailsID\" int identity NOT NULL , \"OrderID\" int NOT NULL , \"ProductID\" int NOT NULL , \"UnitPrice\" money NOT NULL , \"Quantity\" smallint NOT NULL , \"Discount\" real NOT NULL , PRIMARY KEY (\"OrderDetailsID\"));ALTER TABLE \"test\".\"OrderDetails\" ADD CONSTRAINT \"FK_Order_Details_Orders\" FOREIGN KEY (\"OrderID\") REFERENCES \"test\".\"Orders\"(\"OrderID\") ;" +
-                "ALTER TABLE \"test\".\"OrderDetails\" ADD CONSTRAINT \"FK_Order_Details_Products\" FOREIGN KEY (\"ProductID\") REFERENCES \"test\".\"Products\"(\"ProductID\") ;CREATE TABLE \"test\".\"Orders\"(\"OrderID\" int identity NOT NULL , \"CustomerID\" nchar NOT NULL , \"EmployeeID\" int NOT NULL , \"OrderDate\" datetime NOT NULL , \"RequiredDate\" datetime NOT NULL , \"ShippedDate\" datetime NOT NULL , \"ShipVia\" int NOT NULL , \"Freight\" money NOT NULL , \"ShipName\" nvarchar NOT NULL , \"ShipAddress\" nvarchar NOT NULL , \"ShipCity\" nvarchar NOT NULL , \"ShipRegion\" nvarchar NOT NULL , \"ShipPostalCode\" nvarchar NOT NULL , \"ShipCountry\" nvarchar NOT NULL , PRIMARY KEY (\"OrderID\"));" +
-                "ALTER TABLE \"test\".\"Orders\" ADD CONSTRAINT \"FK_Orders_Customers\" FOREIGN KEY (\"CustomerID\") REFERENCES \"test\".\"Customers\"(\"CustomerID\") ;ALTER TABLE \"test\".\"Orders\" ADD CONSTRAINT \"FK_Orders_Employees\" FOREIGN KEY (\"EmployeeID\") REFERENCES \"test\".\"Employees\"(\"EmployeeID\") ;ALTER TABLE \"test\".\"Orders\" ADD CONSTRAINT \"FK_Orders_Shippers\" FOREIGN KEY (\"ShipVia\") REFERENCES \"test\".\"Shippers\"(\"ShipperID\") ;CREATE TABLE \"test\".\"Products\"(\"ProductID\" int identity NOT NULL , \"ProductName\" nvarchar NOT NULL , \"SupplierID\" int NOT NULL , \"CategoryID\" int NOT NULL , \"QuantityPerUnit\" nvarchar NOT NULL , \"UnitPrice\" money NOT NULL , \"UnitsInStock\" smallint NOT NULL , \"UnitsOnOrder\" smallint NOT NULL , \"ReorderLevel\" smallint NOT NULL , \"Discontinued\" bit NOT NULL , PRIMARY KEY (\"ProductID\"));" +
-                "ALTER TABLE \"test\".\"Products\" ADD CONSTRAINT \"FK_Products_Suppliers\" FOREIGN KEY (\"SupplierID\") REFERENCES \"test\".\"Suppliers\"(\"SupplierID\") ;ALTER TABLE \"test\".\"Products\" ADD CONSTRAINT \"FK_Products_Categories\" FOREIGN KEY (\"CategoryID\") REFERENCES \"test\".\"Categories\"(\"CategoryID\") ;CREATE TABLE \"test\".\"Region\"(\"RegionID\" int NOT NULL , \"RegionDescription\" nchar NOT NULL , PRIMARY KEY (\"RegionID\"));" +
-                "CREATE TABLE \"test\".\"Shippers\"(\"ShipperID\" int identity NOT NULL , \"CompanyName\" nvarchar NOT NULL , \"Phone\" nvarchar NOT NULL , PRIMARY KEY (\"ShipperID\"));CREATE TABLE \"test\".\"Suppliers\"(\"SupplierID\" int identity NOT NULL , \"CompanyName\" nvarchar NOT NULL , \"ContactName\" nvarchar NOT NULL , \"ContactTitle\" nvarchar NOT NULL , \"Address\" nvarchar NOT NULL , \"City\" nvarchar NOT NULL , \"Region\" nvarchar NOT NULL , \"PostalCode\" nvarchar NOT NULL , \"Country\" nvarchar NOT NULL , \"Phone\" nvarchar NOT NULL , \"Fax\" nvarchar NOT NULL , \"HomePage\" ntext NOT NULL , PRIMARY KEY (\"SupplierID\"));" +
-                "CREATE TABLE \"test\".\"Territories\"(\"TerritoryID\" nvarchar NOT NULL , \"TerritoryDescription\" nchar NOT NULL , \"RegionID\" int NOT NULL , PRIMARY KEY (\"TerritoryID\"));ALTER TABLE \"test\".\"Territories\" ADD CONSTRAINT \"FK_Territories_Region\" FOREIGN KEY (\"RegionID\") REFERENCES \"test\".\"Region\"(\"RegionID\") ;").replaceAll("(\\r|\\n|\\t)", ""), ddl.replaceAll("(\\r|\\n|\\t)", ""));
+        Assertions.assertEquals(("IF NOT EXISTS (SELECT  *    FROM sys.schemas    WHERE name = N'test')EXEC('CREATE SCHEMA test');\n" +
+                "\n" +
+                "CREATE TABLE \"test\".\"Categories\"(\"CategoryID\" int identity NOT NULL , \"CategoryName\" nvarchar NOT NULL , \"Description\" ntext NOT NULL , \"Picture\" image NOT NULL , PRIMARY KEY (\"CategoryID\"));CREATE TABLE \"test\".\"CustomerCustomerDemo\"(\"CustomerID\" nchar NOT NULL , \"CustomerTypeID\" nchar NOT NULL , PRIMARY KEY (\"CustomerID\", \"CustomerTypeID\"));\n" +
+                "\n" +
+                "CREATE TABLE \"test\".\"CustomerDemographics\"(\"CustomerTypeID\" nchar NOT NULL , \"CustomerDesc\" ntext NOT NULL , PRIMARY KEY (\"CustomerTypeID\"));CREATE TABLE \"test\".\"Customers\"(\"CustomerID\" nchar NOT NULL , \"CompanyName\" nvarchar NOT NULL , \"ContactName\" nvarchar NOT NULL , \"ContactTitle\" nvarchar NOT NULL , \"Address\" nvarchar NOT NULL , \"City\" nvarchar NOT NULL , \"Region\" nvarchar NOT NULL , \"PostalCode\" nvarchar NOT NULL , \"Country\" nvarchar NOT NULL , \"Phone\" nvarchar NOT NULL , \"Fax\" nvarchar NOT NULL , PRIMARY KEY (\"CustomerID\"));\n" +
+                "\n" +
+                "CREATE TABLE \"test\".\"Employees\"(\"EmployeeID\" int identity NOT NULL , \"LastName\" nvarchar NOT NULL , \"FirstName\" nvarchar NOT NULL , \"Title\" nvarchar NOT NULL , \"TitleOfCourtesy\" nvarchar NOT NULL , \"BirthDate\" datetime NOT NULL , \"HireDate\" datetime NOT NULL , \"Address\" nvarchar NOT NULL , \"City\" nvarchar NOT NULL , \"Region\" nvarchar NOT NULL , \"PostalCode\" nvarchar NOT NULL , \"Country\" nvarchar NOT NULL , \"HomePhone\" nvarchar NOT NULL , \"Extension\" nvarchar NOT NULL , \"Photo\" image NOT NULL , \"Notes\" ntext NOT NULL , \"ReportsTo\" int NOT NULL , \"PhotoPath\" nvarchar NOT NULL , PRIMARY KEY (\"EmployeeID\"));\n" +
+                "\n" +
+                "CREATE TABLE \"test\".\"EmployeeTerritories\"(\"EmployeeID\" int NOT NULL , \"TerritoryID\" nvarchar NOT NULL , PRIMARY KEY (\"EmployeeID\", \"TerritoryID\"));\n" +
+                "\n" +
+                "CREATE TABLE \"test\".\"OrderDetails\"(\"OrderDetailsID\" int identity NOT NULL , \"OrderID\" int NOT NULL , \"ProductID\" int NOT NULL , \"UnitPrice\" money NOT NULL , \"Quantity\" smallint NOT NULL , \"Discount\" real NOT NULL , PRIMARY KEY (\"OrderDetailsID\"));\n" +
+                "\n" +
+                "CREATE TABLE \"test\".\"Orders\"(\"OrderID\" int identity NOT NULL , \"CustomerID\" nchar NOT NULL , \"EmployeeID\" int NOT NULL , \"OrderDate\" datetime NOT NULL , \"RequiredDate\" datetime NOT NULL , \"ShippedDate\" datetime NOT NULL , \"ShipVia\" int NOT NULL , \"Freight\" money NOT NULL , \"ShipName\" nvarchar NOT NULL , \"ShipAddress\" nvarchar NOT NULL , \"ShipCity\" nvarchar NOT NULL , \"ShipRegion\" nvarchar NOT NULL , \"ShipPostalCode\" nvarchar NOT NULL , \"ShipCountry\" nvarchar NOT NULL , PRIMARY KEY (\"OrderID\"));\n" +
+                "\n" +
+                "CREATE TABLE \"test\".\"Products\"(\"ProductID\" int identity NOT NULL , \"ProductName\" nvarchar NOT NULL , \"SupplierID\" int NOT NULL , \"CategoryID\" int NOT NULL , \"QuantityPerUnit\" nvarchar NOT NULL , \"UnitPrice\" money NOT NULL , \"UnitsInStock\" smallint NOT NULL , \"UnitsOnOrder\" smallint NOT NULL , \"ReorderLevel\" smallint NOT NULL , \"Discontinued\" bit NOT NULL , PRIMARY KEY (\"ProductID\"));\n" +
+                "\n" +
+                "CREATE TABLE \"test\".\"Region\"(\"RegionID\" int NOT NULL , \"RegionDescription\" nchar NOT NULL , PRIMARY KEY (\"RegionID\"));\n" +
+                "\n" +
+                "CREATE TABLE \"test\".\"Shippers\"(\"ShipperID\" int identity NOT NULL , \"CompanyName\" nvarchar NOT NULL , \"Phone\" nvarchar NOT NULL , PRIMARY KEY (\"ShipperID\"));\n" +
+                "\n" +
+                "CREATE TABLE \"test\".\"Suppliers\"(\"SupplierID\" int identity NOT NULL , \"CompanyName\" nvarchar NOT NULL , \"ContactName\" nvarchar NOT NULL , \"ContactTitle\" nvarchar NOT NULL , \"Address\" nvarchar NOT NULL , \"City\" nvarchar NOT NULL , \"Region\" nvarchar NOT NULL , \"PostalCode\" nvarchar NOT NULL , \"Country\" nvarchar NOT NULL , \"Phone\" nvarchar NOT NULL , \"Fax\" nvarchar NOT NULL , \"HomePage\" ntext NOT NULL , PRIMARY KEY (\"SupplierID\"));\n" +
+                "\n" +
+                "CREATE TABLE \"test\".\"Territories\"(\"TerritoryID\" nvarchar NOT NULL , \"TerritoryDescription\" nchar NOT NULL , \"RegionID\" int NOT NULL , PRIMARY KEY (\"TerritoryID\"));\n" +
+                "\n" +
+                "ALTER TABLE \"test\".\"CustomerCustomerDemo\" ADD CONSTRAINT \"FK_CustomerCustomerDemo_Customers\" FOREIGN KEY (\"CustomerID\") REFERENCES \"test\".\"Customers\"(\"CustomerID\") ;\n" +
+                "\n" +
+                "ALTER TABLE \"test\".\"CustomerCustomerDemo\" ADD CONSTRAINT \"FK_CustomerCustomerDemo\" FOREIGN KEY (\"CustomerTypeID\") REFERENCES \"test\".\"CustomerDemographics\"(\"CustomerTypeID\") ;\n" +
+                "\n" +
+                "ALTER TABLE \"test\".\"Employees\" ADD CONSTRAINT \"FK_Employees_Employees\" FOREIGN KEY (\"ReportsTo\") REFERENCES \"test\".\"Employees\"(\"EmployeeID\") ;\n" +
+                "\n" +
+                "ALTER TABLE \"test\".\"EmployeeTerritories\" ADD CONSTRAINT \"FK_EmployeeTerritories_Employees\" FOREIGN KEY (\"EmployeeID\") REFERENCES \"test\".\"Employees\"(\"EmployeeID\") ;\n" +
+                "\n" +
+                "ALTER TABLE \"test\".\"EmployeeTerritories\" ADD CONSTRAINT \"FK_EmployeeTerritories_Territories\" FOREIGN KEY (\"TerritoryID\") REFERENCES \"test\".\"Territories\"(\"TerritoryID\") ;\n" +
+                "\n" +
+                "ALTER TABLE \"test\".\"OrderDetails\" ADD CONSTRAINT \"FK_Order_Details_Orders\" FOREIGN KEY (\"OrderID\") REFERENCES \"test\".\"Orders\"(\"OrderID\") ;\n" +
+                "\n" +
+                "ALTER TABLE \"test\".\"OrderDetails\" ADD CONSTRAINT \"FK_Order_Details_Products\" FOREIGN KEY (\"ProductID\") REFERENCES \"test\".\"Products\"(\"ProductID\") ;\n" +
+                "\n" +
+                "ALTER TABLE \"test\".\"Orders\" ADD CONSTRAINT \"FK_Orders_Customers\" FOREIGN KEY (\"CustomerID\") REFERENCES \"test\".\"Customers\"(\"CustomerID\") ;\n" +
+                "\n" +
+                "ALTER TABLE \"test\".\"Orders\" ADD CONSTRAINT \"FK_Orders_Employees\" FOREIGN KEY (\"EmployeeID\") REFERENCES \"test\".\"Employees\"(\"EmployeeID\") ;\n" +
+                "\n" +
+                "ALTER TABLE \"test\".\"Orders\" ADD CONSTRAINT \"FK_Orders_Shippers\" FOREIGN KEY (\"ShipVia\") REFERENCES \"test\".\"Shippers\"(\"ShipperID\") ;\n" +
+                "\n" +
+                "ALTER TABLE \"test\".\"Products\" ADD CONSTRAINT \"FK_Products_Suppliers\" FOREIGN KEY (\"SupplierID\") REFERENCES \"test\".\"Suppliers\"(\"SupplierID\") ;\n" +
+                "\n" +
+                "ALTER TABLE \"test\".\"Products\" ADD CONSTRAINT \"FK_Products_Categories\" FOREIGN KEY (\"CategoryID\") REFERENCES \"test\".\"Categories\"(\"CategoryID\") ;\n" +
+                "\n" +
+                "ALTER TABLE \"test\".\"Territories\" ADD CONSTRAINT \"FK_Territories_Region\" FOREIGN KEY (\"RegionID\") REFERENCES \"test\".\"Region\"(\"RegionID\") ;").replaceAll("(\\r|\\n|\\t)", ""), ddl.replaceAll("(\\r|\\n|\\t)", ""));
     }
 
     @Test
