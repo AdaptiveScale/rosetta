@@ -11,25 +11,7 @@ Generate DDL from a given source and transpile to the desired target.
 
 [Join RosettaDB Slack](https://join.slack.com/t/rosettadb/shared_invite/zt-1fq6ajsl3-h8FOI7oJX3T4eI1HjcpPbw)
 
-## Translation
-This module will read the database structure from the source and map it to a target type. For example, source metadata was BigQuery and we want to convert it to Snowflake. This will be done by using a CSV file that contain mappings like in the following example:
-```344;;bigquery;;string;;snowflake;;string
-345;;bigquery;;timestamp;;snowflake;;timestamp
-346;;bigquery;;int64;;snowflake;;integer
-347;;bigquery;;float64;;snowflake;;float
-348;;bigquery;;array;;snowflake;;array
-349;;bigquery;;date;;snowflake;;date
-350;;bigquery;;datetime;;snowflake;;datetime
-351;;bigquery;;boolean;;snowflake;;boolean
-352;;bigquery;;time;;snowflake;;time
-353;;bigquery;;geography;;snowflake;;geography
-354;;bigquery;;numeric;;snowflake;;numeric
-355;;bigquery;;bignumeric;;snowflake;;number
-356;;bigquery;;bytes;;snowflake;;binary
-357;;bigquery;;struct;;snowflake;;object
-```
-
-Currently, supported databases for translation are shown below in the table.
+Currently, supported databases and translations are shown below in the table.
 
 |                          |  **BigQuery**  | **Snowflake** |  **MySQL**   |  **Postgres**   | **Kinetica** |  **Google Cloud Spanner**  | **SQL Server**  |   **DB2**   |   **Oracle**   |
 |--------------------------|:--------------:|:-------------:|:------------:|:---------------:|:------------:|:--------------------------:|:---------------:|:-----------:|:--------------:|
@@ -42,106 +24,6 @@ Currently, supported databases for translation are shown below in the table.
 | **SQL Server**           |       ✅        |       ✅       |      ✅       |        ✅        |      ✅       |             ✅              |        /        |      ✅      |       ✅        |
 | **DB2**                  |       ✅        |       ✅       |      ✅       |        ✅        |      ✅       |             ✅              |        ✅        |      /      |       ✅        |
 | **Oracle**               |       ✅        |       ✅        |      ✅       |        ✅        |      ✅       |             ✅              |        ✅        |      ✅      |       /        |
-
-
-### Using external translator
-
-RosettaDB allows users to use their own translator. For the supported databases you can extend or create your version
-of translation CSV file. To use an external translator you need to set the `EXTERNAL_TRANSLATION_FILE` ENV variable
-to point to the external file.
-
-Set the ENV variable `EXTERNAL_TRANSLATION_FILE` to point to the location of your custom translator CSV file.
-
-```
-export EXTERNAL_TRANSLATION_FILE=<path_to_csv_translator>
-```
-
-example:
-
-```
-export EXTERNAL_TRANSLATION_FILE=/Users/adaptivescale/translation.csv
-```
-
-Make sure you keep the same format as the CSV example given above.
-
-### Translation Attributes
-
-Rosetta uses an additional file to maintain translation specific attributes.
-It stores translation_id, the attribute_name and attribute_value:
-
-```
-1;;302;;columnDisplaySize;;38
-2;;404;;columnDisplaySize;;30
-3;;434;;columnDisplaySize;;17
-```
-
-The supported attribute names are:
-- ordinalPosition
-- autoincrement
-- nullable
-- primaryKey
-- primaryKeySequenceId
-- columnDisplaySize
-- scale
-- precision
-
-Set the ENV variable `EXTERNAL_TRANSLATION_ATTRIBUTE_FILE` to point to the location of your custom translation attribute CSV file.
-
-```
-export EXTERNAL_TRANSLATION_ATTRIBUTE_FILE=<path_to_csv_translator>
-```
-
-example:
-
-```
-export EXTERNAL_TRANSLATION_ATTRIBUTE_FILE=/Users/adaptivescale/translation_attributes.csv
-```
-
-Make sure you keep the same format as the CSV example given above.
-
-## Indices (Index)
-
-Indices are supported in Google Cloud Spanner. An example on how they are represented in model.yaml
-
-```
-tables:
-- name: "ExampleTable"
-  type: "TABLE"
-  schema: ""
-  indices:
-  - name: "PRIMARY_KEY"
-    schema: ""
-    tableName: "ExampleTable"
-    columnNames:
-    - "Id"
-    - "UserId"
-    nonUnique: false
-    indexQualifier: ""
-    type: 1
-    ascOrDesc: "A"
-    cardinality: -1
-  - name: "IDX_ExampleTable_AddressId_299189FB00FDAFA5"
-    schema: ""
-    tableName: "ExampleTable"
-    columnNames:
-    - "AddressId"
-    nonUnique: true
-    indexQualifier: ""
-    type: 2
-    ascOrDesc: "A"
-    cardinality: -1
-  - name: "TestIndex"
-    schema: ""
-    tableName: "ExampleTable"
-    columnNames:
-    - "ClientId"
-    - "DisplayName"
-    nonUnique: true
-    indexQualifier: ""
-    type: 2
-    ascOrDesc: "A"
-    cardinality: -1
-```
 
 ## Getting Started
 
@@ -160,21 +42,6 @@ The JDBC drivers for the rosetta supported databases can be downloaded from the 
 - [DB2 JDBC jcc4](https://repo1.maven.org/maven2/com/ibm/db2/jcc/db2jcc/db2jcc4/db2jcc-db2jcc4.jar)
 - [Oracle JDBC 23.2.0.0](https://download.oracle.com/otn-pub/otn_software/jdbc/232-DeveloperRel/ojdbc11.jar)
 
-**Note:** If you face one of the following errors with Google Cloud Spanner JDBC
-
-```
-java.sql.SQLException: No suitable driver
-
-or
-
-java.lang.SecurityException: Invalid signature file digest for Manifest main attributes
-```
-
-you can fix it by running the following command where your driver is located:
-```
-zip -d google-cloud-spanner-jdbc-2.6.2-single-jar-with-dependencies.jar 'META-INF/.SF' 'META-INF/.RSA' 'META-INF/*SF'
-```
-
 ### ROSETTA_DRIVERS Environment
 
 Set the ENV variable `ROSETTA_DRIVERS` to point to the location of your JDBC drivers.
@@ -189,7 +56,7 @@ example:
 export ROSETTA_DRIVERS=/Users/adaptivescale/drivers/*
 ```
 
-### rosetta binary (Recommended)
+### rosetta binary
 
 1. Download the rosetta binary for the supported OS ([releases page](https://github.com/AdaptiveScale/rosetta/releases)).
    ```
@@ -200,29 +67,54 @@ export ROSETTA_DRIVERS=/Users/adaptivescale/drivers/*
     ```
 2. Unzip the downloaded file
 3. Run rosetta commands using `./rosetta` which is located inside `bin` directory.
-4. On the first run it will create a directory for storing your JDBC drivers, if you haven't set already the ENV variable `ROSETTA_DRIVERS` from the previous step.
+4. Create new project using `rosetta init` command:
 
-### Setting Up the CLI JAR (Optional)
-
-1. Download the rosetta CLI JAR ([releases page](https://github.com/AdaptiveScale/rosetta/releases))
-2. Create an alias command
-
-```bash
-alias rosetta='java -cp "<path_to_our_cli_jar>:<path_to_our_drivers>" com.adaptivescale.rosetta.cli.Main'
+```
+   rosetta init database-migration
 ```
 
-example:
+The `rosetta init` command will create a new rosetta project within `database-migration` directory containing the `main.conf` (for configuring the connections to data sources).
 
-```bash
-alias rosetta='java -cp "/Users/adaptivescale/cli-1.0.0.jar:/Users/adaptivescale/drivers/*" com.adaptivescale.rosetta.cli.Main'
+5. Configure connections in `main.conf`
+example: connections for postgres and mysql
+
+```
+connections:
+  - name: mysql
+    databaseName: sakila
+    schemaName:
+    dbType: mysql
+    url: jdbc:mysql://root:sakila@localhost:3306/sakila
+    userName: root
+    password: sakila
+  - name: pg
+    databaseName: postgres
+    schemaName: public
+    dbType: postgres
+    url: jdbc:postgresql://localhost:5432/postgres?user=postgres&password=sakila
+    userName: postgres
+    password: sakila
 ```
 
-**Note:** If we are using the **cli** JAR file, we need to specify the location of the JDBC drivers (directory).
+6. Extract the schema from postgres and translate it to mysql:
 
-### Build from the source (Optional)
- 
-   ```gradle binary:runtimeZip```
+```
+   rosetta extract -s pg -t mysql
+```
 
+The extract command will create two directories `pg` and `mysql`. `pg` directory will have the extracted schema 
+from Postgres DB. The `mysql` directory will contain the translated YAML which is ready to be used in MySQL DB.
+
+7. Migrate the translated schema to MySQL DB:
+
+```
+   rosetta apply -s mysql
+```
+
+The apply command will migrate the translated Postgres schema to MySQL.
+
+
+## Rosetta DB YAML Config
 
 ### YAML Config File
 
@@ -332,6 +224,124 @@ url: jdbc:db2://<HOST>:50000;<DATABASE>
 ### ORACLE
 ```
 url: jdbc:oracle:thin:<HOST>:1521:<SID>
+```
+
+### Translation
+This module will read the database structure from the source and map it to a target type. For example, source metadata was BigQuery and we want to convert it to Snowflake. This will be done by using a CSV file that contain mappings like in the following example:
+```344;;bigquery;;string;;snowflake;;string
+345;;bigquery;;timestamp;;snowflake;;timestamp
+346;;bigquery;;int64;;snowflake;;integer
+347;;bigquery;;float64;;snowflake;;float
+348;;bigquery;;array;;snowflake;;array
+349;;bigquery;;date;;snowflake;;date
+350;;bigquery;;datetime;;snowflake;;datetime
+351;;bigquery;;boolean;;snowflake;;boolean
+352;;bigquery;;time;;snowflake;;time
+353;;bigquery;;geography;;snowflake;;geography
+354;;bigquery;;numeric;;snowflake;;numeric
+355;;bigquery;;bignumeric;;snowflake;;number
+356;;bigquery;;bytes;;snowflake;;binary
+357;;bigquery;;struct;;snowflake;;object
+```
+
+
+### Using external translator
+
+RosettaDB allows users to use their own translator. For the supported databases you can extend or create your version
+of translation CSV file. To use an external translator you need to set the `EXTERNAL_TRANSLATION_FILE` ENV variable
+to point to the external file.
+
+Set the ENV variable `EXTERNAL_TRANSLATION_FILE` to point to the location of your custom translator CSV file.
+
+```
+export EXTERNAL_TRANSLATION_FILE=<path_to_csv_translator>
+```
+
+example:
+
+```
+export EXTERNAL_TRANSLATION_FILE=/Users/adaptivescale/translation.csv
+```
+
+Make sure you keep the same format as the CSV example given above.
+
+### Translation Attributes
+
+Rosetta uses an additional file to maintain translation specific attributes.
+It stores translation_id, the attribute_name and attribute_value:
+
+```
+1;;302;;columnDisplaySize;;38
+2;;404;;columnDisplaySize;;30
+3;;434;;columnDisplaySize;;17
+```
+
+The supported attribute names are:
+- ordinalPosition
+- autoincrement
+- nullable
+- primaryKey
+- primaryKeySequenceId
+- columnDisplaySize
+- scale
+- precision
+
+Set the ENV variable `EXTERNAL_TRANSLATION_ATTRIBUTE_FILE` to point to the location of your custom translation attribute CSV file.
+
+```
+export EXTERNAL_TRANSLATION_ATTRIBUTE_FILE=<path_to_csv_translator>
+```
+
+example:
+
+```
+export EXTERNAL_TRANSLATION_ATTRIBUTE_FILE=/Users/adaptivescale/translation_attributes.csv
+```
+
+Make sure you keep the same format as the CSV example given above.
+
+### Indices (Index)
+
+Indices are supported in Google Cloud Spanner. An example on how they are represented in model.yaml
+
+```
+tables:
+- name: "ExampleTable"
+  type: "TABLE"
+  schema: ""
+  indices:
+  - name: "PRIMARY_KEY"
+    schema: ""
+    tableName: "ExampleTable"
+    columnNames:
+    - "Id"
+    - "UserId"
+    nonUnique: false
+    indexQualifier: ""
+    type: 1
+    ascOrDesc: "A"
+    cardinality: -1
+  - name: "IDX_ExampleTable_AddressId_299189FB00FDAFA5"
+    schema: ""
+    tableName: "ExampleTable"
+    columnNames:
+    - "AddressId"
+    nonUnique: true
+    indexQualifier: ""
+    type: 2
+    ascOrDesc: "A"
+    cardinality: -1
+  - name: "TestIndex"
+    schema: ""
+    tableName: "ExampleTable"
+    columnNames:
+    - "ClientId"
+    - "DisplayName"
+    nonUnique: true
+    indexQualifier: ""
+    type: 2
+    ascOrDesc: "A"
+    cardinality: -1
 ```
 
 ## Rosetta Commands
@@ -651,6 +661,46 @@ In `model.yaml` you can find the attribute `safeMode` which is by default disabl
 ### Operation level
 In `model.yaml` you can find the attribute `operationLevel` which is by default set to `schema`. If you want to apply changes on to database level in your model instead of the specific schema in 
 `apply` command, set `operationLevel: schema`.
+
+## RosettaDB CLI JAR and RosettaDB Source
+
+### Setting Up the CLI JAR (Optional)
+
+1. Download the rosetta CLI JAR ([releases page](https://github.com/AdaptiveScale/rosetta/releases))
+2. Create an alias command
+
+```bash
+alias rosetta='java -cp "<path_to_our_cli_jar>:<path_to_our_drivers>" com.adaptivescale.rosetta.cli.Main'
+```
+
+example:
+
+```bash
+alias rosetta='java -cp "/Users/adaptivescale/cli-1.0.0.jar:/Users/adaptivescale/drivers/*" com.adaptivescale.rosetta.cli.Main'
+```
+
+**Note:** If we are using the **cli** JAR file, we need to specify the location of the JDBC drivers (directory). See the Getting Started section.
+
+### Build from the source (Optional)
+
+```gradle binary:runtimeZip```
+
+### Google Cloud Spanner JDBC Fix
+
+**Note:** If you face one of the following errors with Google Cloud Spanner JDBC
+
+```
+java.sql.SQLException: No suitable driver
+
+or
+
+java.lang.SecurityException: Invalid signature file digest for Manifest main attributes
+```
+
+you can fix it by running the following command where your driver is located:
+```
+zip -d google-cloud-spanner-jdbc-2.6.2-single-jar-with-dependencies.jar 'META-INF/.SF' 'META-INF/.RSA' 'META-INF/*SF'
+```
 
 ## Copyright and License Information
 Unless otherwise specified, all content, including all source code files and documentation files in this repository are:

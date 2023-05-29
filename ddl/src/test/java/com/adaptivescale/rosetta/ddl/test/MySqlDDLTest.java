@@ -29,7 +29,15 @@ public class MySqlDDLTest {
     @Test
     public void addTable() throws IOException {
         String ddl = generateDDL("add_table");
-        Assertions.assertEquals("CREATE TABLE `Position`(`ID` DECIMAL NOT NULL, `DESCRIPTION` VARCHAR(0) NULL," +
+        Assertions.assertEquals("\rCREATE TABLE `Position`(`ID` DECIMAL NOT NULL, `DESCRIPTION` VARCHAR(0) NULL," +
+                " `Name` VARCHAR(0) NULL, PRIMARY KEY (`ID`));", ddl);
+    }
+
+    @Test
+    public void addTable2() throws IOException {
+        String ddl = generateDDL("add_table2");
+        Assertions.assertEquals("CREATE SCHEMA IF NOT EXISTS new;\r" +
+                "CREATE TABLE `new`.`Position`(`ID` DECIMAL NOT NULL, `DESCRIPTION` VARCHAR(0) NULL," +
                 " `Name` VARCHAR(0) NULL, PRIMARY KEY (`ID`));", ddl);
     }
 

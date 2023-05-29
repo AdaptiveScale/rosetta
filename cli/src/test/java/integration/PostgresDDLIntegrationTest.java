@@ -234,9 +234,12 @@ public class PostgresDDLIntegrationTest {
             }
         });
         List<Change<?>> changes = new PostgresChangeFinder().findChanges(sourceModel, targetModel);
-        assertSame("Total changes", changes.size(), 2);
+        assertSame("Total changes", changes.size(), 5);
         assertSame("Added table", changes.get(0).getStatus().toString(), "ADD");
-        assertSame("Dropped table", changes.get(1).getStatus().toString(), "DROP");
+        assertSame("Added table", changes.get(1).getStatus().toString(), "ADD");
+        assertSame("Added table", changes.get(2).getStatus().toString(), "ADD");
+        assertSame("Added table", changes.get(3).getStatus().toString(), "ADD");
+        assertSame("Dropped table", changes.get(4).getStatus().toString(), "DROP");
     }
 
 

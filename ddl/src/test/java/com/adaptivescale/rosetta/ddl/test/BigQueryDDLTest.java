@@ -33,6 +33,13 @@ public class BigQueryDDLTest {
     }
 
     @Test
+    public void addTable2() throws IOException {
+        String ddl = generateDDL("add_table2");
+        Assertions.assertEquals("CREATE SCHEMA IF NOT EXISTS new;\r" +
+                "CREATE TABLE `new`.`tableB`(`columnA` STRING, `columnB` INT64);", ddl);
+    }
+
+    @Test
     public void dropTable() throws IOException {
         String ddl = generateDDL("drop_table");
         Assertions.assertEquals("DROP TABLE halis.tableB;", ddl);

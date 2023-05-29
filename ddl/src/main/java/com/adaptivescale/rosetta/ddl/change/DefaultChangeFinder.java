@@ -37,6 +37,10 @@ public class DefaultChangeFinder implements ChangeFinder {
                     .collect(Collectors.toList());
 
             if (foundedTables.size() == 0) {
+                if (!containSchema(actual.getTables(), expectedTable.getSchema())) {
+                    Change<Table> tableSchemaChange = ChangeFactory.tableSchemaChange(expectedTable, null, Change.Status.ADD);
+                    changes.add(tableSchemaChange);
+                }
                 Change<Table> tableChange = ChangeFactory.tableChange(expectedTable, null, Change.Status.ADD);
                 changes.add(tableChange);
             } else if (foundedTables.size() == 1) {
@@ -229,5 +233,9 @@ public class DefaultChangeFinder implements ChangeFinder {
         }
 
         return changes;
+    }
+
+    private boolean containSchema(final Collection<Table> tables, final String schemaName) {
+        return tables.stream().filter(o -> o.getSchema() != null && o.getSchema().equals(schemaName)).findFirst().isPresent();
     }
 }

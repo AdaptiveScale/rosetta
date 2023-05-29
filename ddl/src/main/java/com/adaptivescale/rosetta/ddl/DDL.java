@@ -9,6 +9,9 @@ public interface DDL {
 
     String createColumn(Column column);
     String createTable(Table table, boolean dropTableIfExists);
+
+    String createTableSchema(Table table);
+
     String createDatabase(Database database, boolean dropTableIfExists);
 
     String createForeignKey(ForeignKey foreignKey);

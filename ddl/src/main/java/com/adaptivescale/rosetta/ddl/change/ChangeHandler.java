@@ -12,6 +12,8 @@ public interface ChangeHandler {
 
     String onTableChange(TableChange change);
 
+    String onTableSchemaChange(TableSchemaChange tableSchemaChange);
+
     String onColumnChange(ColumnChange change);
 
     String onForeignKeyChange(ForeignKeyChange change);

@@ -17,6 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.adaptivescale.rosetta.ddl.targets.postgres.Constants.DEFAULT_WRAPPER;
+
 @Slf4j
 @RosettaModule(
         name = "bigquery",
@@ -71,6 +73,18 @@ public class BigQueryDDLGenerator implements DDL {
                 .append(");");
 
         return builder.toString();
+    }
+
+    @Override
+    public String createTableSchema(Table table) {
+        StringBuilder stringBuilder = new StringBuilder();
+        if (table.getSchema() != null && !table.getSchema().isBlank()) {
+            stringBuilder
+                    .append("CREATE SCHEMA IF NOT EXISTS ")
+                    .append(table.getSchema())
+                    .append(";");
+        }
+        return stringBuilder.toString();
     }
 
     @Override

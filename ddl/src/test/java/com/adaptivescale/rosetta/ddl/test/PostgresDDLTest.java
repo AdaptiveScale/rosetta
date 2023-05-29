@@ -31,7 +31,18 @@ public class PostgresDDLTest {
     @Test
     public void addTable() throws IOException {
         String ddl = generateDDL("add_table");
-        Assertions.assertEquals("CREATE TABLE \"Position\"(\"ID\" DECIMAL(10) NOT NULL , \"DESCRIPTION\" VARCHAR," +
+        Assertions.assertEquals("\rCREATE TABLE \"Position\"(\"ID\" DECIMAL(10) NOT NULL , \"DESCRIPTION\" VARCHAR, \"Name\" VARCHAR, \"TEAMID\" DECIMAL(10), PRIMARY KEY (\"ID\"));\r" +
+                "\rCREATE TABLE \"Position2\"(\"ID\" DECIMAL(10) NOT NULL , \"DESCRIPTION\" VARCHAR, \"Name\" VARCHAR, \"TEAMID\" DECIMAL(10), PRIMARY KEY (\"ID\"));\r" +
+                "ALTER TABLE \"Position\" ADD CONSTRAINT Position_FK_TEAM FOREIGN KEY (\"TEAMID\") REFERENCES  \"TEAM\"(\"ID\");\r" +
+                "\r" +
+                "ALTER TABLE \"Position2\" ADD CONSTRAINT Position2_FK_TEAM FOREIGN KEY (\"TEAMID\") REFERENCES  \"TEAM\"(\"ID\");\r", ddl);
+    }
+
+    @Test
+    public void addTable2() throws IOException {
+        String ddl = generateDDL("add_table2");
+        Assertions.assertEquals("CREATE SCHEMA IF NOT EXISTS \"new\";\r" +
+                "CREATE TABLE \"new\".\"Position\"(\"ID\" DECIMAL(10) NOT NULL , \"DESCRIPTION\" VARCHAR," +
                 " \"Name\" VARCHAR, PRIMARY KEY (\"ID\"));", ddl);
     }
 

@@ -1,0 +1,18 @@
+---
+tables:
+  - name: "USER"
+    type: "TABLE"
+    schema: "ROSETTA"
+    columns:
+      - name: "USER_ID"
+        typeName: "NUMBER"
+        ordinalPosition: 0
+        primaryKeySequenceId: 1
+        columnDisplaySize: 38
+        scale: 0
+        precision: 38
+        nullable: false
+        autoincrement: false
+        primaryKey: true
+databaseProductName: "Snowflake"
+databaseType: "snowflake"

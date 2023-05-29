@@ -31,11 +31,10 @@ public class SQLServerDDLExecutor implements DDLExecutor {
         //TODO: Check properties we need
 //        properties.setProperty("allowMultiQueries", "true");
 
-        // Postgres supports transaction - wrapping the ddl in  transaction
         StringBuilder transaction = new StringBuilder();
-//        transaction.append("begin transaction;");
+        transaction.append("Begin Transaction;");
         transaction.append(query);
-//        transaction.append("commit;");
+        transaction.append("commit;");
 
         java.sql.Connection jdbcConnection = driver.connect(connection.getUrl(), properties);
         jdbcConnection.createStatement().executeUpdate(transaction.toString());

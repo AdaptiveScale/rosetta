@@ -44,6 +44,9 @@ public class SpannerChangeFinder implements ChangeFinder {
             if (foundedTables.size() == 0) {
                 Change<Table> tableChange = ChangeFactory.tableChange(expectedTable, null, Change.Status.ADD);
                 changes.add(tableChange);
+
+                List<Change<?>> changesForForeignKeys = findChangesForForeignKeys(findAllForeignKeys(Arrays.asList(expectedTable)), null);
+                changes.addAll(changesForForeignKeys);
             } else if (foundedTables.size() == 1) {
                 Table table = foundedTables.get(0);
                 actualTables.remove(table);
@@ -356,7 +359,7 @@ public class SpannerChangeFinder implements ChangeFinder {
             }
 
             if (object instanceof Table) {
-                id = "TABLE->" + change.getStatus() + "->" + ((Table) object).getSchema() + "->" + ((Table) object).getName();
+                id = "TABLE->" + change.getStatus() + "->" + change.getType() + "->" + ((Table) object).getSchema() + "->" + ((Table) object).getName();
             }
 
             if (object instanceof Database) {
