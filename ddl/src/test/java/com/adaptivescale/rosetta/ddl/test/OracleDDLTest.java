@@ -20,28 +20,15 @@ public class OracleDDLTest {
     @Test
     public void createDB() throws IOException {
         String ddl = generateDDL("clean_database");
-        Assertions.assertEquals(("\n" +
-                "ALTER SESSION SET CURRENT_SCHEMA = \"ROSETTA\";\n" +
-                "CREATE TABLE \"CUSTOMERS\"(\"CUSTOMER_ID\" NUMBER(10) NOT NULL , \"CUSTOMER_NAME\" VARCHAR2(100) NOT NULL , \"CUSTOMER_EMAIL\" VARCHAR2(100), \"CUSTOMER_ADDRESS\" VARCHAR2(200), \"CUSTOMER_PHONE\" VARCHAR2(20), PRIMARY KEY (\"CUSTOMER_ID\"));\n" +
+        Assertions.assertEquals(("ALTER SESSION SET CURRENT_SCHEMA = \"ROSETTA\";CREATE TABLE \"CUSTOMERS\"(\"CUSTOMER_ID\" NUMBER(10) NOT NULL , \"CUSTOMER_NAME\" VARCHAR2(100) NOT NULL , \"CUSTOMER_EMAIL\" VARCHAR2(100), \"CUSTOMER_ADDRESS\" VARCHAR2(200), \"CUSTOMER_PHONE\" VARCHAR2(20), PRIMARY KEY (\"CUSTOMER_ID\"));\n" +
                 "\n" +
-                "ALTER SESSION SET CURRENT_SCHEMA = \"ROSETTA\";\n" +
-                "CREATE TABLE \"ORDERS\"(\"ORDER_ID\" NUMBER(10) NOT NULL , \"ORDER_DATE\" DATE, \"ORDER_TOTAL\" NUMBER(10), \"CUSTOMER_ID\" NUMBER(10), PRIMARY KEY (\"ORDER_ID\"));\n" +
-                "ALTER SESSION SET CURRENT_SCHEMA = \"ROSETTA\";\n" +
-                "ALTER TABLE \"ORDERS\"\n" +
-                "ADD CONSTRAINT \"FK_CUSTOMER_ID\"\n" +
-                "FOREIGN KEY (\"CUSTOMER_ID\")\n" +
-                "REFERENCES \"CUSTOMERS\"(\"CUSTOMER_ID\");\n" +
+                "ALTER SESSION SET CURRENT_SCHEMA = \"ROSETTA\";CREATE TABLE \"ORDERS\"(\"ORDER_ID\" NUMBER(10) NOT NULL , \"ORDER_DATE\" DATE, \"ORDER_TOTAL\" NUMBER(10), \"CUSTOMER_ID\" NUMBER(10), PRIMARY KEY (\"ORDER_ID\"));\n" +
                 "\n" +
+                "ALTER SESSION SET CURRENT_SCHEMA = \"ROSETTA\";CREATE TABLE \"ORDER_ITEMS\"(\"ITEM_ID\" NUMBER(10) NOT NULL , \"ORDER_ID\" NUMBER(10), \"PRODUCT_NAME\" VARCHAR2(100), \"QUANTITY\" NUMBER(5), \"PRICE_PER_UNIT\" NUMBER(10), PRIMARY KEY (\"ITEM_ID\"));\n" +
                 "\n" +
+                "ALTER SESSION SET CURRENT_SCHEMA = \"ROSETTA\";ALTER TABLE \"ORDERS\"ADD CONSTRAINT \"FK_CUSTOMER_ID\"FOREIGN KEY (\"CUSTOMER_ID\")REFERENCES \"CUSTOMERS\"(\"CUSTOMER_ID\");\n" +
                 "\n" +
-                "ALTER SESSION SET CURRENT_SCHEMA = \"ROSETTA\";\n" +
-                "CREATE TABLE \"ORDER_ITEMS\"(\"ITEM_ID\" NUMBER(10) NOT NULL , \"ORDER_ID\" NUMBER(10), \"PRODUCT_NAME\" VARCHAR2(100), \"QUANTITY\" NUMBER(5), \"PRICE_PER_UNIT\" NUMBER(10), PRIMARY KEY (\"ITEM_ID\"));\n" +
-                "ALTER SESSION SET CURRENT_SCHEMA = \"ROSETTA\";\n" +
-                "ALTER TABLE \"ORDER_ITEMS\"\n" +
-                "ADD CONSTRAINT \"FK_ORDER_ID\"\n" +
-                "FOREIGN KEY (\"ORDER_ID\")\n" +
-                "REFERENCES \"ORDERS\"(\"ORDER_ID\");\n" +
-                "\n").replaceAll("(\\r|\\n|\\t)", ""), ddl.replaceAll("(\\r|\\n|\\t)", ""));
+                "ALTER SESSION SET CURRENT_SCHEMA = \"ROSETTA\";ALTER TABLE \"ORDER_ITEMS\"ADD CONSTRAINT \"FK_ORDER_ID\"FOREIGN KEY (\"ORDER_ID\")REFERENCES \"ORDERS\"(\"ORDER_ID\");").replaceAll("(\\r|\\n|\\t)", ""), ddl.replaceAll("(\\r|\\n|\\t)", ""));
     }
 
     @Test
