@@ -81,6 +81,11 @@ public class SpannerDDLGenerator implements DDL {
     }
 
     @Override
+    public String createTableSchema(Table table) {
+        return "";
+    }
+
+    @Override
     public String createDatabase(Database database, boolean dropTableIfExists) {
         StringBuilder stringBuilder = new StringBuilder();
 

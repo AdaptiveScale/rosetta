@@ -19,6 +19,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.adaptivescale.rosetta.ddl.targets.postgres.Constants.DEFAULT_WRAPPER;
+
 @Slf4j
 @RosettaModule(
         name = "mysql",
@@ -59,6 +61,18 @@ public class MySqlDDLGenerator implements DDL {
         }
 
         stringBuilder.append("`").append(table.getName()).append("`").append("(").append(definitionAsString).append(");");
+        return stringBuilder.toString();
+    }
+
+    @Override
+    public String createTableSchema(Table table) {
+        StringBuilder stringBuilder = new StringBuilder();
+        if (table.getSchema() != null && !table.getSchema().isBlank()) {
+            stringBuilder
+                    .append("CREATE SCHEMA IF NOT EXISTS ")
+                    .append(table.getSchema())
+                    .append(";");
+        }
         return stringBuilder.toString();
     }
 

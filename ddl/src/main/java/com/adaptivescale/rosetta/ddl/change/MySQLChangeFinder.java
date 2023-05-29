@@ -44,6 +44,10 @@ public class MySQLChangeFinder implements ChangeFinder {
                     .collect(Collectors.toList());
 
             if (foundedTables.size() == 0) {
+                if (!containSchema(actual.getTables(), expectedTable.getSchema())) {
+                    Change<Table> tableSchemaChange = ChangeFactory.tableSchemaChange(expectedTable, null, Change.Status.ADD);
+                    changes.add(tableSchemaChange);
+                }
                 Change<Table> tableChange = ChangeFactory.tableChange(expectedTable, null, Change.Status.ADD);
                 changes.add(tableChange);
 
@@ -252,7 +256,7 @@ public class MySQLChangeFinder implements ChangeFinder {
             }
 
             if (object instanceof Table) {
-                id = "TABLE->" + change.getStatus() + "->" + ((Table) object).getSchema() + "->" + ((Table) object).getName();
+                id = "TABLE->" + change.getStatus() + "->" + change.getType() + "->" + ((Table) object).getSchema() + "->" + ((Table) object).getName();
             }
 
             if (object instanceof Database) {
@@ -300,5 +304,9 @@ public class MySQLChangeFinder implements ChangeFinder {
         return tables.stream().flatMap((Function<Table, Stream<ForeignKey>>) table
                         -> table.getColumns().stream().flatMap((Function<Column, Stream<ForeignKey>>) column -> column.getForeignKeys() == null ? Stream.empty() : column.getForeignKeys().stream()))
                 .collect(Collectors.toList());
+    }
+
+    private boolean containSchema(final Collection<Table> tables, final String schemaName) {
+        return tables.stream().filter(o -> o.getSchema() != null && o.getSchema().equals(schemaName)).findFirst().isPresent();
     }
 }

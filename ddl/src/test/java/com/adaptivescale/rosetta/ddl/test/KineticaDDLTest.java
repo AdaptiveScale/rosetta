@@ -50,6 +50,14 @@ public class KineticaDDLTest {
     }
 
     @Test
+    public void addTable2() throws IOException {
+        String ddl = generateDDL("add_table2");
+        Assertions.assertEquals("CREATE SCHEMA IF NOT EXISTS \"NEW\";\r" +
+                "CREATE TABLE \"NEW\".\"Position\"(\"ID\" DECIMAL(10) NOT NULL , \"DESCRIPTION\" VARCHAR," +
+                " \"Name\" VARCHAR, PRIMARY KEY (\"ID\"));", ddl);
+    }
+
+    @Test
     public void dropTable() throws IOException {
         String ddl = generateDDL("drop_table");
         Assertions.assertEquals("DROP TABLE IF EXISTS \"ROSETTA\".\"TEAMPLAYERS\";", ddl);

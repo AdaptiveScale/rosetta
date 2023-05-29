@@ -78,6 +78,15 @@ public class SQLServerDDLTest {
     }
 
     @Test
+    public void addTable2() throws IOException {
+        String ddl = generateDDL("add_table2");
+        Assertions.assertEquals(("IF NOT EXISTS (" +
+                "SELECT  *    FROM sys.schemas    WHERE name = N'new')" +
+                "EXEC('CREATE SCHEMA new');" +
+                "CREATE TABLE \"new\".\"Territories\"(\"TerritoryID\" nvarchar NOT NULL , \"TerritoryDescription\" nchar NOT NULL , \"RegionID\" int NOT NULL , PRIMARY KEY (\"TerritoryID\"));ALTER TABLE \"test\".\"Territories\" ADD CONSTRAINT \"FK_Territories_Region\" FOREIGN KEY (\"RegionID\") REFERENCES \"test\".\"Region\"(\"RegionID\") ;").replaceAll("(\\r|\\n|\\t)", ""), ddl.replaceAll("(\\r|\\n|\\t)", ""));
+    }
+
+    @Test
     public void dropTable() throws IOException {
         String ddl = generateDDL("drop_table");
         Assertions.assertEquals(("ALTER TABLE \"test\".\"Employees\" DROP CONSTRAINT \"FK_Employees_Employees\";\n" +

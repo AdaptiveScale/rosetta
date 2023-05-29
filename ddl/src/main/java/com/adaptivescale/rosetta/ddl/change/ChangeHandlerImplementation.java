@@ -9,7 +9,7 @@ import java.util.Comparator;
 import java.util.List;
 
 @Slf4j
-public class ChangeHandlerImplementation implements ChangeHandler{
+public class ChangeHandlerImplementation implements ChangeHandler {
 
     private final DDL ddl;
     private final Comparator<Change<?>> changeComparator;
@@ -30,6 +30,9 @@ public class ChangeHandlerImplementation implements ChangeHandler{
             switch (change.getType()) {
                 case DATABASE:
                     ddlStatements.add(onDatabaseChange((DatabaseChange) change));
+                    break;
+                case TABLE_SCHEMA:
+                    ddlStatements.add(onTableSchemaChange((TableSchemaChange) change));
                     break;
                 case TABLE:
                     ddlStatements.add(onTableChange((TableChange) change));
@@ -71,6 +74,16 @@ public class ChangeHandlerImplementation implements ChangeHandler{
                 return ddl.createTable(change.getExpected(), false);
             case ALTER:
                 return ddl.alterTable(change.getExpected(), change.getActual());
+            default:
+                throw new RuntimeException("Operation " + change.getStatus() + " for table not supported");
+        }
+    }
+
+    @Override
+    public String onTableSchemaChange(TableSchemaChange change) {
+        switch (change.getStatus()) {
+            case ADD:
+                return ddl.createTableSchema(change.getExpected());
             default:
                 throw new RuntimeException("Operation " + change.getStatus() + " for table not supported");
         }
