@@ -1,7 +1,10 @@
 package com.adaptivescale.rosetta.common.models.input;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 
 public class Connection {
 
@@ -79,5 +82,10 @@ public class Connection {
 
     public void setTables(Collection<String> tables) {
         this.tables = tables;
+    }
+
+    public Map<String, String> toMap() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.convertValue(this, Map.class);
     }
 }
