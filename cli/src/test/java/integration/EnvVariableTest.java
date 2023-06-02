@@ -35,6 +35,9 @@ public class EnvVariableTest {
     private final String BOB_PASSWORD = "test1";
     private final String PASSWORD = "test2";
 
+    private final String POSTGRES_URL = "jdbc:postgresql://localhost:5432/postgres?user=postgres&password=sakila";
+    private final String POSTGRES_URL2 = "jdbc:postgresql://localhost:5432/newDb?user=newUser&password=newPassword";
+
     @Rule
     public final EnvironmentVariables environmentVariables
             = new EnvironmentVariables();
@@ -50,5 +53,20 @@ public class EnvVariableTest {
         Config config = configYmlConverter.convert(file.getAbsolutePath());
         Assertions.assertEquals(config.getConnections().get(0).getPassword(), BOB_PASSWORD);
         Assertions.assertEquals(config.getConnections().get(1).getPassword(), PASSWORD);
+    }
+
+
+    @Test
+    @DisplayName("Test config parameters variable processing")
+    @SetEnvironmentVariable(key = "BOB_PASSWORD", value = BOB_PASSWORD)
+    @SetEnvironmentVariable(key = "PASSWORD", value = PASSWORD)
+    public void passConfigParametersVariable() throws Exception {
+        Path resourceDirectory = Paths.get("src", "test", "resources");
+        File file = resourceDirectory.resolve("env_main.conf").toFile();
+        ConfigYmlConverter configYmlConverter = new ConfigYmlConverter();
+
+        Config config = configYmlConverter.convert(file.getAbsolutePath());
+        Assertions.assertEquals(config.getConnections().get(2).getUrl(), POSTGRES_URL);
+        Assertions.assertEquals(config.getConnections().get(3).getUrl(), POSTGRES_URL2);
     }
 }
