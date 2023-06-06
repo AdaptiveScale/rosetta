@@ -3,14 +3,13 @@ package com.adaptivescale.rosetta.test.assertion;
 import com.adaptivescale.rosetta.common.JDBCDriverProvider;
 import com.adaptivescale.rosetta.common.JDBCUtils;
 import com.adaptivescale.rosetta.common.models.Database;
+import com.adaptivescale.rosetta.common.models.Table;
 import com.adaptivescale.rosetta.common.models.input.Connection;
 import com.adaptivescale.rosetta.ddl.utils.TemplateEngine;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 @Slf4j
 public class DefaultSqlExecution implements SqlExecution {
@@ -62,10 +61,18 @@ public class DefaultSqlExecution implements SqlExecution {
 
     @Override
     public String transfer() {
+        for (Table table : database.getTables()) {
+            doTransfer(table);
+        }
+
+        return "OK";
+    }
+
+    private String doTransfer(Table table) {
         java.sql.Connection sourceSqlConnection = null;
         java.sql.Connection targetSqlConnection = null;
-        String select = database.getTables().stream().findFirst().get().getExtract();
-        String insert = database.getTables().stream().findFirst().get().getLoad();
+        String select = table.getExtract();
+        String insert = table.getLoad();
         try {
             Driver sourceDriver = driverProvider.getDriver(connection);
             Properties properties = JDBCUtils.setJDBCAuth(connection);
@@ -79,6 +86,9 @@ public class DefaultSqlExecution implements SqlExecution {
             ResultSetMetaData metaData = resultSet.getMetaData();
             int columnCount = resultSet.getMetaData().getColumnCount();
 
+//            List<String> insertStatements = new ArrayList<>();
+            Statement statement = targetSqlConnection.createStatement();
+
             while (resultSet.next()) {
                 Map<String, Object> insertParam = new HashMap<>();
                 for (int i = 0; i < columnCount; i++) {
@@ -88,15 +98,15 @@ public class DefaultSqlExecution implements SqlExecution {
                     insertParam.put(metaData.getColumnName(index), value);
                 }
                 String insertStm = TemplateEngine.processString(insert, insertParam);
-                targetSqlConnection.createStatement().execute(insertStm);
+//                insertStatements.add(insertStm);
+                statement.addBatch(insertStm);
+//                targetSqlConnection.createStatement().execute(insertStm);
             }
 
-//            boolean execute = targetSqlConnection.createStatement().execute(insert);
-//            if (execute.next()) {
-//                int result = execute.getInt(1);
-//                return String.valueOf(result);
-//            }
-            return "OK";
+            int[] result = statement.executeBatch();
+//            targetSqlConnection.commit();
+
+            return "Rows affected " + result.length;
         } catch (SQLException e) {
             log.error("Can not execute query.", e);
             throw new RuntimeException(e);
@@ -104,6 +114,7 @@ public class DefaultSqlExecution implements SqlExecution {
             if (sourceSqlConnection != null) {
                 try {
                     sourceSqlConnection.close();
+                    return "OK";
                 } catch (SQLException e) {
                     log.error("Can not close the connection!", e);
                 }
