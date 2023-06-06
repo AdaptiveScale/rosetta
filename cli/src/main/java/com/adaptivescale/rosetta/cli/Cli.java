@@ -79,7 +79,8 @@ class Cli implements Callable<Void> {
 
     @CommandLine.Command(name = "extract", description = "Extract schema chosen from connection config.", mixinStandardHelpOptions = true)
     private void extract(@CommandLine.Option(names = {"-s", "--source"}, required = true) String sourceName,
-                         @CommandLine.Option(names = {"-t", "--convert-to"}) String targetName
+                         @CommandLine.Option(names = {"-t", "--convert-to"}) String targetName,
+                         @CommandLine.Option(names = {"--include-data"}) boolean includeData
     ) throws Exception {
         requireConfig(config);
         Connection source = getSourceConnection(sourceName);

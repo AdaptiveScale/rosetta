@@ -45,7 +45,15 @@ public class DefaultGenerator implements Generator<Database, Connection> {
         database.setTables(tables);
         database.setViews(views);
         database.setDatabaseType(connection.getDbType());
+        includeData(tables);
         connect.close();
         return database;
+    }
+
+    private void includeData(Collection<Table> tables) {
+        for (Table table : tables) {
+            table.generateExtractSql();
+            table.generateLoadSql();
+        }
     }
 }
