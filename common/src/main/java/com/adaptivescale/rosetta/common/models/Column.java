@@ -1,6 +1,7 @@
 package com.adaptivescale.rosetta.common.models;
 
 import com.adaptivescale.rosetta.common.models.test.Tests;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.List;
 
@@ -31,6 +32,11 @@ public class Column {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @JsonIgnore
+    public String getTemplatedName() {
+        return String.format("[(${%s})]", this.name);
     }
 
     public String getLabel() {
@@ -136,5 +142,6 @@ public class Column {
     public void setTests(Tests tests) {
         this.tests = tests;
     }
+
 
 }

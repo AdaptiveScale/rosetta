@@ -1,0 +1,33 @@
+Accessing object [[$${name}]],
+
+[[$${#if(status == 'paid')}]]
+Your payment has been received. Thank you!
+[[$${#else}]]
+Please submit your payment by the due date.
+[[$${/if}]]
+
+
+[[$${#for(column : table.columns)}]]
+   [[$${column}]]
+[[$${/for}]]
+
+
+-- Generate SQL INSERT statement
+
+INSERT INTO [[${table.tableName}]]
+(
+    [[#th:each(column : ${table.columns})]]
+    [[${column.columnName}]],
+    [[/th:each]]
+)
+VALUES
+(
+    [[#th:each(column : ${table.columns})]]
+    [[#if(column.columnType == 'String')]]
+    '[[${column.columnValue}]]'
+    [[#else]]
+    [[${column.columnValue}]]
+    [[/if]]
+    [[#if(column.name != ${table.columns.last().name})]],[[/if]]
+    [[/th:each]]
+);
