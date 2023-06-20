@@ -1,5 +1,5 @@
-1;;kinetica;;wkt;;mysql;;varbinary
-2;;kinetica;;bytes;;mysql;;varbinary
+1;;kinetica;;wkt;;mysql;;longblob
+2;;kinetica;;bytes;;mysql;;longblob
 3;;kinetica;;float;;mysql;;float
 4;;kinetica;;boolean;;mysql;;bit
 5;;kinetica;;double;;mysql;;double
@@ -394,7 +394,7 @@
 400;;postgres;;time;;kinetica;;time
 401;;postgres;;float8;;kinetica;;float
 402;;postgres;;timestamp;;kinetica;;datetime
-403;;postgres;;bytea;;mysql;;varbinary
+403;;postgres;;bytea;;mysql;;longblob
 404;;postgres;;macaddr8;;mysql;;varchar
 405;;postgres;;money;;mysql;;float
 406;;postgres;;float8;;mysql;;float
@@ -618,7 +618,7 @@
 628;;snowflake;;character;;mysql;;char
 629;;snowflake;;text;;mysql;;text
 630;;snowflake;;binary;;mysql;;binary
-631;;snowflake;;varbinary;;mysql;;varbinary
+631;;snowflake;;varbinary;;mysql;;longblob
 632;;snowflake;;boolean;;mysql;;bool
 633;;snowflake;;date;;mysql;;date
 634;;snowflake;;datetime;;mysql;;datetime
@@ -1046,7 +1046,7 @@
 1122;;sqlserver;;nvarchar;;mysql;;varchar
 1123;;sqlserver;;ntext;;mysql;;text
 1124;;sqlserver;;binary;;mysql;;binary
-1125;;sqlserver;;varbinary;;mysql;;varbinary
+1125;;sqlserver;;varbinary;;mysql;;longblob
 1126;;sqlserver;;image;;mysql;;blob
 1127;;sqlserver;;uniqueidentifier;;mysql;;char
 1128;;oracle;;char;;mysql;;char
@@ -1081,7 +1081,7 @@
 1158;;db2;;time;;mysql;;time
 1159;;db2;;timestamp;;mysql;;timestamp
 1160;;db2;;binary;;mysql;;binary
-1161;;db2;;varbinary;;mysql;;varbinary
+1161;;db2;;varbinary;;mysql;;longblob
 1163;;db2;;clob;;mysql;;text
 1164;;db2;;blob;;mysql;;longblob
 1165;;db2;;boolean;;mysql;;tinyint
@@ -1889,7 +1889,7 @@
 2069;;postgres;;txid_snapshot;;sqlserver;;varchar
 2070;;postgres;;varbit;;bigquery;;bytes
 2071;;postgres;;varbit;;kinetica;;bytes
-2072;;postgres;;varbit;;mysql;;varbinary
+2072;;postgres;;varbit;;mysql;;longblob
 2073;;postgres;;varbit;;spanner;;bytes
 2074;;postgres;;varbit;;sqlserver;;varbinary
 2075;;postgres;;xml;;kinetica;;string
@@ -1922,7 +1922,7 @@
 2102;;sqlserver;;geometry;;kinetica;;geography
 2103;;sqlserver;;geometry;;mysql;;geometry
 2104;;sqlserver;;hierarchyid;;bigquery;;bytes
-2105;;sqlserver;;hierarchyid;;mysql;;varbinary
+2105;;sqlserver;;hierarchyid;;mysql;;longblob
 2106;;sqlserver;;hierarchyid;;postgres;;bytea
 2107;;sqlserver;;hierarchyid;;spanner;;bytes
 2108;;sqlserver;;image;;bigquery;;bytes
