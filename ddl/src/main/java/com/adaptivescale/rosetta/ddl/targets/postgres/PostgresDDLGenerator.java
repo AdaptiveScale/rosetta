@@ -10,13 +10,11 @@ import com.adaptivescale.rosetta.ddl.DDL;
 import com.adaptivescale.rosetta.ddl.change.model.ColumnChange;
 import com.adaptivescale.rosetta.ddl.change.model.ForeignKeyChange;
 import com.adaptivescale.rosetta.ddl.targets.ColumnSQLDecoratorFactory;
+import com.adaptivescale.rosetta.ddl.utils.TemplateEngine;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.DatabaseMetaData;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.adaptivescale.rosetta.ddl.targets.postgres.Constants.DEFAULT_WRAPPER;
@@ -28,6 +26,30 @@ import static com.adaptivescale.rosetta.ddl.targets.postgres.Constants.DEFAULT_W
 )
 public class PostgresDDLGenerator implements DDL {
 
+    private final static String TABLE_CREATE_TEMPLATE = "postgres/table/create";
+
+    private final static String TABLE_ALTER_TEMPLATE = "postgres/table/alter";
+
+    private final static String TABLE_ALTER_DROP_PRIMARY_KEY_TEMPLATE = "postgres/table/alter_drop_primary_key";
+
+    private final static String TABLE_ALTER_ADD_PRIMARY_KEY_TEMPLATE = "postgres/table/alter_add_primary_key";
+
+    private final static String TABLE_DROP_TEMPLATE = "postgres/table/drop";
+
+    private final static String SCHEMA_CREATE_TEMPLATE = "postgres/schema/create";
+
+    private final static String FOREIGN_KEY_CREATE_TEMPLATE = "postgres/foreignkey/create";
+
+    private final static String FOREIGN_KEY_DROP_TEMPLATE = "postgres/foreignkey/drop";
+
+    private final static String COLUMN_ADD_TEMPLATE = "postgres/column/add";
+
+    private final static String COLUMN_ALTER_TYPE_TEMPLATE = "postgres/column/alter_column_type";
+
+    private final static String COLUMN_ALTER_NULL_TEMPLATE = "postgres/column/alter_column_null";
+
+    private final static String COLUMN_DROP_TEMPLATE = "postgres/column/drop";
+
 
     private final ColumnSQLDecoratorFactory columnSQLDecoratorFactory = new PostgresColumnDecoratorFactory();
 
@@ -38,6 +60,8 @@ public class PostgresDDLGenerator implements DDL {
 
     @Override
     public String createTable(Table table, boolean dropTableIfExists) {
+        Map<String, Object> createParams = new HashMap<>();
+
         List<String> definitions = table.getColumns().stream().map(this::createColumn).collect(Collectors.toList());
 
         Optional<String> primaryKeysForTable = createPrimaryKeysForTable(table);
@@ -46,36 +70,22 @@ public class PostgresDDLGenerator implements DDL {
 
         StringBuilder stringBuilder = new StringBuilder();
         if (dropTableIfExists) {
-            stringBuilder.append("DROP TABLE IF EXISTS ");
-            if (table.getSchema() != null && !table.getSchema().isBlank()) {
-                stringBuilder.append("`").append(table.getSchema()).append("`.");
-            }
-            stringBuilder.append(DEFAULT_WRAPPER).append(table.getName()).append(DEFAULT_WRAPPER).append("; \n");
+            stringBuilder.append(dropTable(table));
         }
 
-        stringBuilder.append("CREATE TABLE ");
+        createParams.put("schemaName", table.getSchema());
+        createParams.put("tableName", table.getName());
+        createParams.put("tableCode", definitionAsString);
+        stringBuilder.append(TemplateEngine.process(TABLE_CREATE_TEMPLATE, createParams));
 
-        if (table.getSchema() != null && !table.getSchema().isBlank()) {
-            stringBuilder.append(DEFAULT_WRAPPER)
-                .append(table.getSchema()).append(DEFAULT_WRAPPER).append(".");
-        }
-
-        stringBuilder.append(DEFAULT_WRAPPER).append(table.getName()).append(DEFAULT_WRAPPER).append("(").append(definitionAsString).append(");");
         return stringBuilder.toString();
     }
 
     @Override
     public String createTableSchema(Table table) {
-        StringBuilder stringBuilder = new StringBuilder();
-        if (table.getSchema() != null && !table.getSchema().isBlank()) {
-            stringBuilder
-                .append("CREATE SCHEMA IF NOT EXISTS ")
-                .append(DEFAULT_WRAPPER)
-                .append(table.getSchema())
-                .append(DEFAULT_WRAPPER)
-                .append(";");
-        }
-        return stringBuilder.toString();
+        Map<String, Object> params = new HashMap<>();
+        params.put("schemaName", table.getSchema());
+        return TemplateEngine.process(SCHEMA_CREATE_TEMPLATE, params);
     }
 
     @Override
@@ -85,71 +95,73 @@ public class PostgresDDLGenerator implements DDL {
         Set<String> schemas = database.getTables().stream().map(Table::getSchema).filter(s -> s != null && !s.isEmpty()).collect(Collectors.toSet());
         if (!schemas.isEmpty()) {
             stringBuilder.append(
-                schemas
-                    .stream()
-                    .map(schema -> "CREATE SCHEMA IF NOT EXISTS " + DEFAULT_WRAPPER + schema + DEFAULT_WRAPPER)
-                    .collect(Collectors.joining(";\r\r"))
-
+                    schemas
+                            .stream()
+                            .map(this::createSchema)
+                            .collect(Collectors.joining())
             );
-            stringBuilder.append(";\r");
+            stringBuilder.append("\r");
         }
 
         stringBuilder.append(database.getTables()
-            .stream()
-            .map(table -> createTable(table, dropTableIfExists))
-            .collect(Collectors.joining("\r\r")));
+                .stream()
+                .map(table -> createTable(table, dropTableIfExists))
+                .collect(Collectors.joining("\r\r")));
 
-        String foreignKeys = database
-            .getTables()
-            .stream()
-            .map(this::foreignKeys)
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .collect(Collectors.joining());
+        stringBuilder.append("\r");
 
-        if (!foreignKeys.isEmpty()) {
-            stringBuilder.append("\r").append(foreignKeys).append("\r");
-        }
+        //Create ForeignKeys
+        stringBuilder.append(database.getTables()
+                .stream()
+                .map(table -> foreignKeys(table))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.joining("\r")));
+
         return stringBuilder.toString();
     }
 
     @Override
     public String createForeignKey(ForeignKey foreignKey) {
-        return "ALTER TABLE" + handleNullSchema(foreignKey.getSchema(), foreignKey.getTableName()) + " ADD CONSTRAINT "
-                + foreignKey.getName() + " FOREIGN KEY ("+ DEFAULT_WRAPPER + foreignKey.getColumnName() + DEFAULT_WRAPPER +") REFERENCES "
-                + handleNullSchema(foreignKey.getPrimaryTableSchema(), foreignKey.getPrimaryTableName())
-                + "("+ DEFAULT_WRAPPER + foreignKey.getPrimaryColumnName()+ DEFAULT_WRAPPER + ")"
-                + foreignKeyDeleteRuleSanitation(foreignKeyDeleteRule(foreignKey)) + ";\r";
+        Map<String, Object> params = new HashMap<>();
+        params.put("schemaName", foreignKey.getSchema());
+        params.put("tableName", foreignKey.getTableName());
+        params.put("foreignkeyColumn", foreignKey.getColumnName());
+        params.put("primaryTableSchema", foreignKey.getPrimaryTableSchema());
+        params.put("primaryTableName", foreignKey.getPrimaryTableName());
+        params.put("foreignKeyPrimaryColumnName", foreignKey.getPrimaryColumnName());
+        params.put("foreignkeyName", foreignKey.getName());
+        return TemplateEngine.process(FOREIGN_KEY_CREATE_TEMPLATE, params);
     }
 
     @Override
     public String alterColumn(ColumnChange change) {
-        Table table = change.getTable();
         Column actual = change.getActual();
         Column expected = change.getExpected();
+        Map<String, Object> params = new HashMap<>();
+        params.put("schemaName", change.getTable().getSchema());
+        params.put("tableName", change.getTable().getName());
+        params.put("columnName", expected.getName());
 
-        if (!Objects.equals(expected.getTypeName(), actual.getTypeName())
-                || !Objects.equals(expected.isNullable(), actual.isNullable())) {
-            String alterColumnString = columnSQLDecoratorFactory.decoratorFor(expected).expressSQl();
-            String formattedAlterColumn = String.format("%s TYPE %s", alterColumnString.split(" ")[0], alterColumnString.split(" ")[1]);
+        if (!Objects.equals(expected.getTypeName(), actual.getTypeName())) {
+            params.put("dataType", expected.getTypeName());
+            return TemplateEngine.process(COLUMN_ALTER_TYPE_TEMPLATE, params);
+        }
 
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("ALTER TABLE");
-            stringBuilder.append(handleNullSchema(table.getSchema(), table.getName()));
-            stringBuilder.append(" ALTER COLUMN ");
-            stringBuilder.append(formattedAlterColumn);
-            if(expected.isNullable()){
-                stringBuilder.append(", ALTER COLUMN ");
-                stringBuilder.append(expected.getName());
-                stringBuilder.append(" DROP NOT NULL");
+        if (!Objects.equals(expected.isNullable(), actual.isNullable())) {
+            if (expected.isNullable()) {
+                params.put("nullDefinition", "DROP NOT NULL");
+                return TemplateEngine.process(COLUMN_ALTER_NULL_TEMPLATE, params);
+            } else {
+                params.put("nullDefinition", "SET NOT NULL");
+                return TemplateEngine.process(COLUMN_ALTER_NULL_TEMPLATE, params);
             }
-            stringBuilder.append(";");
-            return stringBuilder.toString();
         }
 
         log.info("No action taken for changes detected in column: {}.{}.{}", change.getTable().getSchema(),
                 change.getTable().getName(),
                 expected.getName());
+
         return "";
     }
 
@@ -158,35 +170,47 @@ public class PostgresDDLGenerator implements DDL {
         Table table = change.getTable();
         Column actual = change.getActual();
 
-        return "ALTER TABLE" +
-                handleNullSchema(table.getSchema(), table.getName()) + " DROP COLUMN "+ DEFAULT_WRAPPER +
-                actual.getName() + DEFAULT_WRAPPER +";";
+        Map<String, Object> params = new HashMap<>();
+        params.put("schemaName", table.getSchema());
+        params.put("tableName", table.getName());
+        params.put("columnName", actual.getName());
+        return TemplateEngine.process(COLUMN_DROP_TEMPLATE, params);
     }
+
+
 
     @Override
     public String addColumn(ColumnChange change) {
         Table table = change.getTable();
         Column expected = change.getExpected();
 
-        return "ALTER TABLE" +
-                handleNullSchema(table.getSchema(), table.getName()) +
-                " ADD COLUMN " +
-                columnSQLDecoratorFactory.decoratorFor(expected).expressSQl() + ";";
+        Map<String, Object> params = new HashMap<>();
+        params.put("schemaName", table.getSchema());
+        params.put("tableName", table.getName());
+        params.put("columnDefinition", columnSQLDecoratorFactory.decoratorFor(expected).expressSQl());
+        return TemplateEngine.process(COLUMN_ADD_TEMPLATE, params);
     }
 
     @Override
     public String dropTable(Table actual) {
-        return "DROP TABLE" + handleNullSchema(actual.getSchema(), actual.getName()) + ";";
+        Map<String, Object> params = new HashMap<>();
+        params.put("schemaName", actual.getSchema());
+        params.put("tableName", actual.getName());
+        return TemplateEngine.process(TABLE_DROP_TEMPLATE, params);
     }
 
     @Override
     public String alterForeignKey(ForeignKeyChange change) {
-        return "";
+        return dropForeignKey(change.getActual()) + "\r" + createForeignKey(change.getExpected());
     }
 
     @Override
     public String dropForeignKey(ForeignKey actual) {
-        return "ALTER TABLE" + handleNullSchema(actual.getSchema(), actual.getTableName()) + " DROP CONSTRAINT " + DEFAULT_WRAPPER + actual.getName() + DEFAULT_WRAPPER + ";";
+        Map<String, Object> params = new HashMap<>();
+        params.put("schemaName", actual.getSchema());
+        params.put("tableName", actual.getTableName());
+        params.put("foreignkeyName", actual.getName());
+        return TemplateEngine.process(FOREIGN_KEY_DROP_TEMPLATE, params);
     }
 
     @Override
@@ -194,24 +218,29 @@ public class PostgresDDLGenerator implements DDL {
         boolean doesPKExist = actual.getColumns().stream().map(Column::isPrimaryKey).reduce((aBoolean, aBoolean2) -> aBoolean || aBoolean2).orElse(false);
         boolean doWeNeedToCreatePk = expected.getColumns().stream().map(Column::isPrimaryKey).reduce((aBoolean, aBoolean2) -> aBoolean || aBoolean2).orElse(false);
 
-        StringBuilder stringBuilder = new StringBuilder("ALTER TABLE")
-                .append(handleNullSchema(expected.getSchema(), expected.getName()));
+        Map<String, Object> params = new HashMap<>();
+        StringBuilder stringBuilder = new StringBuilder();
 
         if (doesPKExist) {
-            stringBuilder.append(" DROP PRIMARY KEY");
+            params.put("schemaName", expected.getSchema());
+            params.put("tableName", tableNameWithSchema(expected));
+            stringBuilder.append(
+                    TemplateEngine.process(TABLE_ALTER_DROP_PRIMARY_KEY_TEMPLATE, params)
+            );
         }
 
         if (doWeNeedToCreatePk) {
             Optional<String> primaryKeysForTable = createPrimaryKeysForTable(expected);
             if (primaryKeysForTable.isPresent()) {
-                if (doesPKExist) {
-                    stringBuilder.append(",");
-                }
-                stringBuilder.append(" ADD ").append(primaryKeysForTable.get());
+                params.put("schemaName", expected.getSchema());
+                params.put("tableName", tableNameWithSchema(expected));
+                params.put("primaryKeyDefinition", primaryKeysForTable.get());
+                stringBuilder.append(
+                        TemplateEngine.process(TABLE_ALTER_ADD_PRIMARY_KEY_TEMPLATE, params)
+                );
             }
         }
 
-        stringBuilder.append(";");
         return stringBuilder.toString();
     }
 
@@ -221,7 +250,8 @@ public class PostgresDDLGenerator implements DDL {
                 .stream()
                 .filter(Column::isPrimaryKey)
                 .sorted((o1, o2) -> o1.getPrimaryKeySequenceId() < o2.getPrimaryKeySequenceId() ? -1 : 1)
-                .map(pk -> String.format(DEFAULT_WRAPPER+"%s"+DEFAULT_WRAPPER, pk.getName()))
+                .map(Column::getName)
+                .map(it -> "\"" + it + "\"")
                 .collect(Collectors.toList());
 
         if (primaryKeys.isEmpty()) {
@@ -239,25 +269,13 @@ public class PostgresDDLGenerator implements DDL {
         return result.isEmpty() ? Optional.empty() : Optional.of(result);
     }
 
-    //ALTER TABLE rosetta.contacts ADD CONSTRAINT contacts_fk FOREIGN KEY (contact_id) REFERENCES rosetta."user"(user_id);
     private String createForeignKeys(Column column) {
         return column.getForeignKeys().stream().map(this::createForeignKey).collect(Collectors.joining());
     }
 
-    private String handleNullSchema(String schema, String tableName) {
-        return ((schema == null || schema.isEmpty()) ? " " : (" "+ DEFAULT_WRAPPER + schema + DEFAULT_WRAPPER +".")) + DEFAULT_WRAPPER + tableName + DEFAULT_WRAPPER;
-    }
-
-    private String foreignKeyDeleteRuleSanitation(String deleteRule) {
-        if (deleteRule == null || deleteRule.isEmpty()) {
-            return "";
-        }
-        return " " + deleteRule + " ";
-    }
-
-    private String foreignKeyDeleteRule(ForeignKey foreignKey) {
+    protected String foreignKeyDeleteRule(ForeignKey foreignKey) {
         if (foreignKey.getDeleteRule() == null || foreignKey.getDeleteRule().isEmpty()) {
-            return "";
+            return null;
         }
         switch (Integer.parseInt(foreignKey.getDeleteRule())) {
             case DatabaseMetaData.importedKeyCascade:
@@ -271,8 +289,19 @@ public class PostgresDDLGenerator implements DDL {
             case DatabaseMetaData.importedKeyInitiallyImmediate:
             case DatabaseMetaData.importedKeyNotDeferrable:
             default:
-                //todo add warn log
-                return "";
+                return null;
         }
+    }
+
+    private String tableNameWithSchema(Table table) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(table.getName());
+        return builder.toString();
+    }
+
+    private String createSchema(String schema) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("schemaName", schema);
+        return TemplateEngine.process(SCHEMA_CREATE_TEMPLATE, params);
     }
 }
