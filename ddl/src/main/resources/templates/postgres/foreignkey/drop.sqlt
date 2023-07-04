@@ -1,1 +1,6 @@
+[# th:if="${schemaName} != null and ${schemaName} != ''"]
 ALTER TABLE "[(${schemaName})]"."[(${tableName})]" DROP CONSTRAINT "[(${foreignkeyName})]";
+[/]
+[# th:if="${schemaName} == null or ${schemaName} == ''"]
+ALTER TABLE "[(${tableName})]" DROP CONSTRAINT "[(${foreignkeyName})]";
+[/]

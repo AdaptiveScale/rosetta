@@ -1,1 +1,3 @@
-CREATE SCHEMA IF NOT EXISTS [[(${schemaName})]];
+[# th:if="${schemaName} != null and ${schemaName} != ''"]
+CREATE SCHEMA IF NOT EXISTS "[[(${schemaName})]]";
+[/]

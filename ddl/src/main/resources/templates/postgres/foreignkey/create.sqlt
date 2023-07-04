@@ -1,1 +1,6 @@
-ALTER TABLE "[(${schemaName})]"."[(${tableName})]" ADD CONSTRAINT "[(${foreignkeyName})]" FOREIGN KEY ("[(${foreignkeyColumn})]") REFERENCES "[(${schemaName})]"."[(${primaryTableName})]"("[(${foreignKeyPrimaryColumnName})]") [(${deleteRule})];
+[# th:if="${schemaName} != null and ${schemaName} != ''"]
+ALTER TABLE "[(${schemaName})]"."[(${tableName})]" ADD CONSTRAINT [(${foreignkeyName})] FOREIGN KEY ("[(${foreignkeyColumn})]") REFERENCES "[(${schemaName})]"."[(${primaryTableName})]"("[(${foreignKeyPrimaryColumnName})]") [(${deleteRule})];
+[/]
+[# th:if="${schemaName} == null or ${schemaName} == ''"]
+ALTER TABLE "[(${tableName})]" ADD CONSTRAINT [(${foreignkeyName})] FOREIGN KEY ("[(${foreignkeyColumn})]") REFERENCES "[(${primaryTableName})]"("[(${foreignKeyPrimaryColumnName})]") [(${deleteRule})];
+[/]

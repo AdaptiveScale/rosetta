@@ -131,6 +131,7 @@ public class PostgresDDLGenerator implements DDL {
         params.put("primaryTableName", foreignKey.getPrimaryTableName());
         params.put("foreignKeyPrimaryColumnName", foreignKey.getPrimaryColumnName());
         params.put("foreignkeyName", foreignKey.getName());
+        params.put("deleteRule", foreignKeyDeleteRule(foreignKey));
         return TemplateEngine.process(FOREIGN_KEY_CREATE_TEMPLATE, params);
     }
 
