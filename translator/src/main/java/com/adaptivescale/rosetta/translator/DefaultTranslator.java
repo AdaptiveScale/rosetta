@@ -42,7 +42,11 @@ public class DefaultTranslator implements Translator<Database, Database> {
 
 
     private Column translateColumn(Column column) {
-        TranslationModel translationModel = TranslationMatrix.getInstance().findBySourceTypeAndSourceColumnTypeAndTargetType(sourceDatabaseName, column.getTypeName(), targetDatabaseName);
+        String columnType = column.getOverwriteType();
+        if (columnType == null) {
+            columnType = column.getTypeName();
+        }
+        TranslationModel translationModel = TranslationMatrix.getInstance().findBySourceTypeAndSourceColumnTypeAndTargetType(sourceDatabaseName, columnType, targetDatabaseName);
 
         if (translationModel == null) {
             throw new RuntimeException("There is no match for column name: " + column.getName() + " and type: " + column.getTypeName() + ".");

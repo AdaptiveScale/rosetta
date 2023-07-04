@@ -10,6 +10,7 @@ public class Column {
     private String label;
     private String description;
     private String typeName;
+    private String overwriteType;
     private int ordinalPosition;
     private boolean isAutoincrement;
     private boolean isNullable;
@@ -55,6 +56,14 @@ public class Column {
 
     public void setTypeName(String typeName) {
         this.typeName = typeName;
+    }
+
+    public String getOverwriteType() {
+        return overwriteType;
+    }
+
+    public void setOverwriteType(String overwriteType) {
+        this.overwriteType = overwriteType;
     }
 
     public int getOrdinalPosition() {
