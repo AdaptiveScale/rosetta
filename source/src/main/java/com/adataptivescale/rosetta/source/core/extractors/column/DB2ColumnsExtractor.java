@@ -11,6 +11,7 @@ import com.adaptivescale.rosetta.common.types.RosettaModuleTypes;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RosettaModule(
         name = "db2",
@@ -61,7 +62,7 @@ public class DB2ColumnsExtractor extends ColumnsExtractor {
 
     private Map<String, List<ForeignKey>> extractForeignKeys(java.sql.Connection connection, Table table) throws SQLException {
         ResultSet exportedKeys = connection.getMetaData().getImportedKeys(null, table.getSchema(), table.getName());
-        Map<String, List<ForeignKey>> result = new HashMap<>();
+        Map<String, Set<ForeignKey>> result = new HashMap<>();
 
         while (exportedKeys.next()) {
             ForeignKey foreignKey = new ForeignKey();
@@ -83,11 +84,16 @@ public class DB2ColumnsExtractor extends ColumnsExtractor {
             foreignKey.setPrimaryTableName(exportedKeys.getString("PKTABLE_NAME"));
             foreignKey.setPrimaryColumnName(exportedKeys.getString("PKCOLUMN_NAME"));
 
-            List<ForeignKey> foreignKeys = result.computeIfAbsent(foreignKey.getColumnName(), k -> new ArrayList<>());
+            Set<ForeignKey> foreignKeys = result.computeIfAbsent(foreignKey.getColumnName(), k -> new HashSet<>());
             foreignKeys.add(foreignKey);
         }
 
-        return result;
+        return result.entrySet()
+            .stream()
+            .collect(Collectors.toMap(
+                    Map.Entry::getKey,
+                    entry -> new ArrayList<>(entry.getValue())
+            ));
     }
 
     private Map<String, Integer> extractPrimaryKeys(java.sql.Connection connection, Table table) throws SQLException {
