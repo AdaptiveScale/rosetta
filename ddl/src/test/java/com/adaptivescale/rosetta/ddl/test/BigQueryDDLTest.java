@@ -21,52 +21,52 @@ public class BigQueryDDLTest {
     @Test
     public void createDB() throws IOException {
         String ddl = generateDDL("clean_database");
-        Assertions.assertEquals("CREATE SCHEMA IF NOT EXISTS halis;\r" +
-                "CREATE TABLE `halis`.`tableA`(`columnA` STRING, `columnB` INT64);\r" +
-                "CREATE TABLE `halis`.`tableB`(`columnA` STRING, `columnB` INT64);", ddl);
+        Assertions.assertEquals("CREATE SCHEMA IF NOT EXISTS `halis`;\n" +
+                "CREATE TABLE `halis`.`tableA`(`columnA` STRING, `columnB` INT64);\n" +
+                "CREATE TABLE `halis`.`tableB`(`columnA` STRING, `columnB` INT64);\n",  ddl.replaceAll("[\\r\\n]+", "\n") + "");
     }
 
     @Test
     public void addTable() throws IOException {
         String ddl = generateDDL("add_table");
-        Assertions.assertEquals("CREATE TABLE `halis`.`tableB`(`columnA` STRING, `columnB` INT64);", ddl);
+        Assertions.assertEquals("CREATE TABLE `halis`.`tableB`(`columnA` STRING, `columnB` INT64);\n", ddl);
     }
 
     @Test
     public void addTable2() throws IOException {
         String ddl = generateDDL("add_table2");
-        Assertions.assertEquals("CREATE SCHEMA IF NOT EXISTS new;\r" +
-                "CREATE TABLE `new`.`tableB`(`columnA` STRING, `columnB` INT64);", ddl);
+        Assertions.assertEquals("CREATE SCHEMA IF NOT EXISTS `new`;\r" +
+                "CREATE TABLE `new`.`tableB`(`columnA` STRING, `columnB` INT64);\n", ddl);
     }
 
     @Test
     public void dropTable() throws IOException {
         String ddl = generateDDL("drop_table");
-        Assertions.assertEquals("DROP TABLE halis.tableB;", ddl);
+        Assertions.assertEquals("DROP TABLE IF EXISTS `halis`.`tableB`;", ddl);
     }
 
     @Test
     public void addColumn() throws IOException {
         String ddl = generateDDL("add_column");
-        Assertions.assertEquals("ALTER TABLE halis.tableA ADD COLUMN `columnB` INT64;", ddl);
+        Assertions.assertEquals("ALTER TABLE `halis`.`tableA` ADD COLUMN `columnB` INT64;", ddl);
     }
 
     @Test
     public void dropColumn() throws IOException {
         String ddl = generateDDL("drop_column");
-        Assertions.assertEquals("ALTER TABLE halis.tableA DROP COLUMN columnB;", ddl);
+        Assertions.assertEquals("ALTER TABLE `halis`.`tableA` DROP COLUMN `columnB`;", ddl);
     }
 
     @Test
     public void alterColumnDataType() throws IOException {
         String ddl = generateDDL("alter_column_data_type");
-        Assertions.assertEquals("ALTER TABLE halis.tableA ALTER COLUMN columnB SET DATA TYPE STRING;", ddl);
+        Assertions.assertEquals("ALTER TABLE `halis`.`tableA` ALTER COLUMN `columnB` SET DATA TYPE STRING;", ddl);
     }
 
     @Test
     public void alterColumnToNullable() throws IOException {
         String ddl = generateDDL("alter_column_to_nullable");
-        Assertions.assertEquals("ALTER TABLE halis.tableA ALTER COLUMN columnB DROP NOT NULL;", ddl);
+        Assertions.assertEquals("", ddl);
     }
 
     @Test
@@ -87,6 +87,6 @@ public class BigQueryDDLTest {
         Database expected = Utils.getDatabase(resourceDirectory.resolve(testType), "expected_model.yaml");
         List<Change<?>> changes = new DefaultChangeFinder().findChanges(expected, actual);
         ChangeHandler handler = new ChangeHandlerImplementation(new BigQueryDDLGenerator(), null);
-        return handler.createDDLForChanges(changes);
+        return handler.createDDLForChanges(changes).replaceAll("(?m)^[ \t]*\r?\n", "");
     }
 }

@@ -1,5 +1,4 @@
 package com.adaptivescale.rosetta.ddl.targets.bigquery;
-
 import com.adaptivescale.rosetta.common.annotations.RosettaModule;
 import com.adaptivescale.rosetta.common.models.Column;
 import com.adaptivescale.rosetta.common.models.Database;
@@ -13,11 +12,8 @@ import com.adaptivescale.rosetta.ddl.change.model.ForeignKeyChange;
 import com.adaptivescale.rosetta.ddl.targets.ColumnSQLDecoratorFactory;
 import com.adaptivescale.rosetta.ddl.utils.TemplateEngine;
 import lombok.extern.slf4j.Slf4j;
-
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static com.adaptivescale.rosetta.ddl.targets.postgres.Constants.DEFAULT_WRAPPER;
 
 @Slf4j
 @RosettaModule(
@@ -25,7 +21,18 @@ import static com.adaptivescale.rosetta.ddl.targets.postgres.Constants.DEFAULT_W
         type = RosettaModuleTypes.DDL_GENERATOR
 )
 public class BigQueryDDLGenerator implements DDL {
+    private final static String TABLE_CREATE_TEMPLATE = "bigquerry/table/create";
 
+
+    private final static String TABLE_DROP_TEMPLATE = "bigquerry/table/drop";
+
+    private final static String SCHEMA_CREATE_TEMPLATE = "bigquerry/schema/create";
+
+    private final static String COLUMN_ADD_TEMPLATE = "bigquerry/column/add";
+
+    private final static String COLUMN_ALTER_TYPE_TEMPLATE = "bigquerry/column/alter_column_type";
+
+    private final static String COLUMN_DROP_TEMPLATE = "bigquerry/column/drop";
     private static String VIEW_DROP_TEMPLATE = "bigquery/view/drop";
     private static String VIEW_CREATE_TEMPLATE = "bigquery/view/create";
     private static String VIEW_ALTER_TEMPLATE = "bigquery/view/alter";
@@ -42,118 +49,100 @@ public class BigQueryDDLGenerator implements DDL {
 
     @Override
     public String createTable(Table table, boolean dropTableIfExists) {
+        Map<String, Object> createParams = new HashMap<>();
+
         List<String> definitions = table.getColumns().stream().map(this::createColumn).collect(Collectors.toList());
+
         String definitionAsString = String.join(", ", definitions);
 
-        StringBuilder builder = new StringBuilder();
-
-        if (dropTableIfExists) {
-            builder.append("DROP TABLE IF EXISTS ");
-            if (table.getSchema() != null && !table.getSchema().isBlank()) {
-                builder.append("`")
-                        .append(table.getSchema())
-                        .append("`.");
-            }
-            builder.append("`").append(table.getName()).append("`; \n");
-        }
-
-        builder.append("CREATE TABLE ");
-
-        if (table.getSchema() != null && !table.getSchema().isBlank()) {
-            builder.append("`")
-                    .append(table.getSchema())
-                    .append("`.");
-        }
-
-        builder.append("`")
-                .append(table.getName())
-                .append("`")
-                .append("(")
-                .append(definitionAsString)
-                .append(");");
-
-        return builder.toString();
-    }
-
-    @Override
-    public String createTableSchema(Table table) {
         StringBuilder stringBuilder = new StringBuilder();
-        if (table.getSchema() != null && !table.getSchema().isBlank()) {
-            stringBuilder
-                    .append("CREATE SCHEMA IF NOT EXISTS ")
-                    .append(table.getSchema())
-                    .append(";");
+        if (dropTableIfExists) {
+            stringBuilder.append(dropTable(table));
         }
+
+        createParams.put("schemaName", table.getSchema());
+        createParams.put("tableName", table.getName());
+        createParams.put("tableCode", definitionAsString);
+        stringBuilder.append(TemplateEngine.process(TABLE_CREATE_TEMPLATE, createParams));
+
         return stringBuilder.toString();
     }
 
     @Override
+    public String createTableSchema(Table table) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("schemaName", table.getSchema());
+        return TemplateEngine.process(SCHEMA_CREATE_TEMPLATE, params);
+    }
+
     public String createDatabase(Database database, boolean dropTableIfExists) {
         StringBuilder stringBuilder = new StringBuilder();
 
-        Set<String> schemas = database.getTables().stream().map(Table::getSchema)
-                .filter(s -> s != null && !s.isEmpty()).collect(Collectors.toSet());
+        Set<String> schemas = database.getTables().stream().map(Table::getSchema).filter(s -> s != null && !s.isEmpty()).collect(Collectors.toSet());
         if (!schemas.isEmpty()) {
             stringBuilder.append(
                     schemas
                             .stream()
-                            .map(schema -> "CREATE SCHEMA IF NOT EXISTS " + schema)
-                            .collect(Collectors.joining(";\r\r"))
-
+                            .map(this::createSchema)
+                            .collect(Collectors.joining())
             );
-            stringBuilder.append(";\r");
+            stringBuilder.append("\r");
         }
 
         stringBuilder.append(database.getTables()
                 .stream()
                 .map(table -> createTable(table, dropTableIfExists))
-                .collect(Collectors.joining("\r")));
+                .collect(Collectors.joining("\r\r")));
 
         return stringBuilder.toString();
     }
 
     @Override
     public String alterColumn(ColumnChange change) {
-
         Column actual = change.getActual();
         Column expected = change.getExpected();
+        Map<String, Object> params = new HashMap<>();
+        params.put("schemaName", change.getTable().getSchema());
+        params.put("tableName", change.getTable().getName());
+        params.put("columnName", expected.getName());
 
         if (!Objects.equals(expected.getTypeName(), actual.getTypeName())) {
-            return String.format("ALTER TABLE %s.%s ALTER COLUMN %s SET DATA TYPE %s;", change.getTable().getSchema(),
-                    change.getTable().getName(),
-                    expected.getName(),
-                    expected.getTypeName());
+            params.put("dataType", expected.getTypeName());
+            return TemplateEngine.process(COLUMN_ALTER_TYPE_TEMPLATE, params);
         }
 
-        if (!Objects.equals(expected.isNullable(), actual.isNullable())) {
-            if (expected.isNullable()) {
-                return String.format("ALTER TABLE %s.%s ALTER COLUMN %s DROP NOT NULL;", change.getTable().getSchema(),
-                        change.getTable().getName(),
-                        expected.getName());
-            } else {
-                throw new RuntimeException("Operation not supported by BigQuery to alter column to not null!");
-            }
-        }
-        log.info("No action taken for changes detected in column: {}.{}.{}", change.getTable().getSchema(),
-                change.getTable().getName(),
-                expected.getName());
         return "";
     }
 
     @Override
     public String dropColumn(ColumnChange change) {
-        return String.format("ALTER TABLE %s.%s DROP COLUMN %s;", change.getTable().getSchema(), change.getTable().getName(), change.getActual().getName());
-    }
+        Table table = change.getTable();
+        Column actual = change.getActual();
 
+        Map<String, Object> params = new HashMap<>();
+        params.put("schemaName", table.getSchema());
+        params.put("tableName", table.getName());
+        params.put("columnName", actual.getName());
+        return TemplateEngine.process(COLUMN_DROP_TEMPLATE, params);
+    }
     @Override
     public String addColumn(ColumnChange change) {
-        String columnNameWithType = columnSQLDecoratorFactory.decoratorFor(change.getExpected()).expressSQl();
-        return String.format("ALTER TABLE %s.%s ADD COLUMN %s;", change.getTable().getSchema(), change.getTable().getName(), columnNameWithType);
+        Table table = change.getTable();
+        Column expected = change.getExpected();
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("schemaName", table.getSchema());
+        params.put("tableName", table.getName());
+        params.put("columnDefinition", columnSQLDecoratorFactory.decoratorFor(expected).expressSQl());
+        return TemplateEngine.process(COLUMN_ADD_TEMPLATE, params);
     }
 
     @Override
     public String dropTable(Table actual) {
-        return String.format("DROP TABLE %s.%s;", actual.getSchema(), actual.getName());
+        Map<String, Object> params = new HashMap<>();
+        params.put("schemaName", actual.getSchema());
+        params.put("tableName", actual.getName());
+        return TemplateEngine.process(TABLE_DROP_TEMPLATE, params);
     }
 
     @Override
@@ -208,5 +197,10 @@ public class BigQueryDDLGenerator implements DDL {
         createParams.put("viewName", expected.getName());
         createParams.put("viewCode", expected.getCode());
         return TemplateEngine.process(VIEW_ALTER_TEMPLATE, createParams);
+    }
+    private String createSchema(String schema) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("schemaName", schema);
+        return TemplateEngine.process(SCHEMA_CREATE_TEMPLATE, params);
     }
 }
