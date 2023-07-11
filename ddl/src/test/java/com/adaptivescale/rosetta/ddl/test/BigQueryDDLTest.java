@@ -23,20 +23,20 @@ public class BigQueryDDLTest {
         String ddl = generateDDL("clean_database");
         Assertions.assertEquals("CREATE SCHEMA IF NOT EXISTS `halis`;\n" +
                 "CREATE TABLE `halis`.`tableA`(`columnA` STRING, `columnB` INT64);\n" +
-                "CREATE TABLE `halis`.`tableB`(`columnA` STRING, `columnB` INT64);\n",  ddl.replaceAll("[\\r\\n]+", "\n") + "");
+                "CREATE TABLE `halis`.`tableB`(`columnA` STRING, `columnB` INT64);",  ddl.replaceAll("[\\r\\n]+", "\n") + "");
     }
 
     @Test
     public void addTable() throws IOException {
         String ddl = generateDDL("add_table");
-        Assertions.assertEquals("CREATE TABLE `halis`.`tableB`(`columnA` STRING, `columnB` INT64);\n", ddl);
+        Assertions.assertEquals("CREATE TABLE `halis`.`tableB`(`columnA` STRING, `columnB` INT64);", ddl);
     }
 
     @Test
     public void addTable2() throws IOException {
         String ddl = generateDDL("add_table2");
         Assertions.assertEquals("CREATE SCHEMA IF NOT EXISTS `new`;\r" +
-                "CREATE TABLE `new`.`tableB`(`columnA` STRING, `columnB` INT64);\n", ddl);
+                "CREATE TABLE `new`.`tableB`(`columnA` STRING, `columnB` INT64);", ddl);
     }
 
     @Test
