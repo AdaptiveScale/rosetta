@@ -26,6 +26,7 @@ import com.adataptivescale.rosetta.source.core.interfaces.ColumnExtractor;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ColumnsExtractor implements ColumnExtractor<java.sql.Connection, Collection<Table>> {
 
@@ -79,7 +80,7 @@ public class ColumnsExtractor implements ColumnExtractor<java.sql.Connection, Co
 
     private Map<String, List<ForeignKey>> extractForeignKeys(java.sql.Connection connection, Table table) throws SQLException {
         ResultSet exportedKeys = connection.getMetaData().getImportedKeys(this.connection.getDatabaseName(), table.getSchema(), table.getName());
-        Map<String, List<ForeignKey>> result = new HashMap<>();
+        Map<String, Set<ForeignKey>> result = new HashMap<>();
 
         while (exportedKeys.next()) {
             ForeignKey foreignKey = new ForeignKey();
@@ -101,11 +102,16 @@ public class ColumnsExtractor implements ColumnExtractor<java.sql.Connection, Co
             foreignKey.setPrimaryTableName(exportedKeys.getString("PKTABLE_NAME"));
             foreignKey.setPrimaryColumnName(exportedKeys.getString("PKCOLUMN_NAME"));
 
-            List<ForeignKey> foreignKeys = result.computeIfAbsent(foreignKey.getColumnName(), k -> new ArrayList<>());
+            Set<ForeignKey> foreignKeys = result.computeIfAbsent(foreignKey.getColumnName(), k -> new HashSet<>());
             foreignKeys.add(foreignKey);
         }
 
-        return result;
+        return result.entrySet()
+            .stream()
+            .collect(Collectors.toMap(
+                    Map.Entry::getKey,
+                    entry -> new ArrayList<>(entry.getValue())
+            ));
     }
 
     private Map<String, Integer> extractPrimaryKeys(java.sql.Connection connection, Table table) throws SQLException {

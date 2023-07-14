@@ -1,5 +1,7 @@
 package com.adaptivescale.rosetta.common.models;
 
+import java.util.Objects;
+
 public class ForeignKey {
     private String name;
     private String schema;
@@ -73,5 +75,18 @@ public class ForeignKey {
 
     public void setColumnName(String columnName) {
         this.columnName = columnName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ForeignKey that = (ForeignKey) o;
+        return Objects.equals(name, that.name) && Objects.equals(tableName, that.tableName) && Objects.equals(columnName, that.columnName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, tableName, columnName);
     }
 }
