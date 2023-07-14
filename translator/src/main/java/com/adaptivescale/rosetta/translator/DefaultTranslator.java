@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class DefaultTranslator implements Translator<Database, Database> {
@@ -42,14 +43,12 @@ public class DefaultTranslator implements Translator<Database, Database> {
 
 
     private Column translateColumn(Column column) {
-        String columnType = column.getOverwriteType();
-        if (columnType == null) {
-            columnType = column.getTypeName();
-        }
-        TranslationModel translationModel = TranslationMatrix.getInstance().findBySourceTypeAndSourceColumnTypeAndTargetType(sourceDatabaseName, columnType, targetDatabaseName);
+        TranslationModel translationModel = TranslationMatrix.getInstance().findBySourceTypeAndSourceColumnTypeAndTargetType(sourceDatabaseName, column.getTypeName(), targetDatabaseName);
 
         if (translationModel == null) {
-            throw new RuntimeException("There is no match for column name: " + column.getName() + " and type: " + column.getTypeName() + ".");
+            translationModel = Optional.ofNullable(column.getFallbackType())
+                .map(it -> TranslationMatrix.getInstance().findBySourceTypeAndSourceColumnTypeAndTargetType(sourceDatabaseName, it, targetDatabaseName))
+                .orElseThrow(() -> new RuntimeException("There is no match for column name: " + column.getName() + " and type: " + column.getTypeName() + "."));
         }
 
         List<TranslationAttributeModel> translationAttributes = TranslationMatrix.getInstance().findByTranslationAttributesByTranslationIds(translationModel.getId());

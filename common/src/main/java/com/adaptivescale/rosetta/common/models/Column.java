@@ -10,7 +10,7 @@ public class Column {
     private String label;
     private String description;
     private String typeName;
-    private String overwriteType;
+    private String fallbackType;
     private int ordinalPosition;
     private boolean isAutoincrement;
     private boolean isNullable;
@@ -58,12 +58,12 @@ public class Column {
         this.typeName = typeName;
     }
 
-    public String getOverwriteType() {
-        return overwriteType;
+    public String getFallbackType() {
+        return fallbackType;
     }
 
-    public void setOverwriteType(String overwriteType) {
-        this.overwriteType = overwriteType;
+    public void setFallbackType(String fallbackType) {
+        this.fallbackType = fallbackType;
     }
 
     public int getOrdinalPosition() {
