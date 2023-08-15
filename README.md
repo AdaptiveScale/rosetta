@@ -662,6 +662,10 @@ In `model.yaml` you can find the attribute `safeMode` which is by default disabl
 In `model.yaml` you can find the attribute `operationLevel` which is by default set to `schema`. If you want to apply changes on to database level in your model instead of the specific schema in 
 `apply` command, set `operationLevel: schema`.
 
+### Fallback Type
+In `model.yaml` you can define the attribute `fallbackType` for columns that are of custom types, not supported for translations or not included in the translation matrix.
+If a given column type cannot be translated then the fallbackType will be used for the translation. `fallbackType` is optional. 
+
 ## RosettaDB CLI JAR and RosettaDB Source
 
 ### Setting Up the CLI JAR (Optional)
