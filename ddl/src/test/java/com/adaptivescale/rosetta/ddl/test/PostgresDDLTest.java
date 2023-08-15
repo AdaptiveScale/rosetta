@@ -177,6 +177,126 @@ public class PostgresDDLTest {
                 "ALTER TABLE \"TEAMPLAYERS\" ADD CONSTRAINT TEAMPLAYERS_FK FOREIGN KEY (\"PLAYERID\") REFERENCES \"POSITION\"(\"ID\") ;\n", ddl.replaceAll("(?m)^[ \t]*\r?\n", ""));
     }
 
+    @Test
+    public void addTableWithSchema() throws IOException {
+        String ddl = generateDDL("add_table_with_schema");
+        Assertions.assertEquals(
+                "CREATE TABLE \"TEST\".\"Position2\"(\"ID\" DECIMAL(10) NOT NULL , \"DESCRIPTION\" VARCHAR, \"Name\" VARCHAR, \"TEAMID\" DECIMAL(10), PRIMARY KEY (\"ID\"));\n" +
+                        "ALTER TABLE \"TEST\".\"Position2\" ADD CONSTRAINT Position2_FK_TEAM FOREIGN KEY (\"TEAMID\") REFERENCES \"TEST\".\"TEAM\"(\"ID\") ;\n", ddl.replaceAll("(?m)^[ \t]*\r?\n", ""));
+    }
+
+
+    @Test
+    public void dropTableWithSchema() throws IOException {
+        String ddl = generateDDL("drop_table_with_schema");
+        Assertions.assertEquals("DROP TABLE IF EXISTS \"TEST\".\"TEAMPLAYERS\";\n", ddl.replaceAll("(?m)^[ \t]*\r?\n", ""));
+    }
+    @Test
+    public void addColumnWithSchema() throws IOException {
+        String ddl = generateDDL("add_column_with_schema");
+        Assertions.assertEquals("ALTER TABLE \"TEST\".\"Position\" ADD COLUMN \"DESCRIPTION\" VARCHAR;\n", ddl.replaceAll("(?m)^[ \t]*\r?\n", ""));
+    }
+
+    @Test
+    public void addColumnWithForeignKeyWithSchema() throws IOException {
+        String ddl = generateDDL("add_column_with_foreign_key_with_schema");
+        Assertions.assertEquals("ALTER TABLE \"TEST\".\"PLAYER\" ADD COLUMN \"POSITION_ID\" numeric;\n" +
+                "ALTER TABLE \"TEST\".\"PLAYER\" ADD CONSTRAINT PLAYER_FK FOREIGN KEY (\"POSITION_ID\") REFERENCES \"TEST\".\"Position\"(\"ID\") ON DELETE NO ACTION;\n", ddl.replaceAll("(?m)^[ \t]*\r?\n", ""));
+    }
+
+    @Test
+    public void addColumnAsPrimaryKeyWithSchema() throws IOException {
+        String ddl = generateDDL("add_column_as_primary_key_with_schema");
+        Assertions.assertEquals("ALTER TABLE \"TEST\".\"PLAYER\" ADD COLUMN \"ID\" numeric NOT NULL ;\n" +
+                "ALTER TABLE \"TEST\".\"PLAYER\" ADD PRIMARY KEY (\"ID\");\n", ddl.replaceAll("(?m)^[ \t]*\r?\n", ""));
+    }
+
+    @Test
+    public void addForeignKeyWithSchema() throws IOException {
+        String ddl = generateDDL("add_foreign_key_with_schema");
+        Assertions.assertEquals("ALTER TABLE \"TEST\".\"PLAYER\" ADD CONSTRAINT PLAYER_FK FOREIGN KEY (\"POSITION_ID\") REFERENCES \"TEST\".\"Position\"(\"ID\") ON DELETE NO ACTION;\n", ddl.replaceAll("(?m)^[ \t]*\r?\n", ""));
+    }
+
+    @Test
+    public void addPrimaryKeyWithSchema() throws IOException {
+        String ddl = generateDDL("add_primary_key_with_schema");
+        Assertions.assertEquals("ALTER TABLE \"TEST\".\"PLAYER\" ADD PRIMARY KEY (\"ID\");\n",  ddl.replaceAll("(?m)^[ \t]*\r?\n", ""));
+    }
+
+    @Test
+    public void alterColumnDataTypeWithSchema() throws IOException {
+        String ddl = generateDDL("alter_column_data_type_with_schema");
+        Assertions.assertEquals("ALTER TABLE \"TEST\".\"PLAYER\" ALTER COLUMN \"name\" SET DATA TYPE varchar;\n", ddl.replaceAll("(?m)^[ \t]*\r?\n", ""));
+    }
+
+    @Test
+    public void alterForeignKeyNameWithSchema() throws IOException {
+        String ddl = generateDDL("alter_foreign_key_name_with_schema");
+        Assertions.assertEquals("ALTER TABLE \"TEST\".\"TEAMPLAYERS\" DROP CONSTRAINT \"TEAMPLAYERS_FK\";\n" +
+                "ALTER TABLE \"TEST\".\"TEAMPLAYERS\" ADD CONSTRAINT TEAMPLAYERS_CHANGED_FK FOREIGN KEY (\"PLAYERID\") REFERENCES \"TEST\".\"PLAYER\"(\"ID\") ON DELETE NO ACTION;\n", ddl.replaceAll("(?m)^[ \t]*\r?\n", ""));
+    }
+
+    @Test
+    public void alterForeignKeyWithSchema() throws IOException {
+        String ddl = generateDDL("alter_foreign_key_with_schema");
+        Assertions.assertEquals("ALTER TABLE \"TEST\".\"TEAMPLAYERS\" DROP CONSTRAINT \"TEAMPLAYERS_FK\";\n" +
+                "ALTER TABLE \"TEST\".\"TEAMPLAYERS\" ADD CONSTRAINT TEAMPLAYERS_FK FOREIGN KEY (\"PLAYERID\") REFERENCES \"TEST\".\"PLAYER\"(\"ID\") ON DELETE SET NULL;\n", ddl.replaceAll("(?m)^[ \t]*\r?\n", ""));
+    }
+
+    @Test
+    public void dropColumnWithSchema() throws IOException {
+        String ddl = generateDDL("drop_column_with_schema");
+        Assertions.assertEquals("ALTER TABLE \"TEST\".\"TEAM\" DROP COLUMN \"country\";\n", ddl.replaceAll("(?m)^[ \t]*\r?\n", ""));
+    }
+
+    @Test
+    public void dropColumnWithPrimaryKeyReferencedWithSchema() throws IOException {
+        String ddl = generateDDL("drop_column_with_primary_key_referenced_with_schema");
+        Assertions.assertEquals("ALTER TABLE \"TEAMPLAYERS\" DROP CONSTRAINT \"TEAMPLAYERS_FK_TEAM\";\n" +
+                "ALTER TABLE \"TEST\".\"PLAYER\" DROP COLUMN \"ID\";\n", ddl.replaceAll("(?m)^[ \t]*\r?\n", ""));
+    }
+
+    @Test
+    public void dropTableWithPrimaryKeyColumnAndAlterForeignKeyWithSchema() throws IOException {
+        String ddl = generateDDL("drop_table_with_pk_column_and_alter_fk_with_schema");
+        Assertions.assertEquals("ALTER TABLE \"TEST\".\"TEAMPLAYERS\" DROP CONSTRAINT \"TEAMPLAYERS_FK\";\n" +
+                "DROP TABLE IF EXISTS \"TEST\".\"PLAYER\";\n" +
+                "ALTER TABLE \"TEST\".\"TEAMPLAYERS\" ADD CONSTRAINT TEAMPLAYERS_FK FOREIGN KEY (\"PLAYERID\") REFERENCES \"TEST\".\"POSITION\"(\"ID\") ;\n", ddl.replaceAll("(?m)^[ \t]*\r?\n", ""));
+    }
+
+    @Test
+    public void dropTableWhereColumnIsReferencedWithSchema() throws IOException {
+        String ddl = generateDDL("drop_table_where_column_is_referenced_with_schema");
+        Assertions.assertEquals("ALTER TABLE \"TEAM\".\"TEAMPLAYERS\" DROP CONSTRAINT \"TEAMPLAYERS_FK_TEAM\";\n" +
+                "DROP TABLE IF EXISTS \"TEST\".\"TEAM\";\n", ddl.replaceAll("(?m)^[ \t]*\r?\n", ""));
+    }
+
+    @Test
+    public void dropPrimaryKeyColumnAndAlterForeignKeyWithSchema() throws IOException {
+        String ddl = generateDDL("drop_pk_column_and_alter_fk_with_schema");
+        Assertions.assertEquals("ALTER TABLE \"TEST\".\"TEAMPLAYERS\" DROP CONSTRAINT \"TEAMPLAYERS_FK\";\n" +
+                "ALTER TABLE \"TEST\".\"PLAYER\" DROP COLUMN \"ID\";\n" +
+                "ALTER TABLE \"TEST\".\"TEAMPLAYERS\" ADD CONSTRAINT TEAMPLAYERS_FK FOREIGN KEY (\"PLAYERID\") REFERENCES \"TEST\".\"POSITION\"(\"ID\") ;\n", ddl.replaceAll("(?m)^[ \t]*\r?\n", ""));
+    }
+
+    @Test
+    public void alterColumnToNullableWithSchema() throws IOException {
+        String ddl = generateDDL("alter_column_to_nullable_with_schema");
+        Assertions.assertEquals("ALTER TABLE \"TEST\".\"PLAYER\" ALTER COLUMN \"ID\" DROP NOT NULL;\n", ddl.replaceAll("(?m)^[ \t]*\r?\n", ""));
+    }
+
+    @Test
+    public void alterColumnToNotNullableWithSchema() throws IOException {
+        String ddl = generateDDL("alter_column_to_not_nullable_with_schema");
+        Assertions.assertEquals("ALTER TABLE \"TEST\".\"PLAYER\" ALTER COLUMN \"ID\" SET NOT NULL;\n", ddl.replaceAll("(?m)^[ \t]*\r?\n", ""));
+    }
+
+    @Test
+    public void dropForeignKeyWithSchema() throws IOException {
+        String ddl = generateDDL("drop_foreign_key_with_schema");
+        Assertions.assertEquals("ALTER TABLE \"TEST\".\"TEAMPLAYERS\" DROP CONSTRAINT \"TEAMPLAYERS_FK\";\n", ddl.replaceAll("(?m)^[ \t]*\r?\n", ""));
+    }
+
     private String generateDDL(String testType) throws IOException {
         Database actual = Utils.getDatabase(resourceDirectory.resolve(testType), "actual_model.yaml");
         Database expected = Utils.getDatabase(resourceDirectory.resolve(testType), "expected_model.yaml");
