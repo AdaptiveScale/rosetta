@@ -198,7 +198,6 @@ public class PostgresDDLIntegrationTest {
     @BeforeAll
     public static void beforeAll() {
         container.getContainer().start();
-        System.out.println("Hello");
     }
 
     @Test
