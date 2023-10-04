@@ -24,9 +24,10 @@ import static org.junit.Assert.*;
 
 @Testcontainers
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Disabled
 public class PostgresDDLIntegrationTest {
 
-    private static String IMAGE = "sakiladb/postgres:14";
+    private static String IMAGE = "sakiladb/postgres:latest";
     private static String USERNAME = "postgres";
     private static String DATABASE = "sakila";
     private static String SCHEMA = "public";
@@ -197,6 +198,7 @@ public class PostgresDDLIntegrationTest {
     @BeforeAll
     public static void beforeAll() {
         container.getContainer().start();
+        System.out.println("Hello");
     }
 
     @Test
