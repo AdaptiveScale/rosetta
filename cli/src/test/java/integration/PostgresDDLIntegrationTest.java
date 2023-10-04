@@ -26,7 +26,7 @@ import static org.junit.Assert.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class PostgresDDLIntegrationTest {
 
-    private static String IMAGE = "sakiladb/postgres:latest";
+    private static String IMAGE = "sakiladb/postgres:14";
     private static String USERNAME = "postgres";
     private static String DATABASE = "sakila";
     private static String SCHEMA = "public";
