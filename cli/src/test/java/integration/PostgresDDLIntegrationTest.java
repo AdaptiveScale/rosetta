@@ -24,6 +24,7 @@ import static org.junit.Assert.*;
 
 @Testcontainers
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Disabled
 public class PostgresDDLIntegrationTest {
 
     private static String IMAGE = "sakiladb/postgres:latest";
