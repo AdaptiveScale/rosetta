@@ -8,7 +8,7 @@ public class SnowflakeAssertionSqlGenerator extends BaseAssertionSqlGenerator {
 
     @Override
     String prepareSql(Connection connection, Table table, Column column, String whereClauseCondition) {
-         return String.format("Select Count(*) from %s.%s.%s where \"%s\" %s",
+        return String.format("Select Count(*) from \"%s\".\"%s\".\"%s\" where \"%s\" %s",
                 connection.getDatabaseName(),
                 connection.getSchemaName(),
                 table.getName(),
