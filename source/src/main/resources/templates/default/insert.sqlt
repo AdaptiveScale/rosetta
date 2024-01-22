@@ -1,0 +1,18 @@
+INSERT INTO [[${table.name}]]
+(
+    [# th:each="column : ${table.columns}"]
+        [[${column.name}]]
+
+        [# th:if="${columnStat.index < table.columns.size - 1}"],[/]
+    [/]
+)
+VALUES
+(
+    [# th:each="column : ${table.columns}"]
+        '[[${column.getTemplatedName()}]]'
+
+        [# th:if="${columnStat.index < table.columns.size - 1}"],[/]
+    [/]
+);
+
+

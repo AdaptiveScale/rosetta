@@ -14,7 +14,7 @@
  *   limitations under the License.
  */
 
-package com.adaptivescale.rosetta.ddl.utils;
+package com.adataptivescale.rosetta.source.common;
 
 import org.thymeleaf.context.Context;
 import org.thymeleaf.templatemode.TemplateMode;

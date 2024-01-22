@@ -1,0 +1,21 @@
+INSERT INTO [[${table.schema}]].[[${table.name}]]
+(
+    [# th:each="column : ${table.columns}"]
+        [[${column.name}]]
+
+        [# th:if="${columnStat.index < table.columns.size - 1}"],[/]
+    [/]
+)
+VALUES
+(
+    [# th:each="column : ${table.columns}"]
+        [# th:switch="${column.typeName}"]
+            [# th:case="'INT64'"][[${column.getTemplatedName()}]][/]
+            [# th:case="*"]'[[${column.getTemplatedName()}]]'[/]
+
+            [# th:if="${columnStat.index < table.columns.size - 1}"],[/]
+        [/]
+    [/]
+);
+
+

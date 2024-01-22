@@ -1,0 +1,7 @@
+SELECT
+    [# th:each="column : ${table.columns}"]
+       [[${column.name}]]
+
+       [# th:if="${columnStat.index < table.columns.size - 1}"],[/]
+    [/]
+FROM [[${table.name}]];

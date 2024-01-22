@@ -79,7 +79,8 @@ class Cli implements Callable<Void> {
 
     @CommandLine.Command(name = "extract", description = "Extract schema chosen from connection config.", mixinStandardHelpOptions = true)
     private void extract(@CommandLine.Option(names = {"-s", "--source"}, required = true) String sourceName,
-                         @CommandLine.Option(names = {"-t", "--convert-to"}) String targetName
+                         @CommandLine.Option(names = {"-t", "--convert-to"}) String targetName,
+                         @CommandLine.Option(names = {"--include-data"}) boolean includeData
     ) throws Exception {
         requireConfig(config);
         Connection source = getSourceConnection(sourceName);
@@ -258,6 +259,42 @@ class Cli implements Callable<Void> {
             AssertionSqlGenerator assertionSqlGenerator = AssertionSqlGeneratorFactory.generatorFor(source.get());
             DefaultSqlExecution defaultSqlExecution = new DefaultSqlExecution(source.get(), new DriverManagerDriverProvider());
             new DefaultAssertTestEngine(assertionSqlGenerator, defaultSqlExecution).run(source.get(), database);
+        }
+    }
+
+    @CommandLine.Command(name = "transfer", description = "Transfer data from source to target", mixinStandardHelpOptions = true)
+    private void transfer(@CommandLine.Option(names = {"-s", "--source"}) String sourceName,
+                          @CommandLine.Option(names = {"-t", "--target"}) String targetName) throws Exception {
+        requireConfig(config);
+
+        Optional<Connection> source = config.getConnection(sourceName);
+        if (source.isEmpty()) {
+            throw new RuntimeException("Can not find source with name: " + sourceName + " configured in config.");
+        }
+
+        Optional<Connection> target = config.getConnection(targetName);
+        if (target.isEmpty()) {
+            throw new RuntimeException("Can not find target with name: " + targetName + " configured in config.");
+        }
+        Path sourceWorkspace = Paths.get("./", sourceName);
+        Path targWorkspace = Paths.get("./", targetName);
+
+        if (!Files.isDirectory(sourceWorkspace)) {
+            throw new RuntimeException(String.format("Can not find directory: %s for source name: %s to find" +
+                    " models for translation", sourceWorkspace, sourceName));
+        }
+
+        if (!Files.isDirectory(targWorkspace)) {
+            throw new RuntimeException(String.format("Can not find directory: %s for source name: %s to find" +
+                    " models for translation", sourceWorkspace, sourceName));
+        }
+
+        List<Database> collect = getDatabases(targWorkspace)
+                .map(AbstractMap.SimpleImmutableEntry::getValue)
+                .collect(Collectors.toList());
+        for (Database database : collect) {
+            DefaultSqlExecution defaultSqlExecution = new DefaultSqlExecution(source.get(), new DriverManagerDriverProvider(), database, target.get());
+            defaultSqlExecution.transfer();
         }
     }
 

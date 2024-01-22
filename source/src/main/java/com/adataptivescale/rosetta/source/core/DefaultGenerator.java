@@ -6,6 +6,7 @@ import com.adaptivescale.rosetta.common.models.Database;
 import com.adaptivescale.rosetta.common.models.Table;
 import com.adaptivescale.rosetta.common.models.View;
 import com.adaptivescale.rosetta.common.models.input.Connection;
+import com.adataptivescale.rosetta.source.common.TemplateEngine;
 import com.adataptivescale.rosetta.source.core.interfaces.ColumnExtractor;
 import com.adataptivescale.rosetta.source.core.interfaces.Generator;
 import com.adataptivescale.rosetta.source.core.interfaces.TableExtractor;
@@ -45,7 +46,27 @@ public class DefaultGenerator implements Generator<Database, Connection> {
         database.setTables(tables);
         database.setViews(views);
         database.setDatabaseType(connection.getDbType());
+        includeData(tables);
         connect.close();
         return database;
+    }
+
+    private void includeData(Collection<Table> tables) {
+        for (Table table : tables) {
+            StringBuilder extractStringBuilder = new StringBuilder();
+            StringBuilder loadStringBuilder = new StringBuilder();
+            Map<String, Object> createParams = new HashMap<>();
+
+            createParams.put("table", table);
+            extractStringBuilder.append(TemplateEngine.process("bigquery/select", createParams));
+            loadStringBuilder.append(TemplateEngine.process("bigquery/insert", createParams));
+
+            table.setExtract(
+                extractStringBuilder.toString().replaceAll("(\\r|\\n|\\t)", " ").replaceAll(" +", " ")
+            );
+            table.setLoad(
+                loadStringBuilder.toString().replaceAll("(\\r|\\n|\\t)", " ").replaceAll(" +", " ")
+            );
+        }
     }
 }

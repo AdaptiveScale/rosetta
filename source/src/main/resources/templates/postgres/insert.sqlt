@@ -1,0 +1,17 @@
+INSERT INTO [[${table.schemaName}]].[[${table.tableName}]]
+(
+    [[#th:each(column : ${table.columns})]]
+    [[${column.columnName}]],
+    [[/th:each]]
+)
+VALUES
+(
+    [[#th:each(column : ${table.columns})]]
+    [[#if(column.columnType == 'String')]]
+    '[[${column.columnValue}]]'
+    [[#else]]
+    [[${column.columnValue}]]
+    [[/if]]
+    [[#if(column != ${table.columns.last()})]],[[/if]]
+    [[/th:each]]
+);
