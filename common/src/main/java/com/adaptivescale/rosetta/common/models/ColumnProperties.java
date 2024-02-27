@@ -29,4 +29,12 @@ public class ColumnProperties {
     public void setSequenceId(Integer sequenceId) {
         this.sequenceId = sequenceId;
     }
+
+    @Override
+    public String toString() {
+        return "ColumnProperties{" +
+                "name='" + name + '\'' +
+                ", sequenceId=" + sequenceId +
+                '}';
+    }
 }
