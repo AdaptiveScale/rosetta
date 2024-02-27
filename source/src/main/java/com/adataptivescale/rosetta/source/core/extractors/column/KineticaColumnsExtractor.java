@@ -19,17 +19,23 @@ package com.adataptivescale.rosetta.source.core.extractors.column;
 import com.adaptivescale.rosetta.common.TranslationMatrix;
 import com.adaptivescale.rosetta.common.annotations.RosettaModule;
 import com.adaptivescale.rosetta.common.models.Column;
+import com.adaptivescale.rosetta.common.models.ColumnProperties;
 import com.adaptivescale.rosetta.common.models.input.Connection;
 import com.adaptivescale.rosetta.common.types.RosettaModuleTypes;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @RosettaModule(
         name = "kinetica",
         type = RosettaModuleTypes.COLUMN_EXTRACTOR
 )
 public class KineticaColumnsExtractor extends ColumnsExtractor {
+
+    private static final List<String> KINETICA_PROPERTIES = Arrays.asList("DICT", "INIT_WITH_NOW", "INIT_WITH_UUID", "IPV4", "SHARD_KEY", "TEXT_SEARCH");
 
     public KineticaColumnsExtractor(Connection connection) {
         super(connection);
@@ -46,5 +52,18 @@ public class KineticaColumnsExtractor extends ColumnsExtractor {
         column.setColumnDisplaySize(resultSet.getInt("COLUMN_SIZE"));
         column.setScale(resultSet.getInt("DECIMAL_DIGITS"));
         column.setPrecision(resultSet.getInt("COLUMN_SIZE"));
+
+        String [] columnPropertis = resultSet.getString("REMARKS").replace("[", "").replace("]", "").split(",");
+        List<ColumnProperties> columnPropertiesList = new ArrayList<>();
+        for (String columnProperty: columnPropertis) {
+            if (KINETICA_PROPERTIES.stream().anyMatch(columnProperty.trim().toLowerCase()::equalsIgnoreCase)) {
+                ColumnProperties cp = new ColumnProperties(columnProperty, null);
+                columnPropertiesList.add(cp);
+            }
+        }
+
+        column.setColumnProperties(columnPropertiesList);
     }
+
+
 }
