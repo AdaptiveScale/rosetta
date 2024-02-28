@@ -1,0 +1,49 @@
+---
+tables:
+  - name: "PLAYER"
+    type: "TABLE"
+    schema: "ROSETTA"
+    columns:
+      - name: "name"
+        typeName: "varchar"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 0
+        scale: 0
+        precision: 100
+        nullable: true
+        autoincrement: false
+        primaryKey: false
+      - name: "POSITION_ID"
+        typeName: "numeric"
+        ordinalPosition: 0
+        primaryKeySequenceId: 0
+        columnDisplaySize: 0
+        scale: 0
+        precision: 38
+        foreignKeys:
+          - name: "PLAYER_FK"
+            schema: "FBAL"
+            tableName: "PLAYER"
+            columnName: "POSITION_ID"
+            deleteRule: "3"
+            primaryTableSchema: "FBAL"
+            primaryTableName: "Position"
+            primaryColumnName: "ID"
+        nullable: true
+        autoincrement: false
+        primaryKey: false
+      - name: "ID"
+        typeName: "numeric"
+        ordinalPosition: 0
+        primaryKeySequenceId: 1
+        columnDisplaySize: 0
+        scale: 0
+        precision: 38
+        nullable: true
+        autoincrement: false
+        columnProperties:
+          - name: "dict"
+        primaryKey: true
+databaseProductName: "kinetica"
+databaseType: "kinetica"

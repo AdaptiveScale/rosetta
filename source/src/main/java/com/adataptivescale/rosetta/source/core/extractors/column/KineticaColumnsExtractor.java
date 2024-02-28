@@ -28,6 +28,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @RosettaModule(
         name = "kinetica",
@@ -53,11 +54,17 @@ public class KineticaColumnsExtractor extends ColumnsExtractor {
         column.setScale(resultSet.getInt("DECIMAL_DIGITS"));
         column.setPrecision(resultSet.getInt("COLUMN_SIZE"));
 
-        String [] columnPropertis = resultSet.getString("REMARKS").replace("[", "").replace("]", "").split(",");
+        String[] columnProperties = Optional.ofNullable(resultSet.getString("REMARKS"))
+            .map(it -> it.replace("[", ""))
+            .map(it -> it.replace("]", ""))
+            .map(it -> it.split(","))
+            .orElse(new String[0]);
+
         List<ColumnProperties> columnPropertiesList = new ArrayList<>();
-        for (String columnProperty: columnPropertis) {
-            if (KINETICA_PROPERTIES.stream().anyMatch(columnProperty.trim().toLowerCase()::equalsIgnoreCase)) {
-                ColumnProperties cp = new ColumnProperties(columnProperty, null);
+        for (String columnProperty : columnProperties) {
+            String trimmedProperty = columnProperty.replaceAll("^\\s+|\\s+$", "");
+            if (KINETICA_PROPERTIES.stream().anyMatch(trimmedProperty.toLowerCase()::equalsIgnoreCase)) {
+                ColumnProperties cp = new ColumnProperties(trimmedProperty, null);
                 columnPropertiesList.add(cp);
             }
         }

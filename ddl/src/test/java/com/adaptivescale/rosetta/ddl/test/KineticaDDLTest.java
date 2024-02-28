@@ -70,6 +70,12 @@ public class KineticaDDLTest {
     }
 
     @Test
+    public void addColumnWithProperties() throws IOException {
+        String ddl = generateDDL("add_column_with_column_properties");
+        Assertions.assertEquals("ALTER TABLE \"ROSETTA\".\"Position\" ADD \"DESCRIPTION\" varchar(100,dict);", ddl);
+    }
+
+    @Test
     public void addColumnWithForeignKey() throws IOException {
         String ddl = generateDDL("add_column_with_foreign_key");
         Assertions.assertEquals("ALTER TABLE \"ROSETTA\".\"PLAYER\" ADD \"POSITION_ID\" numeric;\r" +
@@ -98,6 +104,12 @@ public class KineticaDDLTest {
     public void alterColumnToNotNullable() throws IOException {
         String ddl = generateDDL("alter_column_to_not_nullable");
         Assertions.assertEquals("ALTER TABLE \"ROSETTA\".\"PLAYER\" MODIFY \"ID\" numeric NOT NULL ;", ddl);
+    }
+
+    @Test
+    public void alterColumnNewProperty() throws IOException {
+        String ddl = generateDDL("alter_column_new_property");
+        Assertions.assertEquals("ALTER TABLE \"ROSETTA\".\"PLAYER\" MODIFY \"ID\" numeric(dict);", ddl);
     }
 
     @Test

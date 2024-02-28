@@ -19,7 +19,8 @@ public class KineticaColumnTypeName implements ColumnDataTypeName {
     public String nameForColumn(Column column) {
         StringBuilder builder = new StringBuilder();
         builder.append(ColumnDataTypeName.super.nameForColumn(column));
-        if ( (!PRECISION_DEFAULTS.contains(column.getPrecision()) && PRECISION_TYPES.contains(column.getTypeName().toLowerCase())) || Optional.ofNullable(column.getColumnProperties()).isPresent()) {
+        if ( (!PRECISION_DEFAULTS.contains(column.getPrecision()) && PRECISION_TYPES.contains(column.getTypeName().toLowerCase()))
+                || (Optional.ofNullable(column.getColumnProperties()).isPresent() && !column.getColumnProperties().isEmpty())) {
             builder.append("(");
             List<String> items = new ArrayList<>();
             if (!PRECISION_DEFAULTS.contains(column.getPrecision()) && PRECISION_TYPES.contains(column.getTypeName().toLowerCase())) {
@@ -27,7 +28,9 @@ public class KineticaColumnTypeName implements ColumnDataTypeName {
             }
 
             if (Optional.ofNullable(column.getColumnProperties()).isPresent()) {
-                items.add(getColumnPropertiesAsString(column.getColumnProperties()));
+                column.getColumnProperties().forEach((columnProperty -> {
+                    items.add(columnProperty.getName());
+                }));
             }
 
             builder.append(String.join(",", items));
@@ -40,18 +43,4 @@ public class KineticaColumnTypeName implements ColumnDataTypeName {
         return builder.toString();
     }
 
-    private String getColumnPropertiesAsString(List<ColumnProperties> columnProperties) {
-        if (columnProperties == null || columnProperties.size() == 0) {
-            return "";
-        }
-
-        String columnPropertiesString = "";
-        for (ColumnProperties columnProperty: columnProperties) {
-            columnPropertiesString += columnProperty.getName() + ",";
-        }
-
-        columnPropertiesString = columnPropertiesString.substring(0, columnPropertiesString.length() - 1);
-        columnPropertiesString += "";
-        return columnPropertiesString;
-    }
 }
