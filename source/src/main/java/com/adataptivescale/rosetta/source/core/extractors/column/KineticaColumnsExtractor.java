@@ -19,17 +19,25 @@ package com.adataptivescale.rosetta.source.core.extractors.column;
 import com.adaptivescale.rosetta.common.TranslationMatrix;
 import com.adaptivescale.rosetta.common.annotations.RosettaModule;
 import com.adaptivescale.rosetta.common.models.Column;
+import com.adaptivescale.rosetta.common.models.ColumnProperties;
 import com.adaptivescale.rosetta.common.models.input.Connection;
 import com.adaptivescale.rosetta.common.types.RosettaModuleTypes;
+import org.apache.commons.lang3.StringUtils;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 @RosettaModule(
         name = "kinetica",
         type = RosettaModuleTypes.COLUMN_EXTRACTOR
 )
 public class KineticaColumnsExtractor extends ColumnsExtractor {
+
+    private static final List<String> KINETICA_PROPERTIES = Arrays.asList("DICT", "INIT_WITH_NOW", "INIT_WITH_UUID", "IPV4", "SHARD_KEY", "TEXT_SEARCH");
 
     public KineticaColumnsExtractor(Connection connection) {
         super(connection);
@@ -46,5 +54,24 @@ public class KineticaColumnsExtractor extends ColumnsExtractor {
         column.setColumnDisplaySize(resultSet.getInt("COLUMN_SIZE"));
         column.setScale(resultSet.getInt("DECIMAL_DIGITS"));
         column.setPrecision(resultSet.getInt("COLUMN_SIZE"));
+
+        String[] columnProperties = Optional.ofNullable(resultSet.getString("REMARKS"))
+            .map(it -> it.replace("[", ""))
+            .map(it -> it.replace("]", ""))
+            .map(it -> it.split(","))
+            .orElse(new String[0]);
+
+        List<ColumnProperties> columnPropertiesList = new ArrayList<>();
+        for (String columnProperty : columnProperties) {
+            String trimmedProperty = StringUtils.trim(columnProperty);
+            if (KINETICA_PROPERTIES.stream().anyMatch(trimmedProperty.toLowerCase()::equalsIgnoreCase)) {
+                ColumnProperties cp = new ColumnProperties(trimmedProperty, null);
+                columnPropertiesList.add(cp);
+            }
+        }
+
+        column.setColumnProperties(columnPropertiesList);
     }
+
+
 }

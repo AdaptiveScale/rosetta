@@ -120,7 +120,8 @@ public class KineticaChangeFinder implements ChangeFinder {
                         && Objects.equals(expectedColumn.getScale(), actualColumn.getScale())
                         && Objects.equals(expectedColumn.getOrdinalPosition(), actualColumn.getOrdinalPosition())
                         && Objects.equals(expectedColumn.getColumnDisplaySize(), actualColumn.getColumnDisplaySize())
-                        && Objects.equals(expectedColumn.getPrimaryKeySequenceId(), actualColumn.getPrimaryKeySequenceId());
+                        && Objects.equals(expectedColumn.getPrimaryKeySequenceId(), actualColumn.getPrimaryKeySequenceId())
+                        && Objects.equals(expectedColumn.getColumnProperties(), actualColumn.getColumnProperties());
 
                 if (!same) {
                     Change<Column> columnChange = ChangeFactory.columnChange(expectedColumn, actualColumn, Change.Status.ALTER, expected);
