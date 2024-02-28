@@ -22,6 +22,7 @@ import com.adaptivescale.rosetta.common.models.Column;
 import com.adaptivescale.rosetta.common.models.ColumnProperties;
 import com.adaptivescale.rosetta.common.models.input.Connection;
 import com.adaptivescale.rosetta.common.types.RosettaModuleTypes;
+import org.apache.commons.lang3.StringUtils;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -62,7 +63,7 @@ public class KineticaColumnsExtractor extends ColumnsExtractor {
 
         List<ColumnProperties> columnPropertiesList = new ArrayList<>();
         for (String columnProperty : columnProperties) {
-            String trimmedProperty = columnProperty.replaceAll("^\\s+|\\s+$", "");
+            String trimmedProperty = StringUtils.trim(columnProperty);
             if (KINETICA_PROPERTIES.stream().anyMatch(trimmedProperty.toLowerCase()::equalsIgnoreCase)) {
                 ColumnProperties cp = new ColumnProperties(trimmedProperty, null);
                 columnPropertiesList.add(cp);
