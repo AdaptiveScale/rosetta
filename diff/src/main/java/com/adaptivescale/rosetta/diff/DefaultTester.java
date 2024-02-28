@@ -122,6 +122,13 @@ public class DefaultTester implements Diff<List<String>, Database, Database> {
                     columnsChangesLogs.add(result);
                 }
 
+                if (!Objects.equals(localColumn.getColumnProperties(), targetColumn.get().getColumnProperties())) {
+                    String result = String.format(COLUMN_CHANGED_FORMAT, localColumn.getName(),
+                            table.getName(), "Column Properties", localColumn.columnPropertiesAsString(),
+                            targetColumn.get().columnPropertiesAsString());
+                    columnsChangesLogs.add(result);
+                }
+
                 columnsChangesLogs.addAll(sameForeignKeys(localColumn.getForeignKeys(), targetColumn.get().getForeignKeys()));
             }
 

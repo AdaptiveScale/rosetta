@@ -139,7 +139,8 @@ public class KineticaDDLGenerator implements DDL {
         Column expected = change.getExpected();
 
         if (!Objects.equals(expected.getTypeName(), actual.getTypeName())
-                || !Objects.equals(expected.isNullable(), actual.isNullable())) {
+                || !Objects.equals(expected.isNullable(), actual.isNullable())
+                || !Objects.equals(expected.getColumnProperties(), actual.getColumnProperties())) {
 
             Map<String, Object> params = new HashMap<>();
             params.put("schemaName", table.getSchema());

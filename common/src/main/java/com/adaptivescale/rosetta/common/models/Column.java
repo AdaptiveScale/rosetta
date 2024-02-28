@@ -2,7 +2,9 @@ package com.adaptivescale.rosetta.common.models;
 
 import com.adaptivescale.rosetta.common.models.test.Tests;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class Column {
 
@@ -19,8 +21,8 @@ public class Column {
     private int columnDisplaySize;
     private int scale;
     private int precision;
+    private List<ColumnProperties> columnProperties = new ArrayList<>();
     private Tests tests;
-
     private List<ForeignKey> foreignKeys;
 
     public Column() {
@@ -138,6 +140,21 @@ public class Column {
         this.precision = precision;
     }
 
+    public List<ColumnProperties> getColumnProperties() {
+        return columnProperties;
+    }
+
+    public String columnPropertiesAsString() {
+        return Optional.ofNullable(columnProperties)
+                .map(it -> it.toString())
+                .orElse("");
+
+    }
+
+    public void setColumnProperties(List<ColumnProperties> columnProperties) {
+        this.columnProperties = columnProperties;
+    }
+
     public Tests getTests() {
         return tests;
     }
@@ -145,5 +162,4 @@ public class Column {
     public void setTests(Tests tests) {
         this.tests = tests;
     }
-
 }
