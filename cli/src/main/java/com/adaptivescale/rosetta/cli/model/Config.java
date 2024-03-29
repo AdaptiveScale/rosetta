@@ -8,6 +8,8 @@ import java.util.Optional;
 public class Config {
     private List<Connection> connections;
 
+    private String apiKey;
+
     public List<Connection> getConnections() {
         return connections;
     }
@@ -18,5 +20,13 @@ public class Config {
 
     public Optional<Connection> getConnection(String name) {
         return connections.stream().filter(target -> target.getName().equals(name)).findFirst();
+    }
+
+    public String getApiKey() {
+        return apiKey;
+    }
+
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
     }
 }

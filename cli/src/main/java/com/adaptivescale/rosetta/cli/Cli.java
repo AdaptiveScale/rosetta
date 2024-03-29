@@ -29,6 +29,8 @@ import com.adaptivescale.rosetta.translator.Translator;
 import com.adaptivescale.rosetta.translator.TranslatorFactory;
 import com.adataptivescale.rosetta.source.core.SourceGeneratorFactory;
 
+import dev.langchain4j.model.openai.OpenAiChatModel;
+
 import com.adataptivescale.rosetta.source.dbt.DbtModelGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
@@ -36,6 +38,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import picocli.CommandLine;
+import queryhelper.pojo.GenericResponse;
+import queryhelper.pojo.QueryRequest;
+import queryhelper.service.AIService;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -201,7 +206,7 @@ class Cli implements Callable<Void> {
         }
 
         if (changes.stream().filter(change -> change.getStatus().equals(Change.Status.DROP)).findFirst().isPresent() &&
-            expectedDatabase.getSafeMode()) {
+                expectedDatabase.getSafeMode()) {
             log.info("Not going to perform the changes because there are DROP operations and the safe mode is enabled.");
             return;
         }
@@ -252,8 +257,8 @@ class Cli implements Callable<Void> {
         }
 
         List<Database> collect = getDatabases(sourceWorkspace)
-            .map(AbstractMap.SimpleImmutableEntry::getValue)
-            .collect(Collectors.toList());
+                .map(AbstractMap.SimpleImmutableEntry::getValue)
+                .collect(Collectors.toList());
         for (Database database : collect) {
             AssertionSqlGenerator assertionSqlGenerator = AssertionSqlGeneratorFactory.generatorFor(source.get());
             DefaultSqlExecution defaultSqlExecution = new DefaultSqlExecution(source.get(), new DriverManagerDriverProvider());
@@ -263,7 +268,7 @@ class Cli implements Callable<Void> {
 
     @CommandLine.Command(name = "init", description = "Creates a sample config (main.conf) and model directory.", mixinStandardHelpOptions = true)
     private void init(@CommandLine.Parameters(index = "0", description = "Project name.", defaultValue = "")
-                              String projectName) throws IOException {
+                      String projectName) throws IOException {
         Path fileName = Paths.get(projectName, CONFIG_NAME);
         InputStream resourceAsStream = getClass().getResourceAsStream("/" + TEMPLATE_CONFIG_NAME);
         Path projectDirectory = Path.of(projectName);
@@ -297,8 +302,8 @@ class Cli implements Callable<Void> {
 
     @CommandLine.Command(name = "generate", description = "Generate code", mixinStandardHelpOptions = true)
     private void generate(@CommandLine.Option(names = {"-s", "--source"}, required = true) String sourceName,
-                         @CommandLine.Option(names = {"-t", "--target"}, required = true) String targetName,
-                         @CommandLine.Option(names = {"--pyspark"}) boolean generateSpark,
+                          @CommandLine.Option(names = {"-t", "--target"}, required = true) String targetName,
+                          @CommandLine.Option(names = {"--pyspark"}) boolean generateSpark,
                           @CommandLine.Option(names = {"--scala"}) boolean generateScala
     ) throws Exception {
         requireConfig(config);
@@ -375,7 +380,7 @@ class Cli implements Callable<Void> {
 
     @CommandLine.Command(name = "diff", description = "Show difference between local model and database", mixinStandardHelpOptions = true)
     private void diff(@CommandLine.Option(names = {"-s", "--source"}) String sourceName,
-                      @CommandLine.Option(names = {"-m", "--model"}, defaultValue=DEFAULT_MODEL_YAML) String model) throws Exception {
+                      @CommandLine.Option(names = {"-m", "--model"}, defaultValue = DEFAULT_MODEL_YAML) String model) throws Exception {
         requireConfig(config);
         Connection sourceConnection = getSourceConnection(sourceName);
 
@@ -516,5 +521,31 @@ class Cli implements Callable<Void> {
         public FileNameAndDatabasePair(String key, Database value) {
             super(key, value);
         }
+    }
+
+
+    @CommandLine.Command(name = "query", description = "Query schema", mixinStandardHelpOptions = true)
+    private void query(@CommandLine.Option(names = {"-s", "--source"}, required = true) String sourceName,
+                       @CommandLine.Option(names = {"-q", "--query"}, required = true) String userQueryRequest
+                       )
+            throws Exception {
+        requireConfig(config);
+        Connection source = getSourceConnection(sourceName);
+
+        Path sourceWorkspace = Paths.get("./", sourceName);
+        FileUtils.deleteDirectory(sourceWorkspace.toFile());
+        Files.createDirectory(sourceWorkspace);
+
+        Database db = SourceGeneratorFactory.sourceGenerator(source).generate(source);
+
+        DDL modelDDL = DDLFactory.ddlForDatabaseType(source.getDbType());
+        String DDL = modelDDL.createDatabase(db, false);
+
+        QueryRequest queryRequest = new QueryRequest();
+        queryRequest.setQuery(userQueryRequest);
+
+        GenericResponse response = AIService.generateQuery(queryRequest, config.getApiKey(), DDL, source, sourceWorkspace + "/data.csv");
+        log.info(response.getMessage());
+
     }
 }
