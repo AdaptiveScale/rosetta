@@ -29,8 +29,6 @@ import com.adaptivescale.rosetta.translator.Translator;
 import com.adaptivescale.rosetta.translator.TranslatorFactory;
 import com.adataptivescale.rosetta.source.core.SourceGeneratorFactory;
 
-import dev.langchain4j.model.openai.OpenAiChatModel;
-
 import com.adataptivescale.rosetta.source.dbt.DbtModelGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
@@ -530,11 +528,19 @@ class Cli implements Callable<Void> {
                        )
             throws Exception {
         requireConfig(config);
+
+        if (config.getOpenAI_API_KEY() == null){
+            log.info("Open AI API key has to be provided in the config file");
+            return;
+        }
+
         Connection source = getSourceConnection(sourceName);
 
         Path sourceWorkspace = Paths.get("./", sourceName);
-        FileUtils.deleteDirectory(sourceWorkspace.toFile());
-        Files.createDirectory(sourceWorkspace);
+
+        if (!Files.exists(sourceWorkspace)) {
+            Files.createDirectory(sourceWorkspace);
+        }
 
         Database db = SourceGeneratorFactory.sourceGenerator(source).generate(source);
 
@@ -543,8 +549,9 @@ class Cli implements Callable<Void> {
 
         QueryRequest queryRequest = new QueryRequest();
         queryRequest.setQuery(userQueryRequest);
-
-        GenericResponse response = AIService.generateQuery(queryRequest, config.getApiKey(), DDL, source, sourceWorkspace + "/data.csv");
+        String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String fileName = userQueryRequest.replaceAll("\\s+", "_") + "_" + timestamp + ".csv";
+        GenericResponse response = AIService.generateQuery(queryRequest, config.getOpenAI_API_KEY(), DDL, source, sourceWorkspace.resolve(fileName).toString());
         log.info(response.getMessage());
 
     }

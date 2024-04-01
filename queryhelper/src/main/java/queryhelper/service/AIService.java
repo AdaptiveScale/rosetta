@@ -13,7 +13,6 @@ import queryhelper.utils.FileUtils;
 import queryhelper.utils.PromptUtils;
 import com.adaptivescale.rosetta.common.models.input.Connection;
 
-import java.io.IOException;
 import java.sql.Driver;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -24,9 +23,6 @@ import java.util.Properties;
 public class AIService {
     public static GenericResponse generateQuery(QueryRequest queryRequest, String apiKey, String databaseDDL, Connection source, String csvFileName) {
 
-//        String apiKey;
-////        String schema;
-//        String databaseDDL;
 
         Gson gson = new Gson();
         GenericResponse response = new GenericResponse();
@@ -82,16 +78,6 @@ public class AIService {
         }
 
 
-//        try { // Check if the generated query can be executed in the database
-//            data.setRecords(sqlService.queryDatabase(query));
-//            data.setQuery(query);
-//            data.setSchema(schema);
-//            data.setResponseTime(elapsedTime);
-//        } catch (Exception e) {
-//            return ErrorUtils.invalidSQLError(e);
-//        }
-
-
         response.setMessage(
                 aiOutputStr + "\n" +
                         "Total rows: " + data.getRecords().size() + "\n" +
@@ -99,11 +85,6 @@ public class AIService {
         );
 
         response.setData(data);
-        response.setMessage(
-                aiOutputStr + "\n" +
-                        "Total rows: " + data.getRecords().size() + "\n" +
-                        "Your response is saved to a CSV file named 'data.csv'!"
-        );
 
         response.setStatusCode(200);
         QueryDataResponse queryDataResponse = (QueryDataResponse) response.getData();
@@ -113,7 +94,6 @@ public class AIService {
             return ErrorUtils.csvFileError(e);
         }
 
-//        FileUtils.convertToCSV("/home/femi/Workspace/github-projects/rosetta/pg/data3.csv", queryDataResponse.getRecords());
         return response;
     }
 
