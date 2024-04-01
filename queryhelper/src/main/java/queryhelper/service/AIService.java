@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Properties;
 
 public class AIService {
-    public static GenericResponse generateQuery(QueryRequest queryRequest, String apiKey, String databaseDDL, Connection source, String csvFileName) {
+    public static GenericResponse generateQuery(QueryRequest queryRequest, String apiKey, String databaseDDL, Connection source, String csvFileName, Integer showRowLimit) {
 
 
         Gson gson = new Gson();
@@ -69,7 +69,7 @@ public class AIService {
             Properties properties = JDBCUtils.setJDBCAuth(source);
             java.sql.Connection jdbcConnection = driver.connect(source.getUrl(), properties);
             Statement statement = jdbcConnection.createStatement();
-
+            statement.setMaxRows(showRowLimit);
             List<Map<String, Object>> select = QueryHelper.select(statement, query);
 
             data.setRecords(select);

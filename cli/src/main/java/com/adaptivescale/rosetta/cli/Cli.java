@@ -524,8 +524,10 @@ class Cli implements Callable<Void> {
 
     @CommandLine.Command(name = "query", description = "Query schema", mixinStandardHelpOptions = true)
     private void query(@CommandLine.Option(names = {"-s", "--source"}, required = true) String sourceName,
-                       @CommandLine.Option(names = {"-q", "--query"}, required = true) String userQueryRequest
-                       )
+                       @CommandLine.Option(names = {"-q", "--query"}, required = true) String userQueryRequest,
+                       @CommandLine.Option(names = {"-l", "--limit"}, required = false, defaultValue = "200") Integer showRowLimit,
+                       @CommandLine.Option(names = {"--no-limit"}, required = false, defaultValue = "false") Boolean noRowLimit
+    )
             throws Exception {
         requireConfig(config);
 
@@ -539,7 +541,12 @@ class Cli implements Callable<Void> {
         Path sourceWorkspace = Paths.get("./", sourceName);
 
         if (!Files.exists(sourceWorkspace)) {
-            Files.createDirectory(sourceWorkspace);
+            Files.createDirectories(sourceWorkspace);
+        }
+
+        Path dataDirectory = sourceWorkspace.resolve("data");
+        if (!Files.exists(dataDirectory)) {
+            Files.createDirectories(dataDirectory);
         }
 
         Database db = SourceGeneratorFactory.sourceGenerator(source).generate(source);
@@ -551,8 +558,12 @@ class Cli implements Callable<Void> {
         queryRequest.setQuery(userQueryRequest);
         String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String fileName = userQueryRequest.replaceAll("\\s+", "_") + "_" + timestamp + ".csv";
-        GenericResponse response = AIService.generateQuery(queryRequest, config.getOpenAI_API_KEY(), DDL, source, sourceWorkspace.resolve(fileName).toString());
-        log.info(response.getMessage());
 
+        Path csvFilePath = dataDirectory.resolve(fileName);
+
+        // If `noRowLimit` is true, set the row limit to 0 (no limit), otherwise use the value of `showRowLimit`
+        GenericResponse response = AIService.generateQuery(queryRequest, config.getOpenAI_API_KEY(), DDL, source, csvFilePath.toString(), noRowLimit ? 0:showRowLimit);
+        log.info(response.getMessage());
     }
+
 }
