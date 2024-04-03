@@ -58,15 +58,23 @@ public class AIService {
             return ErrorUtils.openAIError(e);
         }
 
-        try { // Check if the AI response can be converted to String
+        try {
             QueryRequest aiOutputObj = gson.fromJson(aiOutputStr, QueryRequest.class);
             query = aiOutputObj.getQuery();
+        } catch (Exception e) {
+            return ErrorUtils.invalidResponseError(e);
+        }
+
+        try {
             net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(query);
             if (!(statement instanceof Select)) {
                 throw new RuntimeException();
             }
         } catch (Exception e) {
-            return ErrorUtils.invalidResponseError(e);
+            GenericResponse errorResponse = new GenericResponse();
+            errorResponse.setMessage("Generated query, execute on your own will: " + aiOutputStr);
+            errorResponse.setStatusCode(200);
+            return errorResponse;
         }
 
         try {
