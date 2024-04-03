@@ -562,7 +562,7 @@ class Cli implements Callable<Void> {
         Path csvFilePath = dataDirectory.resolve(fileName);
 
         // If `noRowLimit` is true, set the row limit to 0 (no limit), otherwise use the value of `showRowLimit`
-        GenericResponse response = AIService.generateQuery(queryRequest, config.getOpenAI_API_KEY(), DDL, source, csvFilePath.toString(), noRowLimit ? 0:showRowLimit);
+        GenericResponse response = AIService.generateQuery(queryRequest, config.getOpenAI_API_KEY() , config.getOpenAI_Model(),  DDL, source, csvFilePath.toString(), noRowLimit ? 0:showRowLimit);
         log.info(response.getMessage());
     }
 

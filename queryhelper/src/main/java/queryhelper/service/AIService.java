@@ -25,7 +25,8 @@ import java.util.Properties;
 
 
 public class AIService {
-    public static GenericResponse generateQuery(QueryRequest queryRequest, String apiKey, String databaseDDL, Connection source, String csvFileName, Integer showRowLimit) {
+    private final static String AI_MODEL = "gpt-3.5-turbo";
+    public static GenericResponse generateQuery(QueryRequest queryRequest, String apiKey, String aiModel, String databaseDDL, Connection source, String csvFileName, Integer showRowLimit) {
 
         Gson gson = new Gson();
         GenericResponse response = new GenericResponse();
@@ -41,7 +42,12 @@ public class AIService {
         OpenAiChatModel.OpenAiChatModelBuilder model = OpenAiChatModel
                 .builder()
                 .temperature(0.1)
-                .apiKey(apiKey);
+                .apiKey(apiKey)
+                .modelName(AI_MODEL);
+
+        if (aiModel != null && !aiModel.isEmpty()) {
+            model.modelName(aiModel);
+        }
 
         try { // Check if the file with given name exists
             prompt = PromptUtils.queryPrompt(queryRequest, databaseDDL);

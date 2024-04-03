@@ -12,6 +12,9 @@ public class Config {
     @JsonProperty("OpenAI_API_KEY")
     private String OpenAI_API_KEY;
 
+    @JsonProperty("OpenAI_Model")
+    private String OpenAI_Model;
+
     public List<Connection> getConnections() {
         return connections;
     }
@@ -24,8 +27,8 @@ public class Config {
         return connections.stream().filter(target -> target.getName().equals(name)).findFirst();
     }
 
-//    @JsonProperty("OpenAI_API_KEY")
     public String getOpenAI_API_KEY() {
         return OpenAI_API_KEY;
     }
+    public String getOpenAI_Model() { return OpenAI_Model; }
 }
