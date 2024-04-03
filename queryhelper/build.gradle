@@ -18,6 +18,7 @@ dependencies {
 
     implementation 'dev.langchain4j:langchain4j-open-ai:0.25.0'
     implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'com.github.jsqlparser:jsqlparser:4.9'
 }
 
 test {

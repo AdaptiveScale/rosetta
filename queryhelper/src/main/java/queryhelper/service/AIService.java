@@ -2,16 +2,19 @@ package queryhelper.service;
 
 import com.adaptivescale.rosetta.common.DriverManagerDriverProvider;
 import com.adaptivescale.rosetta.common.JDBCUtils;
+import com.adaptivescale.rosetta.common.models.input.Connection;
 import com.adataptivescale.rosetta.source.common.QueryHelper;
-import dev.langchain4j.model.openai.OpenAiChatModel;
 import com.google.gson.Gson;
+import dev.langchain4j.model.openai.OpenAiChatModel;
+import net.sf.jsqlparser.JSQLParserException;
+import net.sf.jsqlparser.parser.CCJSqlParserUtil;
+import net.sf.jsqlparser.statement.select.Select;
 import queryhelper.pojo.GenericResponse;
 import queryhelper.pojo.QueryDataResponse;
 import queryhelper.pojo.QueryRequest;
 import queryhelper.utils.ErrorUtils;
 import queryhelper.utils.FileUtils;
 import queryhelper.utils.PromptUtils;
-import com.adaptivescale.rosetta.common.models.input.Connection;
 
 import java.sql.Driver;
 import java.sql.SQLException;
@@ -20,9 +23,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+
 public class AIService {
     public static GenericResponse generateQuery(QueryRequest queryRequest, String apiKey, String databaseDDL, Connection source, String csvFileName, Integer showRowLimit) {
-
 
         Gson gson = new Gson();
         GenericResponse response = new GenericResponse();
@@ -58,10 +61,13 @@ public class AIService {
         try { // Check if the AI response can be converted to String
             QueryRequest aiOutputObj = gson.fromJson(aiOutputStr, QueryRequest.class);
             query = aiOutputObj.getQuery();
+            net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(query);
+            if (!(statement instanceof Select)) {
+                throw new RuntimeException();
+            }
         } catch (Exception e) {
             return ErrorUtils.invalidResponseError(e);
         }
-
 
         try {
             DriverManagerDriverProvider driverManagerDriverProvider = new DriverManagerDriverProvider();
@@ -77,7 +83,6 @@ public class AIService {
             throw new RuntimeException(e);
         }
 
-
         response.setMessage(
                 aiOutputStr + "\n" +
                         "Total rows: " + data.getRecords().size() + "\n" +
@@ -85,8 +90,8 @@ public class AIService {
         );
 
         response.setData(data);
-
         response.setStatusCode(200);
+
         QueryDataResponse queryDataResponse = (QueryDataResponse) response.getData();
         try {
             FileUtils.convertToCSV(csvFileName, queryDataResponse.getRecords());
@@ -96,5 +101,4 @@ public class AIService {
 
         return response;
     }
-
 }
