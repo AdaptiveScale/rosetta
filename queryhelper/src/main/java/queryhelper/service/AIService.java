@@ -6,7 +6,6 @@ import com.adaptivescale.rosetta.common.models.input.Connection;
 import com.adataptivescale.rosetta.source.common.QueryHelper;
 import com.google.gson.Gson;
 import dev.langchain4j.model.openai.OpenAiChatModel;
-import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.select.Select;
 import queryhelper.pojo.GenericResponse;
@@ -50,7 +49,7 @@ public class AIService {
         }
 
         try { // Check if the file with given name exists
-            prompt = PromptUtils.queryPrompt(queryRequest, databaseDDL);
+            prompt = PromptUtils.queryPrompt(queryRequest, databaseDDL, source);
         } catch (Exception e) {
             return ErrorUtils.fileError(e);
         }
