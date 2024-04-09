@@ -5,6 +5,7 @@ import com.adaptivescale.rosetta.common.JDBCUtils;
 import com.adaptivescale.rosetta.common.models.input.Connection;
 import com.adataptivescale.rosetta.source.common.QueryHelper;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import dev.langchain4j.model.openai.OpenAiChatModel;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.select.Select;
@@ -15,9 +16,13 @@ import queryhelper.utils.ErrorUtils;
 import queryhelper.utils.FileUtils;
 import queryhelper.utils.PromptUtils;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.Driver;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -25,15 +30,15 @@ import java.util.Properties;
 
 public class AIService {
     private final static String AI_MODEL = "gpt-3.5-turbo";
-    public static GenericResponse generateQuery(QueryRequest queryRequest, String apiKey, String aiModel, String databaseDDL, Connection source, String csvFileName, Integer showRowLimit) {
+
+    public static GenericResponse generateQuery(String userQueryRequest, String apiKey, String aiModel, String databaseDDL, Connection source, Integer showRowLimit, Path dataDirectory) {
 
         Gson gson = new Gson();
         GenericResponse response = new GenericResponse();
         QueryDataResponse data = new QueryDataResponse();
+        QueryRequest queryRequest = new QueryRequest();
+        queryRequest.setQuery(userQueryRequest);
 
-        long startTime;
-        long endTime;
-        double elapsedTime;
         String query;
         String aiOutputStr;
         String prompt;
@@ -48,40 +53,45 @@ public class AIService {
             model.modelName(aiModel);
         }
 
-        try { // Check if the file with given name exists
-            prompt = PromptUtils.queryPrompt(queryRequest, databaseDDL, source);
-        } catch (Exception e) {
-            return ErrorUtils.fileError(e);
-        }
+        prompt = PromptUtils.queryPrompt(queryRequest, databaseDDL, source);
 
         try {  // Check if we have a properly set API key & that openAI services aren't down
-            startTime = System.currentTimeMillis();
             aiOutputStr = model.build().generate(prompt);
-            endTime = System.currentTimeMillis();
-            elapsedTime = (endTime - startTime) / 1000.0;
+            QueryRequest aiOutputObj = gson.fromJson(aiOutputStr, QueryRequest.class);
+            query = aiOutputObj.getQuery();
+        } catch (JsonSyntaxException e) {
+            return ErrorUtils.invalidResponseError(e);
         } catch (Exception e) {
             return ErrorUtils.openAIError(e);
         }
 
-        try {
-            QueryRequest aiOutputObj = gson.fromJson(aiOutputStr, QueryRequest.class);
-            query = aiOutputObj.getQuery();
-        } catch (Exception e) {
-            return ErrorUtils.invalidResponseError(e);
-        }
-
-        try {
-            net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(query);
-            if (!(statement instanceof Select)) {
-                throw new RuntimeException();
-            }
-        } catch (Exception e) {
+        boolean selectStatement = isSelectStatement(query);
+        if (!selectStatement) {
             GenericResponse errorResponse = new GenericResponse();
             errorResponse.setMessage("Generated query, execute on your own will: " + aiOutputStr);
             errorResponse.setStatusCode(200);
-            return errorResponse;
         }
 
+        List<Map<String, Object>> records = executeQueryAndGetRecords(query, source, showRowLimit);
+        data.setRecords(records);
+
+        response.setData(data);
+        response.setStatusCode(200);
+
+
+        QueryDataResponse queryDataResponse = (QueryDataResponse) response.getData();
+        String csvFile = createCSVFile(queryDataResponse, queryRequest.getQuery(), dataDirectory);
+
+        response.setMessage(
+                aiOutputStr + "\n" +
+                        "Total rows: " + data.getRecords().size() + "\n" +
+                        "Your response is saved to a CSV file named '" + csvFile + "'!"
+        );
+
+        return response;
+    }
+
+    private static List<Map<String, Object>> executeQueryAndGetRecords(String query, Connection source, Integer showRowLimit) {
         try {
             DriverManagerDriverProvider driverManagerDriverProvider = new DriverManagerDriverProvider();
             Driver driver = driverManagerDriverProvider.getDriver(source);
@@ -90,28 +100,37 @@ public class AIService {
             Statement statement = jdbcConnection.createStatement();
             statement.setMaxRows(showRowLimit);
             List<Map<String, Object>> select = QueryHelper.select(statement, query);
-
-            data.setRecords(select);
+            return select;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
 
-        response.setMessage(
-                aiOutputStr + "\n" +
-                        "Total rows: " + data.getRecords().size() + "\n" +
-                        "Your response is saved to a CSV file named '" + csvFileName + "'!"
-        );
-
-        response.setData(data);
-        response.setStatusCode(200);
-
-        QueryDataResponse queryDataResponse = (QueryDataResponse) response.getData();
+    private static boolean isSelectStatement(String query) {
+        boolean isSelectStatement = true;
         try {
-            FileUtils.convertToCSV(csvFileName, queryDataResponse.getRecords());
+            net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(query);
+            if (!(statement instanceof Select)) {
+                return false;
+            }
         } catch (Exception e) {
-            return ErrorUtils.csvFileError(e);
+            return false;
         }
+        return isSelectStatement;
+    }
 
-        return response;
+    private static String createCSVFile(QueryDataResponse queryDataResponse, String csvFileName, Path dataDirectory) {
+        try {
+            String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            String fileName = csvFileName.replaceAll("\\s+", "_") + "_" + timestamp + ".csv";
+            Path csvFilePath = dataDirectory.resolve(fileName);
+
+            FileUtils.convertToCSV(csvFilePath.toString(), queryDataResponse.getRecords());
+
+            return csvFilePath.toString();
+        } catch (Exception e) {
+            GenericResponse genericResponse = ErrorUtils.csvFileError(e);
+            throw new RuntimeException(genericResponse.getMessage());
+        }
     }
 }

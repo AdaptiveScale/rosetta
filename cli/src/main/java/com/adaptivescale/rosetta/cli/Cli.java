@@ -531,7 +531,7 @@ class Cli implements Callable<Void> {
             throws Exception {
         requireConfig(config);
 
-        if (config.getOpenAI_API_KEY() == null){
+        if (config.getOpenAIApiKey() == null) {
             log.info("Open AI API key has to be provided in the config file");
             return;
         }
@@ -554,15 +554,8 @@ class Cli implements Callable<Void> {
         DDL modelDDL = DDLFactory.ddlForDatabaseType(source.getDbType());
         String DDL = modelDDL.createDatabase(db, false);
 
-        QueryRequest queryRequest = new QueryRequest();
-        queryRequest.setQuery(userQueryRequest);
-        String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String fileName = userQueryRequest.replaceAll("\\s+", "_") + "_" + timestamp + ".csv";
-
-        Path csvFilePath = dataDirectory.resolve(fileName);
-
         // If `noRowLimit` is true, set the row limit to 0 (no limit), otherwise use the value of `showRowLimit`
-        GenericResponse response = AIService.generateQuery(queryRequest, config.getOpenAI_API_KEY() , config.getOpenAI_Model(),  DDL, source, csvFilePath.toString(), noRowLimit ? 0:showRowLimit);
+        GenericResponse response = AIService.generateQuery(userQueryRequest, config.getOpenAIApiKey(), config.getOpenAIModel(), DDL, source, noRowLimit ? 0 : showRowLimit, dataDirectory);
         log.info(response.getMessage());
     }
 

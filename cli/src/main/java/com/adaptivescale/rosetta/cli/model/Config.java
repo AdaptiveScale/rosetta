@@ -9,11 +9,11 @@ import java.util.Optional;
 public class Config {
     private List<Connection> connections;
 
-    @JsonProperty("OpenAI_API_KEY")
-    private String OpenAI_API_KEY;
+    @JsonProperty("openai_api_key")
+    private String openAIApiKey;
 
-    @JsonProperty("OpenAI_Model")
-    private String OpenAI_Model;
+    @JsonProperty("openai_model")
+    private String openAIModel;
 
     public List<Connection> getConnections() {
         return connections;
@@ -27,8 +27,8 @@ public class Config {
         return connections.stream().filter(target -> target.getName().equals(name)).findFirst();
     }
 
-    public String getOpenAI_API_KEY() {
-        return OpenAI_API_KEY;
+    public String getOpenAIApiKey() {
+        return openAIApiKey;
     }
-    public String getOpenAI_Model() { return OpenAI_Model; }
+    public String getOpenAIModel() { return openAIModel; }
 }
