@@ -695,6 +695,21 @@ connections:
 ```
    rosetta query -s mysql -q "Show me the top 10 customers by revenue."
 ```
+***CSV Output Example***
+```CSV
+customer_name,total_revenue,location,email
+John Doe,50000,New York,johndoe@example.com
+Jane Smith,45000,Los Angeles,janesmith@example.com
+David Johnson,40000,Chicago,davidjohnson@example.com
+Emily Brown,35000,San Francisco,emilybrown@example.com
+Michael Lee,30000,Miami,michaellee@example.com
+Sarah Taylor,25000,Seattle,sarahtaylor@example.com
+Robert Clark,20000,Boston,robertclark@example.com
+Lisa Martinez,15000,Denver,lisamartinez@example.com
+Christopher Anderson,10000,Austin,christopheranderson@example.com
+Amanda Wilson,5000,Atlanta,amandawilson@example.com
+
+```
 **Note:**  When giving a request that will not generate a SELECT statement the query will be generated but will not be executed rather be given to the user to execute on their own.
 
 
