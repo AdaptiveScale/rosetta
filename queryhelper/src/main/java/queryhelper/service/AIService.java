@@ -106,7 +106,7 @@ public class AIService {
         }
     }
 
-    private static boolean isSelectStatement(String query) {
+    public static boolean isSelectStatement(String query) {
         boolean isSelectStatement = true;
         try {
             net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(query);
