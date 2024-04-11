@@ -10,4 +10,5 @@ if (!System.env.JITPACK)
     include 'binary'
 include 'diff'
 include 'test'
+include 'queryhelper'
 
