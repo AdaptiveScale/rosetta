@@ -16,7 +16,6 @@ import queryhelper.utils.ErrorUtils;
 import queryhelper.utils.FileUtils;
 import queryhelper.utils.PromptUtils;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Driver;
 import java.sql.SQLException;
@@ -33,42 +32,18 @@ public class AIService {
 
     public static GenericResponse generateQuery(String userQueryRequest, String apiKey, String aiModel, String databaseDDL, Connection source, Integer showRowLimit, Path dataDirectory) {
 
-        Gson gson = new Gson();
         GenericResponse response = new GenericResponse();
         QueryDataResponse data = new QueryDataResponse();
         QueryRequest queryRequest = new QueryRequest();
         queryRequest.setQuery(userQueryRequest);
 
         String query;
-        String aiOutputStr;
-        String prompt;
-
-        OpenAiChatModel.OpenAiChatModelBuilder model = OpenAiChatModel
-                .builder()
-                .temperature(0.1)
-                .apiKey(apiKey)
-                .modelName(AI_MODEL);
-
-        if (aiModel != null && !aiModel.isEmpty()) {
-            model.modelName(aiModel);
-        }
-
-        prompt = PromptUtils.queryPrompt(queryRequest, databaseDDL, source);
-
-        try {  // Check if we have a properly set API key & that openAI services aren't down
-            aiOutputStr = model.build().generate(prompt);
-            QueryRequest aiOutputObj = gson.fromJson(aiOutputStr, QueryRequest.class);
-            query = aiOutputObj.getQuery();
-        } catch (JsonSyntaxException e) {
-            return ErrorUtils.invalidResponseError(e);
-        } catch (Exception e) {
-            return ErrorUtils.openAIError(e);
-        }
+        query = generateAIOutput(apiKey, aiModel, queryRequest, source, databaseDDL);
 
         boolean selectStatement = isSelectStatement(query);
         if (!selectStatement) {
             GenericResponse errorResponse = new GenericResponse();
-            errorResponse.setMessage("Generated query, execute on your own will: " + aiOutputStr);
+            errorResponse.setMessage("Generated query, execute on your own will: " + query);
             errorResponse.setStatusCode(200);
         }
 
@@ -83,7 +58,7 @@ public class AIService {
         String csvFile = createCSVFile(queryDataResponse, queryRequest.getQuery(), dataDirectory);
 
         response.setMessage(
-                aiOutputStr + "\n" +
+                query + "\n" +
                         "Total rows: " + data.getRecords().size() + "\n" +
                         "Your response is saved to a CSV file named '" + csvFile + "'!"
         );
@@ -133,4 +108,37 @@ public class AIService {
             throw new RuntimeException(genericResponse.getMessage());
         }
     }
+
+    public static String generateAIOutput(String apiKey, String aiModel, QueryRequest queryRequest, Connection source, String databaseDDL) {
+        Gson gson = new Gson();
+        String aiOutputStr;
+        String query;
+
+        OpenAiChatModel.OpenAiChatModelBuilder model = OpenAiChatModel
+                .builder()
+                .temperature(0.1)
+                .apiKey(apiKey)
+                .modelName(AI_MODEL);
+
+        if (aiModel != null && !aiModel.isEmpty()) {
+            model.modelName(aiModel);
+        }
+
+        String prompt = PromptUtils.queryPrompt(queryRequest, databaseDDL, source);
+
+        try {
+            aiOutputStr = model.build().generate(prompt);
+            QueryRequest aiOutputObj = gson.fromJson(aiOutputStr, QueryRequest.class);
+            query = aiOutputObj.getQuery();
+        } catch (JsonSyntaxException e) {
+            GenericResponse genericResponse = ErrorUtils.invalidResponseError(e);
+            throw new RuntimeException(genericResponse.getMessage());
+        } catch (Exception e) {
+            GenericResponse genericResponse = ErrorUtils.openAIError(e);
+            throw new RuntimeException(genericResponse.getMessage());
+        }
+
+        return query;
+    }
+
 }
