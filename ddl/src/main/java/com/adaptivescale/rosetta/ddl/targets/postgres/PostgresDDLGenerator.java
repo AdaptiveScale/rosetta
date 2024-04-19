@@ -76,6 +76,8 @@ public class PostgresDDLGenerator implements DDL {
         createParams.put("schemaName", table.getSchema());
         createParams.put("tableName", table.getName());
         createParams.put("tableCode", definitionAsString);
+        createParams.put("preScript", table.getPreScript());
+        createParams.put("postScript", table.getPostScript());
         stringBuilder.append(TemplateEngine.process(TABLE_CREATE_TEMPLATE, createParams));
 
         return stringBuilder.toString();
@@ -143,6 +145,8 @@ public class PostgresDDLGenerator implements DDL {
         params.put("schemaName", change.getTable().getSchema());
         params.put("tableName", change.getTable().getName());
         params.put("columnName", expected.getName());
+        params.put("preScript", expected.getPreScript());
+        params.put("postScript", expected.getPostScript());
 
         if (!Objects.equals(expected.getTypeName(), actual.getTypeName())) {
             params.put("dataType", expected.getTypeName());
@@ -175,6 +179,8 @@ public class PostgresDDLGenerator implements DDL {
         params.put("schemaName", table.getSchema());
         params.put("tableName", table.getName());
         params.put("columnName", actual.getName());
+        params.put("preScript", actual.getPreScript());
+        params.put("postScript", actual.getPostScript());
         return TemplateEngine.process(COLUMN_DROP_TEMPLATE, params);
     }
 
@@ -189,6 +195,8 @@ public class PostgresDDLGenerator implements DDL {
         params.put("schemaName", table.getSchema());
         params.put("tableName", table.getName());
         params.put("columnDefinition", columnSQLDecoratorFactory.decoratorFor(expected).expressSQl());
+        params.put("preScript", expected.getPreScript());
+        params.put("postScript", expected.getPostScript());
         return TemplateEngine.process(COLUMN_ADD_TEMPLATE, params);
     }
 
@@ -197,6 +205,8 @@ public class PostgresDDLGenerator implements DDL {
         Map<String, Object> params = new HashMap<>();
         params.put("schemaName", actual.getSchema());
         params.put("tableName", actual.getName());
+        params.put("preScript", actual.getPreScript());
+        params.put("postScript", actual.getPostScript());
         return TemplateEngine.process(TABLE_DROP_TEMPLATE, params);
     }
 
@@ -225,6 +235,8 @@ public class PostgresDDLGenerator implements DDL {
         if (doesPKExist) {
             params.put("schemaName", expected.getSchema());
             params.put("tableName", tableNameWithSchema(expected));
+            params.put("preScript", expected.getPreScript());
+            params.put("postScript", expected.getPostScript());
             stringBuilder.append(
                     TemplateEngine.process(TABLE_ALTER_DROP_PRIMARY_KEY_TEMPLATE, params)
             );
@@ -236,6 +248,8 @@ public class PostgresDDLGenerator implements DDL {
                 params.put("schemaName", expected.getSchema());
                 params.put("tableName", tableNameWithSchema(expected));
                 params.put("primaryKeyDefinition", primaryKeysForTable.get());
+                params.put("preScript", expected.getPreScript());
+                params.put("postScript", expected.getPostScript());
                 stringBuilder.append(
                         TemplateEngine.process(TABLE_ALTER_ADD_PRIMARY_KEY_TEMPLATE, params)
                 );

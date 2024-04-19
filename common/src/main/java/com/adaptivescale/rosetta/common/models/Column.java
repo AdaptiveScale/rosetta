@@ -24,6 +24,8 @@ public class Column {
     private List<ColumnProperties> columnProperties = new ArrayList<>();
     private Tests tests;
     private List<ForeignKey> foreignKeys;
+    private String preScript;
+    private String postScript;
 
     public Column() {
     }
@@ -142,6 +144,22 @@ public class Column {
 
     public List<ColumnProperties> getColumnProperties() {
         return columnProperties;
+    }
+
+    public String getPostScript() {
+        return postScript;
+    }
+
+    public void setPostScript(String postScript) {
+        this.postScript = postScript;
+    }
+
+    public String getPreScript() {
+        return preScript;
+    }
+
+    public void setPreScript(String preScript) {
+        this.preScript = preScript;
     }
 
     public String columnPropertiesAsString() {

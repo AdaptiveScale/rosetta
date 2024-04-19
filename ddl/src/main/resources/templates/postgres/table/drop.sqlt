@@ -1,6 +1,14 @@
+[# th:if="${preScript} != null or ${preScript} != ''"]
+[(${preScript})]
+[/]
+
 [# th:if="${schemaName} == null or ${schemaName} == ''"]
 DROP TABLE IF EXISTS "[(${tableName})]";
 [/]
 [# th:if="${schemaName} != null and ${schemaName} != ''"]
 DROP TABLE IF EXISTS "[(${schemaName})]"."[(${tableName})]";
+[/]
+
+[# th:if="${postScript} != null or ${postScript} != ''"]
+[(${postScript})]
 [/]

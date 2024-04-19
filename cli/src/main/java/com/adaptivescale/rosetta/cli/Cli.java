@@ -1,6 +1,8 @@
 package com.adaptivescale.rosetta.cli;
 
 import com.adaptivescale.rosetta.cli.model.Config;
+import com.adaptivescale.rosetta.cli.model.ModelAppend;
+import com.adaptivescale.rosetta.cli.model.TableAppend;
 import com.adaptivescale.rosetta.cli.outputs.DbtSqlModelOutput;
 import com.adaptivescale.rosetta.cli.outputs.DbtYamlModelOutput;
 import com.adaptivescale.rosetta.cli.outputs.StringOutput;
@@ -35,13 +37,16 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.yaml.snakeyaml.Yaml;
 import picocli.CommandLine;
 import queryhelper.pojo.GenericResponse;
 import queryhelper.pojo.QueryRequest;
 import queryhelper.service.AIService;
 
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -195,6 +200,17 @@ class Cli implements Callable<Void> {
             actualDatabase.setTables(tablesWithMatchingSchema);
         }
 
+//        List<ModelAppend> appends = getAppenderForModel(sourceWorkspace, "model_append.yaml")
+//                .map(AbstractMap.SimpleImmutableEntry::getValue)
+//                .collect(Collectors.toList());
+//
+//        for (ModelAppend appendModel : appends) {
+//            if (isValidModelAppend(appendModel)) {
+//                appendScriptsToModel(appendModel, expectedDatabase);
+//            } else {
+//                log.warn("Ignoring model_append.yaml due to incorrect format.");
+//            }
+//        }
         ChangeFinder changeFinder = DDLFactory.changeFinderForDatabaseType(source.getDbType());
         List<Change<?>> changes = changeFinder.findChanges(expectedDatabase, actualDatabase);
 
@@ -238,6 +254,31 @@ class Cli implements Callable<Void> {
 
         log.info("Successfully written ddl ({}).", stringOutput.getFilePath());
     }
+
+    private void appendScriptsToModel(ModelAppend appendModel, Database expectedDatabase) {
+        for (TableAppend tableAppend : appendModel.getTables()) {
+            // Find the corresponding table in the expectedDatabase
+            Table table = expectedDatabase.getTables().stream()
+                    .filter(t -> t.getName().equals(tableAppend.getTableName()) && t.getSchema().equals(tableAppend.getSchema()))
+                    .findFirst().orElse(null);
+
+            if (table != null) {
+                // Append preScript and postScript to the table
+                table.setPreScript(tableAppend.getPreScript());
+                table.setPostScript(tableAppend.getPostScript());
+            } else {
+                log.warn("Table {} in schema {} not found in the original model", tableAppend.getTableName(), tableAppend.getSchema());
+            }
+        }
+    }
+
+    private boolean isValidModelAppend(ModelAppend appendModel) {
+        if (appendModel == null || appendModel.getTables() == null || appendModel.getTables().isEmpty()) {
+            return false;
+        }
+        return true;
+    }
+
 
     @CommandLine.Command(name = "test", description = "Run tests written on columns", mixinStandardHelpOptions = true)
     private void test(@CommandLine.Option(names = {"-s", "--source"}) String sourceName) throws Exception {
@@ -501,6 +542,19 @@ class Cli implements Callable<Void> {
                 });
     }
 
+    private Stream<FileNameAndAppenderName> getAppenderForModel(Path directory, String model) throws IOException {
+        return Files.list(directory)
+                .filter(path -> FilenameUtils.getName(path.toString()).equals(model) && !Files.isDirectory(path))
+                .map(path -> {
+                    try {
+                        ModelAppend input = new ObjectMapper(new YAMLFactory()).readValue(path.toFile(), ModelAppend.class);
+                        return new FileNameAndAppenderName(path.getFileName().toString(), input);
+                    } catch (Exception exception) {
+                        throw new RuntimeException(exception);
+                    }
+                });
+    }
+
     private Function<FileNameAndDatabasePair, FileNameAndDatabasePair> translateDatabases(Translator<Database, Database> translator) {
         return fileNameAndModelPair -> {
             try {
@@ -517,6 +571,12 @@ class Cli implements Callable<Void> {
      */
     private final static class FileNameAndDatabasePair extends AbstractMap.SimpleImmutableEntry<String, Database> {
         public FileNameAndDatabasePair(String key, Database value) {
+            super(key, value);
+        }
+    }
+
+    private final static class FileNameAndAppenderName extends AbstractMap.SimpleImmutableEntry<String, ModelAppend> {
+        public FileNameAndAppenderName(String key, ModelAppend value) {
             super(key, value);
         }
     }

@@ -17,6 +17,10 @@ public class Table {
 
     private Collection<Column> columns;
 
+    private String preScript;
+
+    private String postScript;
+
     public String getName() {
         return name;
     }
@@ -72,6 +76,22 @@ public class Table {
 
     public void setIndices(List<Index> indices) {
         this.indices = indices;
+    }
+
+    public String getPostScript() {
+        return postScript;
+    }
+
+    public void setPostScript(String postScript) {
+        this.postScript = postScript;
+    }
+
+    public String getPreScript() {
+        return preScript;
+    }
+
+    public void setPreScript(String preScript) {
+        this.preScript = preScript;
     }
 
     @Override
