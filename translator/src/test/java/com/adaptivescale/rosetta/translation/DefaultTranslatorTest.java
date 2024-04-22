@@ -134,7 +134,7 @@ public class DefaultTranslatorTest {
     enum FakeColumn {
         SQLSERVER_COLUMN_INT_TO_SNOWFLAKE("test", "int identity", false, true, 10, "int"),
         SQLSERVER_COLUMN_TEXT_TO_SNOWFLAKE("tes2", "text", false, false, 10, "text"),
-        POSTGRES_COLUMN_INT_TO_KINETICA("test", "integer", false, false, 10, "int"),
+        POSTGRES_COLUMN_INT_TO_KINETICA("test", "integer", false, false, 10, "integer"),
         POSTGRES_COLUMN_TEXT_TO_KINETICA("test2", "text", false, false, 10, "string");
 
         private String name;
