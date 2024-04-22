@@ -106,4 +106,14 @@ public class Table {
     public int hashCode() {
         return Objects.hash(name, description, type, schema, interleave, indices, columns);
     }
+
+    public void merge(Table other) {
+        if (other.getPostScript() != null) {
+            this.setPostScript(other.getPostScript());
+        }
+
+        if (other.getPreScript() != null) {
+            this.setPreScript(other.getPreScript());
+        }
+    }
 }

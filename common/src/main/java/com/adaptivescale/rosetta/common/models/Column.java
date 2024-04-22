@@ -180,4 +180,14 @@ public class Column {
     public void setTests(Tests tests) {
         this.tests = tests;
     }
+
+    public void merge(Column other) {
+        if (other.getPostScript() != null) {
+            this.setPostScript(other.getPostScript());
+        }
+
+        if (other.getPreScript() != null) {
+            this.setPreScript(other.getPreScript());
+        }
+    }
 }

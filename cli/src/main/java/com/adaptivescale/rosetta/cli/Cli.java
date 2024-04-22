@@ -1,12 +1,11 @@
 package com.adaptivescale.rosetta.cli;
 
 import com.adaptivescale.rosetta.cli.model.Config;
-import com.adaptivescale.rosetta.cli.model.ModelAppend;
-import com.adaptivescale.rosetta.cli.model.TableAppend;
 import com.adaptivescale.rosetta.cli.outputs.DbtSqlModelOutput;
 import com.adaptivescale.rosetta.cli.outputs.DbtYamlModelOutput;
 import com.adaptivescale.rosetta.cli.outputs.StringOutput;
 import com.adaptivescale.rosetta.cli.outputs.YamlModelOutput;
+import com.adaptivescale.rosetta.common.models.Column;
 import com.adaptivescale.rosetta.common.models.Database;
 import com.adaptivescale.rosetta.common.DriverManagerDriverProvider;
 import com.adaptivescale.rosetta.common.models.Table;
@@ -200,17 +199,18 @@ class Cli implements Callable<Void> {
             actualDatabase.setTables(tablesWithMatchingSchema);
         }
 
-//        List<ModelAppend> appends = getAppenderForModel(sourceWorkspace, "model_append.yaml")
-//                .map(AbstractMap.SimpleImmutableEntry::getValue)
-//                .collect(Collectors.toList());
-//
-//        for (ModelAppend appendModel : appends) {
-//            if (isValidModelAppend(appendModel)) {
-//                appendScriptsToModel(appendModel, expectedDatabase);
-//            } else {
-//                log.warn("Ignoring model_append.yaml due to incorrect format.");
-//            }
-//        }
+        List<Database> appends = getDatabaseForModel(sourceWorkspace, "model_append.yaml")
+                .map(AbstractMap.SimpleImmutableEntry::getValue)
+                .collect(Collectors.toList());
+
+        for (Database appendDatabase : appends) {
+            if (isValidToAppend(appendDatabase)) {
+                mergeDatabase(appendDatabase, expectedDatabase);
+            } else {
+                log.warn("Ignoring model_append.yaml due to invalid append.");
+            }
+        }
+
         ChangeFinder changeFinder = DDLFactory.changeFinderForDatabaseType(source.getDbType());
         List<Change<?>> changes = changeFinder.findChanges(expectedDatabase, actualDatabase);
 
@@ -255,28 +255,47 @@ class Cli implements Callable<Void> {
         log.info("Successfully written ddl ({}).", stringOutput.getFilePath());
     }
 
-    private void appendScriptsToModel(ModelAppend appendModel, Database expectedDatabase) {
-        for (TableAppend tableAppend : appendModel.getTables()) {
-            // Find the corresponding table in the expectedDatabase
-            Table table = expectedDatabase.getTables().stream()
-                    .filter(t -> t.getName().equals(tableAppend.getTableName()) && t.getSchema().equals(tableAppend.getSchema()))
-                    .findFirst().orElse(null);
+    private boolean isValidToAppend(Database appendDatabase) {
+        if (appendDatabase == null || appendDatabase.getTables() == null || appendDatabase.getTables().isEmpty()) {
+            return false;
+        }
+        return true;
+    }
 
-            if (table != null) {
-                // Append preScript and postScript to the table
-                table.setPreScript(tableAppend.getPreScript());
-                table.setPostScript(tableAppend.getPostScript());
-            } else {
-                log.warn("Table {} in schema {} not found in the original model", tableAppend.getTableName(), tableAppend.getSchema());
+    private void mergeDatabase(Database appendDatabase, Database expectedDatabase) {
+        Collection<Table> tablesToMerge = appendDatabase.getTables();
+        tablesToMerge.forEach(tableToMerge -> {
+            Table existingTable = findTableByName(tableToMerge.getSchema(), tableToMerge.getName(), expectedDatabase.getTables());
+
+            if (existingTable != null) {
+                mergeTable(tableToMerge, existingTable);
+            }
+        });
+    }
+
+    private void mergeTable(Table appendTable, Table expectedTable) {
+        expectedTable.merge(appendTable);
+        mergeColumns(appendTable.getColumns(), expectedTable.getColumns());
+
+    }
+    private void mergeColumns(Collection<Column> appendColumns, Collection<Column> expectedColumns) {
+        for (Column appendColumn : appendColumns) {
+            Optional<Column> expectedColumnOptional = expectedColumns.stream()
+                    .filter(existingColumn -> existingColumn.getName().equals(appendColumn.getName()))
+                    .findFirst();
+
+            if (expectedColumnOptional.isPresent()) {
+                Column expectedColumn = expectedColumnOptional.get();
+                expectedColumn.merge(appendColumn);
             }
         }
     }
 
-    private boolean isValidModelAppend(ModelAppend appendModel) {
-        if (appendModel == null || appendModel.getTables() == null || appendModel.getTables().isEmpty()) {
-            return false;
-        }
-        return true;
+    private Table findTableByName(String tableSchema, String tableName, Collection<Table> tables) {
+        return tables.stream()
+                .filter(table -> table.getSchema().equals(tableSchema) && table.getName().equals(tableName))
+                .findFirst()
+                .orElse(null);
     }
 
 
@@ -542,18 +561,6 @@ class Cli implements Callable<Void> {
                 });
     }
 
-    private Stream<FileNameAndAppenderName> getAppenderForModel(Path directory, String model) throws IOException {
-        return Files.list(directory)
-                .filter(path -> FilenameUtils.getName(path.toString()).equals(model) && !Files.isDirectory(path))
-                .map(path -> {
-                    try {
-                        ModelAppend input = new ObjectMapper(new YAMLFactory()).readValue(path.toFile(), ModelAppend.class);
-                        return new FileNameAndAppenderName(path.getFileName().toString(), input);
-                    } catch (Exception exception) {
-                        throw new RuntimeException(exception);
-                    }
-                });
-    }
 
     private Function<FileNameAndDatabasePair, FileNameAndDatabasePair> translateDatabases(Translator<Database, Database> translator) {
         return fileNameAndModelPair -> {
@@ -571,12 +578,6 @@ class Cli implements Callable<Void> {
      */
     private final static class FileNameAndDatabasePair extends AbstractMap.SimpleImmutableEntry<String, Database> {
         public FileNameAndDatabasePair(String key, Database value) {
-            super(key, value);
-        }
-    }
-
-    private final static class FileNameAndAppenderName extends AbstractMap.SimpleImmutableEntry<String, ModelAppend> {
-        public FileNameAndAppenderName(String key, ModelAppend value) {
             super(key, value);
         }
     }
