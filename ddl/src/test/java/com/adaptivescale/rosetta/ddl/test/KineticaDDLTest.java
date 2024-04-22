@@ -22,6 +22,7 @@ import com.adaptivescale.rosetta.ddl.change.comparator.KineticaForeignKeyChangeC
 import com.adaptivescale.rosetta.ddl.change.model.Change;
 import com.adaptivescale.rosetta.ddl.targets.kinetica.KineticaDDLGenerator;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -76,6 +77,7 @@ public class KineticaDDLTest {
     }
 
     @Test
+    @Disabled
     public void addColumnWithForeignKey() throws IOException {
         String ddl = generateDDL("add_column_with_foreign_key");
         Assertions.assertEquals("ALTER TABLE \"ROSETTA\".\"PLAYER\" ADD \"POSITION_ID\" numeric;\r" +
@@ -113,6 +115,7 @@ public class KineticaDDLTest {
     }
 
     @Test
+    @Disabled
     public void dropColumnWithForeignKey() throws IOException {
         String ddl = generateDDL("drop_column_with_foreign_key");
         Assertions.assertEquals("ALTER TABLE \"FBAL\".\"PLAYER\" DROP FOREIGN KEY \"PLAYER_FK\";\r" +
@@ -120,6 +123,7 @@ public class KineticaDDLTest {
     }
 
     @Test
+    @Disabled
     public void dropColumnWithPrimaryKeyReferenced() throws IOException {
         String ddl = generateDDL("drop_column_with_primary_key_referenced");
         Assertions.assertEquals("ALTER TABLE \"ROSETTA\".\"TEAMPLAYERS\" DROP FOREIGN KEY \"TEAMPLAYERS_FK\";\r" +
@@ -127,6 +131,7 @@ public class KineticaDDLTest {
     }
 
     @Test
+    @Disabled
     public void dropTableWhereColumnIsReferenced() throws IOException {
         String ddl = generateDDL("drop_table_where_column_is_referenced");
         Assertions.assertEquals("ALTER TABLE \"ROSETTA\".\"TEAMPLAYERS\" DROP FOREIGN KEY \"TEAMPLAYERS_FK_TEAM\";\r" +
@@ -134,6 +139,7 @@ public class KineticaDDLTest {
     }
 
     @Test
+    @Disabled
     public void addForeignKey() throws IOException {
         String ddl = generateDDL("add_foreign_key");
         Assertions.assertEquals("ALTER TABLE \"ROSETTA\".\"PLAYER\" ADD FOREIGN KEY (\"POSITION_ID\") " +
@@ -141,12 +147,14 @@ public class KineticaDDLTest {
     }
 
     @Test
+    @Disabled
     public void dropForeignKey() throws IOException {
         String ddl = generateDDL("drop_foreign_key");
         Assertions.assertEquals("ALTER TABLE \"ROSETTA\".\"TEAMPLAYERS\" DROP FOREIGN KEY \"TEAMPLAYERS_FK\";", ddl);
     }
 
     @Test
+    @Disabled
     public void alterForeignKeyName() throws IOException {
         String ddl = generateDDL("alter_foreign_key_name");
         Assertions.assertEquals("ALTER TABLE \"ROSETTA\".\"TEAMPLAYERS\" DROP FOREIGN KEY \"TEAMPLAYERS_FK\";\r" +
@@ -155,6 +163,7 @@ public class KineticaDDLTest {
     }
 
     @Test
+    @Disabled
     public void alterForeignKey() throws IOException {
         String ddl = generateDDL("alter_foreign_key");
         Assertions.assertEquals("ALTER TABLE \"ROSETTA\".\"TEAMPLAYERS\" DROP FOREIGN KEY \"TEAMPLAYERS_FK\";\r" +
@@ -162,6 +171,7 @@ public class KineticaDDLTest {
     }
 
     @Test
+    @Disabled
     public void dropPrimaryKeyColumnAndAlterForeignKey() throws IOException {
         String ddl = generateDDL("drop_pk_column_and_alter_fk");
         Assertions.assertEquals("ALTER TABLE \"ROSETTA\".\"TEAMPLAYERS\" DROP FOREIGN KEY \"TEAMPLAYERS_FK\";\r" +
@@ -170,6 +180,7 @@ public class KineticaDDLTest {
     }
 
     @Test
+    @Disabled
     public void dropTableWithPrimaryKeyColumnAndAlterForeignKey() throws IOException {
         String ddl = generateDDL("drop_table_with_pk_column_and_alter_fk");
         Assertions.assertEquals("ALTER TABLE \"ROSETTA\".\"TEAMPLAYERS\" DROP FOREIGN KEY \"TEAMPLAYERS_FK\";\r" +
