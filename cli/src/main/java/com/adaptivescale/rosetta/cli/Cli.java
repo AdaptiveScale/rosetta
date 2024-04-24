@@ -59,7 +59,7 @@ import static com.adaptivescale.rosetta.cli.Constants.*;
 @Slf4j
 @CommandLine.Command(name = "cli",
         mixinStandardHelpOptions = true,
-        version = "2.2.1",
+        version = "2.2.2",
         description = "Declarative Database Management - DDL Transpiler"
 )
 class Cli implements Callable<Void> {
@@ -400,7 +400,7 @@ class Cli implements Callable<Void> {
         Database localDatabase = databases.get(0);
         Database targetDatabase = SourceGeneratorFactory.sourceGenerator(sourceConnection).generate(sourceConnection);
 
-        Diff<List<String>, Database, Database> tester = DiffFactory.diff();
+        Diff<List<String>, Database, Database> tester = DiffFactory.diff(localDatabase.getDatabaseType());
 
         List<String> changeList = tester.find(localDatabase, targetDatabase);
         if (changeList.size() > 0) {

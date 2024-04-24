@@ -182,7 +182,7 @@ public class TranslationMatrix {
             if (translationAttributesMappedByTranslationId.containsKey(translationAttributeModel.getTranslationId())) {
                 translationAttributesMappedByTranslationId.get(translationAttributeModel.getTranslationId()).add(translationAttributeModel);
             } else {
-                translationAttributesMappedByTranslationId.put(translationAttributeModel.getTranslationId(), Arrays.asList(translationAttributeModel));
+                translationAttributesMappedByTranslationId.put(translationAttributeModel.getTranslationId(), new ArrayList<>(Arrays.asList(translationAttributeModel)));
             }
             String insertStatement = translationAttributeModel.generateInsertStatement(TRANSLATION_ATTRIBUTE_TABLE_NAME);
             attributesInsertQuery.append(insertStatement);
