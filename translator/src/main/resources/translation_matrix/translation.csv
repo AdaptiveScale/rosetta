@@ -361,7 +361,7 @@
 366;;postgres;;uuid;;kinetica;;string
 367;;postgres;;varchar;;kinetica;;string
 368;;postgres;;boolean;;kinetica;;string
-369;;postgres;;bool;;kinetica;;string
+369;;postgres;;bool;;kinetica;;integer
 370;;postgres;;mpaa_rating;;kinetica;;string
 371;;postgres;;_text;;kinetica;;string
 372;;postgres;;tsvector;;kinetica;;string
@@ -377,12 +377,12 @@
 382;;postgres;;int8;;kinetica;;int8
 383;;postgres;;smallint;;kinetica;;int16
 384;;postgres;;smallserial;;kinetica;;int16
-385;;postgres;;serial;;kinetica;;int
-386;;postgres;;integer;;kinetica;;int
-387;;postgres;;int;;kinetica;;int
-388;;postgres;;int4;;kinetica;;int
-389;;postgres;;year;;kinetica;;int
-390;;postgres;;int2;;kinetica;;int
+385;;postgres;;serial;;kinetica;;integer
+386;;postgres;;integer;;kinetica;;integer
+387;;postgres;;int;;kinetica;;integer
+388;;postgres;;int4;;kinetica;;integer
+389;;postgres;;year;;kinetica;;integer
+390;;postgres;;int2;;kinetica;;integer
 391;;postgres;;bigint;;kinetica;;long
 392;;postgres;;bigserial;;kinetica;;long
 393;;postgres;;real;;kinetica;;float
@@ -2352,3 +2352,9 @@
 2537;;snowflake;;geography;;oracle;;varchar2
 2538;;kinetica;;geometry;;bigquery;;geography
 2539;;kinetica;;geometry;;sqlserver;;geography
+2540;;kinetica;;VARCHAR;;kinetica;;string
+2541;;kinetica;;DATETIME;;kinetica;;datetime
+2542;;kinetica;;INTEGER;;kinetica;;integer
+2543;;kinetica;;DOUBLE;;kinetica;;double
+2544;;kinetica;;DATE;;kinetica;;date
+2545;;kinetica;;BYTES;;kinetica;;bytes
