@@ -2358,3 +2358,4 @@
 2543;;kinetica;;DOUBLE;;kinetica;;double
 2544;;kinetica;;DATE;;kinetica;;date
 2545;;kinetica;;BYTES;;kinetica;;bytes
+2546;;postgres;;_text;;oracle;;varchar2
