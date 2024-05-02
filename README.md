@@ -354,6 +354,7 @@ tables:
 - test
 - apply
 - generate
+- query
 
 #### init
 This command will generate a project (directory) if specified, a default configuration file located in the current directory with example connections for `bigquery` and `snowflake`, and the model directory.
