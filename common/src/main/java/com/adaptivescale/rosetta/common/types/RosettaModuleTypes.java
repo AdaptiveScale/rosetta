@@ -25,4 +25,6 @@ public enum RosettaModuleTypes {
     TABLE_EXTRACTOR,
     VIEW_EXTRACTOR,
     DIFF_TESTER,
+    DDL_EXTENSION_TABLE,
+    DDL_EXTENSION_COLUMN,
 }
