@@ -1,0 +1,355 @@
+---
+safeMode: false
+tables:
+- name: "authors"
+  type: "TABLE"
+  schema: "basic_library"
+  indices:
+  - name: "authors_pkey"
+    schema: "basic_library"
+    tableName: "authors"
+    columnNames:
+    - "authorid"
+    nonUnique: false
+    type: 3
+    ascOrDesc: "A"
+    cardinality: 36
+  columns:
+  - name: "authorid"
+    typeName: "serial"
+    ordinalPosition: 0
+    primaryKeySequenceId: 1
+    columnDisplaySize: 10
+    scale: 0
+    precision: 10
+    columnProperties: []
+    primaryKey: true
+    nullable: false
+    autoincrement: false
+  - name: "name"
+    typeName: "varchar"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 50
+    scale: 0
+    precision: 50
+    columnProperties: []
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+- name: "books"
+  type: "TABLE"
+  schema: "basic_library"
+  indices:
+  - name: "books_pkey"
+    schema: "basic_library"
+    tableName: "books"
+    columnNames:
+    - "bookid"
+    nonUnique: false
+    type: 3
+    ascOrDesc: "A"
+    cardinality: 168
+  columns:
+  - name: "bookid"
+    typeName: "serial"
+    ordinalPosition: 0
+    primaryKeySequenceId: 1
+    columnDisplaySize: 10
+    scale: 0
+    precision: 10
+    columnProperties: []
+    primaryKey: true
+    nullable: false
+    autoincrement: false
+  - name: "name"
+    typeName: "varchar"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 90
+    scale: 0
+    precision: 90
+    columnProperties: []
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "pagecount"
+    typeName: "int4"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 10
+    scale: 0
+    precision: 10
+    columnProperties: []
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "point"
+    typeName: "int4"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 10
+    scale: 0
+    precision: 10
+    columnProperties: []
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "authorid"
+    typeName: "int4"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 10
+    scale: 0
+    precision: 10
+    columnProperties: []
+    foreignKeys:
+    - name: "books_authorid_fkey"
+      schema: "basic_library"
+      tableName: "books"
+      columnName: "authorid"
+      deleteRule: "3"
+      primaryTableSchema: "basic_library"
+      primaryTableName: "authors"
+      primaryColumnName: "authorid"
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "typeid"
+    typeName: "int4"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 10
+    scale: 0
+    precision: 10
+    columnProperties: []
+    foreignKeys:
+    - name: "books_typeid_fkey"
+      schema: "basic_library"
+      tableName: "books"
+      columnName: "typeid"
+      deleteRule: "3"
+      primaryTableSchema: "basic_library"
+      primaryTableName: "types"
+      primaryColumnName: "typeid"
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+- name: "borrows"
+  type: "TABLE"
+  schema: "basic_library"
+  indices:
+  - name: "borrows_pkey"
+    schema: "basic_library"
+    tableName: "borrows"
+    columnNames:
+    - "borrowid"
+    nonUnique: false
+    type: 3
+    ascOrDesc: "A"
+    cardinality: 204
+  columns:
+  - name: "borrowid"
+    typeName: "serial"
+    ordinalPosition: 0
+    primaryKeySequenceId: 1
+    columnDisplaySize: 10
+    scale: 0
+    precision: 10
+    columnProperties: []
+    primaryKey: true
+    nullable: false
+    autoincrement: false
+  - name: "studentid"
+    typeName: "int4"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 10
+    scale: 0
+    precision: 10
+    columnProperties: []
+    foreignKeys:
+    - name: "fk_borrows_students"
+      schema: "basic_library"
+      tableName: "borrows"
+      columnName: "studentid"
+      deleteRule: "3"
+      primaryTableSchema: "basic_library"
+      primaryTableName: "students"
+      primaryColumnName: "studentid"
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "bookid"
+    typeName: "int4"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 10
+    scale: 0
+    precision: 10
+    columnProperties: []
+    foreignKeys:
+    - name: "borrows_bookid_fkey"
+      schema: "basic_library"
+      tableName: "borrows"
+      columnName: "bookid"
+      deleteRule: "3"
+      primaryTableSchema: "basic_library"
+      primaryTableName: "books"
+      primaryColumnName: "bookid"
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "takendate"
+    typeName: "timestamp"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 29
+    scale: 6
+    precision: 29
+    columnProperties: []
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "broughtdate"
+    typeName: "timestamp"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 29
+    scale: 6
+    precision: 29
+    columnProperties: []
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+- name: "students"
+  type: "TABLE"
+  schema: "basic_library"
+  indices:
+  - name: "students_pkey"
+    schema: "basic_library"
+    tableName: "students"
+    columnNames:
+    - "studentid"
+    nonUnique: false
+    type: 3
+    ascOrDesc: "A"
+    cardinality: 505
+  columns:
+  - name: "studentid"
+    typeName: "serial"
+    ordinalPosition: 0
+    primaryKeySequenceId: 1
+    columnDisplaySize: 10
+    scale: 0
+    precision: 10
+    columnProperties: []
+    primaryKey: true
+    nullable: false
+    autoincrement: false
+  - name: "name"
+    typeName: "varchar"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 20
+    scale: 0
+    precision: 20
+    columnProperties: []
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "surname"
+    typeName: "varchar"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 20
+    scale: 0
+    precision: 20
+    columnProperties: []
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "birthdate"
+    typeName: "date"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 13
+    scale: 0
+    precision: 13
+    columnProperties: []
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "gender"
+    typeName: "varchar"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 10
+    scale: 0
+    precision: 10
+    columnProperties: []
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "class"
+    typeName: "varchar"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 7
+    scale: 0
+    precision: 7
+    columnProperties: []
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+  - name: "point"
+    typeName: "int4"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 10
+    scale: 0
+    precision: 10
+    columnProperties: []
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+- name: "types"
+  type: "TABLE"
+  schema: "basic_library"
+  indices:
+  - name: "types_pkey"
+    schema: "basic_library"
+    tableName: "types"
+    columnNames:
+    - "typeid"
+    nonUnique: false
+    type: 3
+    ascOrDesc: "A"
+    cardinality: 0
+  columns:
+  - name: "typeid"
+    typeName: "serial"
+    ordinalPosition: 0
+    primaryKeySequenceId: 1
+    columnDisplaySize: 10
+    scale: 0
+    precision: 10
+    columnProperties: []
+    primaryKey: true
+    nullable: false
+    autoincrement: false
+  - name: "name"
+    typeName: "varchar"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 30
+    scale: 0
+    precision: 30
+    columnProperties: []
+    primaryKey: false
+    nullable: true
+    autoincrement: false
+views: []
+databaseProductName: "PostgreSQL"
+databaseType: "postgres"
+operationLevel: "schema"
