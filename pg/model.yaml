@@ -37,6 +37,17 @@ tables:
     primaryKey: false
     nullable: true
     autoincrement: false
+  - name: "surname"
+    typeName: "varchar"
+    ordinalPosition: 0
+    primaryKeySequenceId: 0
+    columnDisplaySize: 50
+    scale: 0
+    precision: 50
+    columnProperties: [ ]
+    primaryKey: false
+    nullable: true
+    autoincrement: false
 - name: "books"
   type: "TABLE"
   schema: "basic_library"
