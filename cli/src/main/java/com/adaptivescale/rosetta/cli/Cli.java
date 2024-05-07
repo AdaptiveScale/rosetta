@@ -37,11 +37,9 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import picocli.CommandLine;
 import queryhelper.pojo.GenericResponse;
-import queryhelper.pojo.QueryRequest;
 import queryhelper.service.AIService;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -235,6 +233,10 @@ class Cli implements Callable<Void> {
 
         DDLExecutor executor = DDLFactory.executor(source, new DriverManagerDriverProvider());
         executor.execute(ddl);
+
+        if (config.isAutoCommit()) {
+            gitCommandExecutor(sourceWorkspace.toString());
+        }
 
         log.info("Successfully written ddl ({}).", stringOutput.getFilePath());
     }
@@ -518,6 +520,53 @@ class Cli implements Callable<Void> {
     private final static class FileNameAndDatabasePair extends AbstractMap.SimpleImmutableEntry<String, Database> {
         public FileNameAndDatabasePair(String key, Database value) {
             super(key, value);
+        }
+    }
+
+    public void gitCommandExecutor(String sourceWorkspace) {
+        File workspaceDir = new File(sourceWorkspace);
+        File[] files = workspaceDir.listFiles((dir, name) -> name.endsWith(".yaml"));
+        String commitMessage = "added: model yaml files";
+
+        if (files == null || files.length == 0) {
+            System.out.println("No YAML files found in the directory: " + sourceWorkspace);
+            return;
+        }
+
+        Arrays.stream(files)
+                .forEach(file -> executeGitCommand(new String[]{"git", "add", file.getAbsolutePath()}));
+
+        executeGitCommand(new String[]{"git", "commit", "-m", commitMessage});
+
+        if (config.getGitRemoteName() != "origin"){
+            executeGitCommand(new String[]{"git", "push", config.getGitRemoteName(), "-u", "@"});
+            return;
+        }
+        executeGitCommand(new String[]{"git", "push", "origin", "-u", "@"});
+
+    }
+
+    public static void executeGitCommand(String[] command) {
+        try {
+            Process process = new ProcessBuilder(command).start();
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+
+            int exitCode = process.waitFor();
+
+            if (exitCode == 0) {
+                System.out.println("Git Commands have been executed successfully.");
+                System.out.println("The YAML file has been pushed to your git branch ! ");
+                return;
+            }
+            System.err.println("Error executing command: " + String.join(" ", command));
+
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
