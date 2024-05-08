@@ -15,6 +15,11 @@ public class Config {
     @JsonProperty("openai_model")
     private String openAIModel;
 
+    @JsonProperty("git_auto_commit")
+    private boolean gitAutoCommit = false;
+    @JsonProperty("git_remote_name")
+    private String gitRemoteName = "origin";
+
     public List<Connection> getConnections() {
         return connections;
     }
@@ -31,4 +36,12 @@ public class Config {
         return openAIApiKey;
     }
     public String getOpenAIModel() { return openAIModel; }
+
+    public String getGitRemoteName() {
+        return gitRemoteName;
+    }
+    public boolean isAutoCommit() {
+        return gitAutoCommit;
+    }
+
 }
