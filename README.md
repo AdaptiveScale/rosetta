@@ -717,6 +717,19 @@ Amanda Wilson,5000,Atlanta,amandawilson@example.com
 **Note:**  When giving a request that will not generate a SELECT statement the query will be generated but will not be executed rather be given to the user to execute on their own.
 
 
+#### drivers
+This command can list drivers that are listed in a `drivers.yaml` file and by choosing a driver you can download it to the `ROSETTA_DRIVERS` directory which will be automatically ready to use.
+
+    rosetta drivers [-h, --help] [-f, --file] [--list] <indexToDownload> [--download]
+
+Parameter | Description
+--- | ---
+-h, --help | Show the help message and exit.
+-f, --file DRIVERS_FILE | YAML drivers file.  If none is supplied it will use drivers.yaml in the current directory if it exists.
+--list | Used to list all available drivers.
+--download | Used to download selected driver by index.
+indexToDownload | Chooses which driver to download depending on the index of the driver.
+
 
 ### Safety Operation
 In `model.yaml` you can find the attribute `safeMode` which is by default disabled (false). If you want to prevent any DROP operation during
