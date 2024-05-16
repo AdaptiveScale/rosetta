@@ -48,4 +48,14 @@ public class DefaultGenerator implements Generator<Database, Connection> {
         connect.close();
         return database;
     }
+
+    @Override
+    public Database validate(Connection connection) throws Exception {
+        Driver driver = driverProvider.getDriver(connection);
+        Properties properties = JDBCUtils.setJDBCAuth(connection);
+        java.sql.Connection connect = driver.connect(connection.getUrl(), properties);
+        Database database = new Database();
+        database.setName(connect.getMetaData().getDatabaseProductName());
+        return database;
+    }
 }
