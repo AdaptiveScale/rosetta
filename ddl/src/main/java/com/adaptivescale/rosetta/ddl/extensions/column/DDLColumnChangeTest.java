@@ -11,32 +11,32 @@ import com.adaptivescale.rosetta.ddl.DDLExtensionColumn;
 )
 public class DDLColumnChangeTest implements DDLExtensionColumn {
     @Override
-    public String preCreateColumn(Column table, Object action) {
+    public String preCreateColumn(Column column, Object action) {
         return action.toString();
     }
 
     @Override
-    public String postCreateColumn(Column table, Object action) {
+    public String postCreateColumn(Column column, Object action) {
         return action.toString();
     }
 
     @Override
-    public String preDropColumn(Column table, Object action) {
+    public String preDropColumn(Column column, Object action) {
         return action.toString();
     }
 
     @Override
-    public String postDropColumn(Column table, Object action) {
+    public String postDropColumn(Column column, Object action) {
         return action.toString();
     }
 
     @Override
-    public String preAlterColumn(Column table, Object action) {
+    public String preAlterColumn(Column column, Object action) {
         return action.toString();
     }
 
     @Override
-    public String postAlterColumn(Column table, Object action) {
+    public String postAlterColumn(Column column, Object action) {
         return action.toString();
     }
 }

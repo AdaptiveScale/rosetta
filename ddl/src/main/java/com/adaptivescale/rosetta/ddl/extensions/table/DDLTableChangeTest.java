@@ -7,37 +7,37 @@ import com.adaptivescale.rosetta.ddl.DDLExtensionTable;
 
 @RosettaModule(
         name = "SQL",
-        type = RosettaModuleTypes.DDL_EXTENSION_COLUMN
+        type = RosettaModuleTypes.DDL_EXTENSION_TABLE
 )
 public class DDLTableChangeTest implements DDLExtensionTable {
 
     @Override
     public String preCreateTable(Table table, Object action) {
-        return "preCreateTable";
+        return action.toString();
     }
 
     @Override
     public String postCreateTable(Table table, Object action) {
-        return "postCreateTable";
+        return action.toString();
     }
 
     @Override
     public String preDropTable(Table actual, Object action) {
-        return "preDropTable";
+        return action.toString();
     }
 
     @Override
     public String postDropTable(Table actual, Object action) {
-        return "postDropTable";
+        return action.toString();
     }
 
     @Override
     public String preAlterTable(Table expected, Object action) {
-        return "preAlterTable";
+        return action.toString();
     }
 
     @Override
     public String postAlterTable(Table expected, Object action) {
-        return "postAlterTable";
+        return action.toString();
     }
 }

@@ -2,6 +2,7 @@ package com.adaptivescale.rosetta.ddl.change;
 
 import com.adaptivescale.rosetta.common.helpers.ModuleLoader;
 import com.adaptivescale.rosetta.common.models.Column;
+import com.adaptivescale.rosetta.common.models.Extension;
 import com.adaptivescale.rosetta.common.models.Table;
 import com.adaptivescale.rosetta.common.models.enums.OperationTypeEnum;
 import com.adaptivescale.rosetta.common.types.RosettaModuleTypes;
@@ -12,10 +13,7 @@ import com.adaptivescale.rosetta.ddl.change.model.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static com.adaptivescale.rosetta.common.models.enums.OperationTypeEnum.*;
 
@@ -32,7 +30,7 @@ public class ChangeHandlerImplementation implements ChangeHandler {
 
     @Override
     public String createDDLForChanges(List<Change<?>> changes) {
-        if(changeComparator != null){
+        if (changeComparator != null) {
             changes.sort(changeComparator);
         }
 
@@ -46,10 +44,7 @@ public class ChangeHandlerImplementation implements ChangeHandler {
                     ddlStatements.add(onTableSchemaChange((TableSchemaChange) change));
                     break;
                 case TABLE:
-
-                    // TODOD preTableScript
                     ddlStatements.add(onTableChange((TableChange) change));
-                    // tODo postTableScript
                     break;
                 case COLUMN:
                     ddlStatements.add(onColumnChange((ColumnChange) change));
@@ -83,35 +78,53 @@ public class ChangeHandlerImplementation implements ChangeHandler {
     public String onTableChange(TableChange change) {
         switch (change.getStatus()) {
             case DROP:
-              StringBuilder dropQueryBuilder = new StringBuilder();
-              if (change.getExpected()!=null && change.getExpected().getExtensions() != null) {
-                dropQueryBuilder.append(executeTableExtensions(change.getExpected(), PRE_DROP, "PRE_DROP"));
-              }
-              dropQueryBuilder.append(ddl.dropTable(change.getActual()));
-              if (change.getExpected()!=null && change.getExpected().getExtensions() != null) {
-                dropQueryBuilder.append(executeTableExtensions(change.getExpected(), POST_DROP, "POST_DROP"));
-              }
-              return dropQueryBuilder.toString();
+                StringBuilder dropQueryBuilder = new StringBuilder();
+                if (change.getExpected() != null && change.getExpected().getExtensions() != null) {
+                    Optional<Extension> first = change.getExpected().getExtensions().stream()
+                            .filter(extension -> extension.getActions().containsKey(PRE_DROP.name())).findFirst();
+                    first.ifPresent(extension -> dropQueryBuilder.append(executeTableExtensions(change.getExpected(), PRE_DROP, extension.getActions().get(PRE_DROP.name()))));
+                }
+
+                dropQueryBuilder.append(ddl.dropTable(change.getActual()));
+
+                if (change.getExpected() != null && change.getExpected().getExtensions() != null) {
+                    Optional<Extension> first = change.getExpected().getExtensions().stream()
+                            .filter(extension -> extension.getActions().containsKey(POST_DROP.name())).findFirst();
+                    first.ifPresent(extension -> dropQueryBuilder.append(executeTableExtensions(change.getExpected(), POST_DROP, extension.getActions().get(POST_DROP.name()))));
+                }
+                return dropQueryBuilder.toString();
             case ADD:
                 StringBuilder addQueryBuilder = new StringBuilder();
-                if (change.getExpected()!=null && change.getExpected().getExtensions() != null) {
-                  addQueryBuilder.append(executeTableExtensions(change.getExpected(), PRE_CREATE, "PRE_CREATE"));
+                if (change.getExpected() != null && change.getExpected().getExtensions() != null) {
+                    Optional<Extension> first = change.getExpected().getExtensions().stream()
+                            .filter(extension -> extension.getActions().containsKey(PRE_CREATE.name())).findFirst();
+                    first.ifPresent(extension -> addQueryBuilder.append(executeTableExtensions(change.getExpected(), PRE_CREATE, extension.getActions().get(PRE_CREATE.name()))));
                 }
+
                 addQueryBuilder.append(ddl.createTable(change.getExpected(), false));
-                if (change.getExpected()!=null && change.getExpected().getExtensions() != null) {
-                  addQueryBuilder.append(executeTableExtensions(change.getExpected(), POST_CREATE, "POST_CREATE"));
+
+                if (change.getExpected() != null && change.getExpected().getExtensions() != null) {
+                    Optional<Extension> first = change.getExpected().getExtensions().stream()
+                            .filter(extension -> extension.getActions().containsKey(POST_CREATE.name())).findFirst();
+                    first.ifPresent(extension -> addQueryBuilder.append(executeTableExtensions(change.getExpected(), POST_CREATE, extension.getActions().get(POST_CREATE.name()))));
                 }
                 return addQueryBuilder.toString();
             case ALTER:
-              StringBuilder alterQueryBuilder = new StringBuilder();
-              if (change.getExpected()!=null && change.getExpected().getExtensions() != null) {
-                alterQueryBuilder.append(executeTableExtensions(change.getExpected(), PRE_ALTER, "PRE_ALTER"));
-              }
-              alterQueryBuilder.append(ddl.alterTable(change.getExpected(), change.getActual()));
-              if (change.getExpected()!=null && change.getExpected().getExtensions() != null) {
-                alterQueryBuilder.append(executeTableExtensions(change.getExpected(), POST_ALTER, "POST_ALTER"));
-              }
-              return alterQueryBuilder.toString();
+                StringBuilder alterQueryBuilder = new StringBuilder();
+                if (change.getExpected() != null && change.getExpected().getExtensions() != null) {
+                    Optional<Extension> first = change.getExpected().getExtensions().stream()
+                            .filter(extension -> extension.getActions().containsKey(PRE_ALTER.name())).findFirst();
+                    first.ifPresent(extension -> alterQueryBuilder.append(executeTableExtensions(change.getExpected(), PRE_ALTER, extension.getActions().get(PRE_ALTER.name()))));
+                }
+
+                alterQueryBuilder.append(ddl.alterTable(change.getExpected(), change.getActual()));
+
+                if (change.getExpected() != null && change.getExpected().getExtensions() != null) {
+                    Optional<Extension> first = change.getExpected().getExtensions().stream()
+                            .filter(extension -> extension.getActions().containsKey(POST_ALTER.name())).findFirst();
+                    first.ifPresent(extension -> alterQueryBuilder.append(executeTableExtensions(change.getExpected(), POST_ALTER, extension.getActions().get(POST_ALTER.name()))));
+                }
+                return alterQueryBuilder.toString();
             default:
                 throw new RuntimeException("Operation " + change.getStatus() + " for table not supported");
         }
@@ -132,32 +145,47 @@ public class ChangeHandlerImplementation implements ChangeHandler {
         switch (change.getStatus()) {
             case ALTER:
                 StringBuilder alterQueryBuilder = new StringBuilder();
-                if (change.getExpected()!=null && change.getExpected().getExtensions() != null) {
-                    alterQueryBuilder.append(executeColumnExtensions(change.getExpected(), PRE_ALTER, "PRE_ALTER"));
+                if (change.getExpected() != null && change.getExpected().getExtensions() != null) {
+                    Optional<Extension> first = change.getExpected().getExtensions().stream()
+                            .filter(extension -> extension.getActions().containsKey(PRE_ALTER.name())).findFirst();
+                    first.ifPresent(extension -> alterQueryBuilder.append(executeColumnExtensions(change.getExpected(), PRE_ALTER, extension.getActions().get(PRE_ALTER.name()))));
                 }
+
                 alterQueryBuilder.append(ddl.alterColumn(change));
-                if (change.getExpected()!=null && change.getExpected().getExtensions() != null) {
-                    alterQueryBuilder.append(executeColumnExtensions(change.getExpected(), POST_ALTER, "POST_ALTER"));
+
+                if (change.getExpected() != null && change.getExpected().getExtensions() != null) {
+                    Optional<Extension> first = change.getExpected().getExtensions().stream()
+                            .filter(extension -> extension.getActions().containsKey(POST_ALTER.name())).findFirst();
+                    first.ifPresent(extension -> alterQueryBuilder.append(executeColumnExtensions(change.getExpected(), POST_ALTER, extension.getActions().get(POST_ALTER.name()))));
                 }
                 return alterQueryBuilder.toString();
             case DROP:
                 StringBuilder dropQueryBuilder = new StringBuilder();
-                if (change.getActual()!=null && change.getActual().getExtensions() != null) {
-                    dropQueryBuilder.append(executeColumnExtensions(change.getActual(), PRE_DROP, "PRE_DROP"));
+                if (change.getActual() != null && change.getActual().getExtensions() != null) {
+                    Optional<Extension> first = change.getActual().getExtensions().stream()
+                            .filter(extension -> extension.getActions().containsKey(PRE_DROP.name())).findFirst();
+                    first.ifPresent(extension -> dropQueryBuilder.append(executeColumnExtensions(change.getActual(), PRE_DROP, extension.getActions().get(PRE_DROP.name()))));
                 }
                 dropQueryBuilder.append(ddl.dropColumn(change));
-                if (change.getActual()!=null && change.getActual().getExtensions() != null) {
-                    dropQueryBuilder.append(executeColumnExtensions(change.getActual(), POST_DROP, "POST_DROP"));
+                if (change.getActual() != null && change.getActual().getExtensions() != null) {
+                    Optional<Extension> first = change.getActual().getExtensions().stream()
+                            .filter(extension -> extension.getActions().containsKey(POST_DROP.name())).findFirst();
+                    first.ifPresent(extension -> dropQueryBuilder.append(executeColumnExtensions(change.getActual(), POST_DROP, extension.getActions().get(POST_DROP.name()))));
                 }
                 return dropQueryBuilder.toString();
             case ADD:
                 StringBuilder addQueryBuilder = new StringBuilder();
-                if (change.getExpected()!=null && change.getExpected().getExtensions() != null) {
-                    addQueryBuilder.append(executeColumnExtensions(change.getExpected(), PRE_CREATE, "PRE_CREATE"));
+                if (change.getExpected() != null && change.getExpected().getExtensions() != null) {
+                    Optional<Extension> first = change.getExpected().getExtensions().stream()
+                            .filter(extension -> extension.getActions().containsKey(PRE_CREATE.name())).findFirst();
+                    first.ifPresent(extension -> addQueryBuilder.append(executeColumnExtensions(change.getExpected(), PRE_CREATE, extension.getActions().get(PRE_CREATE.name()))));
                 }
                 addQueryBuilder.append(ddl.addColumn(change));
-                if (change.getExpected()!=null && change.getExpected().getExtensions() != null) {
-                    addQueryBuilder.append(executeColumnExtensions(change.getExpected(), POST_CREATE, "POST_CREATE"));
+
+                if (change.getExpected() != null && change.getExpected().getExtensions() != null) {
+                    Optional<Extension> first = change.getExpected().getExtensions().stream()
+                            .filter(extension -> extension.getActions().containsKey(POST_CREATE.name())).findFirst();
+                    first.ifPresent(extension -> addQueryBuilder.append(executeColumnExtensions(change.getExpected(), POST_CREATE, extension.getActions().get(POST_CREATE.name()))));
                 }
                 return addQueryBuilder.toString();
             default:
@@ -166,7 +194,7 @@ public class ChangeHandlerImplementation implements ChangeHandler {
     }
 
     public String executeTableExtensions(Table table, OperationTypeEnum status, Object action) {
-        Optional<Class<?>> tableExtension = ModuleLoader.loadModuleByAnnotationClassValues("com.adaptivescale.rosetta.ddl.extensions.table", RosettaModuleTypes.DDL_EXTENSION_TABLE, "SQL");
+        Optional<Class<?>> tableExtension = ModuleLoader.loadModuleByAnnotationClassValues(String.format("%s.%s",DDLExtensionTable.class.getPackageName(),"extensions.table") , RosettaModuleTypes.DDL_EXTENSION_TABLE, "SQL");
         DDLExtensionTable ddlExtensionTable = null;
         if (tableExtension.isPresent()) {
             try {
@@ -200,7 +228,7 @@ public class ChangeHandlerImplementation implements ChangeHandler {
     }
 
     public String executeColumnExtensions(Column column, OperationTypeEnum status, Object action) {
-        Optional<Class<?>> columnExtension = ModuleLoader.loadModuleByAnnotationClassValues("com.adaptivescale.rosetta.ddl.extensions.column", RosettaModuleTypes.DDL_EXTENSION_COLUMN, "SQL");
+        Optional<Class<?>> columnExtension = ModuleLoader.loadModuleByAnnotationClassValues(String.format("%s.%s",DDLExtensionColumn.class.getPackageName(),"extensions.column"), RosettaModuleTypes.DDL_EXTENSION_COLUMN, "SQL");
         DDLExtensionColumn ddlExtensionColumn = null;
         if (columnExtension.isPresent()) {
             try {
