@@ -79,6 +79,9 @@ The `rosetta init` command will create a new rosetta project within `database-mi
 example: connections for postgres and mysql
 
 ```
+# If your rosetta project is linked to a Git repo, during apply you can automatically commit/push the new version of your model.yaml
+# The default value of git_auto_commit is false
+git_auto_commit: false 
 connections:
   - name: mysql
     databaseName: sakila
@@ -555,7 +558,7 @@ Running tests for mysql. Found: 2
 ```
 
 #### apply
-Gets current model and compares with state of database, generates ddl for changes and applies to database.
+Gets current model and compares with state of database, generates ddl for changes and applies to database. If you set `git_auto_commit` to `true` in `main.conf` it will automatically push the new model to your Git repo of the rosetta project.
 
     rosetta [-c, --config CONFIG_FILE] apply [-h, --help] [-s, --source CONNECTION_NAME]
 
