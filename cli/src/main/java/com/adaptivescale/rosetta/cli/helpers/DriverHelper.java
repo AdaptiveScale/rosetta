@@ -80,6 +80,7 @@ public class DriverHelper {
      * Downloads driver to the specified directory
      *
      * @param driverInfo which driver to download
+     * @throws RuntimeException if a download error occurs
      */
     private static void downloadDriver(DriverInfo driverInfo) {
         try {
@@ -130,6 +131,7 @@ public class DriverHelper {
 
         } catch (Exception e) {
             System.out.println("Error downloading the driver: " + e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 

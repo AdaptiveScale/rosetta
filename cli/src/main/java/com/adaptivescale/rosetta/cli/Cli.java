@@ -421,7 +421,7 @@ class Cli implements Callable<Void> {
 
     @CommandLine.Command(name = "drivers", description = "Show available drivers for download", mixinStandardHelpOptions = true)
     private void drivers(@CommandLine.Option(names = {"--list"}, description = "Used to list all available drivers") boolean isList,
-                         @CommandLine.Option(names = {"--download"}, description = "Used to download selected driver by index") boolean isDownload,
+                         @CommandLine.Option(names = {"-dl", "--download"}, description = "Used to download selected driver by index") boolean isDownload,
                          @CommandLine.Option(names = {"-f", "--file"}, defaultValue = DEFAULT_DRIVERS_YAML) String file,
                          @CommandLine.Parameters(index = "0", arity = "0..1") Integer driverId) {
         Path driversPath = Path.of(file);
