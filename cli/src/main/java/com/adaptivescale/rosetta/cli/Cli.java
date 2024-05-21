@@ -57,7 +57,7 @@ import static com.adaptivescale.rosetta.cli.Constants.*;
 @Slf4j
 @CommandLine.Command(name = "cli",
         mixinStandardHelpOptions = true,
-        version = "2.3.0",
+        version = "2.3.1",
         description = "Declarative Database Management - DDL Transpiler"
 )
 class Cli implements Callable<Void> {
