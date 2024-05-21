@@ -5,12 +5,17 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
+import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.stream.IntStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 public class DriverHelper {
     /**
@@ -20,11 +25,21 @@ public class DriverHelper {
      */
     public static void printDrivers(Path path) {
         List<DriverInfo> drivers = getDrivers(path);
-        IntStream.range(0, drivers.size())
-          .forEach(index -> {
-              DriverInfo driverInfo = drivers.get(index);
-              System.out.println(String.format("%d - Driver name: %s", index + 1, driverInfo.getName()));
-          });
+
+        if (drivers.isEmpty()) {
+            System.out.println("No drivers found.");
+            return;
+        }
+
+        System.out.println("Downloadable Drivers:");
+        System.out.println("=====================");
+
+        IntStream.range(0, drivers.size()).forEach(index -> {
+            DriverInfo driverInfo = drivers.get(index);
+            System.out.printf("%2d: %s%n", index + 1, driverInfo.getName());
+        });
+
+        System.out.println("=====================");
     }
 
     /**
@@ -68,9 +83,19 @@ public class DriverHelper {
      */
     private static void downloadDriver(DriverInfo driverInfo) {
         try {
+            // Attempt to get the ROSETTA_DRIVERS environment variable
             String rosettaDriversPath = System.getenv("ROSETTA_DRIVERS");
             if (rosettaDriversPath == null) {
-                throw new IllegalArgumentException("ROSETTA_DRIVERS environment variable not set");
+                // Fall back to 'drivers' folder one level up if ROSETTA_DRIVERS is not set
+                rosettaDriversPath = Paths.get("..", "drivers").toString();
+            }
+
+            // Construct the destination directory path
+            Path rosettaPath = Paths.get(rosettaDriversPath);
+
+            // Ensure the directory exists and is writable, or fall back
+            if (!Files.exists(rosettaPath) || !Files.isWritable(rosettaPath)) {
+                throw new IllegalArgumentException("No writable directory available for drivers");
             }
 
             // Open a connection to the URL of the driver
@@ -78,12 +103,56 @@ public class DriverHelper {
             // Get the file name from the URL
             String fileName = driverInfo.getLink().substring(driverInfo.getLink().lastIndexOf('/') + 1);
             // Construct the destination path
-            Path destination = Paths.get(rosettaDriversPath, fileName);
+            Path destination = rosettaPath.resolve(fileName);
+
+            // Check if the file already exists
+            if (Files.exists(destination)) {
+                System.out.println("Driver already exists: " + destination.toAbsolutePath());
+                return;
+            }
+
+            // Check if we have write permission to the directory
+            if (!Files.isWritable(rosettaPath)) {
+                throw new IOException("No write permission to the directory: " + rosettaPath);
+            }
+
             // Download the driver file and save it to the specified directory
             Files.copy(url.openStream(), destination);
             System.out.println("Driver downloaded successfully: " + destination.toAbsolutePath());
+
+            // If the downloaded file is a zip file, unzip it
+            if (fileName.endsWith(".zip")) {
+                unzipFile(destination, rosettaPath);
+                // Delete the zip file after extraction
+                Files.delete(destination);
+                System.out.println("Zip file extracted and deleted: " + destination.toAbsolutePath());
+            }
+
         } catch (Exception e) {
             System.out.println("Error downloading the driver: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Unzips a zip file to the specified directory
+     *
+     * @param zipFilePath the path to the zip file
+     * @param destDir     the destination directory
+     * @throws IOException if an I/O error occurs
+     */
+    private static void unzipFile(Path zipFilePath, Path destDir) throws IOException {
+        try (ZipFile zipFile = new ZipFile(zipFilePath.toFile())) {
+            Enumeration<? extends ZipEntry> entries = zipFile.entries();
+            while (entries.hasMoreElements()) {
+                ZipEntry entry = entries.nextElement();
+                Path entryDestination = destDir.resolve(entry.getName());
+                if (entry.isDirectory()) {
+                    Files.createDirectories(entryDestination);
+                } else {
+                    Files.createDirectories(entryDestination.getParent());
+                    Files.copy(zipFile.getInputStream(entry), entryDestination, StandardCopyOption.REPLACE_EXISTING);
+                }
+            }
         }
     }
 }
