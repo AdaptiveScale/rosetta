@@ -50,6 +50,10 @@ public class DriverHelper {
      */
     public static List<DriverInfo> getDrivers(Path path) {
         try {
+            if (!Files.exists(path)) {
+                System.out.println("drivers.yaml not found, use -f to specify exact location.");
+                return List.of();
+            }
             List<DriverInfo> drivers = new ObjectMapper(new YAMLFactory()).readValue(path.toFile(), new TypeReference<List<DriverInfo>>() {
             });
             return drivers;
