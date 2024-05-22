@@ -73,6 +73,9 @@ class Cli implements Callable<Void> {
             description = "YAML config file. If none is supplied it will use main.conf in the current directory if it exists.")
     private Config config;
 
+    @CommandLine.Option(names = {"--verbose"}, description = "Enable Verbose output")
+    private boolean verbose = false;
+
     @Override
     public Void call() {
         throw new CommandLine.ParameterException(spec.commandLine(), "Missing required subcommand");
@@ -82,12 +85,14 @@ class Cli implements Callable<Void> {
     private void extract(@CommandLine.Option(names = {"-s", "--source"}, required = true) String sourceName,
                          @CommandLine.Option(names = {"-t", "--convert-to"}) String targetName
     ) throws Exception {
+        log.debug("Entering extract method with sourceName: {} and targetName: {}", sourceName, targetName);
         requireConfig(config);
         Connection source = getSourceConnection(sourceName);
 
         Path sourceWorkspace = Paths.get("./", sourceName);
         FileUtils.deleteDirectory(sourceWorkspace.toFile());
         Files.createDirectory(sourceWorkspace);
+        log.debug("Creating directory for source db Workspace {}", sourceWorkspace);
 
         Database result = SourceGeneratorFactory.sourceGenerator(source).generate(source);
         YamlModelOutput yamlInputModel = new YamlModelOutput(DEFAULT_MODEL_YAML, sourceWorkspace);
@@ -103,6 +108,7 @@ class Cli implements Callable<Void> {
         Path targetWorkspace = Paths.get("./", targetName);
         FileUtils.deleteDirectory(targetWorkspace.toFile());
         Files.createDirectory(targetWorkspace);
+        log.debug("Creating directory for target db Workspace {}", targetWorkspace);
 
         generateTranslatedModels(source, sourceWorkspace, target, targetWorkspace);
 
@@ -114,6 +120,7 @@ class Cli implements Callable<Void> {
                          @CommandLine.Option(names = {"-t", "--target"}, required = true) String targetName,
                          @CommandLine.Option(names = {"-d", "--with-drop"}) boolean dropIfExist
     ) throws Exception {
+        log.debug("Entering compile method with sourceName: {}, targetName: {}, dropIfExist: {}", sourceName, targetName, dropIfExist);
         requireConfig(config);
 
         Connection target = getTargetConnection(targetName);
@@ -165,6 +172,7 @@ class Cli implements Callable<Void> {
             " generate ddl for changes and apply to database. ", mixinStandardHelpOptions = true)
     private void apply(@CommandLine.Option(names = {"-s", "--source"}, required = true) String sourceName,
                        @CommandLine.Option(names = {"-m", "--model"}, defaultValue = DEFAULT_MODEL_YAML) String model) throws Exception {
+        log.debug("Entering apply method with sourceName: {}, model: {}", sourceName, model);
         requireConfig(config);
 
         Connection source = getSourceConnection(sourceName);
@@ -243,6 +251,7 @@ class Cli implements Callable<Void> {
 
     @CommandLine.Command(name = "test", description = "Run tests written on columns", mixinStandardHelpOptions = true)
     private void test(@CommandLine.Option(names = {"-s", "--source"}) String sourceName) throws Exception {
+        log.debug("Entering test method with sourceName: {}", sourceName);
         requireConfig(config);
 
         Optional<Connection> source = config.getConnection(sourceName);
@@ -269,6 +278,7 @@ class Cli implements Callable<Void> {
     @CommandLine.Command(name = "init", description = "Creates a sample config (main.conf) and model directory.", mixinStandardHelpOptions = true)
     private void init(@CommandLine.Parameters(index = "0", description = "Project name.", defaultValue = "")
                       String projectName) throws IOException {
+        log.debug("Entering init method with projectName: {}", projectName);
         Path fileName = Paths.get(projectName, CONFIG_NAME);
         InputStream resourceAsStream = getClass().getResourceAsStream("/" + TEMPLATE_CONFIG_NAME);
         Path projectDirectory = Path.of(projectName);
@@ -288,6 +298,7 @@ class Cli implements Callable<Void> {
 
     @CommandLine.Command(name = "dbt", description = "Extract dbt models chosen from connection config.", mixinStandardHelpOptions = true)
     private void dbt(@CommandLine.Option(names = {"-s", "--source"}, required = true) String sourceName) throws Exception {
+        log.debug("Entering dbt method with sourceName: {}", sourceName);
         requireConfig(config);
         Connection source = getSourceConnection(sourceName);
 
@@ -306,6 +317,7 @@ class Cli implements Callable<Void> {
                           @CommandLine.Option(names = {"--pyspark"}) boolean generateSpark,
                           @CommandLine.Option(names = {"--scala"}) boolean generateScala
     ) throws Exception {
+        log.debug("Entering generate method with sourceName: {}, targetName: {}", sourceName, targetName);
         requireConfig(config);
 
         Connection source = getSourceConnection(sourceName);
@@ -362,6 +374,7 @@ class Cli implements Callable<Void> {
 
     private void extractDbtModels(Connection connection, Path sourceWorkspace) throws IOException {
         // create dbt directories if they dont exist
+        log.debug("Extracting DBT models");
         Path dbtWorkspace = sourceWorkspace.resolve("dbt");
         Files.createDirectories(dbtWorkspace.resolve("model"));
 
@@ -381,6 +394,7 @@ class Cli implements Callable<Void> {
     @CommandLine.Command(name = "diff", description = "Show difference between local model and database", mixinStandardHelpOptions = true)
     private void diff(@CommandLine.Option(names = {"-s", "--source"}) String sourceName,
                       @CommandLine.Option(names = {"-m", "--model"}, defaultValue = DEFAULT_MODEL_YAML) String model) throws Exception {
+        log.debug("Entering diff method with sourceName: {}, model: {}", sourceName, model);
         requireConfig(config);
         Connection sourceConnection = getSourceConnection(sourceName);
 
@@ -417,9 +431,11 @@ class Cli implements Callable<Void> {
         if (config == null) {
             throw new RuntimeException("Config file is required.");
         }
+        if (verbose) {}
     }
 
     private Connection getSourceConnection(String sourceName) {
+        log.debug("Getting source connection for: {}", sourceName);
         Optional<Connection> source = config.getConnection(sourceName);
         if (source.isEmpty()) {
             throw new RuntimeException(String.format("Can not find source with name: %s configured in config.",
@@ -429,6 +445,7 @@ class Cli implements Callable<Void> {
     }
 
     private Connection getTargetConnection(String targetName) {
+        log.debug("Getting target connection for: {}", targetName);
         Optional<Connection> target = config.getConnection(targetName);
         if (target.isEmpty()) {
             throw new RuntimeException("Can not find target with name: " + targetName + " configured in config.");
@@ -437,6 +454,7 @@ class Cli implements Callable<Void> {
     }
 
     private List<FileNameAndDatabasePair> generateTranslatedModels(Connection source, Path sourceWorkspace, Connection target, Path targetWorkspace) throws IOException {
+        log.debug("Generating translated models for source: {} and target: {}", source.getName(), target.getName());
         List<FileNameAndDatabasePair> translatedModels;
         if (source.getDbType().equals(target.getDbType())) {
             log.info("Skipping translation because the target ({}) and source ({}) db types are the same.",
@@ -478,6 +496,7 @@ class Cli implements Callable<Void> {
      * @throws IOException exception with io
      */
     private Stream<FileNameAndDatabasePair> getDatabases(Path directory) throws IOException {
+        log.debug("Getting databases from workspace: {}", directory);
         return Files.list(directory)
                 .filter(path -> !Files.isDirectory(path) && "yaml".equals(FilenameUtils.getExtension(path.toString())))
                 .map(path -> {
@@ -491,6 +510,7 @@ class Cli implements Callable<Void> {
     }
 
     private Stream<FileNameAndDatabasePair> getDatabaseForModel(Path directory, String model) throws IOException {
+        log.debug("Getting database for model from workspace: {}", directory);
         return Files.list(directory)
                 .filter(path -> FilenameUtils.getName(path.toString()).equals(model) && !Files.isDirectory(path))
                 .map(path -> {
