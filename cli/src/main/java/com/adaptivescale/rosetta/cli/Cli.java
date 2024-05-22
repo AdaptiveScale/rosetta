@@ -425,6 +425,12 @@ class Cli implements Callable<Void> {
                          @CommandLine.Option(names = {"-f", "--file"}, defaultValue = DEFAULT_DRIVERS_YAML) String file,
                          @CommandLine.Parameters(index = "0", arity = "0..1") Integer driverId) {
         Path driversPath = Path.of(file);
+
+        if (!Files.exists(driversPath)) {
+            System.out.println("drivers.yaml not found, use -f to specify exact location.");
+            return;
+        }
+
         if (isList) {
             DriverHelper.printDrivers(driversPath);
 
