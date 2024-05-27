@@ -18,6 +18,9 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 public class DriverHelper {
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper(new YAMLFactory());
+    private static final TypeReference<List<DriverInfo>> DRIVER_INFO_TYPE_REF = new TypeReference<List<DriverInfo>>() {};
+
     /**
      * Prints drivers that are downloadable
      *
@@ -51,14 +54,16 @@ public class DriverHelper {
     public static List<DriverInfo> getDrivers(Path path) {
         try {
             if (!Files.exists(path)) {
-                System.out.println("drivers.yaml not found, use -f to specify exact location.");
-                return List.of();
+                URL resource = DriverHelper.class.getClassLoader().getResource(path.toString());
+                if (resource == null) {
+                    throw new RuntimeException("Drivers resource not found: " + path);
+                }
+                return OBJECT_MAPPER.readValue(resource, DRIVER_INFO_TYPE_REF);
+            } else {
+                return OBJECT_MAPPER.readValue(path.toFile(), DRIVER_INFO_TYPE_REF);
             }
-            List<DriverInfo> drivers = new ObjectMapper(new YAMLFactory()).readValue(path.toFile(), new TypeReference<List<DriverInfo>>() {
-            });
-            return drivers;
         } catch (Exception exception) {
-            throw new RuntimeException(exception);
+            throw new RuntimeException("Failed to read drivers from path: " + path, exception);
         }
     }
 

@@ -725,10 +725,20 @@ This command can list drivers that are listed in a `drivers.yaml` file and by ch
 Parameter | Description
 --- | ---
 -h, --help | Show the help message and exit.
--f, --file DRIVERS_FILE | YAML drivers file.  If none is supplied it will use drivers.yaml in the current directory if it exists.
+-f, --file DRIVERS_FILE | YAML drivers file path.  If none is supplied it will use drivers.yaml in the current directory and then fallback to our default one.
 --list | Used to list all available drivers.
 -dl, --download | Used to download selected driver by index.
 indexToDownload | Chooses which driver to download depending on the index of the driver.
+
+
+***Example*** (drivers.yaml)
+
+```yaml
+- name: MySQL 8.0.30
+  link: https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-8.0.30.zip
+- name: Postgresql 42.3.7
+  link: https://jdbc.postgresql.org/download/postgresql-42.3.7.jar
+```
 
 
 ### Safety Operation
