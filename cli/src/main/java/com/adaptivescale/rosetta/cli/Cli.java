@@ -1,5 +1,6 @@
 package com.adaptivescale.rosetta.cli;
 
+import com.adaptivescale.rosetta.cli.helpers.DriverHelper;
 import com.adaptivescale.rosetta.cli.model.Config;
 import com.adaptivescale.rosetta.cli.outputs.DbtSqlModelOutput;
 import com.adaptivescale.rosetta.cli.outputs.DbtYamlModelOutput;
@@ -7,6 +8,7 @@ import com.adaptivescale.rosetta.cli.outputs.StringOutput;
 import com.adaptivescale.rosetta.cli.outputs.YamlModelOutput;
 import com.adaptivescale.rosetta.common.models.Database;
 import com.adaptivescale.rosetta.common.DriverManagerDriverProvider;
+import com.adaptivescale.rosetta.common.models.DriverInfo;
 import com.adaptivescale.rosetta.common.models.Table;
 import com.adaptivescale.rosetta.common.models.dbt.DbtModel;
 import com.adaptivescale.rosetta.common.models.enums.OperationLevelEnum;
@@ -64,6 +66,7 @@ import static com.adaptivescale.rosetta.cli.Constants.*;
 class Cli implements Callable<Void> {
 
     public static final String DEFAULT_MODEL_YAML = "model.yaml";
+    public static final String DEFAULT_DRIVERS_YAML = "drivers.yaml";
 
     @CommandLine.Spec
     CommandLine.Model.CommandSpec spec;
@@ -412,6 +415,40 @@ class Cli implements Callable<Void> {
         } else {
             System.out.println("There are no changes");
         }
+    }
+
+    @CommandLine.Command(name = "drivers", description = "Show available drivers for download", mixinStandardHelpOptions = true)
+    private void drivers(@CommandLine.Option(names = {"--list"}, description = "Used to list all available drivers") boolean isList,
+                         @CommandLine.Option(names = {"-dl", "--download"}, description = "Used to download selected driver by index") boolean isDownload,
+                         @CommandLine.Option(names = {"-f", "--file"}, defaultValue = DEFAULT_DRIVERS_YAML) String file,
+                         @CommandLine.Parameters(index = "0", arity = "0..1") Integer driverId) {
+        Path driversPath = Path.of(file);
+
+        if (isList) {
+            DriverHelper.printDrivers(driversPath);
+
+            System.out.println("To download a driver use: rosetta drivers {index} --download");
+            return;
+        }
+
+        if (isDownload) {
+            List<DriverInfo> drivers = DriverHelper.getDrivers(driversPath);
+            if (drivers.isEmpty()) {
+                System.out.println("No drivers found in the specified YAML file.");
+                return;
+            }
+
+            if (driverId != null && driverId < 1 || driverId != null && driverId > drivers.size()) {
+                System.out.println("Invalid index. Please provide a valid index.");
+                return;
+            }
+
+            DriverHelper.getDriver(driversPath, driverId);
+            return;
+        }
+
+        // if neither list nor download was called default to help command
+        spec.subcommands().get("drivers").usage(System.out);
     }
 
     private void requireConfig(Config config) {
