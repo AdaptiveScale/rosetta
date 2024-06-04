@@ -575,7 +575,8 @@ class Cli implements Callable<Void> {
     private void query(@CommandLine.Option(names = {"-s", "--source"}, required = true) String sourceName,
                        @CommandLine.Option(names = {"-q", "--query"}, required = true) String userQueryRequest,
                        @CommandLine.Option(names = {"-l", "--limit"}, required = false, defaultValue = "200") Integer showRowLimit,
-                       @CommandLine.Option(names = {"--no-limit"}, required = false, defaultValue = "false") Boolean noRowLimit
+                       @CommandLine.Option(names = {"--no-limit"}, required = false, defaultValue = "false") Boolean noRowLimit,
+                       @CommandLine.Option(names = {"--output"}, required = false, defaultValue = "data") String output
     )
             throws Exception {
         requireConfig(config);
@@ -589,13 +590,28 @@ class Cli implements Callable<Void> {
 
         Path sourceWorkspace = Paths.get("./", sourceName);
 
-        if (!Files.exists(sourceWorkspace)) {
-            Files.createDirectories(sourceWorkspace);
-        }
+        Path outputFile = null;
+        Path dataDirectory = null;
 
-        Path dataDirectory = sourceWorkspace.resolve("data");
-        if (!Files.exists(dataDirectory)) {
-            Files.createDirectories(dataDirectory);
+        if (output.equals("data")) {
+            dataDirectory = sourceWorkspace.resolve("data");
+            if (!Files.exists(dataDirectory)) {
+                Files.createDirectories(dataDirectory);
+            }
+        } else {
+            Path outputFilePath = Paths.get(output);
+            Path outputDirectory = outputFilePath.getParent();
+            outputFile = outputFilePath.getFileName();
+
+            if (!Files.exists(sourceWorkspace)) {
+                Files.createDirectories(sourceWorkspace);
+            }
+
+//          Path dataDirectory = sourceWorkspace.resolve(outputDirectory);
+            dataDirectory = Paths.get("./", outputDirectory.toString());
+            if (!Files.exists(outputDirectory)) {
+                Files.createDirectories(outputDirectory);
+            }
         }
 
         Database db = SourceGeneratorFactory.sourceGenerator(source).generate(source);
@@ -604,7 +620,7 @@ class Cli implements Callable<Void> {
         String DDL = modelDDL.createDatabase(db, false);
 
         // If `noRowLimit` is true, set the row limit to 0 (no limit), otherwise use the value of `showRowLimit`
-        GenericResponse response = AIService.generateQuery(userQueryRequest, config.getOpenAIApiKey(), config.getOpenAIModel(), DDL, source, noRowLimit ? 0 : showRowLimit, dataDirectory);
+        GenericResponse response = AIService.generateQuery(userQueryRequest, config.getOpenAIApiKey(), config.getOpenAIModel(), DDL, source, noRowLimit ? 0 : showRowLimit, dataDirectory, outputFile);
         log.info(response.getMessage());
     }
 
