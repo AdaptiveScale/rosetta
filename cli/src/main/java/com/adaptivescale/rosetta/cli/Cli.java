@@ -63,6 +63,7 @@ import static com.adaptivescale.rosetta.cli.Constants.*;
 class Cli implements Callable<Void> {
 
     public static final String DEFAULT_MODEL_YAML = "model.yaml";
+    public static final String DEFAULT_OUTPUT_DIRECTORY = "data";
 
     @CommandLine.Spec
     CommandLine.Model.CommandSpec spec;
@@ -576,7 +577,7 @@ class Cli implements Callable<Void> {
                        @CommandLine.Option(names = {"-q", "--query"}, required = true) String userQueryRequest,
                        @CommandLine.Option(names = {"-l", "--limit"}, required = false, defaultValue = "200") Integer showRowLimit,
                        @CommandLine.Option(names = {"--no-limit"}, required = false, defaultValue = "false") Boolean noRowLimit,
-                       @CommandLine.Option(names = {"--output"}, required = false, defaultValue = "data") String output
+                       @CommandLine.Option(names = {"--output"}, required = false) Path output
     )
             throws Exception {
         requireConfig(config);
@@ -590,27 +591,12 @@ class Cli implements Callable<Void> {
 
         Path sourceWorkspace = Paths.get("./", sourceName);
 
-        Path outputFile = null;
-        Path dataDirectory = null;
+        Path dataDirectory = output != null ? output : sourceWorkspace.resolve(DEFAULT_OUTPUT_DIRECTORY);
+        Path outputFile = dataDirectory.getFileName().toString().contains(".") ? dataDirectory.getFileName() : null;
 
-        if (output.equals("data")) {
-            dataDirectory = sourceWorkspace.resolve("data");
-            if (!Files.exists(dataDirectory)) {
-                Files.createDirectories(dataDirectory);
-            }
-        } else {
-            Path outputFilePath = Paths.get(output);
-            Path outputDirectory = outputFilePath.getParent();
-            outputFile = outputFilePath.getFileName();
-
-            if (!Files.exists(sourceWorkspace)) {
-                Files.createDirectories(sourceWorkspace);
-            }
-
-            dataDirectory = Paths.get("./", outputDirectory.toString());
-            if (!Files.exists(outputDirectory)) {
-                Files.createDirectories(outputDirectory);
-            }
+        dataDirectory = dataDirectory.getFileName().toString().contains(".") ? dataDirectory.getParent() != null ? dataDirectory.getParent() : Paths.get(".") : dataDirectory;
+        if (!dataDirectory.toFile().exists()) {
+            Files.createDirectories(dataDirectory);
         }
 
         Database db = SourceGeneratorFactory.sourceGenerator(source).generate(source);
