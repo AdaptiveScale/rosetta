@@ -29,6 +29,7 @@ import com.adaptivescale.rosetta.translator.Translator;
 import com.adaptivescale.rosetta.translator.TranslatorFactory;
 import com.adataptivescale.rosetta.source.core.SourceGeneratorFactory;
 
+import com.adataptivescale.rosetta.source.core.interfaces.Generator;
 import com.adataptivescale.rosetta.source.dbt.DbtModelGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
@@ -606,6 +607,17 @@ class Cli implements Callable<Void> {
         // If `noRowLimit` is true, set the row limit to 0 (no limit), otherwise use the value of `showRowLimit`
         GenericResponse response = AIService.generateQuery(userQueryRequest, config.getOpenAIApiKey(), config.getOpenAIModel(), DDL, source, noRowLimit ? 0 : showRowLimit, dataDirectory);
         log.info(response.getMessage());
+    }
+
+    @CommandLine.Command(name = "validate", description = "Validate Connection", mixinStandardHelpOptions = true)
+    private void validate(@CommandLine.Option(names = {"-s", "--source"}, required = true) String sourceName)
+            throws Exception {
+
+        requireConfig(config);
+        Connection source = getSourceConnection(sourceName);
+        Database database = SourceGeneratorFactory.sourceGenerator(source).validate(source);
+
+        log.info("Successfully connected to {} through the configured source {}.", database.getDatabaseProductName(), source.getName());
     }
 
 }
