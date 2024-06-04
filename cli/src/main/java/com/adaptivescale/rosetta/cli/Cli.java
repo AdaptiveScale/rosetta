@@ -607,7 +607,6 @@ class Cli implements Callable<Void> {
                 Files.createDirectories(sourceWorkspace);
             }
 
-//          Path dataDirectory = sourceWorkspace.resolve(outputDirectory);
             dataDirectory = Paths.get("./", outputDirectory.toString());
             if (!Files.exists(outputDirectory)) {
                 Files.createDirectories(outputDirectory);
