@@ -350,6 +350,7 @@ tables:
 ## Rosetta Commands
 ### Available commands
 - init
+- validate
 - extract
 - compile
 - dbt
@@ -389,6 +390,18 @@ connections:
     tables:
       - bigquery_table
 ```
+
+#### validate
+This command validates the configuration and tests if rosetta can connect to the configured source.
+
+    rosetta [-c, --config CONFIG_FILE] validate [-h, --help] [-s, --source CONNECTION_NAME]
+
+Parameter | Description
+--- | ---
+-h, --help | Show the help message and exit.
+-c, --config CONFIG_FILE | YAML config file.  If none is supplied it will use main.conf in the current directory if it exists.
+-s, --source CONNECTION_NAME | The source connection name to extract schema from.
+
 
 #### extract
 This is the command that extracts the schema from a database and generates declarative DBML models that can be used for conversion to alternate database targets.
@@ -716,6 +729,29 @@ Amanda Wilson,5000,Atlanta,amandawilson@example.com
 ```
 **Note:**  When giving a request that will not generate a SELECT statement the query will be generated but will not be executed rather be given to the user to execute on their own.
 
+
+#### drivers
+This command can list drivers that are listed in a `drivers.yaml` file and by choosing a driver you can download it to the `ROSETTA_DRIVERS` directory which will be automatically ready to use.
+
+    rosetta drivers [-h, --help] [-f, --file] [--list] <indexToDownload> [-dl, --download]
+
+Parameter | Description
+--- | ---
+-h, --help | Show the help message and exit.
+-f, --file DRIVERS_FILE | YAML drivers file path.  If none is supplied it will use drivers.yaml in the current directory and then fallback to our default one.
+--list | Used to list all available drivers.
+-dl, --download | Used to download selected driver by index.
+indexToDownload | Chooses which driver to download depending on the index of the driver.
+
+
+***Example*** (drivers.yaml)
+
+```yaml
+- name: MySQL 8.0.30
+  link: https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-8.0.30.zip
+- name: Postgresql 42.3.7
+  link: https://jdbc.postgresql.org/download/postgresql-42.3.7.jar
+```
 
 
 ### Safety Operation
