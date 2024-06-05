@@ -1,0 +1,18 @@
+- name: Google Cloud BigQuery 4.2
+  link: https://storage.googleapis.com/simba-bq-release/jdbc/SimbaJDBCDriverforGoogleBigQuery42_1.3.0.1001.zip
+- name: Snowflake 3.13.19
+  link: https://repo1.maven.org/maven2/net/snowflake/snowflake-jdbc/3.13.19/snowflake-jdbc-3.13.19.jar
+- name: Postgresql 42.3.7
+  link: https://jdbc.postgresql.org/download/postgresql-42.3.7.jar
+- name: MySQL 8.0.30
+  link: https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-8.0.30.zip
+- name: Kinetica 7.1.7.7
+  link: https://github.com/kineticadb/kinetica-client-jdbc/archive/refs/tags/v7.1.7.7.zip
+- name: Google Cloud Spanner 2.6.2
+  link: https://search.maven.org/remotecontent?filepath=com/google/cloud/google-cloud-spanner-jdbc/2.6.2/google-cloud-spanner-jdbc-2.6.2-single-jar-with-dependencies.jar
+- name: SQL Server 12.2.0
+  link: https://go.microsoft.com/fwlink/?linkid=2223050
+- name: DB2 jcc4
+  link: https://repo1.maven.org/maven2/com/ibm/db2/jcc/db2jcc/db2jcc4/db2jcc-db2jcc4.jar
+- name: Oracle 23.2.0.0
+  link: https://download.oracle.com/otn-pub/otn_software/jdbc/232-DeveloperRel/ojdbc11.jar
