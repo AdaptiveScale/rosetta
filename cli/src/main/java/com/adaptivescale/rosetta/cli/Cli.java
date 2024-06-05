@@ -66,6 +66,7 @@ import static com.adaptivescale.rosetta.cli.Constants.*;
 class Cli implements Callable<Void> {
 
     public static final String DEFAULT_MODEL_YAML = "model.yaml";
+    public static final String DEFAULT_OUTPUT_DIRECTORY = "data";
     public static final String DEFAULT_DRIVERS_YAML = "drivers.yaml";
 
     @CommandLine.Spec
@@ -613,7 +614,8 @@ class Cli implements Callable<Void> {
     private void query(@CommandLine.Option(names = {"-s", "--source"}, required = true) String sourceName,
                        @CommandLine.Option(names = {"-q", "--query"}, required = true) String userQueryRequest,
                        @CommandLine.Option(names = {"-l", "--limit"}, required = false, defaultValue = "200") Integer showRowLimit,
-                       @CommandLine.Option(names = {"--no-limit"}, required = false, defaultValue = "false") Boolean noRowLimit
+                       @CommandLine.Option(names = {"--no-limit"}, required = false, defaultValue = "false") Boolean noRowLimit,
+                       @CommandLine.Option(names = {"--output"}, required = false) Path output
     )
             throws Exception {
         requireConfig(config);
@@ -627,12 +629,11 @@ class Cli implements Callable<Void> {
 
         Path sourceWorkspace = Paths.get("./", sourceName);
 
-        if (!Files.exists(sourceWorkspace)) {
-            Files.createDirectories(sourceWorkspace);
-        }
+        Path dataDirectory = output != null ? output : sourceWorkspace.resolve(DEFAULT_OUTPUT_DIRECTORY);
+        Path outputFile = dataDirectory.getFileName().toString().contains(".") ? dataDirectory.getFileName() : null;
 
-        Path dataDirectory = sourceWorkspace.resolve("data");
-        if (!Files.exists(dataDirectory)) {
+        dataDirectory = dataDirectory.getFileName().toString().contains(".") ? dataDirectory.getParent() != null ? dataDirectory.getParent() : Paths.get(".") : dataDirectory;
+        if (!dataDirectory.toFile().exists()) {
             Files.createDirectories(dataDirectory);
         }
 
@@ -642,7 +643,7 @@ class Cli implements Callable<Void> {
         String DDL = modelDDL.createDatabase(db, false);
 
         // If `noRowLimit` is true, set the row limit to 0 (no limit), otherwise use the value of `showRowLimit`
-        GenericResponse response = AIService.generateQuery(userQueryRequest, config.getOpenAIApiKey(), config.getOpenAIModel(), DDL, source, noRowLimit ? 0 : showRowLimit, dataDirectory);
+        GenericResponse response = AIService.generateQuery(userQueryRequest, config.getOpenAIApiKey(), config.getOpenAIModel(), DDL, source, noRowLimit ? 0 : showRowLimit, dataDirectory, outputFile);
         log.info(response.getMessage());
     }
 
