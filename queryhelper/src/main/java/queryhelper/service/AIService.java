@@ -30,7 +30,7 @@ import java.util.Properties;
 public class AIService {
     private final static String AI_MODEL = "gpt-3.5-turbo";
 
-    public static GenericResponse generateQuery(String userQueryRequest, String apiKey, String aiModel, String databaseDDL, Connection source, Integer showRowLimit, Path dataDirectory) {
+    public static GenericResponse generateQuery(String userQueryRequest, String apiKey, String aiModel, String databaseDDL, Connection source, Integer showRowLimit, Path dataDirectory, Path outputFileName) {
 
         GenericResponse response = new GenericResponse();
         QueryDataResponse data = new QueryDataResponse();
@@ -55,7 +55,7 @@ public class AIService {
 
 
         QueryDataResponse queryDataResponse = (QueryDataResponse) response.getData();
-        String csvFile = createCSVFile(queryDataResponse, queryRequest.getQuery(), dataDirectory);
+        String csvFile = createCSVFile(queryDataResponse, queryRequest.getQuery(), dataDirectory, outputFileName);
 
         response.setMessage(
                 query + "\n" +
@@ -94,15 +94,21 @@ public class AIService {
         return isSelectStatement;
     }
 
-    private static String createCSVFile(QueryDataResponse queryDataResponse, String csvFileName, Path dataDirectory) {
+    private static String createCSVFile(QueryDataResponse queryDataResponse, String csvFileName, Path dataDirectory, Path outputFileName) {
         try {
-            String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-            String fileName = csvFileName.replaceAll("\\s+", "_") + "_" + timestamp + ".csv";
-            Path csvFilePath = dataDirectory.resolve(fileName);
+            if (outputFileName == null) {
+                String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                String fileName = csvFileName.replaceAll("\\s+", "_") + "_" + timestamp + ".csv";
+                Path csvFilePath = dataDirectory.resolve(fileName);
+                FileUtils.convertToCSV(csvFilePath.toString(), queryDataResponse.getRecords());
 
+                return csvFilePath.toString();
+            }
+
+            Path csvFilePath = dataDirectory.resolve(outputFileName.toString());
             FileUtils.convertToCSV(csvFilePath.toString(), queryDataResponse.getRecords());
-
             return csvFilePath.toString();
+
         } catch (Exception e) {
             GenericResponse genericResponse = ErrorUtils.csvFileError(e);
             throw new RuntimeException(genericResponse.getMessage());

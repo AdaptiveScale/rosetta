@@ -1,5 +1,6 @@
 package com.adaptivescale.rosetta.cli;
 
+import com.adaptivescale.rosetta.cli.helpers.DriverHelper;
 import com.adaptivescale.rosetta.cli.model.Config;
 import com.adaptivescale.rosetta.cli.outputs.DbtSqlModelOutput;
 import com.adaptivescale.rosetta.cli.outputs.DbtYamlModelOutput;
@@ -7,6 +8,7 @@ import com.adaptivescale.rosetta.cli.outputs.StringOutput;
 import com.adaptivescale.rosetta.cli.outputs.YamlModelOutput;
 import com.adaptivescale.rosetta.common.models.Database;
 import com.adaptivescale.rosetta.common.DriverManagerDriverProvider;
+import com.adaptivescale.rosetta.common.models.DriverInfo;
 import com.adaptivescale.rosetta.common.models.Table;
 import com.adaptivescale.rosetta.common.models.dbt.DbtModel;
 import com.adaptivescale.rosetta.common.models.enums.OperationLevelEnum;
@@ -29,6 +31,7 @@ import com.adaptivescale.rosetta.translator.Translator;
 import com.adaptivescale.rosetta.translator.TranslatorFactory;
 import com.adataptivescale.rosetta.source.core.SourceGeneratorFactory;
 
+import com.adataptivescale.rosetta.source.core.interfaces.Generator;
 import com.adataptivescale.rosetta.source.dbt.DbtModelGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
@@ -57,12 +60,14 @@ import static com.adaptivescale.rosetta.cli.Constants.*;
 @Slf4j
 @CommandLine.Command(name = "cli",
         mixinStandardHelpOptions = true,
-        version = "2.3.0",
+        version = "2.4.0",
         description = "Declarative Database Management - DDL Transpiler"
 )
 class Cli implements Callable<Void> {
 
     public static final String DEFAULT_MODEL_YAML = "model.yaml";
+    public static final String DEFAULT_OUTPUT_DIRECTORY = "data";
+    public static final String DEFAULT_DRIVERS_YAML = "drivers.yaml";
 
     @CommandLine.Spec
     CommandLine.Model.CommandSpec spec;
@@ -413,6 +418,40 @@ class Cli implements Callable<Void> {
         }
     }
 
+    @CommandLine.Command(name = "drivers", description = "Show available drivers for download", mixinStandardHelpOptions = true)
+    private void drivers(@CommandLine.Option(names = {"--list"}, description = "Used to list all available drivers") boolean isList,
+                         @CommandLine.Option(names = {"-dl", "--download"}, description = "Used to download selected driver by index") boolean isDownload,
+                         @CommandLine.Option(names = {"-f", "--file"}, defaultValue = DEFAULT_DRIVERS_YAML) String file,
+                         @CommandLine.Parameters(index = "0", arity = "0..1") Integer driverId) {
+        Path driversPath = Path.of(file);
+
+        if (isList) {
+            DriverHelper.printDrivers(driversPath);
+
+            System.out.println("To download a driver use: rosetta drivers {index} --download");
+            return;
+        }
+
+        if (isDownload) {
+            List<DriverInfo> drivers = DriverHelper.getDrivers(driversPath);
+            if (drivers.isEmpty()) {
+                System.out.println("No drivers found in the specified YAML file.");
+                return;
+            }
+
+            if (driverId != null && driverId < 1 || driverId != null && driverId > drivers.size()) {
+                System.out.println("Invalid index. Please provide a valid index.");
+                return;
+            }
+
+            DriverHelper.getDriver(driversPath, driverId);
+            return;
+        }
+
+        // if neither list nor download was called default to help command
+        spec.subcommands().get("drivers").usage(System.out);
+    }
+
     private void requireConfig(Config config) {
         if (config == null) {
             throw new RuntimeException("Config file is required.");
@@ -575,7 +614,8 @@ class Cli implements Callable<Void> {
     private void query(@CommandLine.Option(names = {"-s", "--source"}, required = true) String sourceName,
                        @CommandLine.Option(names = {"-q", "--query"}, required = true) String userQueryRequest,
                        @CommandLine.Option(names = {"-l", "--limit"}, required = false, defaultValue = "200") Integer showRowLimit,
-                       @CommandLine.Option(names = {"--no-limit"}, required = false, defaultValue = "false") Boolean noRowLimit
+                       @CommandLine.Option(names = {"--no-limit"}, required = false, defaultValue = "false") Boolean noRowLimit,
+                       @CommandLine.Option(names = {"--output"}, required = false) Path output
     )
             throws Exception {
         requireConfig(config);
@@ -589,12 +629,11 @@ class Cli implements Callable<Void> {
 
         Path sourceWorkspace = Paths.get("./", sourceName);
 
-        if (!Files.exists(sourceWorkspace)) {
-            Files.createDirectories(sourceWorkspace);
-        }
+        Path dataDirectory = output != null ? output : sourceWorkspace.resolve(DEFAULT_OUTPUT_DIRECTORY);
+        Path outputFile = dataDirectory.getFileName().toString().contains(".") ? dataDirectory.getFileName() : null;
 
-        Path dataDirectory = sourceWorkspace.resolve("data");
-        if (!Files.exists(dataDirectory)) {
+        dataDirectory = dataDirectory.getFileName().toString().contains(".") ? dataDirectory.getParent() != null ? dataDirectory.getParent() : Paths.get(".") : dataDirectory;
+        if (!dataDirectory.toFile().exists()) {
             Files.createDirectories(dataDirectory);
         }
 
@@ -604,8 +643,19 @@ class Cli implements Callable<Void> {
         String DDL = modelDDL.createDatabase(db, false);
 
         // If `noRowLimit` is true, set the row limit to 0 (no limit), otherwise use the value of `showRowLimit`
-        GenericResponse response = AIService.generateQuery(userQueryRequest, config.getOpenAIApiKey(), config.getOpenAIModel(), DDL, source, noRowLimit ? 0 : showRowLimit, dataDirectory);
+        GenericResponse response = AIService.generateQuery(userQueryRequest, config.getOpenAIApiKey(), config.getOpenAIModel(), DDL, source, noRowLimit ? 0 : showRowLimit, dataDirectory, outputFile);
         log.info(response.getMessage());
+    }
+
+    @CommandLine.Command(name = "validate", description = "Validate Connection", mixinStandardHelpOptions = true)
+    private void validate(@CommandLine.Option(names = {"-s", "--source"}, required = true) String sourceName)
+            throws Exception {
+
+        requireConfig(config);
+        Connection source = getSourceConnection(sourceName);
+        Database database = SourceGeneratorFactory.sourceGenerator(source).validate(source);
+
+        log.info("Successfully connected to {} through the configured source {}.", database.getDatabaseProductName(), source.getName());
     }
 
 }
