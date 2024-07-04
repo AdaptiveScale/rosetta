@@ -535,6 +535,20 @@ class Cli implements Callable<Void> {
                 .map(path -> {
                     try {
                         Database input = new ObjectMapper(new YAMLFactory()).readValue(path.toFile(), Database.class);
+                        Path overrideFile = Path.of(FilenameUtils.removeExtension(path.toString()) + ".override.yaml");
+                        if (!Files.isDirectory(overrideFile)) {
+                            Database override = new ObjectMapper(new YAMLFactory()).readValue(overrideFile.toFile(), Database.class);
+                            HashMap<String, Table> tables = new HashMap();
+                            input.getTables().stream().forEach(tbl -> tables.put(tbl.getSchema() + tbl.getName(), tbl));
+                            override.getTables().stream().forEach(tbl -> {
+                                if (tables.containsKey(tbl.getSchema() + tbl.getName())) {
+                                    //TODO: this currently overrides the whole table, we can extend this to include table or column level specific override
+                                    tables.put(tbl.getSchema() + tbl.getName(), tbl);
+                                }
+                            });
+                            input.setTables(tables.values());
+                        }
+
                         return new FileNameAndDatabasePair(path.getFileName().toString(), input);
                     } catch (Exception exception) {
                         throw new RuntimeException(exception);
