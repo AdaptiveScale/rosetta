@@ -535,11 +535,35 @@ class Cli implements Callable<Void> {
                 .map(path -> {
                     try {
                         Database input = new ObjectMapper(new YAMLFactory()).readValue(path.toFile(), Database.class);
+                        applyOverride(path, input);
                         return new FileNameAndDatabasePair(path.getFileName().toString(), input);
                     } catch (Exception exception) {
                         throw new RuntimeException(exception);
                     }
                 });
+    }
+
+
+    /**
+     * Checks if an override file exists for the selected model. If it does,
+     * it applies the changes from the override file to the original model.
+     *
+     * @param path {@link Path} The path to the original model.
+     * @param input {@link Database} The original model.
+     * @throws IOException If an I/O error occurs.
+     */
+    private void applyOverride(Path path,Database input) throws IOException {
+        Path overrideFile = Path.of(FilenameUtils.removeExtension(path.toString()) + ".override.yaml");
+        if (!Files.isDirectory(overrideFile)) {
+            Database override = new ObjectMapper(new YAMLFactory()).readValue(overrideFile.toFile(), Database.class);
+            HashMap<String, Table> tables = new HashMap();
+            input.getTables().stream().forEach(tbl -> tables.put(tbl.getSchema() + tbl.getName(), tbl));
+            override.getTables().stream().forEach(tbl -> {
+                //TODO: this currently overrides the whole table, we can extend this to include table or column level specific override
+                tables.put(tbl.getSchema() + tbl.getName(), tbl);
+            });
+            input.setTables(tables.values());
+        }
     }
 
     private Function<FileNameAndDatabasePair, FileNameAndDatabasePair> translateDatabases(Translator<Database, Database> translator) {
