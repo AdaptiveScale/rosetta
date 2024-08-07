@@ -1,10 +1,7 @@
 package com.adaptivescale.rosetta.ddl.targets.kinetica;
 
 import com.adaptivescale.rosetta.common.annotations.RosettaModule;
-import com.adaptivescale.rosetta.common.models.Column;
-import com.adaptivescale.rosetta.common.models.Database;
-import com.adaptivescale.rosetta.common.models.ForeignKey;
-import com.adaptivescale.rosetta.common.models.Table;
+import com.adaptivescale.rosetta.common.models.*;
 import com.adaptivescale.rosetta.common.types.RosettaModuleTypes;
 import com.adaptivescale.rosetta.ddl.DDL;
 import com.adaptivescale.rosetta.ddl.change.model.ColumnChange;
@@ -13,7 +10,6 @@ import com.adaptivescale.rosetta.ddl.targets.ColumnSQLDecoratorFactory;
 import com.adaptivescale.rosetta.ddl.utils.TemplateEngine;
 import lombok.extern.slf4j.Slf4j;
 
-import java.sql.DatabaseMetaData;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -59,6 +55,7 @@ public class KineticaDDLGenerator implements DDL {
 
         List<String> foreignKeysForTable = getForeignKeysColumnNames(table);
         Optional<String> primaryKeysForTable = createPrimaryKeysForTable(table, foreignKeysForTable);
+        List<String> indicesForTable = getIndicesForTable(table);
         primaryKeysForTable.ifPresent(definitions::add);
         String definitionAsString = String.join(", ", definitions);
 
@@ -70,6 +67,7 @@ public class KineticaDDLGenerator implements DDL {
         createParams.put("schemaName", table.getSchema());
         createParams.put("tableName", table.getName());
         createParams.put("tableCode", definitionAsString);
+        createParams.put("indices", String.join("\n", indicesForTable));
         stringBuilder.append(TemplateEngine.process(TABLE_CREATE_TEMPLATE, createParams));
 
         return stringBuilder.toString();
@@ -223,6 +221,43 @@ public class KineticaDDLGenerator implements DDL {
         }
 
         return Optional.of("PRIMARY KEY (" + String.join(", ", primaryKeys) + ")");
+    }
+
+    private List<String> getIndicesForTable(Table table) {
+        List<Index> result = table.getIndices();
+        List<String> indices = new ArrayList<>();
+        List<String> generateIndexStatement = generateIndexStatements(result.stream().findFirst().get().getColumnNames());
+        return generateIndexStatement;
+    }
+
+    public static List<String> generateIndexStatements(List<String> values) {
+        List<String> indexStatements = new ArrayList<>();
+
+        for (String value : values) {
+            String statement = generateIndexStatement(value);
+            indexStatements.add(statement);
+        }
+
+        return indexStatements;
+    }
+
+    private static String generateIndexStatement(String value) {
+        if (value.contains("@")) {
+            String[] parts = value.split("@");
+            String type = parts[0].toUpperCase();
+            String[] ids = parts[1].split(":");
+            String joinedIds = String.join(", ", ids);
+            switch (type.toLowerCase()) {
+                case "geospatial":
+                    return String.format("GEOSPATIAL INDEX (%s)", joinedIds);
+                case "chunk_skip":
+                    return String.format("CHUNK SKIP INDEX (%s)", joinedIds);
+                default:
+                    return String.format("%s INDEX (%s)", type, joinedIds);
+            }
+        } else {
+            return String.format("INDEX (%s)", value);
+        }
     }
 
     private Optional<String> foreignKeys(Table table) {

@@ -1,5 +1,7 @@
 package com.adaptivescale.rosetta.common.models;
 
+import java.util.Objects;
+
 public class ColumnProperties {
 
     private String name;
@@ -36,5 +38,18 @@ public class ColumnProperties {
                 "name='" + name + '\'' +
                 ", sequenceId=" + sequenceId +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ColumnProperties that = (ColumnProperties) o;
+        return Objects.equals(name, that.name) && Objects.equals(sequenceId, that.sequenceId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, sequenceId);
     }
 }
