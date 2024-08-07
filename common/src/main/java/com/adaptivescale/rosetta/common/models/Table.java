@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-public class Table {
+public class Table extends BaseModel {
 
     private String name;
     private String description;

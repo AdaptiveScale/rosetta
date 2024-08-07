@@ -1,1 +1,6 @@
+[# th:if="${tableType} == null or ${tableType} == ''"]
 CREATE TABLE "[(${schemaName})]"."[(${tableName})]"([(${tableCode})]);
+[/]
+[# th:if="${tableType} != null and ${tableType} != ''"]
+CREATE [(${tableType})] TABLE "[(${schemaName})]"."[(${tableName})]"([(${tableCode})]);
+[/]
