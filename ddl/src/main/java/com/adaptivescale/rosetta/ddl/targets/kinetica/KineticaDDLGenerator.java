@@ -44,6 +44,8 @@ public class KineticaDDLGenerator implements DDL {
 
     private final static String COLUMN_DROP_TEMPLATE = "kinetica/column/drop";
 
+    private final static List<String> RESERVED_SCHEMA_NAMES = List.of("ki_home");
+
     private static final String GEOSPATIAL_INDEX_FORMAT = "GEOSPATIAL INDEX (%s)";
     private static final String CHUNK_SKIP_INDEX_FORMAT = "CHUNK SKIP INDEX (%s)";
     private static final String CAGRA_INDEX_FORMAT = "%s INDEX (%s) WITH OPTIONS (INDEX_OPTIONS = '%s')";
@@ -101,6 +103,7 @@ public class KineticaDDLGenerator implements DDL {
             stringBuilder.append(
                 schemas
                     .stream()
+                    .filter(s -> !RESERVED_SCHEMA_NAMES.contains(s))
                     .map(this::createSchema)
                     .collect(Collectors.joining())
             );
@@ -237,7 +240,7 @@ public class KineticaDDLGenerator implements DDL {
 
     private List<String> getIndicesForTable(Table table) {
         List<Index> result = table.getIndices();
-        if (result == null){
+        if (result == null || result.isEmpty()) {
             return Collections.emptyList();
         }
         List<String> generateIndexStatement = generateIndexStatements(result.stream().findFirst().get().getColumnNames());
