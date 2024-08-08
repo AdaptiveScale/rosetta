@@ -1,6 +1,6 @@
 [# th:if="${indices} == null or ${indices} == ''"]
-CREATE TABLE "[(${schemaName})]"."[(${tableName})]"([(${tableCode})]);
+CREATE [(${tableType})] "[(${schemaName})]"."[(${tableName})]"([(${tableCode})]);
 [/]
 [# th:if="${indices} != null and ${indices} != ''"]
-CREATE TABLE "[(${schemaName})]"."[(${tableName})]"([(${tableCode})])[(${indices})];
+CREATE [(${tableType})] "[(${schemaName})]"."[(${tableName})]"([(${tableCode})])[(${indices})];
 [/]
