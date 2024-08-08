@@ -5,6 +5,7 @@ import com.adaptivescale.rosetta.common.models.Column;
 import com.adaptivescale.rosetta.common.models.Database;
 import com.adaptivescale.rosetta.common.models.ForeignKey;
 import com.adaptivescale.rosetta.common.models.Table;
+import com.adaptivescale.rosetta.common.models.Index;
 import com.adaptivescale.rosetta.common.types.RosettaModuleTypes;
 import com.adaptivescale.rosetta.ddl.DDL;
 import com.adaptivescale.rosetta.ddl.change.model.ColumnChange;
@@ -13,7 +14,6 @@ import com.adaptivescale.rosetta.ddl.targets.ColumnSQLDecoratorFactory;
 import com.adaptivescale.rosetta.ddl.utils.TemplateEngine;
 import lombok.extern.slf4j.Slf4j;
 
-import java.sql.DatabaseMetaData;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -44,6 +44,13 @@ public class KineticaDDLGenerator implements DDL {
 
     private final static String COLUMN_DROP_TEMPLATE = "kinetica/column/drop";
 
+    private final static List<String> RESERVED_SCHEMA_NAMES = List.of("ki_home");
+
+    private static final String GEOSPATIAL_INDEX_FORMAT = "GEOSPATIAL INDEX (%s)";
+    private static final String CHUNK_SKIP_INDEX_FORMAT = "CHUNK SKIP INDEX (%s)";
+    private static final String CAGRA_INDEX_FORMAT = "%s INDEX (%s) WITH OPTIONS (INDEX_OPTIONS = '%s')";
+    private static final String GENERIC_INDEX_FORMAT = "%s INDEX (%s)";
+
     private final ColumnSQLDecoratorFactory columnSQLDecoratorFactory = new KineticaColumnDecoratorFactory();
 
     @Override
@@ -59,6 +66,7 @@ public class KineticaDDLGenerator implements DDL {
 
         List<String> foreignKeysForTable = getForeignKeysColumnNames(table);
         Optional<String> primaryKeysForTable = createPrimaryKeysForTable(table, foreignKeysForTable);
+        List<String> indicesForTable = getIndicesForTable(table);
         primaryKeysForTable.ifPresent(definitions::add);
         String definitionAsString = String.join(", ", definitions);
 
@@ -73,6 +81,7 @@ public class KineticaDDLGenerator implements DDL {
         createParams.put("schemaName", table.getSchema());
         createParams.put("tableName", table.getName());
         createParams.put("tableCode", definitionAsString);
+        createParams.put("indices", String.join("\n", indicesForTable));
         stringBuilder.append(TemplateEngine.process(TABLE_CREATE_TEMPLATE, createParams));
 
         return stringBuilder.toString();
@@ -94,6 +103,7 @@ public class KineticaDDLGenerator implements DDL {
             stringBuilder.append(
                 schemas
                     .stream()
+                    .filter(s -> !RESERVED_SCHEMA_NAMES.contains(s))
                     .map(this::createSchema)
                     .collect(Collectors.joining())
             );
@@ -226,6 +236,80 @@ public class KineticaDDLGenerator implements DDL {
         }
 
         return Optional.of("PRIMARY KEY (" + String.join(", ", primaryKeys) + ")");
+    }
+
+    private List<String> getIndicesForTable(Table table) {
+        List<Index> result = table.getIndices();
+        if (result == null || result.isEmpty()) {
+            return Collections.emptyList();
+        }
+        List<String> generateIndexStatement = generateIndexStatements(result.stream().findFirst().get().getColumnNames());
+        return generateIndexStatement;
+    }
+
+    public static List<String> generateIndexStatements(List<String> values) {
+        List<String> indexStatements = new ArrayList<>();
+
+        for (String value : values) {
+            String statement = generateIndexStatement(value);
+            indexStatements.add(statement);
+        }
+
+        return indexStatements;
+    }
+
+    private static String generateIndexStatement(String value) {
+        if (value.contains("@")) {
+            String[] parts = value.split("@");
+            String type = parts[0].toUpperCase();
+            String[] ids = parts[1].split(":");
+            String joinedIds = String.join(", ", ids);
+
+            switch (type.toLowerCase()) {
+                case "geospatial":
+                    return String.format(GEOSPATIAL_INDEX_FORMAT, joinedIds);
+
+                case "chunk_skip":
+                    return String.format(CHUNK_SKIP_INDEX_FORMAT, joinedIds);
+
+                case "cagra":
+                    if (parts.length != 3) {
+                        throw new IllegalArgumentException("Invalid format. Expected 3 parts separated by '@'.");
+                    }
+
+                    String indexName = parts[1];
+                    String options = parts[2];
+
+                    // Split options by "," and reformat them
+                    String[] optionPairs = options.split(",");
+                    StringBuilder optionsBuilder = new StringBuilder();
+
+                    for (String option : optionPairs) {
+                        // Split the key-value pair by ":"
+                        String[] keyValue = option.split(":");
+                        if (keyValue.length == 2) {
+                            optionsBuilder.append(keyValue[0])
+                                    .append(": ")
+                                    .append(keyValue[1])
+                                    .append(", ");
+                        } else {
+                            throw new IllegalArgumentException("Invalid option format. Expected key:value pairs.");
+                        }
+                    }
+
+                    if (optionsBuilder.length() > 0) {
+                        optionsBuilder.setLength(optionsBuilder.length() - 2);
+                    }
+
+                    // Construct the final string using the CAGRA_INDEX_FORMAT constant
+                    return String.format(CAGRA_INDEX_FORMAT, type, indexName, optionsBuilder.toString());
+
+                default:
+                    return String.format(GENERIC_INDEX_FORMAT, type, joinedIds);
+            }
+        } else {
+            return String.format("INDEX (%s)", value);
+        }
     }
 
     private Optional<String> foreignKeys(Table table) {
