@@ -1,7 +1,11 @@
 package com.adaptivescale.rosetta.ddl.targets.kinetica;
 
 import com.adaptivescale.rosetta.common.annotations.RosettaModule;
-import com.adaptivescale.rosetta.common.models.*;
+import com.adaptivescale.rosetta.common.models.Column;
+import com.adaptivescale.rosetta.common.models.Database;
+import com.adaptivescale.rosetta.common.models.ForeignKey;
+import com.adaptivescale.rosetta.common.models.Table;
+import com.adaptivescale.rosetta.common.models.Index;
 import com.adaptivescale.rosetta.common.types.RosettaModuleTypes;
 import com.adaptivescale.rosetta.ddl.DDL;
 import com.adaptivescale.rosetta.ddl.change.model.ColumnChange;
@@ -39,6 +43,11 @@ public class KineticaDDLGenerator implements DDL {
     private final static String COLUMN_MODIFY_TEMPLATE = "kinetica/column/modify";
 
     private final static String COLUMN_DROP_TEMPLATE = "kinetica/column/drop";
+
+    private static final String GEOSPATIAL_INDEX_FORMAT = "GEOSPATIAL INDEX (%s)";
+    private static final String CHUNK_SKIP_INDEX_FORMAT = "CHUNK SKIP INDEX (%s)";
+    private static final String CAGRA_INDEX_FORMAT = "%s INDEX (%s) WITH OPTIONS (INDEX_OPTIONS = '%s')";
+    private static final String GENERIC_INDEX_FORMAT = "%s INDEX (%s)";
 
     private final ColumnSQLDecoratorFactory columnSQLDecoratorFactory = new KineticaColumnDecoratorFactory();
 
@@ -225,7 +234,9 @@ public class KineticaDDLGenerator implements DDL {
 
     private List<String> getIndicesForTable(Table table) {
         List<Index> result = table.getIndices();
-        List<String> indices = new ArrayList<>();
+        if (result == null){
+            return Collections.emptyList();
+        }
         List<String> generateIndexStatement = generateIndexStatements(result.stream().findFirst().get().getColumnNames());
         return generateIndexStatement;
     }
@@ -247,13 +258,48 @@ public class KineticaDDLGenerator implements DDL {
             String type = parts[0].toUpperCase();
             String[] ids = parts[1].split(":");
             String joinedIds = String.join(", ", ids);
+
             switch (type.toLowerCase()) {
                 case "geospatial":
-                    return String.format("GEOSPATIAL INDEX (%s)", joinedIds);
+                    return String.format(GEOSPATIAL_INDEX_FORMAT, joinedIds);
+
                 case "chunk_skip":
-                    return String.format("CHUNK SKIP INDEX (%s)", joinedIds);
+                    return String.format(CHUNK_SKIP_INDEX_FORMAT, joinedIds);
+
+                case "cagra":
+                    if (parts.length != 3) {
+                        throw new IllegalArgumentException("Invalid format. Expected 3 parts separated by '@'.");
+                    }
+
+                    String indexName = parts[1];
+                    String options = parts[2];
+
+                    // Split options by "," and reformat them
+                    String[] optionPairs = options.split(",");
+                    StringBuilder optionsBuilder = new StringBuilder();
+
+                    for (String option : optionPairs) {
+                        // Split the key-value pair by ":"
+                        String[] keyValue = option.split(":");
+                        if (keyValue.length == 2) {
+                            optionsBuilder.append(keyValue[0])
+                                    .append(": ")
+                                    .append(keyValue[1])
+                                    .append(", ");
+                        } else {
+                            throw new IllegalArgumentException("Invalid option format. Expected key:value pairs.");
+                        }
+                    }
+
+                    if (optionsBuilder.length() > 0) {
+                        optionsBuilder.setLength(optionsBuilder.length() - 2);
+                    }
+
+                    // Construct the final string using the CAGRA_INDEX_FORMAT constant
+                    return String.format(CAGRA_INDEX_FORMAT, type, indexName, optionsBuilder.toString());
+
                 default:
-                    return String.format("%s INDEX (%s)", type, joinedIds);
+                    return String.format(GENERIC_INDEX_FORMAT, type, joinedIds);
             }
         } else {
             return String.format("INDEX (%s)", value);

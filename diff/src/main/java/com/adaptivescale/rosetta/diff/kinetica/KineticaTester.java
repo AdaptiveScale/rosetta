@@ -1,7 +1,13 @@
 package com.adaptivescale.rosetta.diff.kinetica;
 
 import com.adaptivescale.rosetta.common.annotations.RosettaModule;
-import com.adaptivescale.rosetta.common.models.*;
+import com.adaptivescale.rosetta.common.models.Column;
+import com.adaptivescale.rosetta.common.models.Database;
+import com.adaptivescale.rosetta.common.models.ForeignKey;
+import com.adaptivescale.rosetta.common.models.Index;
+import com.adaptivescale.rosetta.common.models.Table;
+import com.adaptivescale.rosetta.common.models.View;
+import com.adaptivescale.rosetta.common.models.ColumnProperties;
 import com.adaptivescale.rosetta.common.types.RosettaModuleTypes;
 import com.adaptivescale.rosetta.diff.DefaultTester;
 
@@ -398,13 +404,13 @@ public class KineticaTester extends DefaultTester {
         return targetValue.getViews().stream().filter(targetView -> targetView.getName().equals(viewName)).findFirst();
     }
 
-    private static boolean areColumnPropertiesEqual(List<ColumnProperties> list1, List<ColumnProperties> list2) {
-        if (list1.size() != list2.size()) {
+    private static boolean areColumnPropertiesEqual(List<ColumnProperties> listLocal, List<ColumnProperties> listTarget) {
+        if (listLocal.size() != listTarget.size()) {
             return false;
         }
-        for (ColumnProperties prop1 : list1) {
+        for (ColumnProperties prop1 : listLocal) {
             boolean found = false;
-            for (ColumnProperties prop2 : list2) {
+            for (ColumnProperties prop2 : listTarget) {
                 if (Objects.equals(prop1, prop2)){
                     found = true;
                     break;
