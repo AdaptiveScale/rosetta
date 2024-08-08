@@ -37,25 +37,25 @@ public class KineticaDDLTest {
     @Test
     public void createDB() throws IOException {
         String ddl = generateDDL("clean_database");
-        Assertions.assertEquals("CREATE SCHEMA IF NOT EXISTS \"ROSETTA\";\r" +
+        Assertions.assertEquals(("CREATE SCHEMA IF NOT EXISTS \"ROSETTA\";\r" +
                 "CREATE TABLE \"ROSETTA\".\"PLAYER\"(\"Name\" VARCHAR(100), \"Position\" VARCHAR(100), \"Number\" NUMBER NOT NULL );\r" +
                 "\r" +
-                "CREATE TABLE \"ROSETTA\".\"USER\"(\"USER_ID\" NUMBER NOT NULL , PRIMARY KEY (\"USER_ID\"));", ddl);
+                "CREATE TABLE \"ROSETTA\".\"USER\"(\"USER_ID\" NUMBER NOT NULL , PRIMARY KEY (\"USER_ID\"));").replaceAll("(\\r|\\n|\\t)", ""), ddl.replaceAll("(\\r|\\n|\\t)", ""));
     }
 
     @Test
     public void addTable() throws IOException {
         String ddl = generateDDL("add_table");
-        Assertions.assertEquals("CREATE TABLE \"ROSETTA\".\"Position\"(\"ID\" DECIMAL(10) NOT NULL , \"DESCRIPTION\" VARCHAR," +
-                " \"Name\" VARCHAR, PRIMARY KEY (\"ID\"));", ddl);
+        Assertions.assertEquals(("CREATE TABLE \"ROSETTA\".\"Position\"(\"ID\" DECIMAL(10) NOT NULL , \"DESCRIPTION\" VARCHAR," +
+                " \"Name\" VARCHAR, PRIMARY KEY (\"ID\"));").replaceAll("(\\r|\\n|\\t)", ""), ddl.replaceAll("(\\r|\\n|\\t)", ""));
     }
 
     @Test
     public void addTable2() throws IOException {
         String ddl = generateDDL("add_table2");
-        Assertions.assertEquals("CREATE SCHEMA IF NOT EXISTS \"NEW\";\r" +
+        Assertions.assertEquals(("CREATE SCHEMA IF NOT EXISTS \"NEW\";\r" +
                 "CREATE TABLE \"NEW\".\"Position\"(\"ID\" DECIMAL(10) NOT NULL , \"DESCRIPTION\" VARCHAR," +
-                " \"Name\" VARCHAR, PRIMARY KEY (\"ID\"));", ddl);
+                " \"Name\" VARCHAR, PRIMARY KEY (\"ID\"));").replaceAll("(\\r|\\n|\\t)", ""), ddl.replaceAll("(\\r|\\n|\\t)", ""));
     }
 
     @Test

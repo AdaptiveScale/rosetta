@@ -16,15 +16,15 @@ import queryhelper.utils.ErrorUtils;
 import queryhelper.utils.FileUtils;
 import queryhelper.utils.PromptUtils;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.sql.Driver;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 
 public class AIService {
@@ -57,10 +57,15 @@ public class AIService {
         QueryDataResponse queryDataResponse = (QueryDataResponse) response.getData();
         String csvFile = createCSVFile(queryDataResponse, queryRequest.getQuery(), dataDirectory, outputFileName);
 
+        String table = generateTablePreview(csvFile, 15);
+
         response.setMessage(
                 query + "\n" +
-                        "Total rows: " + data.getRecords().size() + "\n" +
-                        "Your response is saved to a CSV file named '" + csvFile + "'!"
+                        "Your response is saved to a CSV file named '" + csvFile + "'!" + "\n" +
+                        "Table Output:" +"\n" +
+                        table +
+                        "..." + "\n" +
+                        "Total rows: " + data.getRecords().size()
         );
 
         return response;
@@ -145,6 +150,57 @@ public class AIService {
         }
 
         return query;
+    }
+    private static String generateTablePreview(String csvFile, int rowLimit) {
+        List<String[]> rows = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(csvFile))) {
+            String line;
+            int rowCount = 0;
+            while ((line = reader.readLine()) != null && rowCount < rowLimit) {
+                String[] columns = line.split(",");
+                rows.add(columns);
+                rowCount++;
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Error reading CSV file", e);
+        }
+
+        if (rows.isEmpty()) {
+            return "No data available to display.";
+        }
+        int maxColumns = rows.stream().mapToInt(row -> row.length).max().orElse(0);
+        int[] columnWidths = new int[maxColumns];
+        for (String[] row : rows) {
+            for (int i = 0; i < row.length; i++) {
+                columnWidths[i] = Math.max(columnWidths[i], row[i].length());
+            }
+        }
+        StringBuilder table = new StringBuilder();
+        String rowSeparator = buildRowSeparator(columnWidths);
+
+        table.append(rowSeparator);
+        for (String[] row : rows) {
+            table.append("|");
+            for (int i = 0; i < maxColumns; i++) {
+                String cell = (i < row.length) ? row[i] : "";
+                table.append(" ").append(String.format("%-" + columnWidths[i] + "s", cell)).append(" |");
+            }
+            table.append("\n").append(rowSeparator);
+        }
+
+        return table.toString();
+    }
+
+    private static String buildRowSeparator(int[] columnWidths) {
+        StringBuilder separator = new StringBuilder("+");
+        for (int width : columnWidths) {
+            for (int i = 0; i < width + 2; i++) {
+                separator.append("-");
+            }
+            separator.append("+");
+        }
+        separator.append("\n");
+        return separator.toString();
     }
 
 }
