@@ -270,12 +270,15 @@ public class KineticaDDLGenerator implements DDL {
         String shardKind = table.getPropertyAsString("shard_kind");
         String persistence = table.getPropertyAsString("persistence");
 
+        // for Kinetica when shardKind is R it means that the table is REPLICATED
+        // when persistence is T it means that the table is TEMPORARY
         if (shardKind != null && shardKind.equals("R")) {
             tableTypes.add("REPLICATED");
         }
         if (persistence != null && persistence.equals("T")) {
             tableTypes.add("TEMP");
         }
+        tableTypes.add("TABLE");
 
         return String.join(" ", tableTypes);
     }

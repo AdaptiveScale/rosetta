@@ -1,10 +1,9 @@
 package com.adaptivescale.rosetta.common.models;
 
-import java.util.HashMap;
 import java.util.Map;
 
-public class BaseModel {
-    private Map<String, Object> additionalProperties = new HashMap<>();
+public class AbstractModel {
+    private Map<String, Object> additionalProperties;
 
     public Map<String, Object> getAdditionalProperties() {
         return additionalProperties;
@@ -14,12 +13,10 @@ public class BaseModel {
         this.additionalProperties = additionalProperties;
     }
 
-    public void addProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
-    }
-
     public Object getProperty(String name) {
-        return this.additionalProperties.get(name);
+        if (this.additionalProperties != null)
+            return this.additionalProperties.get(name);
+        return null;
     }
 
     public String getPropertyAsString(String name) {

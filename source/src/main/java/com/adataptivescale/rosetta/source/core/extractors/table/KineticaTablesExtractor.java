@@ -8,6 +8,8 @@ import com.adaptivescale.rosetta.common.types.RosettaModuleTypes;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @RosettaModule(
@@ -30,8 +32,10 @@ public class KineticaTablesExtractor extends DefaultTablesExtractor {
             String object_name = resultSet.getString("object_name");
             Optional<Table> found_table = tables.stream().filter(table -> table.getSchema().equals(object_schema) && table.getName().equals(object_name)).findFirst();
             if (found_table.isPresent()) {
-                found_table.get().addProperty("shard_kind", resultSet.getString("shard_kind"));
-                found_table.get().addProperty("persistence", resultSet.getString("persistence"));
+                Map<String, Object> additionalProps = new HashMap<>();
+                additionalProps.put("shard_kind", resultSet.getString("shard_kind"));
+                additionalProps.put("persistence", resultSet.getString("persistence"));
+                found_table.get().setAdditionalProperties(additionalProps);
             }
         }
 
