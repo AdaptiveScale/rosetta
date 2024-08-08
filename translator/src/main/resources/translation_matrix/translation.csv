@@ -2360,3 +2360,75 @@
 2545;;kinetica;;BYTES;;kinetica;;bytes
 2546;;postgres;;_text;;oracle;;varchar2
 2547;;kinetica;;UNSIGNED_BIGINT;;kinetica;;UNSIGNED BIGINT
+2548;;redshift;;int2;;redshift;;smallint
+2549;;redshift;;int;;redshift;;integer
+2550;;redshift;;int4;;redshift;;integer
+2551;;redshift;;int8;;redshift;;bigint
+2552;;redshift;;numeric;;redshift;;decimal
+2553;;redshift;;float4;;redshift;;real
+2554;;redshift;;float8;;redshift;;double precision
+2555;;redshift;;float;;redshift;;double precision
+2556;;redshift;;bool;;redshift;;boolean
+2557;;redshift;;character;;redshift;;char
+2558;;redshift;;nchar;;redshift;;char
+2559;;redshift;;bpchar;;redshift;;char
+2560;;redshift;;character varying;;redshift;;varchar
+2561;;redshift;;nvarchar;;redshift;;varchar
+2562;;redshift;;text;;redshift;;varchar
+2563;;redshift;;timestamp without time zone;;redshift;;timestamp
+2564;;redshift;;timestamp with time zone;;redshift;;timestamptz
+2565;;redshift;;time without time zone;;redshift;;time
+2566;;redshift;;time with time zone;;redshift;;timetz
+2567;;redshift;;varbinary;;redshift;;varbyte
+2568;;redshift;;binary;;redshift;;varbyte
+2569;;redshift;;varying;;redshift;;varbyte
+2570;;redshift;;smallint;;mysql;;smallint
+2571;;redshift;;integer;;mysql;;int
+2572;;redshift;;bigint;;mysql;;bigint
+2573;;redshift;;decimal;;mysql;;numeric
+2574;;redshift;;real;;mysql;;float
+2575;;redshift;;double precision;;mysql;;double
+2576;;redshift;;char;;mysql;;char
+2577;;redshift;;varchar;;mysql;;varchar
+2578;;redshift;;date;;mysql;;date
+2579;;redshift;;time;;mysql;;time
+2580;;redshift;;timetz;;mysql;;time
+2581;;redshift;;timestamp;;mysql;;datetime
+2582;;redshift;;timestamptz;;mysql;;timestamp
+2583;;redshift;;interval year to month;;mysql;;timestamp
+2584;;redshift;;interval day to second;;mysql;;timestamp
+2585;;redshift;;boolean;;mysql;;boolean
+2586;;redshift;;super;;mysql;;json
+2587;;redshift;;varbyte;;mysql;;blob
+2588;;redshift;;geometry;;mysql;;geometry
+2589;;redshift;;geography;;mysql;;geometry
+2590;;mysql;;char;;redshift;;character
+2591;;mysql;;varchar;;redshift;;character varying
+2592;;mysql;;binary;;redshift;;binary
+2593;;mysql;;varbinary;;redshift;;binary
+2594;;mysql;;tinyblob;;redshift;;varbyte
+2595;;mysql;;blob;;redshift;;varbyte
+2596;;mysql;;mediumblob;;redshift;;varbyte
+2597;;mysql;;longblob;;redshift;;varbyte
+2598;;mysql;;tinytext;;redshift;;text
+2599;;mysql;;text;;redshift;;text
+2600;;mysql;;mediumtext;;redshift;;text
+2601;;mysql;;longtext;;redshift;;text
+2602;;mysql;;bit;;redshift;;boolean
+2603;;mysql;;tinyint;;redshift;;smallint
+2604;;mysql;;bool;;redshift;;boolean
+2605;;mysql;;boolean;;redshift;;boolean
+2606;;mysql;;smallint;;redshift;;smallint
+2607;;mysql;;mediumint;;redshift;;integer
+2608;;mysql;;int;;redshift;;integer
+2609;;mysql;;integer;;redshift;;integer
+2610;;mysql;;float;;redshift;;real
+2611;;mysql;;double;;redshift;;double precision
+2612;;mysql;;double precision;;redshift;;double precision
+2613;;mysql;;decimal;;redshift;;decimal
+2614;;mysql;;dec;;redshift;;decimal
+2615;;mysql;;date;;redshift;;date
+2616;;mysql;;datetime;;redshift;;timestamp
+2617;;mysql;;timestamp;;redshift;;timestamptz
+2618;;mysql;;time;;redshift;;time without time zone
+2619;;mysql;;year;;redshift;;integer
