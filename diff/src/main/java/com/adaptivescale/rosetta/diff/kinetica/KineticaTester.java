@@ -7,6 +7,7 @@ import com.adaptivescale.rosetta.common.models.ForeignKey;
 import com.adaptivescale.rosetta.common.models.Index;
 import com.adaptivescale.rosetta.common.models.Table;
 import com.adaptivescale.rosetta.common.models.View;
+import com.adaptivescale.rosetta.common.models.ColumnProperties;
 import com.adaptivescale.rosetta.common.types.RosettaModuleTypes;
 import com.adaptivescale.rosetta.diff.DefaultTester;
 
@@ -139,7 +140,7 @@ public class KineticaTester extends DefaultTester {
                     columnsChangesLogs.add(result);
                 }
 
-                if (!Objects.equals(localColumn.getColumnProperties(), targetColumn.get().getColumnProperties())) {
+                if(!areColumnPropertiesEqual(localColumn.getColumnProperties(), targetColumn.get().getColumnProperties())) {
                     String result = String.format(COLUMN_CHANGED_FORMAT, localColumn.getName(),
                             table.getName(), "Column Properties", localColumn.columnPropertiesAsString(),
                             targetColumn.get().columnPropertiesAsString());
@@ -401,5 +402,24 @@ public class KineticaTester extends DefaultTester {
 
     private Optional<View> getView(String viewName, Database targetValue) {
         return targetValue.getViews().stream().filter(targetView -> targetView.getName().equals(viewName)).findFirst();
+    }
+
+    private static boolean areColumnPropertiesEqual(List<ColumnProperties> listLocal, List<ColumnProperties> listTarget) {
+        if (listLocal.size() != listTarget.size()) {
+            return false;
+        }
+        for (ColumnProperties prop1 : listLocal) {
+            boolean found = false;
+            for (ColumnProperties prop2 : listTarget) {
+                if (Objects.equals(prop1, prop2)){
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                return false;
+            }
+        }
+        return true;
     }
 }
