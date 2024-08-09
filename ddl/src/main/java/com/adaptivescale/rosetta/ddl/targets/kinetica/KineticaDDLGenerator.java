@@ -50,6 +50,7 @@ public class KineticaDDLGenerator implements DDL {
     private static final String CHUNK_SKIP_INDEX_FORMAT = "CHUNK SKIP INDEX (%s)";
     private static final String CAGRA_INDEX_FORMAT = "%s INDEX (%s) WITH OPTIONS (INDEX_OPTIONS = '%s')";
     private static final String GENERIC_INDEX_FORMAT = "%s INDEX (%s)";
+    private static final String ADD_FOREIGN_KEY_FORMAT = "FOREIGN KEY (\"%s\") REFERENCES \"%s\".\"%s\" (\"%s\") AS \"%s\"";
 
     private final ColumnSQLDecoratorFactory columnSQLDecoratorFactory = new KineticaColumnDecoratorFactory();
 
@@ -64,10 +65,11 @@ public class KineticaDDLGenerator implements DDL {
 
         List<String> definitions = table.getColumns().stream().map(this::createColumn).collect(Collectors.toList());
 
-        List<String> foreignKeysForTable = getForeignKeysColumnNames(table);
-        Optional<String> primaryKeysForTable = createPrimaryKeysForTable(table, foreignKeysForTable);
+        List<String> foreignKeysForTable = createForeignKeysForTable(table);
+        Optional<String> primaryKeysForTable = createPrimaryKeysForTable(table);
         List<String> indicesForTable = getIndicesForTable(table);
         primaryKeysForTable.ifPresent(definitions::add);
+        definitions.addAll(foreignKeysForTable);
         String definitionAsString = String.join(", ", definitions);
 
         StringBuilder stringBuilder = new StringBuilder();
@@ -219,7 +221,7 @@ public class KineticaDDLGenerator implements DDL {
         return "";
     }
 
-    private Optional<String> createPrimaryKeysForTable(Table table, List<String> foreignKeysForTable) {
+    private Optional<String> createPrimaryKeysForTable(Table table) {
         List<String> primaryKeys = table
             .getColumns()
             .stream()
@@ -227,9 +229,6 @@ public class KineticaDDLGenerator implements DDL {
             .sorted((o1, o2) -> o1.getPrimaryKeySequenceId() < o2.getPrimaryKeySequenceId() ? -1 : 1)
             .map(pk -> String.format(DEFAULT_WRAPPER+"%s"+DEFAULT_WRAPPER, pk.getName()))
             .collect(Collectors.toList());
-
-        //TODO: Enable this with foreign key functionality
-//        primaryKeys.addAll(foreignKeysForTable);
 
         if (primaryKeys.isEmpty()) {
             return Optional.empty();
@@ -320,12 +319,23 @@ public class KineticaDDLGenerator implements DDL {
         return result.isEmpty() ? Optional.empty() : Optional.of(result);
     }
 
-    private List<String> getForeignKeysColumnNames(Table table) {
-        return table.getColumns().stream()
-            .filter(column -> column.getForeignKeys() != null && !column.getForeignKeys().isEmpty())
-            .map(Column::getName)
-            .map(fk -> String.format(DEFAULT_WRAPPER+"%s"+DEFAULT_WRAPPER, fk))
-            .collect(Collectors.toList());
+    private List<String> createForeignKeysForTable(Table table) {
+        List<String> result = new ArrayList<>();
+        table.getColumns().forEach(column -> {
+            if (column.getForeignKeys() != null && !column.getForeignKeys().isEmpty()) {
+                column.getForeignKeys().forEach(foreignKey -> result.add(
+                    String.format(
+                        ADD_FOREIGN_KEY_FORMAT,
+                        column.getName(),
+                        foreignKey.getPrimaryTableSchema(),
+                        foreignKey.getPrimaryTableName(),
+                        foreignKey.getPrimaryColumnName(),
+                        foreignKey.getName()
+                    )
+                ));
+            }
+        });
+        return result;
     }
 
     private String createForeignKeys(Column column) {
