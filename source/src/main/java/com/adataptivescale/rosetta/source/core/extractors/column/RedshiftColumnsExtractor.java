@@ -27,10 +27,18 @@ public class RedshiftColumnsExtractor extends ColumnsExtractor {
         String columnType = String.valueOf(resultSet.getString("TYPE_NAME"));
         column.setTypeName(TranslationMatrix.getInstance().findBySourceTypeAndSourceColumnType("redshift", columnType));
 
+        column.setAutoincrement(is_autoincrement(resultSet));
         column.setNullable(resultSet.getBoolean("IS_NULLABLE"));
         column.setColumnDisplaySize(resultSet.getInt("COLUMN_SIZE"));
         column.setScale(resultSet.getInt("DECIMAL_DIGITS"));
         column.setPrecision(resultSet.getInt("COLUMN_SIZE"));
+    }
+
+    private boolean is_autoincrement(ResultSet resultSet) throws SQLException {
+        if (resultSet.getString("COLUMN_DEF") == null) {
+            return false;
+        }
+        return resultSet.getString("COLUMN_DEF").contains("\"identity\"");
     }
 
 }
