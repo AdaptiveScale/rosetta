@@ -198,6 +198,7 @@ public class BigQueryDDLGenerator implements DDL {
         createParams.put("viewCode", expected.getCode());
         return TemplateEngine.process(VIEW_ALTER_TEMPLATE, createParams);
     }
+
     private String createSchema(String schema) {
         Map<String, Object> params = new HashMap<>();
         params.put("schemaName", schema);

@@ -1,0 +1,3 @@
+create or replace [(${materialized})] view "[(${schemaName})]"."[(${viewName})]" AS
+[(${viewCode})]
+;

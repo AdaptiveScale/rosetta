@@ -6,6 +6,7 @@ import com.adaptivescale.rosetta.common.models.Database;
 import com.adaptivescale.rosetta.common.models.ForeignKey;
 import com.adaptivescale.rosetta.common.models.Table;
 import com.adaptivescale.rosetta.common.models.Index;
+import com.adaptivescale.rosetta.common.models.View;
 import com.adaptivescale.rosetta.common.types.RosettaModuleTypes;
 import com.adaptivescale.rosetta.ddl.DDL;
 import com.adaptivescale.rosetta.ddl.change.model.ColumnChange;
@@ -43,6 +44,12 @@ public class KineticaDDLGenerator implements DDL {
     private final static String COLUMN_MODIFY_TEMPLATE = "kinetica/column/modify";
 
     private final static String COLUMN_DROP_TEMPLATE = "kinetica/column/drop";
+
+    private final static String VIEW_DROP_TEMPLATE = "kinetica/view/drop";
+
+    private final static String VIEW_CREATE_TEMPLATE = "kinetica/view/create";
+
+    private final static String VIEW_ALTER_TEMPLATE = "kinetica/view/alter";
 
     private final static List<String> RESERVED_SCHEMA_NAMES = List.of("ki_home");
 
@@ -219,6 +226,43 @@ public class KineticaDDLGenerator implements DDL {
     @Override
     public String alterTable(Table expected, Table actual) {
         return "";
+    }
+
+    @Override
+    public String createView(View view, boolean dropViewIfExists) {
+        StringBuilder builder = new StringBuilder();
+
+        if (dropViewIfExists) {
+            dropView(view);
+            builder.append(dropView(view));
+        }
+
+        Map<String, Object> createParams = new HashMap<>();
+        createParams.put("schemaName", view.getSchema());
+        createParams.put("viewName", view.getName());
+        createParams.put("materialized", view.getMaterializedString());
+        createParams.put("viewCode", view.getCode());
+        builder.append(TemplateEngine.process(VIEW_CREATE_TEMPLATE, createParams));
+
+        return builder.toString();
+    }
+
+    @Override
+    public String dropView(View actual) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("schemaName", actual.getSchema());
+        params.put("viewName", actual.getName());
+        return TemplateEngine.process(VIEW_DROP_TEMPLATE, params);
+    }
+
+    @Override
+    public String alterView(View expected, View actual) {
+        Map<String, Object> createParams = new HashMap<>();
+        createParams.put("schemaName", expected.getSchema());
+        createParams.put("viewName", expected.getName());
+        createParams.put("materialized", expected.getMaterializedString());
+        createParams.put("viewCode", expected.getCode());
+        return TemplateEngine.process(VIEW_ALTER_TEMPLATE, createParams);
     }
 
     private Optional<String> createPrimaryKeysForTable(Table table) {

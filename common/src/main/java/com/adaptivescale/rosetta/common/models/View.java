@@ -16,8 +16,11 @@
 
 package com.adaptivescale.rosetta.common.models;
 
+import java.util.Optional;
+
 public class View extends Table {
     private String code;
+    private Boolean materialized;
 
     public String getCode() {
         return code;
@@ -25,5 +28,20 @@ public class View extends Table {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public Boolean getMaterialized() {
+        return materialized;
+    }
+
+    public void setMaterialized(Boolean materialized) {
+        this.materialized = materialized;
+    }
+
+    public String getMaterializedString() {
+        return Optional.ofNullable(getMaterialized())
+                .filter(Boolean::booleanValue)
+                .map(b -> "MATERIALIZED")
+                .orElse("");
     }
 }
