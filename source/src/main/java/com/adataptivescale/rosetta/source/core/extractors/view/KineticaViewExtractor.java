@@ -44,49 +44,51 @@ public class KineticaViewExtractor extends DefaultViewExtractor{
         for (View view : views) {
             viewsBySchema.computeIfAbsent(view.getSchema(), k->new ArrayList<View>()).add(view);
         }
+
+        //Logical Views
+        processViews(connection, viewsBySchema,
+                "select * from information_schema.VIEWS where TABLE_SCHEMA='%s'",
+                "table_name",
+                "view_definition",
+                false);
+
+        //Materialized views
+        processViews(connection, viewsBySchema,
+                "select * from pg_catalog.pg_matviews where schemaname='%s'",
+                "matviewname",
+                "definition",
+                true);
+    }
+
+    private void processViews(java.sql.Connection connection, HashMap<String, List<View>> viewsBySchema,
+                              String queryTemplate, String nameField, String ddlField,
+                              boolean isMaterialized) throws SQLException {
         for (String schemaName : viewsBySchema.keySet()) {
             Statement statement = connection.createStatement();
-            String query = String.format("select * from information_schema.VIEWS where TABLE_SCHEMA='%s'", schemaName);
+            String query = String.format(queryTemplate, schemaName);
             ResultSet resultSet = statement.executeQuery(query);
             List<Map<String, Object>> records = QueryHelper.mapRecords(resultSet);
             for (Map<String, Object> record : records) {
                 Optional<View> tmpTable = viewsBySchema.get(schemaName).stream()
-                        .filter(view -> view.getName().equals(record.get("table_name"))).findAny();
-                String[] ddls = record.get("view_definition").toString().split("\n");
-                String ddl = Arrays.stream(Arrays.copyOfRange(ddls, 1, ddls.length)).collect(Collectors.joining(" "));
-                if(ddl.endsWith(";")) {
-                    ddl= ddl.substring(0, ddl.length()-2);
+                        .filter(view -> view.getName().equals(record.get(nameField))).findAny();
+                if (tmpTable.isPresent()) {
+                    String finalDdl = processDDL(record.get(ddlField).toString());
+                    tmpTable.get().setCode(finalDdl);
+                    if (isMaterialized) {
+                        tmpTable.get().setMaterialized(true);
+                    }
                 }
-                String finalDdl = ddl.replaceAll("\\s+", " ").trim();
-                tmpTable.ifPresent(table -> table.setCode(finalDdl));
             }
         }
+    }
 
-
-        //Part 2
-//        HashMap<String, List<View>> viewsBySchema = new HashMap<>();
-        for (View view : views) {
-            viewsBySchema.computeIfAbsent(view.getSchema(), k->new ArrayList<View>()).add(view);
+    private String processDDL(String ddl) {
+        String[] ddls = ddl.split("\n");
+        String processedDdl = Arrays.stream(Arrays.copyOfRange(ddls, 1, ddls.length))
+                .collect(Collectors.joining(" "));
+        if (processedDdl.endsWith(";")) {
+            processedDdl = processedDdl.substring(0, processedDdl.length() - 2);
         }
-        for (String schemaName : viewsBySchema.keySet()) {
-            Statement statement = connection.createStatement();
-            String query = String.format("select * from pg_catalog.pg_matviews where schemaname='%s'", schemaName);
-            ResultSet resultSet = statement.executeQuery(query);
-            List<Map<String, Object>> records = QueryHelper.mapRecords(resultSet);
-            for (Map<String, Object> record : records) {
-                Optional<View> tmpTable = viewsBySchema.get(schemaName).stream()
-                        .filter(view -> view.getName().equals(record.get("matviewname"))).findAny();
-                String[] ddls = record.get("definition").toString().split("\n");
-                String ddl = Arrays.stream(Arrays.copyOfRange(ddls, 1, ddls.length)).collect(Collectors.joining(" "));
-                if(ddl.endsWith(";")) {
-                    ddl= ddl.substring(0, ddl.length()-2);
-                }
-                String finalDdl = ddl.replaceAll("\\s+", " ").trim();
-                tmpTable.ifPresent(table -> {
-                    table.setCode(finalDdl);
-                    table.setMaterialized(true);
-                });
-            }
-        }
+        return processedDdl.replaceAll("\\s+", " ").trim();
     }
 }
