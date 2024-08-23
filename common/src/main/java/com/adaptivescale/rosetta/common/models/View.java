@@ -16,6 +16,8 @@
 
 package com.adaptivescale.rosetta.common.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Optional;
 
 public class View extends Table {
@@ -38,6 +40,7 @@ public class View extends Table {
         this.materialized = materialized;
     }
 
+    @JsonIgnore
     public String getMaterializedString() {
         return Optional.ofNullable(getMaterialized())
                 .filter(Boolean::booleanValue)
