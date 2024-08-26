@@ -21,9 +21,13 @@ public class DefaultRedshiftColumnSQLDecorator implements ColumnSQLDecorator {
         StringBuilder builder = new StringBuilder();
         builder.append(DEFAULT_WRAPPER).append(column.getName()).append(DEFAULT_WRAPPER).append(" ");
         builder.append(columnDataTypeName.nameForColumn(column));
+        if(column.isAutoincrement()){
+            builder.append(" IDENTITY(1, 1) ");
+        }
         if(!column.isNullable()) {
             builder.append(" NOT NULL ");
         }
+
         return builder.toString();
     }
 
