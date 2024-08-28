@@ -37,58 +37,62 @@ import java.util.stream.Collectors;
         name = "kinetica",
         type = RosettaModuleTypes.VIEW_EXTRACTOR
 )
-public class KineticaViewExtractor extends DefaultViewExtractor{
+public class KineticaViewExtractor extends DefaultViewExtractor {
     @Override
     protected void attachViewDDL(Collection<View> views, java.sql.Connection connection) throws SQLException {
         HashMap<String, List<View>> viewsBySchema = new HashMap<>();
         for (View view : views) {
-            viewsBySchema.computeIfAbsent(view.getSchema(), k->new ArrayList<View>()).add(view);
+            viewsBySchema.computeIfAbsent(view.getSchema(), k -> new ArrayList<View>()).add(view);
         }
 
         //Logical Views
         processViews(connection, viewsBySchema,
-                "select * from information_schema.VIEWS where TABLE_SCHEMA='%s'",
-                "table_name",
-                "view_definition",
-                false);
+                     "select * from information_schema.VIEWS where TABLE_SCHEMA='%s'",
+                     "table_name",
+                     "view_definition",
+                     false);
 
         //Materialized views
         processViews(connection, viewsBySchema,
-                "select * from pg_catalog.pg_matviews where schemaname='%s'",
-                "matviewname",
-                "definition",
-                true);
+                     "select * from pg_catalog.pg_matviews where schemaname='%s'",
+                     "matviewname",
+                     "definition",
+                     true);
+
+        // Skip views that were not processed, were not given any code to create
+        views.removeIf(view -> view.getCode() == null || view.getCode().isEmpty());
     }
 
     private void processViews(java.sql.Connection connection, HashMap<String, List<View>> viewsBySchema,
                               String queryTemplate, String nameField, String ddlField,
-                              boolean isMaterialized) throws SQLException {
+                              boolean isMaterialized) {
         for (String schemaName : viewsBySchema.keySet()) {
-            Statement statement = connection.createStatement();
-            String query = String.format(queryTemplate, schemaName);
-            ResultSet resultSet = statement.executeQuery(query);
-            List<Map<String, Object>> records = QueryHelper.mapRecords(resultSet);
-            for (Map<String, Object> record : records) {
-                Optional<View> tmpTable = viewsBySchema.get(schemaName).stream()
-                        .filter(view -> view.getName().equals(record.get(nameField))).findAny();
-                if (tmpTable.isPresent()) {
-                    String finalDdl = processDDL(record.get(ddlField).toString());
-                    tmpTable.get().setCode(finalDdl);
-                    if (isMaterialized) {
-                        tmpTable.get().setMaterialized(true);
+            try (Statement statement = connection.createStatement()) {
+                String query = String.format(queryTemplate, schemaName);
+                ResultSet resultSet = statement.executeQuery(query);
+                List<Map<String, Object>> records = QueryHelper.mapRecords(resultSet);
+
+                viewsBySchema.get(schemaName).forEach(view -> {
+                    Optional<Map<String, Object>> record = records.stream()
+                            .filter(rec -> view.getName().equals(rec.get(nameField)))
+                            .findAny();
+
+                    if (record.isPresent()) {
+                        String finalDdl = processDDL(record.get().get(ddlField).toString());
+                        view.setCode(finalDdl);
+                        if (isMaterialized) {
+                            view.setMaterialized(true);
+                        }
                     }
-                }
+                });
+
+            } catch (SQLException e) {
+                System.out.println("Table pg_matviews does not exist, skipping processing.");
             }
         }
     }
 
     private String processDDL(String ddl) {
-        String[] ddls = ddl.split("\n");
-        String processedDdl = Arrays.stream(Arrays.copyOfRange(ddls, 1, ddls.length))
-                .collect(Collectors.joining(" "));
-        if (processedDdl.endsWith(";")) {
-            processedDdl = processedDdl.substring(0, processedDdl.length() - 2);
-        }
-        return processedDdl.replaceAll("\\s+", " ").trim();
+        return ddl.replaceAll("\n", "");
     }
 }
