@@ -73,7 +73,7 @@ public class KineticaViewExtractor extends DefaultViewExtractor {
 
         // Skip view due to incomplete code, safety issue
         views.removeIf(view -> {
-            if (view.getCode() == null || view.getCode().isEmpty() || view.getCode().length() == 255) {
+            if (view.getCode() == null || view.getCode().isEmpty() || view.getCode().length() == 256) {
                 log.warn("Skipping view due to incomplete code: {}.{}", view.getSchema(), view.getName());
                 return true;
             }
