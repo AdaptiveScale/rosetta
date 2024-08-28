@@ -124,6 +124,11 @@ public class KineticaDDLGenerator implements DDL {
             .map(table -> createTable(table, dropTableIfExists))
             .collect(Collectors.joining("\r\r")));
 
+        stringBuilder.append(database.getViews()
+             .stream()
+             .map(view -> createView(view, dropTableIfExists))
+             .collect(Collectors.joining("\r\r")));
+
         //TODO: Check if we can enable foreign keys in Kinetica
         //Disable temporarily the foreign keys in Kinetica
 //        String foreignKeys = database
