@@ -20,19 +20,19 @@ import com.adaptivescale.rosetta.common.annotations.RosettaModule;
 import com.adaptivescale.rosetta.common.models.View;
 import com.adaptivescale.rosetta.common.types.RosettaModuleTypes;
 import com.adataptivescale.rosetta.source.common.QueryHelper;
+import lombok.extern.slf4j.Slf4j;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
+@Slf4j
 @RosettaModule(
         name = "kinetica",
         type = RosettaModuleTypes.VIEW_EXTRACTOR
@@ -87,7 +87,7 @@ public class KineticaViewExtractor extends DefaultViewExtractor {
                 });
 
             } catch (SQLException e) {
-                System.out.println("Table pg_matviews does not exist, skipping processing.");
+                log.warn("Skipping processing views due to error: {}", e.getMessage());
             }
         }
     }
