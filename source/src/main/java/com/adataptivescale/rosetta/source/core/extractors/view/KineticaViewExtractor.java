@@ -43,7 +43,7 @@ public class KineticaViewExtractor extends DefaultViewExtractor {
 
         List<String> schemaList = views.stream()
                 .map(Table::getSchema)
-                .map(schema -> "'" + schema + "'") // Wrap each string in single quotes
+                .map(schema -> "'" + schema + "'")
                 .collect(Collectors.toList());
 
         // Fetch view info only (M is for Materialized, V is Logical view)
@@ -60,7 +60,7 @@ public class KineticaViewExtractor extends DefaultViewExtractor {
                 Optional<Map<String, Object>> record = records.stream().filter(rec -> view.getName().equals(rec.get("object_name")) && view.getSchema().equals(rec.get("schema_name"))).findAny();
 
                 if (record.isPresent()) {
-                    view.setCode(record.get().get("definition").toString());
+                    view.setCode(fetchDdl(connection, view.getSchema(), view.getName()));
                     if (record.get().get("obj_kind").equals("M")) {
                         view.setMaterialized(true);
                     }
@@ -73,11 +73,46 @@ public class KineticaViewExtractor extends DefaultViewExtractor {
 
         // Skip view due to incomplete code, safety issue
         views.removeIf(view -> {
-            if (view.getCode() == null || view.getCode().isEmpty() || view.getCode().length() == 256) {
+            if (view.getCode() == null || view.getCode().isEmpty()) {
                 log.warn("Skipping view due to incomplete code: {}.{}", view.getSchema(), view.getName());
                 return true;
             }
             return false;
         });
+    }
+
+    private String fetchDdl(java.sql.Connection connection, String schemaName, String viewName) {
+        String queryTemplate = "SHOW %s.%s;";
+        try (Statement statement = connection.createStatement()) {
+            String query = String.format(queryTemplate, schemaName, viewName);
+            ResultSet resultSet = statement.executeQuery(query);
+            List<Map<String, Object>> records = QueryHelper.mapRecords(resultSet);
+
+            if (!records.isEmpty()) {
+                return extractDefinition(records.get(0).get("ddl").toString());
+            }
+
+        } catch (SQLException e) {
+            log.warn("Skipping processing views due to error: {}", e.getMessage());
+        }
+
+        return null;
+    }
+
+    private String extractDefinition(String sql) {
+        String upperSql = sql.toUpperCase();
+        int selectIndex = upperSql.indexOf("AS");
+        int endIndex = sql.indexOf(';');
+
+        // If a semicolon is not found, default to the end of the string
+        if (endIndex == -1) {
+            endIndex = sql.length();
+        }
+
+        if (selectIndex != -1) {
+            return sql.substring(selectIndex + "AS".length(), endIndex).trim();
+        }
+
+        return null;
     }
 }
