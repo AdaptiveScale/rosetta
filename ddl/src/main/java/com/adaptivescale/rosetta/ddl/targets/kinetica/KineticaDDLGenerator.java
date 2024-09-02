@@ -85,6 +85,10 @@ public class KineticaDDLGenerator implements DDL {
         }
 
         String tableType = extractTableType(table);
+        String partitions = table.getPropertyAsString("partitions");
+        if (partitions != null) {
+            createParams.put("partitions", partitions);
+        }
 
         createParams.put("tableType", tableType);
         createParams.put("schemaName", table.getSchema());
