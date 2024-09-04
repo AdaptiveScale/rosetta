@@ -4,14 +4,21 @@ import com.adaptivescale.rosetta.common.annotations.RosettaModule;
 import com.adaptivescale.rosetta.common.models.Table;
 import com.adaptivescale.rosetta.common.models.input.Connection;
 import com.adaptivescale.rosetta.common.types.RosettaModuleTypes;
+import com.adataptivescale.rosetta.source.common.QueryHelper;
+import lombok.extern.slf4j.Slf4j;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+@Slf4j
 @RosettaModule(
         name = "kinetica",
         type = RosettaModuleTypes.TABLE_EXTRACTOR
@@ -21,7 +28,9 @@ public class KineticaTablesExtractor extends DefaultTablesExtractor {
     public Collection<Table> extract(Connection target, java.sql.Connection connection) throws SQLException {
         Collection<Table> tables = super.extract(target, connection);
 
-        return attachTableType(tables, connection);
+        attachTableType(tables, connection);
+        attachTableTierStrategy(tables, connection);
+        return tables;
     }
 
     private Collection<Table> attachTableType(Collection<Table> tables, java.sql.Connection connection) throws SQLException {
@@ -43,5 +52,38 @@ public class KineticaTablesExtractor extends DefaultTablesExtractor {
             resultSet.close();
         }
         return tables;
+    }
+
+    private void attachTableTierStrategy(Collection<Table> tables, java.sql.Connection connection) {
+        for (Table table : tables) {
+            String queryTemplate = "SHOW %s.%s;";
+            try (Statement statement = connection.createStatement()) {
+                String query = String.format(queryTemplate, table.getSchema(), table.getName());
+                ResultSet resultSet = statement.executeQuery(query);
+                List<Map<String, Object>> records = QueryHelper.mapRecords(resultSet);
+
+                if (!records.isEmpty()) {
+                    table.addProperty("tier_strategy", extractTierStrategy(records.get(0).get("ddl").toString()));
+                }
+
+            } catch (SQLException e) {
+                log.warn("Skipping extracting tier strategy due to error: {}", e.getMessage());
+            }
+        }
+    }
+
+    private String extractTierStrategy(String ddl) {
+        // Regular expression pattern to match the TIER STRATEGY block
+        String patternString = "TIER STRATEGY\\b.*?;";
+        Pattern pattern = Pattern.compile(patternString, Pattern.DOTALL);
+        Matcher matcher = pattern.matcher(ddl);
+
+        if (matcher.find()) {
+            return matcher.group()
+                .trim()
+                .replaceAll("\\r\\n", "");
+        }
+
+        return null;
     }
 }
