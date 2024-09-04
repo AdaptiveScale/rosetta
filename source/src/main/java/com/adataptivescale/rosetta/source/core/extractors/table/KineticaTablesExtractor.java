@@ -62,7 +62,7 @@ public class KineticaTablesExtractor extends DefaultTablesExtractor {
                 }
 
             } catch (SQLException e) {
-                log.warn("Skipping processing views due to error: {}", e.getMessage());
+                log.warn("Failed attaching partitions for table {}.{} due to: {}", table.getSchema(), table.getName(), e.getMessage());
             }
         }
     }
