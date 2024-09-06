@@ -82,7 +82,6 @@ public class KineticaTablesExtractor extends DefaultTablesExtractor {
             return matcher.group()
                 .trim()
                 .replaceAll(";", "");
-//                .replaceAll("\\r\\n", "");
         }
 
         return null;
