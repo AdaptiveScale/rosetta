@@ -15,8 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Slf4j
 @RosettaModule(
@@ -73,15 +71,30 @@ public class KineticaTablesExtractor extends DefaultTablesExtractor {
     }
 
     private String extractTierStrategy(String ddl) {
-        // Regular expression pattern to match the TIER STRATEGY block
-        String patternString = "TIER STRATEGY\\b.*?;";
-        Pattern pattern = Pattern.compile(patternString, Pattern.DOTALL);
-        Matcher matcher = pattern.matcher(ddl);
+        String tierStart = "TIER STRATEGY";
+        int startIdx = ddl.indexOf(tierStart);
 
-        if (matcher.find()) {
-            return matcher.group()
-                .trim()
-                .replaceAll(";", "");
+        if (startIdx != -1) {
+            startIdx += tierStart.length();
+            int endIdx = startIdx;
+            int openParens = 0;
+
+            while (endIdx < ddl.length()) {
+                char currentChar = ddl.charAt(endIdx);
+
+                if (currentChar == '(') {
+                    openParens++;
+                } else if (currentChar == ')') {
+                    openParens--;
+                    if (openParens == 0) {
+                        endIdx++;
+                        break;
+                    }
+                }
+                endIdx++;
+            }
+
+            return tierStart + " " + ddl.substring(startIdx, endIdx).trim();
         }
 
         return null;
