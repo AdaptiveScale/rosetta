@@ -22,7 +22,7 @@ public class AbstractModel {
     }
 
     public Object getProperty(String name) {
-        if (this.additionalProperties != null)
+        if (additionalProperties.containsKey(name))
             return this.additionalProperties.get(name);
         return null;
     }
