@@ -5,18 +5,17 @@ import com.adaptivescale.rosetta.common.models.Table;
 import com.adaptivescale.rosetta.common.models.input.Connection;
 import com.adaptivescale.rosetta.common.types.RosettaModuleTypes;
 import com.adataptivescale.rosetta.source.common.QueryHelper;
-import lombok.extern.slf4j.Slf4j;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-@Slf4j
 @RosettaModule(
         name = "kinetica",
         type = RosettaModuleTypes.TABLE_EXTRACTOR
@@ -25,13 +24,13 @@ public class KineticaTablesExtractor extends DefaultTablesExtractor {
     @Override
     public Collection<Table> extract(Connection target, java.sql.Connection connection) throws SQLException {
         Collection<Table> tables = super.extract(target, connection);
-
-        attachTableType(tables, connection);
+        attachTablePartitions(tables, connection);
         attachTableTierStrategy(tables, connection);
+        attachTableType(tables, connection);
         return tables;
     }
 
-    private Collection<Table> attachTableType(Collection<Table> tables, java.sql.Connection connection) throws SQLException {
+    private void attachTableType(Collection<Table> tables, java.sql.Connection connection) throws SQLException {
         ResultSet resultSet = connection.createStatement().executeQuery("SELECT object_name, schema_name, shard_kind, persistence FROM ki_catalog.ki_objects;");
 
         while (resultSet.next()) {
@@ -39,17 +38,45 @@ public class KineticaTablesExtractor extends DefaultTablesExtractor {
             String object_name = resultSet.getString("object_name");
             Optional<Table> found_table = tables.stream().filter(table -> table.getSchema().equals(object_schema) && table.getName().equals(object_name)).findFirst();
             if (found_table.isPresent()) {
-                Map<String, Object> additionalProps = new HashMap<>();
-                additionalProps.put("shard_kind", resultSet.getString("shard_kind"));
-                additionalProps.put("persistence", resultSet.getString("persistence"));
-                found_table.get().setAdditionalProperties(additionalProps);
+                found_table.get().addProperty("shard_kind", resultSet.getString("shard_kind"));
+                found_table.get().addProperty("persistence", resultSet.getString("persistence"));
             }
         }
 
         if (!resultSet.isClosed()) {
             resultSet.close();
         }
-        return tables;
+    }
+
+    private void attachTablePartitions(Collection<Table> tables, java.sql.Connection connection) {
+        for (Table table : tables) {
+            String queryTemplate = "SHOW %s.%s;";
+            try (Statement statement = connection.createStatement()) {
+                String query = String.format(queryTemplate, table.getSchema(), table.getName());
+                ResultSet resultSet = statement.executeQuery(query);
+                List<Map<String, Object>> records = QueryHelper.mapRecords(resultSet);
+
+                if (!records.isEmpty()) {
+                    table.addProperty("partitions", extractPartitions(records.get(0).get("ddl").toString()));
+                }
+
+            } catch (SQLException e) {
+                log.warn("Failed attaching partitions for table {}.{} due to: {}", table.getSchema(), table.getName(), e.getMessage());
+            }
+        }
+    }
+
+    private String extractPartitions(String ddl) {
+        // Regular expression pattern to match the PARTITION BY and PARTITIONS block
+        String patternString = "(PARTITION BY\\s+\\w+\\s*\\(.*?\\)\\s*PARTITIONS\\s*\\(.*?\\))(?:\\s*TIER STRATEGY|;)";
+        Pattern pattern = Pattern.compile(patternString, Pattern.DOTALL);
+        Matcher matcher = pattern.matcher(ddl);
+
+        if (matcher.find()) {
+            return matcher.group(1).trim();
+        }
+
+        return null;
     }
 
     private void attachTableTierStrategy(Collection<Table> tables, java.sql.Connection connection) {

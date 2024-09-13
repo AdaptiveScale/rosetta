@@ -5,10 +5,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.HashMap;
 import java.util.Map;
 
-
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class AbstractModel {
-
     private Map<String, Object> additionalProperties = new HashMap<>();
 
     public Map<String, Object> getAdditionalProperties() {
@@ -19,14 +17,14 @@ public class AbstractModel {
         this.additionalProperties = additionalProperties;
     }
 
-    public Object getProperty(String name) {
-        if (additionalProperties.containsKey(name))
-            return this.additionalProperties.get(name);
-        return null;
-    }
-
     public void addProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
+    }
+
+    public Object getProperty(String name) {
+        if (this.additionalProperties != null)
+            return this.additionalProperties.get(name);
+        return null;
     }
 
     public String getPropertyAsString(String name) {
