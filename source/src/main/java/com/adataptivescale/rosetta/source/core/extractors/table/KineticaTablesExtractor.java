@@ -5,6 +5,7 @@ import com.adaptivescale.rosetta.common.models.Table;
 import com.adaptivescale.rosetta.common.models.input.Connection;
 import com.adaptivescale.rosetta.common.types.RosettaModuleTypes;
 import com.adataptivescale.rosetta.source.common.QueryHelper;
+import lombok.extern.slf4j.Slf4j;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,6 +17,7 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Slf4j
 @RosettaModule(
         name = "kinetica",
         type = RosettaModuleTypes.TABLE_EXTRACTOR
