@@ -85,6 +85,15 @@ public class KineticaDDLGenerator implements DDL {
         }
 
         String tableType = extractTableType(table);
+        if (table.getAdditionalProperties().containsKey("partitions")) {
+            String partitions = table.getPropertyAsString("partitions");
+            createParams.put("partitions", partitions);
+        }
+
+        if (table.getAdditionalProperties().containsKey("tier_strategy")) {
+            String tier_strategy = table.getPropertyAsString("tier_strategy");
+            createParams.put("tier_strategy", tier_strategy);
+        }
 
         createParams.put("tableType", tableType);
         createParams.put("schemaName", table.getSchema());
@@ -410,15 +419,13 @@ public class KineticaDDLGenerator implements DDL {
 
     private String extractTableType(Table table) {
         List<String> tableTypes = new ArrayList<>();
-        String shardKind = table.getPropertyAsString("shard_kind");
-        String persistence = table.getPropertyAsString("persistence");
 
         // for Kinetica when shardKind is R it means that the table is REPLICATED
         // when persistence is T it means that the table is TEMPORARY
-        if (shardKind != null && shardKind.equals("R")) {
+        if (table.getAdditionalProperties().containsKey("shard_kind") && table.getPropertyAsString("shard_kind").equals("R")) {
             tableTypes.add("REPLICATED");
         }
-        if (persistence != null && persistence.equals("T")) {
+        if (table.getAdditionalProperties().containsKey("persistence") && table.getPropertyAsString("persistence").equals("T")) {
             tableTypes.add("TEMP");
         }
         tableTypes.add("TABLE");
