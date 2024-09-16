@@ -5,6 +5,7 @@ import com.adaptivescale.rosetta.common.models.test.Tests;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public class Column {
 
@@ -24,6 +25,7 @@ public class Column {
     private List<ColumnProperties> columnProperties = new ArrayList<>();
     private Tests tests;
     private List<ForeignKey> foreignKeys;
+    private Set<Extension> extensions;
 
     public Column() {
     }
@@ -162,4 +164,12 @@ public class Column {
     public void setTests(Tests tests) {
         this.tests = tests;
     }
+
+  public Set<Extension> getExtensions() {
+    return extensions;
+  }
+
+  public void setExtensions(Set<Extension> extensions) {
+    this.extensions = extensions;
+  }
 }

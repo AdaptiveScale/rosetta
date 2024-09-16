@@ -1,8 +1,6 @@
 package com.adaptivescale.rosetta.common.models;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class Table extends AbstractModel {
 
@@ -16,6 +14,8 @@ public class Table extends AbstractModel {
     private List<Index> indices;
 
     private Collection<Column> columns;
+
+    private Set<Extension> extensions;
 
     public String getName() {
         return name;
@@ -74,7 +74,15 @@ public class Table extends AbstractModel {
         this.indices = indices;
     }
 
-    @Override
+  public Set<Extension> getExtensions() {
+    return extensions;
+  }
+
+  public void setExtensions(Set<Extension> extensions) {
+    this.extensions = extensions;
+  }
+
+  @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
