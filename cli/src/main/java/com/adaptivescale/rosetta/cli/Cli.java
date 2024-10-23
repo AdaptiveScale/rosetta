@@ -267,7 +267,44 @@ class Cli implements Callable<Void> {
         for (Database database : collect) {
             AssertionSqlGenerator assertionSqlGenerator = AssertionSqlGeneratorFactory.generatorFor(source.get());
             DefaultSqlExecution defaultSqlExecution = new DefaultSqlExecution(source.get(), new DriverManagerDriverProvider());
-            new DefaultAssertTestEngine(assertionSqlGenerator, defaultSqlExecution).run(source.get(), database);
+            new DefaultAssertTestEngine(assertionSqlGenerator, defaultSqlExecution, null).run(source.get(), database);
+        }
+    }
+
+    @CommandLine.Command(name = "test2", description = "Run tests written on columns against the source db", mixinStandardHelpOptions = true)
+    private void test2(@CommandLine.Option(names = {"-s", "--source"}) String sourceName,
+                       @CommandLine.Option(names = {"-t", "--target"}) String targetName) throws Exception {
+        requireConfig(config);
+
+        Optional<Connection> source = config.getConnection(sourceName);
+        Optional<Connection> target = config.getConnection(targetName);
+        if (source.isEmpty()) {
+            throw new RuntimeException("Can not find source with name: " + sourceName + " configured in config.");
+        }
+        if (target.isEmpty()) {
+            throw new RuntimeException("Can not find target with name: " + targetName + " configured in config.");
+        }
+        Path sourceWorkspace = Paths.get("./", sourceName);
+        Path targetWorkspace = Paths.get("./", targetName);
+
+        if (!Files.isDirectory(sourceWorkspace)) {
+            throw new RuntimeException(String.format("Can not find directory: %s for source name: %s to find" +
+                    " models for translation", sourceWorkspace, sourceName));
+        }
+        if (!Files.isDirectory(targetWorkspace)) {
+            throw new RuntimeException(String.format("Can not find directory: %s for target name: %s to find" +
+                    " models for translation", targetWorkspace, targetName));
+        }
+
+        List<Database> collect = getDatabases(sourceWorkspace)
+                .map(AbstractMap.SimpleImmutableEntry::getValue)
+                .collect(Collectors.toList());
+
+        for (Database database : collect) {
+            AssertionSqlGenerator assertionSqlGenerator = AssertionSqlGeneratorFactory.generatorFor(source.get());
+            DefaultSqlExecution defaultSqlExecution = new DefaultSqlExecution(source.get(), new DriverManagerDriverProvider());
+            DefaultSqlExecution targetSqlExecution = new DefaultSqlExecution(target.get(), new DriverManagerDriverProvider());
+            new DefaultAssertTestEngine(assertionSqlGenerator, defaultSqlExecution, targetSqlExecution).run(source.get(), target.get(), database);
         }
     }
 
