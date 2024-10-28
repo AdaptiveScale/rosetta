@@ -23,6 +23,13 @@ public class DefaultAssertTestEngine implements AssertTestEngine {
     private final Output output;
     private final List<AssertionResult> results = new ArrayList<>();
 
+    public DefaultAssertTestEngine(AssertionSqlGenerator sqlGenerator, SqlExecution sqlExecution) {
+        this.sqlGenerator = sqlGenerator;
+        this.sqlExecution = sqlExecution;
+        this.targetSqlExecution = null;
+        output = new ConsoleOutput();
+    }
+
     public DefaultAssertTestEngine(AssertionSqlGenerator sqlGenerator, SqlExecution sqlExecution, SqlExecution targetSqlExecution) {
         this.sqlGenerator = sqlGenerator;
         this.sqlExecution = sqlExecution;
