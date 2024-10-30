@@ -3,6 +3,7 @@ package com.adaptivescale.rosetta.test.assertion.generator;
 import com.adaptivescale.rosetta.common.models.Column;
 
 public class SpannerAssertionSqlGenerator extends DefaultAssertionSqlGenerator {
+
   private boolean isArray(Column column) {
     return "ARRAY".equals(column.getTypeName());
   }

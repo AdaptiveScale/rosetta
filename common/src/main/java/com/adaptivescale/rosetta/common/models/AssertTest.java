@@ -7,6 +7,7 @@ public class AssertTest implements Test {
     private String operator;
     private Object value;
     private String expected;
+    private String columnDef;
 
     public String getOperator() {
         return operator;
@@ -30,6 +31,14 @@ public class AssertTest implements Test {
 
     public void setExpected(String expected) {
         this.expected = expected;
+    }
+
+    public String getColumnDef() {
+        return columnDef;
+    }
+
+    public void setColumnDef(String columnDef) {
+        this.columnDef = columnDef;
     }
 
     @Override
