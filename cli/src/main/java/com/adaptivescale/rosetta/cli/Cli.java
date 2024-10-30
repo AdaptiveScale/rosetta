@@ -247,10 +247,15 @@ class Cli implements Callable<Void> {
     }
 
     @CommandLine.Command(name = "test", description = "Run tests written on columns", mixinStandardHelpOptions = true)
-    private void test(@CommandLine.Option(names = {"-s", "--source"}) String sourceName) throws Exception {
+    private void test(
+            @CommandLine.Option(names = {"-s", "--source"}) String sourceName,
+            @CommandLine.Option(names = {"-t", "--target"}) String targetName
+    ) throws Exception {
         requireConfig(config);
 
         Optional<Connection> source = config.getConnection(sourceName);
+        Optional<Connection> target = config.getConnection(targetName);
+
         if (source.isEmpty()) {
             throw new RuntimeException("Can not find source with name: " + sourceName + " configured in config.");
         }
@@ -267,7 +272,13 @@ class Cli implements Callable<Void> {
         for (Database database : collect) {
             AssertionSqlGenerator assertionSqlGenerator = AssertionSqlGeneratorFactory.generatorFor(source.get());
             DefaultSqlExecution defaultSqlExecution = new DefaultSqlExecution(source.get(), new DriverManagerDriverProvider());
-            new DefaultAssertTestEngine(assertionSqlGenerator, defaultSqlExecution).run(source.get(), database);
+
+            if (target.isEmpty()) {
+                new DefaultAssertTestEngine(assertionSqlGenerator, defaultSqlExecution, null).run(source.get(), database);
+            } else {
+                DefaultSqlExecution targetSqlExecution = new DefaultSqlExecution(target.get(), new DriverManagerDriverProvider());
+                new DefaultAssertTestEngine(assertionSqlGenerator, defaultSqlExecution, targetSqlExecution).run(source.get(), target.get(), database);
+            }
         }
     }
 
