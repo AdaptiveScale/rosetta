@@ -161,15 +161,15 @@ For detailed setup instructions and examples, refer [here](docs/markdowns/transl
 ### Available commands
 - [init](docs/markdowns/init.md)
 - [validate](docs/markdowns/validate.md)
+- [drivers](docs/markdowns/drivers.md)
 - [extract](docs/markdowns/extract.md)
 - [compile](docs/markdowns/compile.md)
-- [dbt](docs/markdowns/dbt.md)
+- [apply](docs/markdowns/apply.md)
 - [diff](docs/markdowns/diff.md)
 - [test](docs/markdowns/test.md)
-- [apply](docs/markdowns/apply.md)
+- [dbt](docs/markdowns/dbt.md)
 - [generate](docs/markdowns/generate.md)
 - [query](docs/markdowns/query.md)
-- [drivers](docs/markdowns/drivers.md)
 
 ### Safety Operation
 In `model.yaml` you can find the attribute `safeMode` which is by default disabled (false). If you want to prevent any DROP operation during
