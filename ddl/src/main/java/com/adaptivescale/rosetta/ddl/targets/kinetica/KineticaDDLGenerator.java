@@ -6,6 +6,7 @@ import com.adaptivescale.rosetta.common.models.Database;
 import com.adaptivescale.rosetta.common.models.ForeignKey;
 import com.adaptivescale.rosetta.common.models.Table;
 import com.adaptivescale.rosetta.common.models.Index;
+import com.adaptivescale.rosetta.common.models.View;
 import com.adaptivescale.rosetta.common.types.RosettaModuleTypes;
 import com.adaptivescale.rosetta.ddl.DDL;
 import com.adaptivescale.rosetta.ddl.change.model.ColumnChange;
@@ -44,12 +45,19 @@ public class KineticaDDLGenerator implements DDL {
 
     private final static String COLUMN_DROP_TEMPLATE = "kinetica/column/drop";
 
+    private final static String VIEW_DROP_TEMPLATE = "kinetica/view/drop";
+
+    private final static String VIEW_CREATE_TEMPLATE = "kinetica/view/create";
+
+    private final static String VIEW_ALTER_TEMPLATE = "kinetica/view/alter";
+
     private final static List<String> RESERVED_SCHEMA_NAMES = List.of("ki_home");
 
     private static final String GEOSPATIAL_INDEX_FORMAT = "GEOSPATIAL INDEX (%s)";
     private static final String CHUNK_SKIP_INDEX_FORMAT = "CHUNK SKIP INDEX (%s)";
     private static final String CAGRA_INDEX_FORMAT = "%s INDEX (%s) WITH OPTIONS (INDEX_OPTIONS = '%s')";
     private static final String GENERIC_INDEX_FORMAT = "%s INDEX (%s)";
+    private static final String ADD_FOREIGN_KEY_FORMAT = "FOREIGN KEY (\"%s\") REFERENCES \"%s\".\"%s\" (\"%s\") AS \"%s\"";
 
     private final ColumnSQLDecoratorFactory columnSQLDecoratorFactory = new KineticaColumnDecoratorFactory();
 
@@ -64,10 +72,11 @@ public class KineticaDDLGenerator implements DDL {
 
         List<String> definitions = table.getColumns().stream().map(this::createColumn).collect(Collectors.toList());
 
-        List<String> foreignKeysForTable = getForeignKeysColumnNames(table);
-        Optional<String> primaryKeysForTable = createPrimaryKeysForTable(table, foreignKeysForTable);
+        List<String> foreignKeysForTable = createForeignKeysForTable(table);
+        Optional<String> primaryKeysForTable = createPrimaryKeysForTable(table);
         List<String> indicesForTable = getIndicesForTable(table);
         primaryKeysForTable.ifPresent(definitions::add);
+        definitions.addAll(foreignKeysForTable);
         String definitionAsString = String.join(", ", definitions);
 
         StringBuilder stringBuilder = new StringBuilder();
@@ -76,6 +85,15 @@ public class KineticaDDLGenerator implements DDL {
         }
 
         String tableType = extractTableType(table);
+        if (table.getAdditionalProperties().containsKey("partitions")) {
+            String partitions = table.getPropertyAsString("partitions");
+            createParams.put("partitions", partitions);
+        }
+
+        if (table.getAdditionalProperties().containsKey("tier_strategy")) {
+            String tier_strategy = table.getPropertyAsString("tier_strategy");
+            createParams.put("tier_strategy", tier_strategy);
+        }
 
         createParams.put("tableType", tableType);
         createParams.put("schemaName", table.getSchema());
@@ -114,6 +132,11 @@ public class KineticaDDLGenerator implements DDL {
             .stream()
             .map(table -> createTable(table, dropTableIfExists))
             .collect(Collectors.joining("\r\r")));
+
+        stringBuilder.append(database.getViews()
+             .stream()
+             .map(view -> createView(view, dropTableIfExists))
+             .collect(Collectors.joining("\r\r")));
 
         //TODO: Check if we can enable foreign keys in Kinetica
         //Disable temporarily the foreign keys in Kinetica
@@ -219,7 +242,44 @@ public class KineticaDDLGenerator implements DDL {
         return "";
     }
 
-    private Optional<String> createPrimaryKeysForTable(Table table, List<String> foreignKeysForTable) {
+    @Override
+    public String createView(View view, boolean dropViewIfExists) {
+        StringBuilder builder = new StringBuilder();
+
+        if (dropViewIfExists) {
+            dropView(view);
+            builder.append(dropView(view));
+        }
+
+        Map<String, Object> createParams = new HashMap<>();
+        createParams.put("schemaName", view.getSchema());
+        createParams.put("viewName", view.getName());
+        createParams.put("materialized", view.getMaterializedString());
+        createParams.put("viewCode", view.getCode());
+        builder.append(TemplateEngine.process(VIEW_CREATE_TEMPLATE, createParams));
+
+        return builder.toString();
+    }
+
+    @Override
+    public String dropView(View actual) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("schemaName", actual.getSchema());
+        params.put("viewName", actual.getName());
+        return TemplateEngine.process(VIEW_DROP_TEMPLATE, params);
+    }
+
+    @Override
+    public String alterView(View expected, View actual) {
+        Map<String, Object> createParams = new HashMap<>();
+        createParams.put("schemaName", expected.getSchema());
+        createParams.put("viewName", expected.getName());
+        createParams.put("materialized", expected.getMaterializedString());
+        createParams.put("viewCode", expected.getCode());
+        return TemplateEngine.process(VIEW_ALTER_TEMPLATE, createParams);
+    }
+
+    private Optional<String> createPrimaryKeysForTable(Table table) {
         List<String> primaryKeys = table
             .getColumns()
             .stream()
@@ -227,9 +287,6 @@ public class KineticaDDLGenerator implements DDL {
             .sorted((o1, o2) -> o1.getPrimaryKeySequenceId() < o2.getPrimaryKeySequenceId() ? -1 : 1)
             .map(pk -> String.format(DEFAULT_WRAPPER+"%s"+DEFAULT_WRAPPER, pk.getName()))
             .collect(Collectors.toList());
-
-        //TODO: Enable this with foreign key functionality
-//        primaryKeys.addAll(foreignKeysForTable);
 
         if (primaryKeys.isEmpty()) {
             return Optional.empty();
@@ -320,12 +377,23 @@ public class KineticaDDLGenerator implements DDL {
         return result.isEmpty() ? Optional.empty() : Optional.of(result);
     }
 
-    private List<String> getForeignKeysColumnNames(Table table) {
-        return table.getColumns().stream()
-            .filter(column -> column.getForeignKeys() != null && !column.getForeignKeys().isEmpty())
-            .map(Column::getName)
-            .map(fk -> String.format(DEFAULT_WRAPPER+"%s"+DEFAULT_WRAPPER, fk))
-            .collect(Collectors.toList());
+    private List<String> createForeignKeysForTable(Table table) {
+        List<String> result = new ArrayList<>();
+        table.getColumns().forEach(column -> {
+            if (column.getForeignKeys() != null && !column.getForeignKeys().isEmpty()) {
+                column.getForeignKeys().forEach(foreignKey -> result.add(
+                    String.format(
+                        ADD_FOREIGN_KEY_FORMAT,
+                        column.getName(),
+                        foreignKey.getPrimaryTableSchema(),
+                        foreignKey.getPrimaryTableName(),
+                        foreignKey.getPrimaryColumnName(),
+                        foreignKey.getName()
+                    )
+                ));
+            }
+        });
+        return result;
     }
 
     private String createForeignKeys(Column column) {
@@ -351,15 +419,13 @@ public class KineticaDDLGenerator implements DDL {
 
     private String extractTableType(Table table) {
         List<String> tableTypes = new ArrayList<>();
-        String shardKind = table.getPropertyAsString("shard_kind");
-        String persistence = table.getPropertyAsString("persistence");
 
         // for Kinetica when shardKind is R it means that the table is REPLICATED
         // when persistence is T it means that the table is TEMPORARY
-        if (shardKind != null && shardKind.equals("R")) {
+        if (table.getAdditionalProperties().containsKey("shard_kind") && table.getPropertyAsString("shard_kind").equals("R")) {
             tableTypes.add("REPLICATED");
         }
-        if (persistence != null && persistence.equals("T")) {
+        if (table.getAdditionalProperties().containsKey("persistence") && table.getPropertyAsString("persistence").equals("T")) {
             tableTypes.add("TEMP");
         }
         tableTypes.add("TABLE");

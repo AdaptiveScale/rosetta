@@ -15,7 +15,7 @@ public abstract class BaseAssertionSqlGenerator implements AssertionSqlGenerator
     @Override
     public String generateSql(Connection connection, Table table, Column column, AssertTest assertion) {
         String whereClauseCondition = prepareWhereCondition(column, assertion);
-        return prepareSql(connection, table, column, whereClauseCondition);
+        return prepareSql(connection, table, column, assertion, whereClauseCondition);
     }
 
     String prepareWhereCondition(Column column, AssertTest assertion) {
@@ -34,7 +34,7 @@ public abstract class BaseAssertionSqlGenerator implements AssertionSqlGenerator
         return String.format("%s %s", assertion.getOperator(), handleOperator(assertion, column));
     }
 
-    abstract String prepareSql(Connection connection, Table table, Column column, String whereClauseCondition);
+    abstract String prepareSql(Connection connection, Table table, Column column, AssertTest assertion, String whereClauseCondition);
 
     private String handleOperator(AssertTest assertion, Column column) {
         if (OperatorEnum.IN.getName().equalsIgnoreCase(assertion.getOperator())) {

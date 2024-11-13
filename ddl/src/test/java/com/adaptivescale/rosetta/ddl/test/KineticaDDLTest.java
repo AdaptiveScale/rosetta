@@ -188,6 +188,42 @@ public class KineticaDDLTest {
                 "ALTER TABLE \"ROSETTA\".\"TEAMPLAYERS\" ADD FOREIGN KEY (\"PLAYERID\") REFERENCES \"ROSETTA\".\"POSITION\"(\"ID\") AS TEAMPLAYERS_FK;", ddl);
     }
 
+    @Test
+    public void addView() throws IOException {
+        String ddl = generateDDL("add_view");
+        Assertions.assertEquals(("CREATE OR REPLACE  VIEW \"ROSETTA\".\"PLAYER_POSITION\" AS( SELECT p.name AS PLAYER_NAME, pos.Name AS POSITION_NAME FROM ROSETTA.PLAYER p LEFT JOIN ROSETTA.Position pos ON p.POSITION_ID = pos.ID; );"), ddl.replaceAll("(\\r|\\n|\\t)", ""));
+    }
+
+    @Test
+    public void dropView() throws IOException {
+        String ddl = generateDDL("drop_view");
+        Assertions.assertEquals(("DROP VIEW IF EXISTS \"ROSETTA\".\"PLAYER_POSITION\";"), ddl.replaceAll("(\\r|\\n|\\t)", ""));
+    }
+
+    @Test
+    public void alterView() throws IOException {
+        String ddl = generateDDL("alter_view");
+        Assertions.assertEquals(("CREATE OR REPLACE  VIEW \"ROSETTA\".\"PLAYER_POSITION\" AS( SELECT p.ID as PLAYER_ID, p.name AS PLAYER_NAME, pos.Name AS POSITION_NAME FROM ROSETTA.PLAYER p LEFT JOIN ROSETTA.Position pos ON p.POSITION_ID = pos.ID; );"), ddl.replaceAll("(\\r|\\n|\\t)", ""));
+    }
+
+    @Test
+    public void addMaterializedView() throws IOException {
+        String ddl = generateDDL("add_materialized_view");
+        Assertions.assertEquals(("CREATE OR REPLACE MATERIALIZED VIEW \"ROSETTA\".\"PLAYER_POSITION\" AS( SELECT p.name AS PLAYER_NAME, pos.Name AS POSITION_NAME FROM ROSETTA.PLAYER p LEFT JOIN ROSETTA.Position pos ON p.POSITION_ID = pos.ID; );"), ddl.replaceAll("(\\r|\\n|\\t)", ""));
+    }
+
+    @Test
+    public void dropMaterializedView() throws IOException {
+        String ddl = generateDDL("drop_materialized_view");
+        Assertions.assertEquals(("DROP VIEW IF EXISTS \"ROSETTA\".\"PLAYER_POSITION\";"), ddl.replaceAll("(\\r|\\n|\\t)", ""));
+    }
+
+    @Test
+    public void alterMaterializedView() throws IOException {
+        String ddl = generateDDL("alter_materialized_view");
+        Assertions.assertEquals(("CREATE OR REPLACE MATERIALIZED VIEW \"ROSETTA\".\"PLAYER_POSITION\" AS( SELECT p.ID as PLAYER_ID, p.name AS PLAYER_NAME, pos.Name AS POSITION_NAME FROM ROSETTA.PLAYER p LEFT JOIN ROSETTA.Position pos ON p.POSITION_ID = pos.ID; );"), ddl.replaceAll("(\\r|\\n|\\t)", ""));
+    }
+
     private String generateDDL(String testType) throws IOException {
         Database actual = Utils.getDatabase(resourceDirectory.resolve(testType), "actual_model.yaml");
         Database expected = Utils.getDatabase(resourceDirectory.resolve(testType), "expected_model.yaml");

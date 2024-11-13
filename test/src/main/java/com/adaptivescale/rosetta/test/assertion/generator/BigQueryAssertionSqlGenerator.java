@@ -1,19 +1,23 @@
 package com.adaptivescale.rosetta.test.assertion.generator;
 
+import com.adaptivescale.rosetta.common.models.AssertTest;
 import com.adaptivescale.rosetta.common.models.Column;
 import com.adaptivescale.rosetta.common.models.Table;
 import com.adaptivescale.rosetta.common.models.input.Connection;
 
+import java.util.Optional;
+
 public class BigQueryAssertionSqlGenerator extends BaseAssertionSqlGenerator {
 
     @Override
-    String prepareSql(Connection connection, Table table, Column column, String whereClauseCondition) {
+    String prepareSql(Connection connection, Table table, Column column, AssertTest assertion, String whereClauseCondition) {
         String columnName = isArray(column) ? String.format("ARRAY_TO_STRING(%s,',')", column.getName()) : column.getName();
         return String.format("Select Count(*) from %s.%s.%s where %s %s",
                 connection.getDatabaseName(),
                 connection.getSchemaName(),
                 table.getName(),
-                columnName,
+                Optional.ofNullable(assertion.getColumnDef())
+                    .orElse(columnName),
                 whereClauseCondition);
     }
 
