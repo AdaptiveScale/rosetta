@@ -1,3 +1,5 @@
+## RosettaDB Getting Started
+
 ### ROSETTA_DRIVERS Environment
 
 Set the ENV variable `ROSETTA_DRIVERS` to point to the location of your JDBC drivers.

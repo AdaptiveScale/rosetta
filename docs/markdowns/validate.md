@@ -1,3 +1,5 @@
+## Validate connections
+
 #### validate
 This command validates the configuration and tests if rosetta can connect to the configured source.
 

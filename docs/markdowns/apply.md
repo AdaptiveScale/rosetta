@@ -1,3 +1,5 @@
+## Apply Database changes
+
 #### apply
 Gets current model and compares with state of database, generates ddl for changes and applies to database. If you set `git_auto_commit` to `true` in `main.conf` it will automatically push the new model to your Git repo of the rosetta project.
 

@@ -1,3 +1,5 @@
+## Generate Spark Code
+
 #### generate
 This command will generate Spark Python (file) or Spark Scala (file), firstly it extracts a schema from a source database and gets connection properties from the source connection, then it creates a python (file) or scala (file) that translates schemas, which is ready to transfer data from source to target.
 

@@ -1,3 +1,5 @@
+## Compare the local model with the state of the Database
+
 #### diff
 The diff command shows the differences between the current local model and the state of the database. This can help identify any tables that have been added or removed, or columns that have been modified in the database schema. It’s a valuable tool for tracking schema changes and maintaining consistency between development and production environments.
 

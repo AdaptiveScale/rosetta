@@ -1,3 +1,5 @@
+## Data Validation / Data Quality
+
 #### test
 This command runs tests for columns using assertions. Then they are translated into query commands, executed, and compared with an expected value. Currently supported assertions are: `equals(=), not equals(!=), less than(<), more than(>), less than or equals(<=), more than or equals(>=), contains(in), is null, is not null, like, between`. Examples are shown below:
 

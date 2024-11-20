@@ -1,3 +1,5 @@
+## Extract Database Schema
+
 #### extract
 This is the command that extracts the schema from a database and generates declarative DBML models that can be used for conversion to alternate database targets.
 
