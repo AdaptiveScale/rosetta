@@ -1,5 +1,7 @@
 package com.adaptivescale.rosetta.cli;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
 import com.adaptivescale.rosetta.cli.helpers.DriverHelper;
 import com.adaptivescale.rosetta.cli.model.Config;
 import com.adaptivescale.rosetta.cli.outputs.DbtSqlModelOutput;
@@ -37,6 +39,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 import queryhelper.pojo.GenericResponse;
 import queryhelper.service.AIService;
@@ -69,13 +72,13 @@ import java.util.stream.Stream;
 import static com.adaptivescale.rosetta.cli.Constants.CONFIG_NAME;
 import static com.adaptivescale.rosetta.cli.Constants.TEMPLATE_CONFIG_NAME;
 
-@Slf4j
 @CommandLine.Command(name = "cli",
         mixinStandardHelpOptions = true,
         version = "2.5.5",
         description = "Declarative Database Management - DDL Transpiler"
 )
 class Cli implements Callable<Void> {
+    private static final Logger log = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
 
     public static final String DEFAULT_MODEL_YAML = "model.yaml";
     public static final String DEFAULT_OUTPUT_DIRECTORY = "data";
@@ -89,6 +92,15 @@ class Cli implements Callable<Void> {
             defaultValue = CONFIG_NAME,
             description = "YAML config file. If none is supplied it will use main.conf in the current directory if it exists.")
     private Config config;
+
+    @CommandLine.Option(names = {"-v", "--verbose"}, scope = CommandLine.ScopeType.INHERIT, description = "Enable Verbose output")
+    public void setVerbose(boolean verbose) {
+        if (verbose) {
+            log.setLevel(Level.DEBUG);
+        } else {
+            log.setLevel(Level.INFO);
+        }
+    }
 
     @Override
     public Void call() {
