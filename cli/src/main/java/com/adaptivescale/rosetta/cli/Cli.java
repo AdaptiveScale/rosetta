@@ -21,17 +21,16 @@ import com.adaptivescale.rosetta.ddl.change.ChangeFinder;
 import com.adaptivescale.rosetta.ddl.change.ChangeHandler;
 import com.adaptivescale.rosetta.ddl.change.model.Change;
 import com.adaptivescale.rosetta.ddl.utils.TemplateEngine;
-import com.adaptivescale.rosetta.test.assertion.*;
 import com.adaptivescale.rosetta.test.assertion.AssertionSqlGenerator;
-import com.adaptivescale.rosetta.test.assertion.generator.AssertionSqlGeneratorFactory;
+import com.adaptivescale.rosetta.test.assertion.DefaultAssertTestEngine;
 import com.adaptivescale.rosetta.test.assertion.DefaultSqlExecution;
+import com.adaptivescale.rosetta.test.assertion.generator.AssertionSqlGeneratorFactory;
 import com.adaptivescale.rosetta.diff.DiffFactory;
 import com.adaptivescale.rosetta.diff.Diff;
 import com.adaptivescale.rosetta.translator.Translator;
 import com.adaptivescale.rosetta.translator.TranslatorFactory;
 import com.adataptivescale.rosetta.source.core.SourceGeneratorFactory;
 
-import com.adataptivescale.rosetta.source.core.interfaces.Generator;
 import com.adataptivescale.rosetta.source.dbt.DbtModelGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
@@ -42,12 +41,24 @@ import picocli.CommandLine;
 import queryhelper.pojo.GenericResponse;
 import queryhelper.service.AIService;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.AbstractMap;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.Callable;
 
 import java.util.function.Consumer;
@@ -55,7 +66,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.adaptivescale.rosetta.cli.Constants.*;
+import static com.adaptivescale.rosetta.cli.Constants.CONFIG_NAME;
+import static com.adaptivescale.rosetta.cli.Constants.TEMPLATE_CONFIG_NAME;
 
 @Slf4j
 @CommandLine.Command(name = "cli",
@@ -430,9 +442,10 @@ class Cli implements Callable<Void> {
     }
 
     @CommandLine.Command(name = "drivers", description = "Show available drivers for download", mixinStandardHelpOptions = true)
-    private void drivers(@CommandLine.Option(names = {"--list"}, description = "Used to list all available drivers") boolean isList,
-                         @CommandLine.Option(names = {"-dl", "--download"}, description = "Used to download selected driver by index") boolean isDownload,
-                         @CommandLine.Option(names = {"-f", "--file"}, defaultValue = DEFAULT_DRIVERS_YAML) String file,
+    private void drivers(@CommandLine.Option(names = {"--list"}, description = "Used to list all available drivers.") boolean isList,
+                         @CommandLine.Option(names = {"--show"}, description = "Used to show downloaded drivers.") boolean isShow,
+                         @CommandLine.Option(names = {"-dl", "--download"}, description = "Used to download selected driver by index.") boolean isDownload,
+                         @CommandLine.Option(names = {"-f", "--file"}, description = "Used to change the drivers yaml file.", defaultValue = DEFAULT_DRIVERS_YAML) String file,
                          @CommandLine.Parameters(index = "0", arity = "0..1") Integer driverId) {
         Path driversPath = Path.of(file);
 
@@ -440,6 +453,15 @@ class Cli implements Callable<Void> {
             DriverHelper.printDrivers(driversPath);
 
             System.out.println("To download a driver use: rosetta drivers {index} --download");
+            System.out.println("To set a custom drivers path use ROSETTA_DRIVERS environment variable.");
+            return;
+        }
+
+        if (isShow) {
+            DriverHelper.printDownloadedDrivers();
+
+            System.out.println("To download a driver use: rosetta drivers {index} --download");
+            System.out.println("To set a custom drivers path use ROSETTA_DRIVERS environment variable.");
             return;
         }
 
