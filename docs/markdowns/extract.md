@@ -1,6 +1,6 @@
-## Extract Database Schema
+## Extract schema metadata from a source database
 
-#### extract
+### Command: extract
 This is the command that extracts the schema from a database and generates declarative DBML models that can be used for conversion to alternate database targets.
 
     rosetta [-c, --config CONFIG_FILE] extract [-h, --help] [-s, --source CONNECTION_NAME] [-t, --convert-to CONNECTION_NAME]

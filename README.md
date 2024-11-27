@@ -4,7 +4,7 @@
 
 ## Overview
 
-RosettaDB is an open-source, declarative data modeling and transpilation tool that simplifies database migrations, data quality assurance, and data exploration. With support for schema introspection, AI-driven querying, and automated code generation, RosettaDB equips data engineers and developers to manage complex data workflows across diverse platforms with ease. 
+RosettaDB is an open-source, declarative data modeling and transpilation tool that simplifies database migrations, data quality assurance, and data exploration. With support for schema extraction, AI-driven querying, and automated code generation, RosettaDB equips data engineers and developers to manage complex data workflows across diverse platforms with ease. 
 
 Rosetta utilizes JDBC to extract schema metadata from a database and generates declarative DBML models that can be used for conversion to alternate database targets.
 
@@ -105,7 +105,7 @@ connections:
     password: sakila
 ```
 
-### 4. E Extract and Transpile Your Schemas
+### 4. Extract and Transpile Your Schemas
 
 Extract the schema from PostgreSQL and transpile it to MySQL:
 
@@ -136,7 +136,7 @@ RosettaDB provides a comprehensive set of commands to cover various aspects of d
 - **[extract](docs/markdowns/extract.md)**: Extract schema metadata from a source database.
 - **[compile](docs/markdowns/compile.md)**: Compile DBML models into target DDL statements.
 - **[apply](docs/markdowns/apply.md)**: Apply generated DDL to the target database.
-- **[diff](docs/markdowns/diff.md)**: Compare and display differences between two schemas.
+- **[diff](docs/markdowns/diff.md)**: Compare and display differences between the DBML model and the database.
 - **[test](docs/markdowns/test.md)**: Run data quality and validation tests against your database.
 - **[dbt](docs/markdowns/dbt.md)**: Generate dbt models for analytics workflows.
 - **[generate](docs/markdowns/generate.md)**: Generate Spark code for data transfers (Python or Scala).

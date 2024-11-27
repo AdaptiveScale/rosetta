@@ -1,6 +1,6 @@
-## Data Validation / Data Quality
+## Run data quality and validation tests against your database
 
-#### test
+### Command: test
 This command runs tests for columns using assertions. Then they are translated into query commands, executed, and compared with an expected value. Currently supported assertions are: `equals(=), not equals(!=), less than(<), more than(>), less than or equals(<=), more than or equals(>=), contains(in), is null, is not null, like, between`. Examples are shown below:
 
     rosetta [-c, --config CONFIG_FILE] test [-h, --help] [-s, --source CONNECTION_NAME]

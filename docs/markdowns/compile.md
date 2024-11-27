@@ -1,4 +1,7 @@
-#### compile
+## Compile DBML models into target DDL statements
+
+### Command: compile
+
 The `compile` command generates DDL (Data Definition Language) statements for a target database based on the DBML (Database Markup Language) extracted from a source database by the previous (`extract`) command. It builds schemas and tables in the target database using the extracted database schema.
 
     rosetta [-c, --config CONFIG_FILE] compile [-h, --help] [-t, --target CONNECTION_NAME] [-s, --source CONNECTION_NAME]

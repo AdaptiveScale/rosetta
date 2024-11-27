@@ -1,6 +1,6 @@
-## Manage JDBC drivers
+## List and manage supported database JDBC drivers
 
-#### drivers
+### Command: drivers
 This command can list drivers that are listed in a `drivers.yaml` file and by choosing a driver you can download it to the `ROSETTA_DRIVERS` directory which will be automatically ready to use.
 
     rosetta drivers [-h, --help] [-f, --file] [--list] <indexToDownload> [-dl, --download]

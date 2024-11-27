@@ -1,4 +1,4 @@
-## Rosetta DB YAML Config
+## Manage RosettaDB configuration settings
 
 ### YAML Config File
 

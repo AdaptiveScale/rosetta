@@ -1,6 +1,6 @@
-## Compare the local model with the state of the Database
+## Compare and display differences between the DBML model and the database
 
-#### diff
+### Command: diff
 The diff command shows the differences between the current local model and the state of the database. This can help identify any tables that have been added or removed, or columns that have been modified in the database schema. It’s a valuable tool for tracking schema changes and maintaining consistency between development and production environments.
 
     rosetta [-c, --config CONFIG_FILE] diff [-h, --help] [-s, --source CONNECTION_NAME]

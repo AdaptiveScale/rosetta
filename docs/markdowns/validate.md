@@ -1,6 +1,6 @@
-## Validate connections
+## Validate database connections
 
-#### validate
+### Command: validate
 This command validates the configuration and tests if rosetta can connect to the configured source.
 
     rosetta [-c, --config CONFIG_FILE] validate [-h, --help] [-s, --source CONNECTION_NAME]

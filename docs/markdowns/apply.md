@@ -1,7 +1,7 @@
-## Apply Database changes
+## Apply generated DDL to the target database
 
-#### apply
-Gets current model and compares with state of database, generates ddl for changes and applies to database. If you set `git_auto_commit` to `true` in `main.conf` it will automatically push the new model to your Git repo of the rosetta project.
+### Command: apply
+The apply command compares the current database state with the model defined in your Rosetta project. It generates the necessary DDL to align the database with the model and applies the changes to the database. If the git_auto_commit setting in main.conf is set to true, Rosetta will also automatically commit and push the updated model to the associated Git repository.
 
     rosetta [-c, --config CONFIG_FILE] apply [-h, --help] [-s, --source CONNECTION_NAME]
 
@@ -15,7 +15,7 @@ Parameter | Description
 
 Example:
 
-(Actual database)
+Actual Database (Current State)
 ```yaml
 ---
 safeMode: false
@@ -42,7 +42,7 @@ tables:
               expected: 1
 ```
 
-(Expected database)
+Expected Database (Target State)
 ```yaml
 ---
 safeMode: false
@@ -84,4 +84,8 @@ tables:
               expected: 1
 ```
 
-Description: Our actual database does not contain `first_name` so we expect it to alter the table and add the column, inside the source directory there will be the executed DDL and a snapshot of the current database.
+The apply command detects that the first_name column is missing in the actual database. It generates a DDL statement to alter the actor table and add the first_name column.
+
+**Outputs**:
+- A snapshot of the updated database schema is saved in the source directory.
+- The executed DDL is logged for reference.
