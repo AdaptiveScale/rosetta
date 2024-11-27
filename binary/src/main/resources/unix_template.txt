@@ -66,13 +66,17 @@ esac
 
 CLASSPATH="\$APP_HOME/lib/*"
 
+DRIVERS_PATH="\${ROSETTA_DRIVERS}"
+
 if [ x"\${ROSETTA_DRIVERS}" = "x" ]; then
     DRIVERS_PATH="\${APP_HOME}/drivers/"
-    mkdir -p \$DRIVERS_PATH
-    CLASSPATH="\${CLASSPATH}:\${DRIVERS_PATH}*"
-else
-    CLASSPATH="\${CLASSPATH}:\${ROSETTA_DRIVERS}"
+    mkdir -p \${DRIVERS_PATH}
 fi
+
+# Add all .jar files from DRIVERS_PATH and its subdirectories to CLASSPATH
+for jar in \$(find "\${DRIVERS_PATH}" -name "*.jar"); do
+    CLASSPATH="\${CLASSPATH}:\${jar}"
+done
 
 JAVA_HOME="\$APP_HOME"
 JAVACMD="\$JAVA_HOME/bin/java"
