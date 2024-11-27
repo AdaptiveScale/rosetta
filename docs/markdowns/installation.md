@@ -1,4 +1,4 @@
-## RosettaDB Getting Started
+## Installation Instructions
 
 ### ROSETTA_DRIVERS Environment
 
