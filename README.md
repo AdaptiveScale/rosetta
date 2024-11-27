@@ -894,6 +894,107 @@ you can fix it by running the following command where your driver is located:
 ```
 zip -d google-cloud-spanner-jdbc-2.6.2-single-jar-with-dependencies.jar 'META-INF/.SF' 'META-INF/.RSA' 'META-INF/*SF'
 ```
+## Rosetta Extensions Feature
+### Overview
+The Extensions feature in Rosetta allows users to append custom SQL code to the Data Definition Language (DDL) operations generated during the execution of the apply command. This feature enhances the flexibility and functionality of Rosetta by enabling custom SQL commands to be executed at various stages of the DDL lifecycle.
+
+### Supported Extensions
+
+
+Currently, Rosetta supports the following extension:
+-  DDL_EXTENSION: This extension type allows the addition of custom SQL commands to the DDL operations.
+
+
+### DDL_EXTENSION Commands
+
+
+Users can specify custom SQL commands to be executed at different points in the DDL lifecycle using the following commands:
+-   PRE_CREATE: Execute SQL before a CREATE operation.
+-   PRE_ALTER: Execute SQL before an ALTER operation.
+-   PRE_DROP: Execute SQL before a DROP operation.
+-   POST_CREATE: Execute SQL after a CREATE operation.
+-   POST_ALTER: Execute SQL after an ALTER operation.
+-   POST_DROP: Execute SQL after a DROP operation.
+
+### Example Usage
+
+Below is an example of how to use the DDL_EXTENSION to append custom SQL code to a table creation operation in the model.yaml file.
+```yaml
+- name: "fullname"
+  typeName: "varchar"
+  ordinalPosition: 0
+  primaryKeySequenceId: 0
+  columnDisplaySize: 2147483647
+  scale: 0
+  precision: 2147483647
+  columnProperties: []
+  primaryKey: false
+  nullable: true
+  autoincrement: false
+  extensions:
+    - name: SQL
+      type: DDL_EXTENSION
+      actions:
+        POST_CREATE: UPDATE basic_library.authors SET fullname = CONCAT(name, ' ', surname) WHERE fullname IS NULL;
+```
+### How to Use
+1.  Define the Extension in model.yaml:
+-   Add the extensions section under the column or table definition where the custom SQL needs to be applied.
+-   Specify the name as SQL and the type as DDL_EXTENSION.
+3.  Specify Actions:
+-   Under actions, define the SQL commands to be executed for the desired DDL operations (e.g., POST_CREATE, PRE_ALTER).
+### Example Scenarios
+
+
+#### Scenario 1: Custom SQL After Table Creation
+
+If you need to populate or update data in a newly created table immediately after its creation, you can use the POST_CREATE command:
+```yaml
+- name: "fullname"
+  typeName: "varchar"
+  ordinalPosition: 0
+  primaryKeySequenceId: 0
+  columnDisplaySize: 2147483647
+  scale: 0
+  precision: 2147483647
+  columnProperties: []
+  primaryKey: false
+  nullable: true
+  autoincrement: false
+  extensions:
+    - name: SQL
+      type: DDL_EXTENSION
+      actions:
+         POST_CREATE: UPDATE basic_library.authors SET fullname = CONCAT(name, ' ', surname) WHERE fullname IS NULL;
+```
+#### Scenario 2: Custom SQL Before Table Alteration
+To execute custom SQL before altering a table, use the PRE_ALTER command:
+```yaml
+- name: "fullname"
+  typeName: "varchar"
+  ordinalPosition: 0
+  primaryKeySequenceId: 0
+  columnDisplaySize: 2147483647
+  scale: 0
+  precision: 2147483647
+  columnProperties: []
+  primaryKey: false
+  nullable: true
+  autoincrement: false
+  extensions:
+    - name: SQL
+      type: DDL_EXTENSION
+      actions:
+         PRE_ALTER: CREATE TEMPORARY TABLE temp_authors AS SELECT * FROM authors;
+```
+### Best Practices
+
+-   Validation: Ensure that the custom SQL commands are valid and tested to avoid errors during the apply command execution.
+-   Performance: Consider the performance implications of the custom SQL, especially for large datasets.
+-   Security: Validate and sanitize custom SQL to prevent SQL injection and other security vulnerabilities.
+### Conclusion
+
+The Extensions feature in Rosetta, particularly the DDL_EXTENSION, provides a powerful way to customize the DDL lifecycle with user-defined SQL commands. By leveraging this feature, users can enhance the functionality and control of their data operations, ensuring that specific actions are performed at key stages of the DDL execution process.
 
 ## Copyright and License Information
 Unless otherwise specified, all content, including all source code files and documentation files in this repository are:
