@@ -8,8 +8,6 @@ RosettaDB is an open-source, declarative data modeling and transpilation tool th
 
 Rosetta utilizes JDBC to extract schema metadata from a database and generates declarative DBML models that can be used for conversion to alternate database targets.
 
-Generate DDL from a given source and transpile to the desired target.
-
 Key Features
 
 - **Declarative Data Modeling**: Define your database schema using DBML (Database Markup Language), and RosettaDB generates target database-specific DDL (Data Definition Language) automatically.
