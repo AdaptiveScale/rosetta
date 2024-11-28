@@ -328,7 +328,7 @@ class Cli implements Callable<Void> {
         Path driversPath = Path.of(DEFAULT_DRIVERS_YAML);
 
         DriverHelper.printDrivers(driversPath);
-        System.out.println("Which is the source DB you plan to use (default: skip)?");
+        System.out.println("Which source database do you plan to use? (default: skip)");
         String sourceDB = new BufferedReader(new InputStreamReader(System.in)).readLine().trim();
         if (sourceDB.isEmpty()) {
             sourceDB = "skip";
@@ -336,7 +336,7 @@ class Cli implements Callable<Void> {
         handleDriverDownload(sourceDB, driversPath, "source");
 
         DriverHelper.printDrivers(driversPath);
-        System.out.println("Which is the target DB you plan to use (default: skip)?");
+        System.out.println("Which target database do you plan to use? (default: skip)");
         String targetDB = new BufferedReader(new InputStreamReader(System.in)).readLine().trim();
         if (targetDB.isEmpty()) {
             targetDB = "skip";
@@ -355,7 +355,7 @@ class Cli implements Callable<Void> {
         try {
             driverId = Integer.parseInt(dbChoice);
         } catch (NumberFormatException e) {
-            System.out.println("Invalid index. Please provide a valid index.");
+            System.out.println("Invalid choice. Please select a valid option.");
             return;
         }
 
@@ -366,7 +366,7 @@ class Cli implements Callable<Void> {
         }
 
         if (driverId < 1 || driverId > drivers.size()) {
-            System.out.println("Invalid index. Please provide a valid index.");
+            System.out.println("Invalid choice. Please select a valid option.");
             return;
         }
 
