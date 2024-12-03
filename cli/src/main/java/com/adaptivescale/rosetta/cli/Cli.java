@@ -305,9 +305,15 @@ class Cli implements Callable<Void> {
         }
     }
 
-    @CommandLine.Command(name = "init", description = "Creates a sample config (main.conf) and model directory.", mixinStandardHelpOptions = true)
-    private void init(@CommandLine.Parameters(index = "0", description = "Project name.", defaultValue = "")
-                      String projectName) throws IOException {
+    @CommandLine.Command(
+            name = "init",
+            description = "Creates a sample config (main.conf) and model directory.",
+            mixinStandardHelpOptions = true
+    )
+    private void init(
+            @CommandLine.Parameters(index = "0", description = "Project name.", defaultValue = "") String projectName,
+            @CommandLine.Option(names = "--skip-db-selection", description = "Skip database selection and driver download process.") boolean skipDBSelection
+        ) throws IOException {
         Path fileName = Paths.get(projectName, CONFIG_NAME);
         InputStream resourceAsStream = getClass().getResourceAsStream("/" + TEMPLATE_CONFIG_NAME);
         Path projectDirectory = Path.of(projectName);
@@ -324,11 +330,15 @@ class Cli implements Callable<Void> {
             log.info("In order to start using the newly created project please change your working directory.");
         }
 
+        if (skipDBSelection) {
+            log.info("Skipping database selection and driver download process.");
+            return;
+        }
 
         Path driversPath = Path.of(DEFAULT_DRIVERS_YAML);
 
         DriverHelper.printDrivers(driversPath);
-        System.out.println("Which source database do you plan to use? (default: skip)");
+        System.out.println("Please select the source database from the list above by typing its number (or press Enter to skip):");
         String sourceDB = new BufferedReader(new InputStreamReader(System.in)).readLine().trim();
         if (sourceDB.isEmpty()) {
             sourceDB = "skip";
@@ -336,7 +346,7 @@ class Cli implements Callable<Void> {
         handleDriverDownload(sourceDB, driversPath, "source");
 
         DriverHelper.printDrivers(driversPath);
-        System.out.println("Which target database do you plan to use? (default: skip)");
+        System.out.println("Please select the source database from the list above by typing its number (or press Enter to skip):");
         String targetDB = new BufferedReader(new InputStreamReader(System.in)).readLine().trim();
         if (targetDB.isEmpty()) {
             targetDB = "skip";

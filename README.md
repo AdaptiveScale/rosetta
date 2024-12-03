@@ -63,7 +63,7 @@ curl -L "https://github.com/AdaptiveScale/rosetta/releases/download/v2.5.5/roset
 Compatible with 64-bit Intel/AMD processors running Windows
 
 ```
-TBD
+curl "https://github.com/AdaptiveScale/rosetta/releases/download/v2.5.5/rosetta.bat" -o rosetta.bat && .\rosetta.bat
 ```
 
 ### 2. Initialize a New Project
