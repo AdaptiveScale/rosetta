@@ -51,7 +51,7 @@ Follow these steps to get started with RosettaDB:
 
 - **Linux (x64)**: Compatible with 64-bit Intel/AMD processors.
 - **MacOS (x64)**: For Intel-based Mac systems.
-- **MacOS (AArch64)**: For Apple Silicon (M1/M2) Mac systems.
+- **MacOS (Arch64)**: For Apple Silicon (M1/M2) Mac systems.
 
 Run the following command to download and set up RosettaDB:
 ```
