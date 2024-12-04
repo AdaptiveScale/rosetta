@@ -6,7 +6,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -34,7 +36,7 @@ public class DriverHelper {
             return;
         }
 
-        System.out.println("Downloadable Drivers:");
+        System.out.println("Downloadable drivers:");
         System.out.println("=====================");
 
         IntStream.range(0, drivers.size()).forEach(index -> {
@@ -93,20 +95,7 @@ public class DriverHelper {
      */
     private static void downloadDriver(DriverInfo driverInfo) {
         try {
-            // Attempt to get the ROSETTA_DRIVERS environment variable
-            String rosettaDriversPath = System.getenv("ROSETTA_DRIVERS");
-            if (rosettaDriversPath == null) {
-                // Fall back to 'drivers' folder one level up if ROSETTA_DRIVERS is not set
-                rosettaDriversPath = Paths.get("..", "drivers").toString();
-            }
-
-            // Construct the destination directory path
-            Path rosettaPath = Paths.get(rosettaDriversPath);
-
-            // Ensure the directory exists and is writable, or fall back
-            if (!Files.exists(rosettaPath) || !Files.isWritable(rosettaPath)) {
-                throw new IllegalArgumentException("No writable directory available for drivers");
-            }
+            Path rosettaPath = resolveDriverDirectory();
 
             // Open a connection to the URL of the driver
             URL url = new URL(driverInfo.getLink());
@@ -165,5 +154,94 @@ public class DriverHelper {
                 }
             }
         }
+    }
+
+    /**
+     * Prints all the downloaded .jar drivers in the specified directory, including those in subdirectories.
+     */
+    public static void printDownloadedDrivers() {
+        try {
+            Path rosettaPath = resolveDriverDirectory();
+
+            // Print the list of downloaded .jar drivers
+            System.out.printf("Downloaded .jar drivers (%s):%n", rosettaPath.toRealPath());
+            System.out.println("=====================");
+            boolean hasDrivers = listJarFiles(rosettaPath);
+
+            if (!hasDrivers) {
+                System.out.println("No downloaded .jar drivers found.");
+            }
+            System.out.println("=====================");
+
+        } catch (IOException e) {
+            System.out.println("Error reading the drivers directory: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Recursively lists all .jar files in the specified directory and its subdirectories.
+     *
+     * @param directory The directory to search for .jar files.
+     * @return True if any .jar files are found, otherwise false.
+     * @throws IOException If an I/O error occurs.
+     */
+    private static boolean listJarFiles(Path directory) throws IOException {
+        boolean hasDrivers = false;
+
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(directory)) {
+            for (Path entry : stream) {
+                if (Files.isDirectory(entry)) {
+                    // Recursively search in subdirectories
+                    hasDrivers |= listJarFiles(entry);
+                } else if (entry.getFileName().toString().endsWith(".jar")) {
+                    // Print the full path of the .jar file
+                    System.out.println("File: " + entry.toRealPath());
+                    hasDrivers = true;
+                }
+            }
+        }
+
+        return hasDrivers;
+    }
+
+    /**
+     * Resolves the directory where drivers are stored.
+     *
+     * @return Path to the drivers directory
+     * @throws RuntimeException if no valid directory is found
+     */
+    private static Path resolveDriverDirectory() {
+        // Attempt to get the ROSETTA_DRIVERS environment variable
+        String rosettaDriversPath = System.getenv("ROSETTA_DRIVERS");
+        Path rosettaPath = null;
+
+        if (rosettaDriversPath != null) {
+            // Remove any trailing '/*' or '/' from the path
+            rosettaDriversPath = rosettaDriversPath.replaceAll("/\\*$", "").replaceAll("/$", "");
+            // If ROSETTA_DRIVERS is set, use that path
+            rosettaPath = Paths.get(rosettaDriversPath);
+        } else {
+            try {
+                // Get the path to the executing JAR file
+                Path jarPath = Paths.get(DriverHelper.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+                Path jarDirectory = jarPath.getParent();  // Directory where the JAR file is located
+
+                // First check the directory where the JAR file is located
+                rosettaPath = jarDirectory.getParent().resolve("drivers");
+                if (!Files.exists(rosettaPath)) {
+                    // Fail if neither path exists
+                    throw new RuntimeException("No drivers directory found in any expected location, please set ROSETTA_DRIVERS to a directory.");
+                }
+            } catch (URISyntaxException e) {
+                throw new RuntimeException("Failed to locate the directory of the executing JAR file.", e);
+            }
+        }
+
+        // Check if the final resolved path exists and is writable
+        if (!Files.exists(rosettaPath) || !Files.isWritable(rosettaPath)) {
+            throw new RuntimeException(String.format("ROSETTA_DRIVERS (%s) directory path not found, re-check your configuration!", rosettaPath.toAbsolutePath()));
+        }
+
+        return rosettaPath;
     }
 }
