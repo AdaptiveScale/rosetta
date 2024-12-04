@@ -36,7 +36,6 @@ import com.adataptivescale.rosetta.source.core.SourceGeneratorFactory;
 import com.adataptivescale.rosetta.source.dbt.DbtModelGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.LoggerFactory;
@@ -306,9 +305,15 @@ class Cli implements Callable<Void> {
         }
     }
 
-    @CommandLine.Command(name = "init", description = "Creates a sample config (main.conf) and model directory.", mixinStandardHelpOptions = true)
-    private void init(@CommandLine.Parameters(index = "0", description = "Project name.", defaultValue = "")
-                      String projectName) throws IOException {
+    @CommandLine.Command(
+            name = "init",
+            description = "Creates a sample config (main.conf) and model directory.",
+            mixinStandardHelpOptions = true
+    )
+    private void init(
+            @CommandLine.Parameters(index = "0", description = "Project name.", defaultValue = "") String projectName,
+            @CommandLine.Option(names = "--skip-db-selection", description = "Skip database selection and driver download process.") boolean skipDBSelection
+        ) throws IOException {
         Path fileName = Paths.get(projectName, CONFIG_NAME);
         InputStream resourceAsStream = getClass().getResourceAsStream("/" + TEMPLATE_CONFIG_NAME);
         Path projectDirectory = Path.of(projectName);
@@ -324,6 +329,58 @@ class Cli implements Callable<Void> {
         if (!projectName.isEmpty()) {
             log.info("In order to start using the newly created project please change your working directory.");
         }
+
+        if (skipDBSelection) {
+            log.info("Skipping database selection and driver download process.");
+            return;
+        }
+
+        Path driversPath = Path.of(DEFAULT_DRIVERS_YAML);
+
+        DriverHelper.printDrivers(driversPath);
+        System.out.println("Please select the source database from the list above by typing its number (or press Enter to skip):");
+        String sourceDB = new BufferedReader(new InputStreamReader(System.in)).readLine().trim();
+        if (sourceDB.isEmpty()) {
+            sourceDB = "skip";
+        }
+        handleDriverDownload(sourceDB, driversPath, "source");
+
+        DriverHelper.printDrivers(driversPath);
+        System.out.println("Please select the source database from the list above by typing its number (or press Enter to skip):");
+        String targetDB = new BufferedReader(new InputStreamReader(System.in)).readLine().trim();
+        if (targetDB.isEmpty()) {
+            targetDB = "skip";
+        }
+        handleDriverDownload(targetDB, driversPath, "target");
+    }
+
+    private void handleDriverDownload(String dbChoice, Path driversPath, String dbType) {
+        if ("skip".equalsIgnoreCase(dbChoice)) {
+            log.info("Skipped downloading the {} DB driver.", dbType);
+            return;
+        }
+
+        Integer driverId = null;
+
+        try {
+            driverId = Integer.parseInt(dbChoice);
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid choice. Please select a valid option.");
+            return;
+        }
+
+        List<DriverInfo> drivers = DriverHelper.getDrivers(driversPath);
+        if (drivers.isEmpty()) {
+            System.out.println("No drivers found in the specified YAML file.");
+            return;
+        }
+
+        if (driverId < 1 || driverId > drivers.size()) {
+            System.out.println("Invalid choice. Please select a valid option.");
+            return;
+        }
+
+        DriverHelper.getDriver(driversPath, driverId);
     }
 
     @CommandLine.Command(name = "dbt", description = "Extract dbt models chosen from connection config.", mixinStandardHelpOptions = true)
