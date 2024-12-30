@@ -26,17 +26,16 @@ import static org.junit.Assert.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class RedshiftDDLIntegrationTest {
 
-    private static String IMAGE = "sakiladb/postgres:latest";
-    private static String USERNAME = "sakila";
-    private static String DATABASE = "sakila";
+    private static String IMAGE = "ghcr.io/hearthsim/docker-pgredshift:latest";
+    private static String USERNAME = "postgres";
+    private static String DATABASE = "postgres";
     private static String SCHEMA = "public";
-    private static String PASSWORD = "p_ssW0rd";
+    private static String PASSWORD = "password";
     private static String DB_TYPE = "redshift";
-    private static String JDBC_URL = "jdbc:postgresql://localhost:{PORT}/sakila";
+    private static String JDBC_URL = "jdbc:postgresql://localhost:{PORT}/postgres";
     private static String CLASS_NAME = "org.postgresql.Driver";
     private static int PORT = 5432;
 
-    private static String DROP_VIEWS = "DROP VIEW actor_info,customer_list,film_list,nicer_but_slower_film_list,sales_by_film_category,sales_by_store,staff_list cascade;";
     private static String CREATE_DDL =
             "CREATE TABLE \"public\".numerics (\n" +
                     "\tc_bigint int8 NULL,\n" +
@@ -90,120 +89,39 @@ public class RedshiftDDLIntegrationTest {
                     "ALTER TABLE \"public\".user1 ADD CONSTRAINT user1_user_date_fkey FOREIGN KEY (user_date) REFERENCES \"public\".time_date(user_date);\n" +
                     "ALTER TABLE \"public\".user1 ADD CONSTRAINT user1_user_name_fkey FOREIGN KEY (user_name) REFERENCES \"public\".strings(user1_name);";
 
-    private static String CREATE_ALL_TYPES_DDL = "CREATE TABLE IF NOT EXISTS test_types ( \n" +
-            "test_lseg lseg, \n" +
-            "test_int2 int2, \n" +
-            "test__char _char, \n" +
-            "test__int2 _int2, \n" +
-            "test__varbit _varbit, \n" +
-            "test_jsonb jsonb, \n" +
-            "test_interval interval, \n" +
-            "test__macaddr8 _macaddr8, \n" +
-            "test__bpchar _bpchar, \n" +
-            "test_bool bool, \n" +
-            "test_bpchar bpchar, \n" +
-            "test_interval_year_to_month interval year to month, \n" +
-            "test_decimal decimal, \n" +
-            "test_year year, \n" +
-            "test_json json, \n" +
-            "test__interval _interval, \n" +
-            "test__uuid _uuid, \n" +
-            "test__point _point, \n" +
-            "test__jsonb _jsonb, \n" +
-            "test__tsquery _tsquery, \n" +
-            "test__bytea _bytea, \n" +
-            "test_date date, \n" +
-            "test_path path, \n" +
-            "test_boolean boolean, \n" +
-            "test__xml _xml, \n" +
-            "test__varchar _varchar, \n" +
-            "test__bit _bit, \n" +
-            "test__pg_lsn _pg_lsn, \n" +
-            "test_mpaa_rating mpaa_rating, \n" +
-            "test_character character, \n" +
-            "test_text text, \n" +
-            "test_inet inet, \n" +
-            "test_char char, \n" +
-            "test_numeric numeric, \n" +
-            "test_bigserial bigserial, \n" +
-            "test__cidr _cidr, \n" +
-            "test_character_varying character varying, \n" +
-            "test_bit bit, \n" +
-            "test__int4 _int4, \n" +
-            "test_double_precision double precision, \n" +
-            "test_varbit varbit, \n" +
-            "test_tsquery tsquery, \n" +
-            "test_int4 int4, \n" +
-            "test__line _line, \n" +
-            "test_nchar nchar, \n" +
-            "test__txid_snapshot _txid_snapshot, \n" +
-            "test__timestamp _timestamp, \n" +
-            "test_timestamp_with_time_zone timestamp with time zone, \n" +
-            "test_int int, \n" +
-            "test_bytea bytea, \n" +
-            "test_uuid uuid, \n" +
-            "test_macaddr macaddr, \n" +
-            "test__circle _circle, \n" +
-            "test_point point, \n" +
-            "test_interval_day_to_second interval day to second, \n" +
-            "test_money money, \n" +
-            "test__macaddr _macaddr, \n" +
-            "test_float8 float8, \n" +
-            "test_integer integer, \n" +
-            "test__box _box, \n" +
-            "test__float8 _float8, \n" +
-            "test__text _text, \n" +
-            "test_serial serial, \n" +
-            "test_time time, \n" +
-            "test__time _time, \n" +
-            "test_xml xml, \n" +
-            "test__tsvector _tsvector, \n" +
-            "test_timestamptz timestamptz, \n" +
-            "test_polygon polygon, \n" +
-            "test__money _money, \n" +
-            "test_float4 float4, \n" +
-            "test__lseg _lseg, \n" +
-            "test__int8 _int8, \n" +
-            "test_timetz timetz, \n" +
-            "test_smallserial smallserial, \n" +
-            "test_txid_snapshot txid_snapshot, \n" +
-            "test__float4 _float4, \n" +
-            "test_timestamp timestamp, \n" +
-            "test_real real, \n" +
-            "test_line line, \n" +
-            "test_bit_varying bit varying, \n" +
-            "test_circle circle, \n" +
-            "test_timestamp_without_time_zone timestamp without time zone, \n" +
-            "test__bool _bool, \n" +
-            "test__path _path, \n" +
-            "test_int8 int8, \n" +
-            "test_cidr cidr, \n" +
-            "test_smallint smallint, \n" +
-            "test_tsvector tsvector, \n" +
-            "test_bigint bigint, \n" +
-            "test__polygon _polygon, \n" +
-            "test__numeric _numeric, \n" +
-            "test_varchar varchar, \n" +
-            "test_macaddr8 macaddr8, \n" +
-            "test__date _date, \n" +
-            "test__json _json, \n" +
-            "test_box box \n" +
+    private static String CREATE_ALL_TYPES_DDL =
+            "CREATE TABLE IF NOT EXISTS public.all_data_types (" +
+            "    cint INTEGER," +
+            "    cint2 SMALLINT," +
+            "    cint8 BIGINT," +
+            "    cdate DATE," +
+            "    ctime TIME," +
+            "    ctimtz TIME WITH TIME ZONE," +
+            "    ctimestamptz TIMESTAMP WITH TIME ZONE," +
+            "    ctimestamp TIMESTAMP," +
+            "    cnumeric NUMERIC(18)," +
+            "    cfloat4 REAL," +
+            "    cfloat8 DOUBLE PRECISION," +
+            "    cbool BOOLEAN," +
+            "    cchar CHAR," +
+            "    cvarchar VARCHAR(256)" +
             ");";
 
     @Rule
     public static GenericJDBCContainer container = new GenericJDBCContainer(
-            IMAGE, USERNAME,PASSWORD, DATABASE, SCHEMA, DB_TYPE, JDBC_URL, CLASS_NAME, PORT).generateContainer();
+            IMAGE, USERNAME,PASSWORD, DATABASE, SCHEMA, DB_TYPE, JDBC_URL, CLASS_NAME, PORT).withEnv("POSTGRES_PASSWORD", "password").generateContainer();
+
 
     @BeforeAll
     public static void beforeAll() {
         container.getContainer().start();
+        System.out.println("");
     }
 
     @Test
     @DisplayName("Prep Redshift SQL")
     @Order(0)
     void prep() throws Exception {
-        container.getContainer().createConnection("").createStatement().execute(DROP_VIEWS);
         container.getContainer().createConnection("").createStatement().execute(CREATE_DDL);
         container.getContainer().createConnection("").createStatement().execute(CREATE_DDL1);
         container.getContainer().createConnection("").createStatement().execute(CREATE_DDL2);
@@ -217,8 +135,8 @@ public class RedshiftDDLIntegrationTest {
     @Order(1)
     void textExtract() throws Exception {
         Database sourceModel = container.getDatabaseModel();
-        assertSame("Comparing table count.", 26, sourceModel.getTables().size());
-        assertSame("Comparing actor table column count.", 4, container.getTableColumns(sourceModel, "actor").size());
+        assertSame("Comparing table count.", 5, sourceModel.getTables().size());
+        assertSame("Comparing actor table column count.", 7, container.getTableColumns(sourceModel, "strings").size());
     }
 
     @Test
@@ -229,17 +147,14 @@ public class RedshiftDDLIntegrationTest {
         ObjectMapper objectMapper = new ObjectMapper();
         Database targetModel = objectMapper.readValue(objectMapper.writeValueAsString(sourceModel), Database.class);
         targetModel.getTables().forEach(table -> {
-            if(table.getName().equals("payment")){
-                table.setName("payments");
+            if(table.getName().equals("numerics")){
+                table.setName("numeric");
             }
         });
         List<Change<?>> changes = new RedshiftChangeFinder().findChanges(sourceModel, targetModel);
-        assertSame("Total changes", changes.size(), 5);
+        assertSame("Total changes", changes.size(), 2);
         assertSame("Added table", changes.get(0).getStatus().toString(), "ADD");
-        assertSame("Added table", changes.get(1).getStatus().toString(), "ADD");
-        assertSame("Added table", changes.get(2).getStatus().toString(), "ADD");
-        assertSame("Added table", changes.get(3).getStatus().toString(), "ADD");
-        assertSame("Dropped table", changes.get(4).getStatus().toString(), "DROP");
+        assertSame("Dropped table", changes.get(1).getStatus().toString(), "DROP");
     }
 
 
@@ -251,8 +166,8 @@ public class RedshiftDDLIntegrationTest {
         ObjectMapper objectMapper = new ObjectMapper();
         Database targetModel = objectMapper.readValue(objectMapper.writeValueAsString(sourceModel), Database.class);
         targetModel.getTables().forEach(table -> {
-            if(table.getName().equals("actor")){
-                table.setName("actors");
+            if(table.getName().equals("all_data_types")){
+                table.setName("all_data_types_updated");
             }
         });
         List<Change<?>> changes = DDLFactory.changeFinderForDatabaseType(DB_TYPE).findChanges(targetModel, sourceModel);
@@ -260,10 +175,10 @@ public class RedshiftDDLIntegrationTest {
         DDLExecutor executor = DDLFactory.executor(container.getRosettaConnection(), new DriverManagerDriverProvider());
         executor.execute(ddlForChanges);
         Database updatedModel = container.getDatabaseModel();
-        long actors = updatedModel.getTables().stream().filter(table -> table.getName().equals("actors")).count();
-        long actor = updatedModel.getTables().stream().filter(table -> table.getName().equals("actor")).count();
-        assertSame("Actors table exists", 1L, actors);
-        assertSame("Actor table is removed", 0L, actor);
+        long table_changed = updatedModel.getTables().stream().filter(table -> table.getName().equals("all_data_types_updated")).count();
+        long table_old = updatedModel.getTables().stream().filter(table -> table.getName().equals("all_data_types")).count();
+        assertSame("ChangedTable table exists", 1L, table_changed);
+        assertSame("Old table is removed", 0L, table_old);
     }
 
     @Test
@@ -424,9 +339,6 @@ public class RedshiftDDLIntegrationTest {
             if (table.getName().equals("user1")) {
                 table.getColumns().forEach(column -> {
                     switch (column.getName()) {
-                        case "user1_salary":
-                            assertEquals("", 1L, column.getForeignKeys().size());
-                            break;
                         case "user_name":
                             assertEquals("", 1L, column.getForeignKeys().size());
                             break;

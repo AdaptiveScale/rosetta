@@ -24,11 +24,10 @@ import static org.junit.Assert.*;
 
 @Testcontainers
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@Disabled
 public class PostgresDDLIntegrationTest {
 
     private static String IMAGE = "sakiladb/postgres:latest";
-    private static String USERNAME = "postgres";
+    private static String USERNAME = "sakila";
     private static String DATABASE = "sakila";
     private static String SCHEMA = "public";
     private static String PASSWORD = "p_ssW0rd";
@@ -195,9 +194,11 @@ public class PostgresDDLIntegrationTest {
     public static GenericJDBCContainer container = new GenericJDBCContainer(
             IMAGE, USERNAME,PASSWORD, DATABASE, SCHEMA, DB_TYPE, JDBC_URL, CLASS_NAME, PORT).generateContainer();
 
+
     @BeforeAll
     public static void beforeAll() {
         container.getContainer().start();
+        System.out.println();
     }
 
     @Test
