@@ -35,11 +35,11 @@ The table below lists the currently supported databases and their respective tra
 | **MySQL**                |       ✅        |       ✅       |      /       |        ✅        |      ✅       |            ✅             |        ✅        |      ✅      |       ✅        |      ✅       |
 | **Postgres**             |       ✅        |       ✅       |      ✅       |        /        |      ✅       |            ✅             |        ✅        |      ✅      |       ✅        |      ✅       |
 | **Kinetica**             |       ✅        |       ✅       |      ✅       |        ✅        |      /       |            ✅             |        ✅        |      ✅      |       ✅        |      ✅       |
-| **Google Cloud Spanner** |       ✅        |       ✅       |        ✅       |         ✅         |        ✅       |            /             |        ✅        |      ✅      |       ✅        |      ❌       |
+| **Google Cloud Spanner** |       ✅        |       ✅       |        ✅       |         ✅         |        ✅       |            /             |        ✅        |      ✅      |       ✅        |      ✅        |
 | **SQL Server**           |       ✅        |       ✅       |      ✅       |        ✅        |      ✅       |            ✅             |        /        |      ✅      |       ✅        |      ✅       |
 | **DB2**                  |       ✅        |       ✅       |      ✅       |        ✅        |      ✅       |            ✅             |        ✅        |      /      |       ✅        |      ✅       |
 | **Oracle**               |       ✅        |       ✅        |      ✅       |        ✅        |      ✅       |            ✅             |        ✅        |      ✅      |       /        |      ✅       |
-| **Redshift**             |       ✅        |       ✅        |      ✅       |        ✅        |      ✅       |            ❌             |        ✅        |      ✅      |       /        |      ✅       |
+| **Redshift**             |       ✅        |       ✅        |      ✅       |        ✅        |      ✅       |             ✅              |        ✅        |      ✅      |       /        |      ✅       |
 
 
 ## Getting Started
