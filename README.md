@@ -28,17 +28,18 @@ Join our growing community of developers and data engineers on [RosettaDB Slack]
 
 The table below lists the currently supported databases and their respective translation capabilities.
 
-|                          |  **BigQuery**  | **Snowflake** |  **MySQL**   |  **Postgres**   | **Kinetica** |  **Google Cloud Spanner**  | **SQL Server**  |   **DB2**   |   **Oracle**   |
-|--------------------------|:--------------:|:-------------:|:------------:|:---------------:|:------------:|:--------------------------:|:---------------:|:-----------:|:--------------:|
-| **BigQuery**             |       /        |       ✅       |      ✅       |        ✅        |      ✅       |             ✅              |        ✅        |      ✅      |       ✅        |
-| **Snowflake**            |       ✅        |       /       |      ✅       |        ✅        |      ✅       |             ✅              |        ✅         |      ✅       |        ✅        |
-| **MySQL**                |       ✅        |       ✅       |      /       |        ✅        |      ✅       |             ✅              |        ✅        |      ✅      |       ✅        |
-| **Postgres**             |       ✅        |       ✅       |      ✅       |        /        |      ✅       |             ✅              |        ✅        |      ✅      |       ✅        |
-| **Kinetica**             |       ✅        |       ✅       |      ✅       |        ✅        |      /       |             ✅              |        ✅        |      ✅      |       ✅        |
-| **Google Cloud Spanner** |       ✅        |       ✅       |        ✅       |         ✅         |        ✅       |             /              |        ✅        |      ✅      |       ✅        |
-| **SQL Server**           |       ✅        |       ✅       |      ✅       |        ✅        |      ✅       |             ✅              |        /        |      ✅      |       ✅        |
-| **DB2**                  |       ✅        |       ✅       |      ✅       |        ✅        |      ✅       |             ✅              |        ✅        |      /      |       ✅        |
-| **Oracle**               |       ✅        |       ✅        |      ✅       |        ✅        |      ✅       |             ✅              |        ✅        |      ✅      |       /        |
+|                          |  **BigQuery**  | **Snowflake** |  **MySQL**   |  **Postgres**   | **Kinetica** | **Google Cloud Spanner** | **SQL Server**  |   **DB2**   |   **Oracle**   | **Redshift** |
+|--------------------------|:--------------:|:-------------:|:------------:|:---------------:|:------------:|:------------------------:|:---------------:|:-----------:|:--------------:|:------------:|
+| **BigQuery**             |       /        |       ✅       |      ✅       |        ✅        |      ✅       |            ✅             |        ✅        |      ✅      |       ✅        |      ✅       |
+| **Snowflake**            |       ✅        |       /       |      ✅       |        ✅        |      ✅       |            ✅             |        ✅         |      ✅       |        ✅        |      ✅       |
+| **MySQL**                |       ✅        |       ✅       |      /       |        ✅        |      ✅       |            ✅             |        ✅        |      ✅      |       ✅        |      ✅       |
+| **Postgres**             |       ✅        |       ✅       |      ✅       |        /        |      ✅       |            ✅             |        ✅        |      ✅      |       ✅        |      ✅       |
+| **Kinetica**             |       ✅        |       ✅       |      ✅       |        ✅        |      /       |            ✅             |        ✅        |      ✅      |       ✅        |      ✅       |
+| **Google Cloud Spanner** |       ✅        |       ✅       |        ✅       |         ✅         |        ✅       |            /             |        ✅        |      ✅      |       ✅        |      ❌       |
+| **SQL Server**           |       ✅        |       ✅       |      ✅       |        ✅        |      ✅       |            ✅             |        /        |      ✅      |       ✅        |      ✅       |
+| **DB2**                  |       ✅        |       ✅       |      ✅       |        ✅        |      ✅       |            ✅             |        ✅        |      /      |       ✅        |      ✅       |
+| **Oracle**               |       ✅        |       ✅        |      ✅       |        ✅        |      ✅       |            ✅             |        ✅        |      ✅      |       /        |      ✅       |
+| **Redshift**             |       ✅        |       ✅        |      ✅       |        ✅        |      ✅       |            ❌             |        ✅        |      ✅      |       /        |      ✅       |
 
 
 ## Getting Started
