@@ -11,6 +11,7 @@ The JDBC drivers for the rosetta supported databases can be downloaded from the 
 - [SQL Server JDBC 12.2.0](https://go.microsoft.com/fwlink/?linkid=2223050)
 - [DB2 JDBC jcc4](https://repo1.maven.org/maven2/com/ibm/db2/jcc/db2jcc/db2jcc4/db2jcc-db2jcc4.jar)
 - [Oracle JDBC 23.2.0.0](https://download.oracle.com/otn-pub/otn_software/jdbc/232-DeveloperRel/ojdbc11.jar)
+- [Redshift JDBC 42-2.1.0.30](https://s3.amazonaws.com/redshift-downloads/drivers/jdbc/2.1.0.30/redshift-jdbc42-2.1.0.30.jar)
 
 ### Example connection string configurations for databases
 
