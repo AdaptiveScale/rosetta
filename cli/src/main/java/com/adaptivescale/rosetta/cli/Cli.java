@@ -73,7 +73,7 @@ import static com.adaptivescale.rosetta.cli.Constants.TEMPLATE_CONFIG_NAME;
 
 @CommandLine.Command(name = "cli",
         mixinStandardHelpOptions = true,
-        version = "2.6.0",
+        version = "2.7.0",
         description = "Declarative Database Management - DDL Transpiler"
 )
 class Cli implements Callable<Void> {
