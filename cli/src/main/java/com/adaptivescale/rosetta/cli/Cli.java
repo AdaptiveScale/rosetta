@@ -184,7 +184,7 @@ class Cli implements Callable<Void> {
         stringOutput.write(ddl);
 
         // generate dbt models
-        extractDbtModels(target, targetWorkspace);
+        extractDbtModels(target, targetWorkspace, false);
 
         log.info("Successfully written ddl ({}).", stringOutput.getFilePath());
     }
@@ -384,7 +384,12 @@ class Cli implements Callable<Void> {
     }
 
     @CommandLine.Command(name = "dbt", description = "Extract dbt models chosen from connection config.", mixinStandardHelpOptions = true)
-    private void dbt(@CommandLine.Option(names = {"-s", "--source"}, required = true) String sourceName) throws Exception {
+    private void dbt(
+            @CommandLine.Option(names = {"-s", "--source"}, required = true) String sourceName,
+
+            @CommandLine.Option(names = {"--incremental"},
+                    description = "Enable incremental mode for dbt model generation.",
+                    defaultValue = "false") boolean incremental) throws Exception {
         requireConfig(config);
         Connection source = getSourceConnection(sourceName);
 
@@ -394,7 +399,7 @@ class Cli implements Callable<Void> {
                     " for dbt model generation", sourceWorkspace, sourceName));
         }
 
-        extractDbtModels(source, sourceWorkspace);
+        extractDbtModels(source, sourceWorkspace, incremental);
     }
 
     @CommandLine.Command(name = "generate", description = "Generate code", mixinStandardHelpOptions = true)
@@ -457,10 +462,10 @@ class Cli implements Callable<Void> {
         return TemplateEngine.process("scala/scala_code", variables);
     }
 
-    private void extractDbtModels(Connection connection, Path sourceWorkspace) throws IOException {
+    private void extractDbtModels(Connection connection, Path sourceWorkspace, boolean incremental) throws IOException {
         // create dbt directories if they dont exist
         Path dbtWorkspace = sourceWorkspace.resolve("dbt");
-        Files.createDirectories(dbtWorkspace.resolve("model"));
+        Files.createDirectories(dbtWorkspace.resolve("models"));
 
         List<Database> databases = getDatabases(sourceWorkspace).map(AbstractMap.SimpleImmutableEntry::getValue).collect(Collectors.toList());
 
@@ -468,7 +473,7 @@ class Cli implements Callable<Void> {
         DbtYamlModelOutput dbtYamlModelOutput = new DbtYamlModelOutput(DEFAULT_MODEL_YAML, dbtWorkspace);
         dbtYamlModelOutput.write(dbtModel);
 
-        Map<String, String> dbtSQLTables = DbtModelGenerator.dbtSQLGenerator(dbtModel);
+        Map<String, String> dbtSQLTables = DbtModelGenerator.dbtSQLGenerator(dbtModel, incremental);
         DbtSqlModelOutput dbtSqlModelOutput = new DbtSqlModelOutput(dbtWorkspace);
         dbtSqlModelOutput.write(dbtSQLTables);
 
