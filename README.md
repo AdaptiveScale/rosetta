@@ -39,7 +39,7 @@ The table below lists the currently supported databases and their respective tra
 | **SQL Server**           |       ✅        |       ✅       |      ✅       |        ✅        |      ✅       |            ✅             |        /        |      ✅      |       ✅        |      ✅       |
 | **DB2**                  |       ✅        |       ✅       |      ✅       |        ✅        |      ✅       |            ✅             |        ✅        |      /      |       ✅        |      ✅       |
 | **Oracle**               |       ✅        |       ✅        |      ✅       |        ✅        |      ✅       |            ✅             |        ✅        |      ✅      |       /        |      ✅       |
-| **Redshift**             |       ✅        |       ✅        |      ✅       |        ✅        |      ✅       |             ✅              |        ✅        |      ✅      |       /        |      /       |
+| **Redshift**             |       ✅        |       ✅        |      ✅       |        ✅        |      ✅       |             ✅              |        ✅        |      ✅      |       ✅       |      /       |
 
 
 ## Getting Started
