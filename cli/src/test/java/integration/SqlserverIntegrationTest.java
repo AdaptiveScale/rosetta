@@ -20,6 +20,7 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.MSSQLServerContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
+import org.testcontainers.utility.DockerImageName;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -35,7 +36,7 @@ import static org.junit.Assert.assertSame;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class SqlserverIntegrationTest {
 
-    private static String IMAGE = "fabricioveronez/northwind-database";
+    private static String IMAGE = "mcr.microsoft.com/mssql/server:2022-latest";
     private static String USERNAME = "SA";
     private static String PASSWORD = "123abcD!";
     private static String DATABASE = "Northwind";
@@ -169,7 +170,7 @@ public class SqlserverIntegrationTest {
 
 
     @Rule
-    public static MSSQLServerContainer mssqlserver = new MSSQLServerContainer()
+    public static MSSQLServerContainer mssqlserver = new MSSQLServerContainer(IMAGE)
             .acceptLicense()
             .withPassword(PASSWORD);
 
