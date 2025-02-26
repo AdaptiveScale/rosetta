@@ -42,6 +42,7 @@ import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 import queryhelper.pojo.GenericResponse;
 import queryhelper.service.AIService;
+import queryhelper.service.QueryService;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -746,6 +747,33 @@ class Cli implements Callable<Void> {
 
         // If `noRowLimit` is true, set the row limit to 0 (no limit), otherwise use the value of `showRowLimit`
         GenericResponse response = AIService.generateQuery(userQueryRequest, config.getOpenAIApiKey(), config.getOpenAIModel(), DDL, source, noRowLimit ? 0 : showRowLimit, dataDirectory, outputFile);
+        log.info(response.getMessage());
+    }
+
+    @CommandLine.Command(name = "sql", description = "Write SQL for you Schema", mixinStandardHelpOptions = true)
+    private void sql(@CommandLine.Option(names = {"-s", "--source"}, required = true) String sourceName,
+                       @CommandLine.Option(names = {"-q", "--query"}, required = true) String query,
+                       @CommandLine.Option(names = {"-l", "--limit"}, required = false, defaultValue = "200") Integer showRowLimit,
+                       @CommandLine.Option(names = {"--no-limit"}, required = false, defaultValue = "false") Boolean noRowLimit,
+                       @CommandLine.Option(names = {"--output"}, required = false) Path output
+    )
+            throws Exception {
+        requireConfig(config);
+
+        Connection source = getSourceConnection(sourceName);
+
+        Path sourceWorkspace = Paths.get("./", sourceName);
+
+        Path dataDirectory = output != null ? output : sourceWorkspace.resolve(DEFAULT_OUTPUT_DIRECTORY);
+        Path outputFile = dataDirectory.getFileName().toString().contains(".") ? dataDirectory.getFileName() : null;
+
+        dataDirectory = dataDirectory.getFileName().toString().contains(".") ? dataDirectory.getParent() != null ? dataDirectory.getParent() : Paths.get(".") : dataDirectory;
+        if (!dataDirectory.toFile().exists()) {
+            Files.createDirectories(dataDirectory);
+        }
+
+        // If `noRowLimit` is true, set the row limit to 0 (no limit), otherwise use the value of `showRowLimit`
+        GenericResponse response = QueryService.executeQuery(query, source, noRowLimit ? 0 : showRowLimit, dataDirectory, outputFile);
         log.info(response.getMessage());
     }
 

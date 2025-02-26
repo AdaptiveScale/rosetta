@@ -140,6 +140,8 @@ RosettaDB provides a comprehensive set of commands to cover various aspects of d
 - **[dbt](docs/markdowns/dbt.md)**: Generate dbt models for analytics workflows.
 - **[generate](docs/markdowns/generate.md)**: Generate Spark code for data transfers (Python or Scala).
 - **[query](docs/markdowns/query.md)**: Explore and query your data using AI-driven capabilities.
+- **[sql](docs/markdowns/sql.md)**: Explore your data pure SQL Syntax.
+
 
 ## Copyright and License Information
 Unless otherwise specified, all content, including all source code files and documentation files in this repository are:
