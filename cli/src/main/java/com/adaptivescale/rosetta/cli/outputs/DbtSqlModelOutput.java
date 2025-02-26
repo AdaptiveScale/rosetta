@@ -23,7 +23,7 @@ public class DbtSqlModelOutput implements Output<Map<String, String>> {
     dbtSQLTables.forEach((tableKey, tableString) -> {
       FileOutputStream fileOutputStream;
       try {
-        Path resolvedFilePath = filePath.resolve("model").resolve(tableKey + ".sql");
+        Path resolvedFilePath = filePath.resolve("models").resolve(tableKey + ".sql");
         fileOutputStream = new FileOutputStream(resolvedFilePath.toFile());
         fileOutputStream.write(tableString.getBytes());
       } catch (IOException e) {

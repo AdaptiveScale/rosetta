@@ -125,10 +125,15 @@ public class DbtModelGenerator {
             .map(column -> String.format("\t%d. %s", columnIndex.getAndIncrement(), column.getName()))
             .collect(Collectors.joining("\n"));
 
-    System.out.println(columnOutput);
-    System.out.println("\n---------------------------------------");
-    System.out.print("Please type the list of columns that represent the unique_key (split by comma): ");
-    String uniqueKeysInput = new BufferedReader(new InputStreamReader(System.in)).readLine().trim();
+
+    //TODO: Define this logic
+//    System.out.println(columnOutput);
+//    System.out.println("\n---------------------------------------");
+//    System.out.print("Please type the list of columns that represent the unique_key (split by comma): ");
+//    String uniqueKeysInput = new BufferedReader(new InputStreamReader(System.in)).readLine().trim();
+
+    String uniqueKeysInput = "UNIQUE_KEY_COLUMNS";
+
     table.append("{{\n")
             .append("    config(\n")
             .append("        materialized='incremental',\n")
@@ -152,10 +157,14 @@ public class DbtModelGenerator {
             .map(column -> String.format("\t%d. %s", columnIndex.getAndIncrement(), column.getName()))
             .collect(Collectors.joining("\n"));
 
-    System.out.println(columnOutput);
-    System.out.println("\n---------------------------------------");
-    System.out.println("Please type the column used for the incremental load:");
-    String incrementalColumn = new BufferedReader(new InputStreamReader(System.in)).readLine().trim();
+    //TODO: Define this logic
+//    System.out.println(columnOutput);
+//    System.out.println("\n---------------------------------------");
+//    System.out.println("Please type the column used for the incremental load:");
+//    String incrementalColumn = new BufferedReader(new InputStreamReader(System.in)).readLine().trim();
+
+    String incrementalColumn = "INCREMENTAL_COLUMN";
+
     table.append("\n\n\t{% if is_incremental() -%}\n\t");
     table.append(String.format("where %s > (select max(%s) from {{ this }})",
             incrementalColumn, incrementalColumn));
