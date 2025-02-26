@@ -42,6 +42,7 @@ import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 import queryhelper.pojo.GenericResponse;
 import queryhelper.service.AIService;
+import queryhelper.service.DbtAIService;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -52,15 +53,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.util.AbstractMap;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Callable;
 
 import java.util.function.Consumer;
@@ -386,20 +379,29 @@ class Cli implements Callable<Void> {
     @CommandLine.Command(name = "dbt", description = "Extract dbt models chosen from connection config.", mixinStandardHelpOptions = true)
     private void dbt(
             @CommandLine.Option(names = {"-s", "--source"}, required = true) String sourceName,
+            @CommandLine.Option(names = {"--incremental"}, description = "Enable incremental mode for dbt model generation.", defaultValue = "false") boolean incremental,
+            @CommandLine.Option(names = {"--business"}, description = "Create business layer models from enhanced models.", defaultValue = "false") boolean business) throws Exception {
 
-            @CommandLine.Option(names = {"--incremental"},
-                    description = "Enable incremental mode for dbt model generation.",
-                    defaultValue = "false") boolean incremental) throws Exception {
         requireConfig(config);
         Connection source = getSourceConnection(sourceName);
-
         Path sourceWorkspace = Paths.get("./", sourceName);
+
         if (!Files.isDirectory(sourceWorkspace)) {
-            throw new RuntimeException(String.format("Can not find directory: %s for source name: %s to find models" +
-                    " for dbt model generation", sourceWorkspace, sourceName));
+            throw new RuntimeException(String.format("Cannot find directory: %s for source name: %s to find models", sourceWorkspace, sourceName));
         }
 
-        extractDbtModels(source, sourceWorkspace, incremental);
+        // First, always run the normal (raw) extraction
+        extractDbtModels(source, sourceWorkspace, false); // Normal mode (raw)
+
+        // If incremental mode is enabled, run the incremental (enhanced) extraction
+        if (incremental) {
+            extractDbtModels(source, sourceWorkspace, true); // Incremental mode (enhanced)
+        }
+
+        // If business flag is set, create business layer models
+        if (business) {
+            createBusinessLayerModels(source, sourceWorkspace);
+        }
     }
 
     @CommandLine.Command(name = "generate", description = "Generate code", mixinStandardHelpOptions = true)
@@ -463,21 +465,59 @@ class Cli implements Callable<Void> {
     }
 
     private void extractDbtModels(Connection connection, Path sourceWorkspace, boolean incremental) throws IOException {
-        // create dbt directories if they dont exist
-        Path dbtWorkspace = sourceWorkspace.resolve("dbt");
-        Files.createDirectories(dbtWorkspace.resolve("models"));
+        Path dbtWorkspace = sourceWorkspace.resolve("dbt").resolve("models");
 
-        List<Database> databases = getDatabases(sourceWorkspace).map(AbstractMap.SimpleImmutableEntry::getValue).collect(Collectors.toList());
+        // Define target directory (raw or enhanced)
+        Path targetWorkspace = incremental ? dbtWorkspace.resolve("enhanced")
+                : dbtWorkspace.resolve("raw");
+
+        Files.createDirectories(targetWorkspace);
+
+        List<Database> databases = getDatabases(sourceWorkspace)
+                .map(AbstractMap.SimpleImmutableEntry::getValue)
+                .collect(Collectors.toList());
 
         DbtModel dbtModel = DbtModelGenerator.dbtModelGenerator(databases);
-        DbtYamlModelOutput dbtYamlModelOutput = new DbtYamlModelOutput(DEFAULT_MODEL_YAML, dbtWorkspace);
+        DbtYamlModelOutput dbtYamlModelOutput = new DbtYamlModelOutput(DEFAULT_MODEL_YAML, dbtWorkspace); // Keep YAML in dbt/models
         dbtYamlModelOutput.write(dbtModel);
 
+        // Generate .sql files in the correct directory
         Map<String, String> dbtSQLTables = DbtModelGenerator.dbtSQLGenerator(dbtModel, incremental);
-        DbtSqlModelOutput dbtSqlModelOutput = new DbtSqlModelOutput(dbtWorkspace);
+        DbtSqlModelOutput dbtSqlModelOutput = new DbtSqlModelOutput(targetWorkspace);
         dbtSqlModelOutput.write(dbtSQLTables);
 
-        log.info("Successfully written dbt models for database yaml ({}).", dbtYamlModelOutput.getFilePath());
+        log.info("Successfully written {} dbt models for database yaml ({}).",
+                incremental ? "incremental" : "normal", dbtYamlModelOutput.getFilePath());
+    }
+
+    private void createBusinessLayerModels(Connection connection, Path sourceWorkspace) throws IOException {
+        Path enhancedModelsPath = sourceWorkspace.resolve("dbt").resolve("models").resolve("enhanced");
+        List<String> modelContents = new ArrayList<>();
+
+        //TODO: add business folder creation code
+
+        // Read all files in the enhanced directory
+        Files.walk(enhancedModelsPath)
+                .filter(Files::isRegularFile)
+                .forEach(file -> {
+                    try {
+                        String content = new String(Files.readAllBytes(file));
+                        modelContents.add(content);
+                    } catch (IOException e) {
+                        log.error("Error reading file: {}", file, e);
+                    }
+                });
+
+        // Combine all contents into a single string for prompt
+        String combinedModelContents = String.join("\n\n", modelContents);
+
+        // Generate business models using the combined content
+        GenericResponse response = DbtAIService.generateBusinessModels(config.getOpenAIApiKey(), config.getOpenAIModel(), sourceWorkspace.resolve("output"), combinedModelContents);
+
+        // Handle the response as needed
+        if (response.getStatusCode() != 200) {
+            throw new RuntimeException("Failed to generate business layer models: " + response.getMessage());
+        }
     }
 
     @CommandLine.Command(name = "diff", description = "Show difference between local model and database", mixinStandardHelpOptions = true)

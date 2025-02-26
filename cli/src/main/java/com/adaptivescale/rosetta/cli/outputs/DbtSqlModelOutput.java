@@ -4,6 +4,7 @@ import com.adaptivescale.rosetta.cli.Output;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 
@@ -21,13 +22,16 @@ public class DbtSqlModelOutput implements Output<Map<String, String>> {
   @Override
   public void write(Map<String, String> dbtSQLTables) {
     dbtSQLTables.forEach((tableKey, tableString) -> {
-      FileOutputStream fileOutputStream;
       try {
-        Path resolvedFilePath = filePath.resolve("models").resolve(tableKey + ".sql");
-        fileOutputStream = new FileOutputStream(resolvedFilePath.toFile());
-        fileOutputStream.write(tableString.getBytes());
+        Files.createDirectories(filePath);
+
+        Path resolvedFilePath = filePath.resolve(tableKey + ".sql");
+
+        try (FileOutputStream fileOutputStream = new FileOutputStream(resolvedFilePath.toFile())) {
+          fileOutputStream.write(tableString.getBytes());
+        }
       } catch (IOException e) {
-        throw new RuntimeException(e);
+        throw new RuntimeException("Failed to write dbt SQL model: " + tableKey, e);
       }
     });
   }
