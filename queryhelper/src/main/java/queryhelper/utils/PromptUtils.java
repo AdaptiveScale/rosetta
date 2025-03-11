@@ -19,17 +19,19 @@ public class PromptUtils {
                 outputFormat;
     }
 
-    public static String dbtBusinessLayerPrompt( String modelContents) {
+    public static String dbtBusinessLayerPrompt(String modelContents, String userPrompt) {
+        if (userPrompt == null || userPrompt.isEmpty()) {
+            userPrompt = "Generate me one business model from these incremental models.";
+        }
+
         String yamlOutputFormat =
-                    "  - fileName: {fileName}ql\n" +
-                    "    content: |\n" +
-                    "  - fileName: {fileName}\n" +
+                    "  - fileName: {fileName}.sql\n" +
                     "    content: |\n";
 
-        return "You are a system that generates and outputs business layer dbt models.\n" +
-                "\n\nI want you to generate dbt models based on the following content from the models from Incremental layer: " +
+        return "You are a system that generates and outputs only ONE business layer DBT model.\n" +
+                "\n\n "+ userPrompt + "\n" +
                 modelContents +
-                "\n\nRespond only by giving me the YAML output in the following format:\n" +
+                "\n\n Don't include the ```yaml at the beginning. Respond only by giving me the YAML output in the following format:\n" +
                 yamlOutputFormat;
     }
 

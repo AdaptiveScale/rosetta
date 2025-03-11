@@ -380,7 +380,8 @@ class Cli implements Callable<Void> {
     private void dbt(
             @CommandLine.Option(names = {"-s", "--source"}, required = true) String sourceName,
             @CommandLine.Option(names = {"--incremental"}, description = "Enable incremental mode for dbt model generation.", defaultValue = "false") boolean incremental,
-            @CommandLine.Option(names = {"--business"}, description = "Create business layer models from enhanced models.", defaultValue = "false") boolean business) throws Exception {
+            @CommandLine.Option(names = {"--business"}, description = "Create business layer models from enhanced models.", defaultValue = "false") boolean business,
+            @CommandLine.Option(names = {"-q", "--query"}, required = false) String userPrompt) throws Exception {
 
         requireConfig(config);
         Connection source = getSourceConnection(sourceName);
@@ -400,7 +401,7 @@ class Cli implements Callable<Void> {
 
         // If business flag is set, create business layer models
         if (business) {
-            createBusinessLayerModels(source, sourceWorkspace);
+            createBusinessLayerModels(source, sourceWorkspace, userPrompt);
         }
     }
 
@@ -490,11 +491,14 @@ class Cli implements Callable<Void> {
                 incremental ? "incremental" : "normal", dbtYamlModelOutput.getFilePath());
     }
 
-    private void createBusinessLayerModels(Connection connection, Path sourceWorkspace) throws IOException {
+    private void createBusinessLayerModels(Connection connection, Path sourceWorkspace, String userPrompt) throws IOException {
+        Path dbtWorkspace = sourceWorkspace.resolve("dbt").resolve("models");
         Path enhancedModelsPath = sourceWorkspace.resolve("dbt").resolve("models").resolve("enhanced");
         List<String> modelContents = new ArrayList<>();
 
-        //TODO: add business folder creation code
+        Path targetWorkspace = dbtWorkspace.resolve("business");
+
+        Files.createDirectories(targetWorkspace);
 
         // Read all files in the enhanced directory
         Files.walk(enhancedModelsPath)
@@ -512,7 +516,7 @@ class Cli implements Callable<Void> {
         String combinedModelContents = String.join("\n\n", modelContents);
 
         // Generate business models using the combined content
-        GenericResponse response = DbtAIService.generateBusinessModels(config.getOpenAIApiKey(), config.getOpenAIModel(), sourceWorkspace.resolve("output"), combinedModelContents);
+        GenericResponse response = DbtAIService.generateBusinessModels(config.getOpenAIApiKey(), config.getOpenAIModel(), sourceWorkspace.resolve("dbt/models/business"), combinedModelContents, userPrompt);
 
         // Handle the response as needed
         if (response.getStatusCode() != 200) {

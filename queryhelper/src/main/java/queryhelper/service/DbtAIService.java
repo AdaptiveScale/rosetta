@@ -19,13 +19,14 @@ import java.nio.file.Path;
 import java.util.List;
 
 public class DbtAIService {
-    private final static String AI_MODEL = "gpt-3.5-turbo";
+    private final static String AI_MODEL = "gpt-4o";
 
-    public static GenericResponse generateBusinessModels(String apiKey, String aiModel, Path outputDir, String modelContents) throws JsonProcessingException {
+    public static GenericResponse generateBusinessModels(String apiKey, String aiModel, Path outputDir, String modelContents, String userPrompt) throws JsonProcessingException {
 
         GenericResponse response = new GenericResponse();
 
-        String outputAi = generateAIOutput(apiKey,aiModel,modelContents);
+        String outputAi = generateAIOutput(apiKey,aiModel,modelContents, userPrompt);
+        outputAi = outputAi.replace("```yaml", "").replace("```", "");
         List<DbtOutput> output = new ObjectMapper(new YAMLFactory()).readValue(outputAi, new TypeReference<List<DbtOutput>>(){});
 
 
@@ -45,20 +46,20 @@ public class DbtAIService {
         return response;
     }
 
-    public static String generateAIOutput(String apiKey, String aiModel, String combinedModelContents) {
+    public static String generateAIOutput(String apiKey, String aiModel, String combinedModelContents, String userPrompt) {
         String aiOutputStr;
 
         OpenAiChatModel.OpenAiChatModelBuilder model = OpenAiChatModel
-                .builder()
-                .temperature(0.1)
-                .apiKey(apiKey)
-                .modelName(AI_MODEL);
+            .builder()
+            .temperature(0.1)
+            .apiKey(apiKey)
+            .modelName(AI_MODEL);
 
         if (aiModel != null && !aiModel.isEmpty()) {
             model.modelName(aiModel);
         }
 
-        String prompt = PromptUtils.dbtBusinessLayerPrompt(combinedModelContents);
+        String prompt = PromptUtils.dbtBusinessLayerPrompt(combinedModelContents, userPrompt);
 
         try {
             aiOutputStr = model.build().generate(prompt);

@@ -107,7 +107,11 @@ public class DbtModelGenerator {
 
         table.append("\n)\n\n");
         table.append("select * from ").append(dbtTable.getName());
-        tables.put(String.format("%s_%s", dbtSource.getName(), dbtTable.getName()), String.valueOf(table));
+        if (isIncremental) {
+          tables.put(String.format("enh_%s", dbtTable.getName()), String.valueOf(table));
+        } else {
+          tables.put(String.format("%s_%s", dbtSource.getName(), dbtTable.getName()), String.valueOf(table));
+        }
       });
     });
 
