@@ -392,13 +392,11 @@ class Cli implements Callable<Void> {
         }
 
         // First, always run the normal (raw) extraction
-        extractDbtModels(source, sourceWorkspace, false); // Normal mode (raw)
-
+        extractDbtModels(source, sourceWorkspace, false);
         // If incremental mode is enabled, run the incremental (enhanced) extraction
         if (incremental) {
-            extractDbtModels(source, sourceWorkspace, true); // Incremental mode (enhanced)
+            extractDbtModels(source, sourceWorkspace, true);
         }
-
         // If business flag is set, create business layer models
         if (business) {
             createBusinessLayerModels(source, sourceWorkspace, userPrompt);
@@ -468,7 +466,6 @@ class Cli implements Callable<Void> {
     private void extractDbtModels(Connection connection, Path sourceWorkspace, boolean incremental) throws IOException {
         Path dbtWorkspace = sourceWorkspace.resolve("dbt").resolve("models");
 
-        // Define target directory (raw or enhanced)
         Path targetWorkspace = incremental ? dbtWorkspace.resolve("enhanced")
                 : dbtWorkspace.resolve("raw");
 
@@ -479,7 +476,7 @@ class Cli implements Callable<Void> {
                 .collect(Collectors.toList());
 
         DbtModel dbtModel = DbtModelGenerator.dbtModelGenerator(databases);
-        DbtYamlModelOutput dbtYamlModelOutput = new DbtYamlModelOutput(DEFAULT_MODEL_YAML, dbtWorkspace); // Keep YAML in dbt/models
+        DbtYamlModelOutput dbtYamlModelOutput = new DbtYamlModelOutput(dbtWorkspace);
         dbtYamlModelOutput.write(dbtModel);
 
         // Generate .sql files in the correct directory
@@ -488,7 +485,7 @@ class Cli implements Callable<Void> {
         dbtSqlModelOutput.write(dbtSQLTables);
 
         log.info("Successfully written {} dbt models for database yaml ({}).",
-                incremental ? "incremental" : "normal", dbtYamlModelOutput.getFilePath());
+                incremental ? "incremental" : "normal");
     }
 
     private void createBusinessLayerModels(Connection connection, Path sourceWorkspace, String userPrompt) throws IOException {
@@ -500,7 +497,6 @@ class Cli implements Callable<Void> {
 
         Files.createDirectories(targetWorkspace);
 
-        // Read all files in the enhanced directory
         Files.walk(enhancedModelsPath)
                 .filter(Files::isRegularFile)
                 .forEach(file -> {
@@ -515,10 +511,8 @@ class Cli implements Callable<Void> {
         // Combine all contents into a single string for prompt
         String combinedModelContents = String.join("\n\n", modelContents);
 
-        // Generate business models using the combined content
         GenericResponse response = DbtAIService.generateBusinessModels(config.getOpenAIApiKey(), config.getOpenAIModel(), sourceWorkspace.resolve("dbt/models/business"), combinedModelContents, userPrompt);
 
-        // Handle the response as needed
         if (response.getStatusCode() != 200) {
             throw new RuntimeException("Failed to generate business layer models: " + response.getMessage());
         }
