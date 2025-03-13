@@ -8,6 +8,8 @@ import org.testcontainers.utility.DockerImageName;
 
 import java.sql.Connection;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GenericJDBCContainer {
 
@@ -25,6 +27,9 @@ public class GenericJDBCContainer {
 
     private JdbcDatabaseContainer container;
 
+    private Map<String, String> environmentVariables = new HashMap<>();
+
+
     public GenericJDBCContainer(String image, String username, String password, String database, String schema,
                                 String dbType, String jdbcUrl, String className, int port) {
         this.image = image;
@@ -36,6 +41,11 @@ public class GenericJDBCContainer {
         this.jdbcUrl = jdbcUrl;
         this.className = className;
         this.port = port;
+    }
+
+    public GenericJDBCContainer withEnv(String key, String value) {
+        this.environmentVariables.put(key, value);
+        return this;
     }
 
     public GenericJDBCContainer generateContainer() {
@@ -74,8 +84,11 @@ public class GenericJDBCContainer {
             public String getDatabaseName() {
                 return database;
             }
-
         };
+
+        // Apply all environment variables to the container
+        environmentVariables.forEach((key, value) -> this.container.withEnv(key, value));
+
         this.container.withExposedPorts(port);
         return this;
     }
