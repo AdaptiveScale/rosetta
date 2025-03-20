@@ -20,9 +20,8 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'com.github.jsqlparser:jsqlparser:4.9'
 
-    // Add Jackson dependencies
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.0' // Core module
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.0' // YAML module
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.3'
+    implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: '2.13.3'   //debug only
 }
 
 test {
