@@ -391,15 +391,17 @@ class Cli implements Callable<Void> {
             throw new RuntimeException(String.format("Cannot find directory: %s for source name: %s to find models", sourceWorkspace, sourceName));
         }
 
-        // First, always run the normal (raw) extraction
+        // Business models are created one at a time. It is expected to already have the incremental models generated.
+        if (business) {
+            createBusinessLayerModels(source, sourceWorkspace, userPrompt);
+            return;
+        }
+
+        // First, always run the normal (staging) extraction
         extractDbtModels(source, sourceWorkspace, false);
         // If incremental mode is enabled, run the incremental (enhanced) extraction
         if (incremental) {
             extractDbtModels(source, sourceWorkspace, true);
-        }
-        // If business flag is set, create business layer models
-        if (business) {
-            createBusinessLayerModels(source, sourceWorkspace, userPrompt);
         }
     }
 
@@ -467,16 +469,16 @@ class Cli implements Callable<Void> {
         Path dbtWorkspace = sourceWorkspace.resolve("dbt").resolve("models");
 
         Path targetWorkspace = incremental ? dbtWorkspace.resolve("enhanced")
-                : dbtWorkspace.resolve("raw");
+                : dbtWorkspace.resolve("staging");
 
         Files.createDirectories(targetWorkspace);
 
         List<Database> databases = getDatabases(sourceWorkspace)
-                .map(AbstractMap.SimpleImmutableEntry::getValue)
-                .collect(Collectors.toList());
+            .map(AbstractMap.SimpleImmutableEntry::getValue)
+            .collect(Collectors.toList());
 
         DbtModel dbtModel = DbtModelGenerator.dbtModelGenerator(databases);
-        DbtYamlModelOutput dbtYamlModelOutput = new DbtYamlModelOutput(dbtWorkspace);
+        DbtYamlModelOutput dbtYamlModelOutput = new DbtYamlModelOutput(targetWorkspace);
         dbtYamlModelOutput.write(dbtModel);
 
         // Generate .sql files in the correct directory

@@ -22,7 +22,7 @@ public class DbtYamlModelOutput implements Output<DbtModel> {
   @Override
   public void write(DbtModel model) {
     ObjectMapper mapper = new ObjectMapper(
-            new YAMLFactory().enable(YAMLGenerator.Feature.MINIMIZE_QUOTES)
+          new YAMLFactory().enable(YAMLGenerator.Feature.MINIMIZE_QUOTES)
     );
 
     for (DbtSource source : model.getSources()) {
