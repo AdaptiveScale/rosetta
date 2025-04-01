@@ -12,7 +12,9 @@ import com.adaptivescale.rosetta.common.models.Database;
 import com.adaptivescale.rosetta.common.DriverManagerDriverProvider;
 import com.adaptivescale.rosetta.common.models.DriverInfo;
 import com.adaptivescale.rosetta.common.models.Table;
+import com.adaptivescale.rosetta.common.models.dbt.DbtColumn;
 import com.adaptivescale.rosetta.common.models.dbt.DbtModel;
+import com.adaptivescale.rosetta.common.models.dbt.DbtTable;
 import com.adaptivescale.rosetta.common.models.enums.OperationLevelEnum;
 import com.adaptivescale.rosetta.common.models.input.Connection;
 import com.adaptivescale.rosetta.common.types.DriverClassName;
@@ -177,7 +179,7 @@ class Cli implements Callable<Void> {
         stringOutput.write(ddl);
 
         // generate dbt models
-        extractDbtModels(target, targetWorkspace, false);
+        generateStagingModels(target, targetWorkspace);
 
         log.info("Successfully written ddl ({}).", stringOutput.getFilePath());
     }
@@ -397,12 +399,26 @@ class Cli implements Callable<Void> {
             return;
         }
 
-        // First, always run the normal (staging) extraction
-        extractDbtModels(source, sourceWorkspace, false);
-        // If incremental mode is enabled, run the incremental (enhanced) extraction
         if (incremental) {
-            extractDbtModels(source, sourceWorkspace, true);
+            Path stagingWorkspace = sourceWorkspace.resolve("dbt").resolve("models").resolve("staging");
+            if (!Files.exists(stagingWorkspace)) {
+                log.info("Staging directory not found. You must create staging models first.");
+                return;
+            }
+            List<Path> stagingSqlFiles;
+            try (Stream<Path> sqlFiles = Files.list(stagingWorkspace)
+                    .filter(path -> path.toString().endsWith(".sql"))) {
+                stagingSqlFiles = sqlFiles.collect(Collectors.toList());
+            }
+            if (stagingSqlFiles.isEmpty()) {
+               log.info("No SQL models found in staging layer. You must create staging models first.");
+               return;
+            }
+            generateEnhancedModels(source, sourceWorkspace, stagingSqlFiles);
+            return;
         }
+
+        generateStagingModels(source, sourceWorkspace);
     }
 
     @CommandLine.Command(name = "generate", description = "Generate code", mixinStandardHelpOptions = true)
@@ -465,29 +481,100 @@ class Cli implements Callable<Void> {
         return TemplateEngine.process("scala/scala_code", variables);
     }
 
-    private void extractDbtModels(Connection connection, Path sourceWorkspace, boolean incremental) throws IOException {
+    private void generateStagingModels(Connection connection, Path sourceWorkspace) throws IOException {
         Path dbtWorkspace = sourceWorkspace.resolve("dbt").resolve("models");
+        Path stagingWorkspace = dbtWorkspace.resolve("staging");
 
-        Path targetWorkspace = incremental ? dbtWorkspace.resolve("enhanced")
-                : dbtWorkspace.resolve("staging");
-
-        Files.createDirectories(targetWorkspace);
+        Files.createDirectories(stagingWorkspace);
 
         List<Database> databases = getDatabases(sourceWorkspace)
-            .map(AbstractMap.SimpleImmutableEntry::getValue)
-            .collect(Collectors.toList());
+                .map(AbstractMap.SimpleImmutableEntry::getValue)
+                .collect(Collectors.toList());
 
         DbtModel dbtModel = DbtModelGenerator.dbtModelGenerator(databases);
-        DbtYamlModelOutput dbtYamlModelOutput = new DbtYamlModelOutput(targetWorkspace);
+
+        DbtYamlModelOutput dbtYamlModelOutput = new DbtYamlModelOutput(stagingWorkspace);
         dbtYamlModelOutput.write(dbtModel);
 
-        // Generate .sql files in the correct directory
-        Map<String, String> dbtSQLTables = DbtModelGenerator.dbtSQLGenerator(dbtModel, incremental);
-        DbtSqlModelOutput dbtSqlModelOutput = new DbtSqlModelOutput(targetWorkspace);
+        Map<String, String> dbtSQLTables = DbtModelGenerator.dbtSQLGenerator(dbtModel, false);
+        DbtSqlModelOutput dbtSqlModelOutput = new DbtSqlModelOutput(stagingWorkspace);
         dbtSqlModelOutput.write(dbtSQLTables);
 
-        log.info("Successfully written {} dbt models for database yaml ({}).",
-                incremental ? "incremental" : "normal");
+        log.info("Successfully written staging dbt models for database yaml.");
+    }
+
+    private void generateEnhancedModels(Connection connection, Path sourceWorkspace, List<Path> stagingSqlFiles) throws IOException {
+        Path dbtWorkspace = sourceWorkspace.resolve("dbt").resolve("models");
+        Path enhancedWorkspace = dbtWorkspace.resolve("enhanced");
+
+        Files.createDirectories(enhancedWorkspace);
+
+        Map<String, String> enhancedSqlModels = new HashMap<>();
+
+        for (Path sqlFile : stagingSqlFiles) {
+            String fileName = sqlFile.getFileName().toString();
+            String tableName = fileName.substring(0, fileName.length() - 4);
+            String content = Files.readString(sqlFile);
+            String enhancedTableName = tableName;
+            if (tableName.contains("_")) {
+                enhancedTableName = tableName.substring(tableName.indexOf("_") + 1);
+            }
+
+            DbtTable dbtTable = new DbtTable();
+            dbtTable.setName(enhancedTableName);
+
+            StringBuilder enhancedSql = new StringBuilder();
+            String uniqueKeysInput = "UNIQUE_KEY_COLUMNS";
+
+            // Generate the incremental header
+            enhancedSql.append("{{\n")
+                    .append("    config(\n")
+                    .append("        materialized='incremental',\n")
+                    .append(String.format("        unique_key = [%s],\n",
+                            Arrays.stream(uniqueKeysInput.split(","))
+                                    .map(String::trim)
+                                    .map(key -> "'" + key + "'")
+                                    .collect(Collectors.joining(", "))))
+                    //                .append(String.format("        alias = '%s'\n", dbtTable.getName()))
+                    .append("    )\n")
+                    .append("}}\n\n");
+
+            // Replace source() with ref(), but keeping only the table name
+            String modifiedSql = content.replaceAll(
+                    "from \\{\\{ source\\('([^']*)', '([^']*)'\\) \\}\\}",
+                    "from {{ ref('$1_$2') }}"
+            );
+
+            // Check if incremental condition exists
+            if (!modifiedSql.contains("{% if is_incremental() %}")) {
+                int lastSelectPos = modifiedSql.lastIndexOf("select * from");
+                if (lastSelectPos > 0) {
+                    String beforeSelect = modifiedSql.substring(0, lastSelectPos);
+                    String afterSelect = modifiedSql.substring(lastSelectPos);
+
+                    StringBuilder incrementalCondition = new StringBuilder();
+                    String incrementalColumn = "INCREMENTAL_COLUMN";
+                    incrementalCondition.append("\n\n\t{% if is_incremental() -%}\n\t");
+                    incrementalCondition.append(String.format("where %s > (select max(%s) from {{ this }})",
+                            incrementalColumn, incrementalColumn));
+                    incrementalCondition.append("\n\t{%- endif %}\n");
+
+                    enhancedSql.append(beforeSelect);
+                    enhancedSql.append(incrementalCondition);
+                    enhancedSql.append(afterSelect);
+                } else {
+                    enhancedSql.append(modifiedSql);
+                }
+            } else {
+                enhancedSql.append(modifiedSql);
+            }
+
+            enhancedSqlModels.put("enh_" + enhancedTableName, enhancedSql.toString());
+        }
+
+        DbtSqlModelOutput enhancedOutput = new DbtSqlModelOutput(enhancedWorkspace);
+        enhancedOutput.write(enhancedSqlModels);
+        log.info("Successfully written incremental dbt models based on existing staging models.");
     }
 
     private void createBusinessLayerModels(Connection connection, Path sourceWorkspace, String userPrompt) throws IOException {
