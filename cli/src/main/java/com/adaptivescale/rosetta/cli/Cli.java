@@ -12,7 +12,6 @@ import com.adaptivescale.rosetta.common.models.Database;
 import com.adaptivescale.rosetta.common.DriverManagerDriverProvider;
 import com.adaptivescale.rosetta.common.models.DriverInfo;
 import com.adaptivescale.rosetta.common.models.Table;
-import com.adaptivescale.rosetta.common.models.dbt.DbtColumn;
 import com.adaptivescale.rosetta.common.models.dbt.DbtModel;
 import com.adaptivescale.rosetta.common.models.dbt.DbtTable;
 import com.adaptivescale.rosetta.common.models.enums.OperationLevelEnum;
@@ -547,7 +546,7 @@ class Cli implements Callable<Void> {
 
             // Check if incremental condition exists
             if (!modifiedSql.contains("{% if is_incremental() %}")) {
-                int lastSelectPos = modifiedSql.lastIndexOf("select * from");
+                int lastSelectPos = modifiedSql.lastIndexOf(")");
                 if (lastSelectPos > 0) {
                     String beforeSelect = modifiedSql.substring(0, lastSelectPos);
                     String afterSelect = modifiedSql.substring(lastSelectPos);
