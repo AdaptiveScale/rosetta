@@ -51,7 +51,7 @@ public class DbtAIService {
 
         OpenAiChatModel.OpenAiChatModelBuilder model = OpenAiChatModel
             .builder()
-            .temperature(0.1)
+            .temperature(0.0)
             .apiKey(apiKey)
             .modelName(AI_MODEL);
 

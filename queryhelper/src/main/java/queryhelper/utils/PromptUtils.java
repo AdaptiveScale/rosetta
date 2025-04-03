@@ -35,7 +35,9 @@ public class PromptUtils {
                 modelContents +
                 "\n\nDO NOT include the ```yaml block at the beginning or end. Only respond with valid YAML in the following format:\n" +
                 yamlOutputFormat +
-                "\nIMPORTANT: The {fileName} placeholder must always be replaced with an actual filename ending in '.sql'.";
+                "\nIMPORTANT: The {fileName} placeholder must always be replaced with an actual filename ending in '.sql'."+
+                "\nIMPORTANT: Make sure you use as reference the models from the enhanced layer'." +
+                "\nIMPORTANT: Do not use the enh_ prefix on the file name'.";
     }
 
 }
