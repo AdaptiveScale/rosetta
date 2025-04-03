@@ -591,7 +591,6 @@ class Cli implements Callable<Void> {
                     try {
                         String content = new String(Files.readAllBytes(file));
                         modelContents.add(file.getFileName() + "\n" + content);
-//                        modelContents.add(content);
                     } catch (IOException e) {
                         log.error("Error reading file: {}", file, e);
                     }
