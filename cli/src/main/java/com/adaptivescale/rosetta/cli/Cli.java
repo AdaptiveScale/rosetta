@@ -13,6 +13,7 @@ import com.adaptivescale.rosetta.common.DriverManagerDriverProvider;
 import com.adaptivescale.rosetta.common.models.DriverInfo;
 import com.adaptivescale.rosetta.common.models.Table;
 import com.adaptivescale.rosetta.common.models.dbt.DbtModel;
+import com.adaptivescale.rosetta.common.models.dbt.DbtSource;
 import com.adaptivescale.rosetta.common.models.dbt.DbtTable;
 import com.adaptivescale.rosetta.common.models.enums.OperationLevelEnum;
 import com.adaptivescale.rosetta.common.models.input.Connection;
@@ -508,24 +509,39 @@ class Cli implements Callable<Void> {
 
         Files.createDirectories(enhancedWorkspace);
 
+        List<Database> databases = getDatabases(sourceWorkspace)
+                .map(AbstractMap.SimpleImmutableEntry::getValue)
+                .collect(Collectors.toList());
+
+        DbtModel dbtModel = DbtModelGenerator.dbtModelGenerator(databases);
+
+        for (DbtSource source : dbtModel.getSources()) {
+            for (DbtTable table : source.getTables()) {
+                source.setName("enh_" + table.getName());
+            }
+        }
+
+        DbtYamlModelOutput dbtYamlModelOutput = new DbtYamlModelOutput(enhancedWorkspace);
+        dbtYamlModelOutput.write(dbtModel);
+
         Map<String, String> enhancedSqlModels = new HashMap<>();
 
         for (Path sqlFile : stagingSqlFiles) {
             String fileName = sqlFile.getFileName().toString();
             String tableName = fileName.substring(0, fileName.length() - 4);
             String content = Files.readString(sqlFile);
+
             String enhancedTableName = tableName;
             if (tableName.contains("_")) {
                 enhancedTableName = tableName.substring(tableName.indexOf("_") + 1);
             }
 
-            DbtTable dbtTable = new DbtTable();
-            dbtTable.setName(enhancedTableName);
+            String finalTableName = "enh_" + enhancedTableName;
 
             StringBuilder enhancedSql = new StringBuilder();
             String uniqueKeysInput = "UNIQUE_KEY_COLUMNS";
 
-            // Generate the incremental header
+            // Build DBT incremental model header
             enhancedSql.append("{{\n")
                     .append("    config(\n")
                     .append("        materialized='incremental',\n")
@@ -534,29 +550,25 @@ class Cli implements Callable<Void> {
                                     .map(String::trim)
                                     .map(key -> "'" + key + "'")
                                     .collect(Collectors.joining(", "))))
-                    //                .append(String.format("        alias = '%s'\n", dbtTable.getName()))
                     .append("    )\n")
                     .append("}}\n\n");
 
-            // Replace source() with ref(), but keeping only the table name
             String modifiedSql = content.replaceAll(
                     "from \\{\\{ source\\('([^']*)', '([^']*)'\\) \\}\\}",
                     "from {{ ref('$1_$2') }}"
             );
 
-            // Check if incremental condition exists
             if (!modifiedSql.contains("{% if is_incremental() %}")) {
                 int lastSelectPos = modifiedSql.lastIndexOf(")");
                 if (lastSelectPos > 0) {
                     String beforeSelect = modifiedSql.substring(0, lastSelectPos);
                     String afterSelect = modifiedSql.substring(lastSelectPos);
 
-                    StringBuilder incrementalCondition = new StringBuilder();
                     String incrementalColumn = "INCREMENTAL_COLUMN";
-                    incrementalCondition.append("\n\n\t{% if is_incremental() -%}\n\t");
-                    incrementalCondition.append(String.format("where %s > (select max(%s) from {{ this }})",
-                            incrementalColumn, incrementalColumn));
-                    incrementalCondition.append("\n\t{%- endif %}\n");
+                    StringBuilder incrementalCondition = new StringBuilder();
+                    incrementalCondition.append("\n\n\t{% if is_incremental() -%}\n\t")
+                            .append(String.format("where %s > (select max(%s) from {{ this }})", incrementalColumn, incrementalColumn))
+                            .append("\n\t{%- endif %}\n");
 
                     enhancedSql.append(beforeSelect);
                     enhancedSql.append(incrementalCondition);
@@ -568,11 +580,12 @@ class Cli implements Callable<Void> {
                 enhancedSql.append(modifiedSql);
             }
 
-            enhancedSqlModels.put("enh_" + enhancedTableName, enhancedSql.toString());
+            enhancedSqlModels.put(finalTableName, enhancedSql.toString());
         }
 
         DbtSqlModelOutput enhancedOutput = new DbtSqlModelOutput(enhancedWorkspace);
         enhancedOutput.write(enhancedSqlModels);
+
         log.info("Successfully written incremental dbt models based on existing staging models.");
     }
 
@@ -596,7 +609,6 @@ class Cli implements Callable<Void> {
                     }
                 });
 
-        // Combine all contents into a single string for prompt
         String combinedModelContents = String.join("\n\n", modelContents);
 
         GenericResponse response = DbtAIService.generateBusinessModels(config.getOpenAIApiKey(), config.getOpenAIModel(), sourceWorkspace.resolve("dbt/models/business"), combinedModelContents, userPrompt);
