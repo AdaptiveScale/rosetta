@@ -22,7 +22,7 @@ public class DbtYamlModelOutput implements Output<DbtModel> {
   @Override
   public void write(DbtModel model) {
     ObjectMapper mapper = new ObjectMapper(
-          new YAMLFactory().enable(YAMLGenerator.Feature.MINIMIZE_QUOTES)
+            new YAMLFactory().enable(YAMLGenerator.Feature.MINIMIZE_QUOTES)
     );
 
     for (DbtSource source : model.getSources()) {
@@ -31,6 +31,38 @@ public class DbtYamlModelOutput implements Output<DbtModel> {
       for (DbtTable table : source.getTables()) {
         String tableName = table.getName();
         String fileName = String.format("%s_%s.yaml", sourceName, tableName);
+        Path tablePath = directory.resolve(fileName);
+
+        DbtModel tableModel = new DbtModel();
+        tableModel.setVersion(model.getVersion());
+
+        DbtSource tableSource = new DbtSource();
+        tableSource.setName(sourceName);
+        tableSource.setDescription(source.getDescription());
+        tableSource.setTables(Collections.singletonList(table));
+
+        tableModel.setSources(Collections.singletonList(tableSource));
+
+        try {
+          mapper.writeValue(tablePath.toFile(), tableModel);
+        } catch (IOException e) {
+          throw new RuntimeException("Failed to write YAML for table: " + tableName, e);
+        }
+      }
+    }
+  }
+
+  public void writeEnhanced(DbtModel model) {
+    ObjectMapper mapper = new ObjectMapper(
+            new YAMLFactory().enable(YAMLGenerator.Feature.MINIMIZE_QUOTES)
+    );
+
+    for (DbtSource source : model.getSources()) {
+      String sourceName = source.getName();
+
+      for (DbtTable table : source.getTables()) {
+        String tableName = table.getName();
+        String fileName = String.format("%s_%s.yaml", "enh", tableName);
         Path tablePath = directory.resolve(fileName);
 
         DbtModel tableModel = new DbtModel();

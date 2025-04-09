@@ -65,6 +65,7 @@ import java.util.stream.Stream;
 
 import static com.adaptivescale.rosetta.cli.Constants.CONFIG_NAME;
 import static com.adaptivescale.rosetta.cli.Constants.TEMPLATE_CONFIG_NAME;
+import static com.adaptivescale.rosetta.cli.helpers.DbtEnhancedModelTransformer.enhancedSQLGenerator;
 
 @CommandLine.Command(name = "cli",
         mixinStandardHelpOptions = true,
@@ -509,86 +510,23 @@ class Cli implements Callable<Void> {
 
         Files.createDirectories(enhancedWorkspace);
 
+        // Load database models
         List<Database> databases = getDatabases(sourceWorkspace)
                 .map(AbstractMap.SimpleImmutableEntry::getValue)
                 .collect(Collectors.toList());
 
         DbtModel dbtModel = DbtModelGenerator.dbtModelGenerator(databases);
 
-        for (DbtSource source : dbtModel.getSources()) {
-            for (DbtTable table : source.getTables()) {
-                source.setName("enh_" + table.getName());
-            }
-        }
-
         DbtYamlModelOutput dbtYamlModelOutput = new DbtYamlModelOutput(enhancedWorkspace);
-        dbtYamlModelOutput.write(dbtModel);
+        dbtYamlModelOutput.writeEnhanced(dbtModel);
 
-        Map<String, String> enhancedSqlModels = new HashMap<>();
-
-        for (Path sqlFile : stagingSqlFiles) {
-            String fileName = sqlFile.getFileName().toString();
-            String tableName = fileName.substring(0, fileName.length() - 4);
-            String content = Files.readString(sqlFile);
-
-            String enhancedTableName = tableName;
-            if (tableName.contains("_")) {
-                enhancedTableName = tableName.substring(tableName.indexOf("_") + 1);
-            }
-
-            String finalTableName = "enh_" + enhancedTableName;
-
-            StringBuilder enhancedSql = new StringBuilder();
-            String uniqueKeysInput = "UNIQUE_KEY_COLUMNS";
-
-            // Build DBT incremental model header
-            enhancedSql.append("{{\n")
-                    .append("    config(\n")
-                    .append("        materialized='incremental',\n")
-                    .append(String.format("        unique_key = [%s],\n",
-                            Arrays.stream(uniqueKeysInput.split(","))
-                                    .map(String::trim)
-                                    .map(key -> "'" + key + "'")
-                                    .collect(Collectors.joining(", "))))
-                    .append("    )\n")
-                    .append("}}\n\n");
-
-            String modifiedSql = content.replaceAll(
-                    "from \\{\\{ source\\('([^']*)', '([^']*)'\\) \\}\\}",
-                    "from {{ ref('$1_$2') }}"
-            );
-
-            if (!modifiedSql.contains("{% if is_incremental() %}")) {
-                int lastSelectPos = modifiedSql.lastIndexOf(")");
-                if (lastSelectPos > 0) {
-                    String beforeSelect = modifiedSql.substring(0, lastSelectPos);
-                    String afterSelect = modifiedSql.substring(lastSelectPos);
-
-                    String incrementalColumn = "INCREMENTAL_COLUMN";
-                    StringBuilder incrementalCondition = new StringBuilder();
-                    incrementalCondition.append("\n\n\t{% if is_incremental() -%}\n\t")
-                            .append(String.format("where %s > (select max(%s) from {{ this }})", incrementalColumn, incrementalColumn))
-                            .append("\n\t{%- endif %}\n");
-
-                    enhancedSql.append(beforeSelect);
-                    enhancedSql.append(incrementalCondition);
-                    enhancedSql.append(afterSelect);
-                } else {
-                    enhancedSql.append(modifiedSql);
-                }
-            } else {
-                enhancedSql.append(modifiedSql);
-            }
-
-            enhancedSqlModels.put(finalTableName, enhancedSql.toString());
-        }
+        Map<String, String> enhancedSqlModels = enhancedSQLGenerator(stagingSqlFiles, dbtModel);
 
         DbtSqlModelOutput enhancedOutput = new DbtSqlModelOutput(enhancedWorkspace);
         enhancedOutput.write(enhancedSqlModels);
 
         log.info("Successfully written incremental dbt models based on existing staging models.");
     }
-
     private void createBusinessLayerModels(Connection connection, Path sourceWorkspace, String userPrompt) throws IOException {
         Path dbtWorkspace = sourceWorkspace.resolve("dbt").resolve("models");
         Path enhancedModelsPath = sourceWorkspace.resolve("dbt").resolve("models").resolve("enhanced");
