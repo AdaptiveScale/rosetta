@@ -517,8 +517,8 @@ class Cli implements Callable<Void> {
 
         DbtModel dbtModel = DbtModelGenerator.dbtModelGenerator(databases);
 
-        DbtYamlModelOutput dbtYamlModelOutput = new DbtYamlModelOutput(enhancedWorkspace);
-        dbtYamlModelOutput.writeEnhanced(dbtModel);
+//        DbtYamlModelOutput dbtYamlModelOutput = new DbtYamlModelOutput(enhancedWorkspace);
+//        dbtYamlModelOutput.writeEnhanced(dbtModel);
 
         Map<String, String> enhancedSqlModels = enhancedSQLGenerator(stagingSqlFiles, dbtModel);
 
