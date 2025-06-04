@@ -13,6 +13,8 @@ import com.adaptivescale.rosetta.common.DriverManagerDriverProvider;
 import com.adaptivescale.rosetta.common.models.DriverInfo;
 import com.adaptivescale.rosetta.common.models.Table;
 import com.adaptivescale.rosetta.common.models.dbt.DbtModel;
+import com.adaptivescale.rosetta.common.models.dbt.DbtSource;
+import com.adaptivescale.rosetta.common.models.dbt.DbtTable;
 import com.adaptivescale.rosetta.common.models.enums.OperationLevelEnum;
 import com.adaptivescale.rosetta.common.models.input.Connection;
 import com.adaptivescale.rosetta.common.types.DriverClassName;
@@ -42,6 +44,7 @@ import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 import queryhelper.pojo.GenericResponse;
 import queryhelper.service.AIService;
+import queryhelper.service.DbtAIService;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -52,15 +55,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.util.AbstractMap;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Callable;
 
 import java.util.function.Consumer;
@@ -70,10 +65,11 @@ import java.util.stream.Stream;
 
 import static com.adaptivescale.rosetta.cli.Constants.CONFIG_NAME;
 import static com.adaptivescale.rosetta.cli.Constants.TEMPLATE_CONFIG_NAME;
+import static com.adaptivescale.rosetta.cli.helpers.DbtEnhancedModelTransformer.enhancedSQLGenerator;
 
 @CommandLine.Command(name = "cli",
         mixinStandardHelpOptions = true,
-        version = "2.7.0",
+        version = "2.8.0",
         description = "Declarative Database Management - DDL Transpiler"
 )
 class Cli implements Callable<Void> {
@@ -184,7 +180,7 @@ class Cli implements Callable<Void> {
         stringOutput.write(ddl);
 
         // generate dbt models
-        extractDbtModels(target, targetWorkspace);
+        generateStagingModels(target, targetWorkspace);
 
         log.info("Successfully written ddl ({}).", stringOutput.getFilePath());
     }
@@ -384,17 +380,46 @@ class Cli implements Callable<Void> {
     }
 
     @CommandLine.Command(name = "dbt", description = "Extract dbt models chosen from connection config.", mixinStandardHelpOptions = true)
-    private void dbt(@CommandLine.Option(names = {"-s", "--source"}, required = true) String sourceName) throws Exception {
+    private void dbt(
+            @CommandLine.Option(names = {"-s", "--source"}, required = true) String sourceName,
+            @CommandLine.Option(names = {"--incremental"}, description = "Enable incremental mode for dbt model generation.", defaultValue = "false") boolean incremental,
+            @CommandLine.Option(names = {"--business"}, description = "Create business layer models from enhanced models.", defaultValue = "false") boolean business,
+            @CommandLine.Option(names = {"-q", "--query"}, required = false) String userPrompt) throws Exception {
+
         requireConfig(config);
         Connection source = getSourceConnection(sourceName);
-
         Path sourceWorkspace = Paths.get("./", sourceName);
+
         if (!Files.isDirectory(sourceWorkspace)) {
-            throw new RuntimeException(String.format("Can not find directory: %s for source name: %s to find models" +
-                    " for dbt model generation", sourceWorkspace, sourceName));
+            throw new RuntimeException(String.format("Cannot find directory: %s for source name: %s to find models", sourceWorkspace, sourceName));
         }
 
-        extractDbtModels(source, sourceWorkspace);
+        // Business models are created one at a time. It is expected to already have the incremental models generated.
+        if (business) {
+            createBusinessLayerModels(source, sourceWorkspace, userPrompt);
+            return;
+        }
+
+        if (incremental) {
+            Path stagingWorkspace = sourceWorkspace.resolve("dbt").resolve("models").resolve("staging");
+            if (!Files.exists(stagingWorkspace)) {
+                log.info("Staging directory not found. You must create staging models first.");
+                return;
+            }
+            List<Path> stagingSqlFiles;
+            try (Stream<Path> sqlFiles = Files.list(stagingWorkspace)
+                    .filter(path -> path.toString().endsWith(".sql"))) {
+                stagingSqlFiles = sqlFiles.collect(Collectors.toList());
+            }
+            if (stagingSqlFiles.isEmpty()) {
+               log.info("No SQL models found in staging layer. You must create staging models first.");
+               return;
+            }
+            generateEnhancedModels(source, sourceWorkspace, stagingSqlFiles);
+            return;
+        }
+
+        generateStagingModels(source, sourceWorkspace);
     }
 
     @CommandLine.Command(name = "generate", description = "Generate code", mixinStandardHelpOptions = true)
@@ -457,22 +482,78 @@ class Cli implements Callable<Void> {
         return TemplateEngine.process("scala/scala_code", variables);
     }
 
-    private void extractDbtModels(Connection connection, Path sourceWorkspace) throws IOException {
-        // create dbt directories if they dont exist
-        Path dbtWorkspace = sourceWorkspace.resolve("dbt");
-        Files.createDirectories(dbtWorkspace.resolve("model"));
+    private void generateStagingModels(Connection connection, Path sourceWorkspace) throws IOException {
+        Path dbtWorkspace = sourceWorkspace.resolve("dbt").resolve("models");
+        Path stagingWorkspace = dbtWorkspace.resolve("staging");
 
-        List<Database> databases = getDatabases(sourceWorkspace).map(AbstractMap.SimpleImmutableEntry::getValue).collect(Collectors.toList());
+        Files.createDirectories(stagingWorkspace);
+
+        List<Database> databases = getDatabases(sourceWorkspace)
+                .map(AbstractMap.SimpleImmutableEntry::getValue)
+                .collect(Collectors.toList());
 
         DbtModel dbtModel = DbtModelGenerator.dbtModelGenerator(databases);
-        DbtYamlModelOutput dbtYamlModelOutput = new DbtYamlModelOutput(DEFAULT_MODEL_YAML, dbtWorkspace);
+
+        DbtYamlModelOutput dbtYamlModelOutput = new DbtYamlModelOutput(stagingWorkspace);
         dbtYamlModelOutput.write(dbtModel);
 
-        Map<String, String> dbtSQLTables = DbtModelGenerator.dbtSQLGenerator(dbtModel);
-        DbtSqlModelOutput dbtSqlModelOutput = new DbtSqlModelOutput(dbtWorkspace);
+        Map<String, String> dbtSQLTables = DbtModelGenerator.dbtSQLGenerator(dbtModel, false);
+        DbtSqlModelOutput dbtSqlModelOutput = new DbtSqlModelOutput(stagingWorkspace);
         dbtSqlModelOutput.write(dbtSQLTables);
 
-        log.info("Successfully written dbt models for database yaml ({}).", dbtYamlModelOutput.getFilePath());
+        log.info("Successfully written staging dbt models for database yaml.");
+    }
+
+    private void generateEnhancedModels(Connection connection, Path sourceWorkspace, List<Path> stagingSqlFiles) throws IOException {
+        Path dbtWorkspace = sourceWorkspace.resolve("dbt").resolve("models");
+        Path enhancedWorkspace = dbtWorkspace.resolve("enhanced");
+
+        Files.createDirectories(enhancedWorkspace);
+
+        // Load database models
+        List<Database> databases = getDatabases(sourceWorkspace)
+                .map(AbstractMap.SimpleImmutableEntry::getValue)
+                .collect(Collectors.toList());
+
+        DbtModel dbtModel = DbtModelGenerator.dbtModelGenerator(databases);
+
+//        DbtYamlModelOutput dbtYamlModelOutput = new DbtYamlModelOutput(enhancedWorkspace);
+//        dbtYamlModelOutput.writeEnhanced(dbtModel);
+
+        Map<String, String> enhancedSqlModels = enhancedSQLGenerator(stagingSqlFiles, dbtModel);
+
+        DbtSqlModelOutput enhancedOutput = new DbtSqlModelOutput(enhancedWorkspace);
+        enhancedOutput.write(enhancedSqlModels);
+
+        log.info("Successfully written incremental dbt models based on existing staging models.");
+    }
+    private void createBusinessLayerModels(Connection connection, Path sourceWorkspace, String userPrompt) throws IOException {
+        Path dbtWorkspace = sourceWorkspace.resolve("dbt").resolve("models");
+        Path enhancedModelsPath = sourceWorkspace.resolve("dbt").resolve("models").resolve("enhanced");
+        List<String> modelContents = new ArrayList<>();
+
+        Path targetWorkspace = dbtWorkspace.resolve("business");
+
+        Files.createDirectories(targetWorkspace);
+
+        Files.walk(enhancedModelsPath)
+                .filter(Files::isRegularFile)
+                .forEach(file -> {
+                    try {
+                        String content = new String(Files.readAllBytes(file));
+                        modelContents.add(file.getFileName() + "\n" + content);
+                    } catch (IOException e) {
+                        log.error("Error reading file: {}", file, e);
+                    }
+                });
+
+        String combinedModelContents = String.join("\n\n", modelContents);
+
+        GenericResponse response = DbtAIService.generateBusinessModels(config.getOpenAIApiKey(), config.getOpenAIModel(), sourceWorkspace.resolve("dbt/models/business"), combinedModelContents, userPrompt);
+
+        if (response.getStatusCode() != 200) {
+            throw new RuntimeException("Failed to generate business layer models: " + response.getMessage());
+        }
     }
 
     @CommandLine.Command(name = "diff", description = "Show difference between local model and database", mixinStandardHelpOptions = true)

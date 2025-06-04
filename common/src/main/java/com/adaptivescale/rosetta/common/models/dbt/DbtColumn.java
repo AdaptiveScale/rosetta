@@ -1,6 +1,7 @@
 package com.adaptivescale.rosetta.common.models.dbt;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Collection;
 
@@ -8,6 +9,8 @@ import java.util.Collection;
 public class DbtColumn {
   private String name;
   private String description;
+
+  @JsonProperty("data_tests")
   private Collection<String> tests;
 
   public String getName() {

@@ -70,7 +70,7 @@ DRIVERS_PATH="\${ROSETTA_DRIVERS}"
 
 if [ x"\${ROSETTA_DRIVERS}" = "x" ]; then
     DRIVERS_PATH="\${APP_HOME}/drivers/"
-    mkdir -p \${DRIVERS_PATH}
+    mkdir -p "\${DRIVERS_PATH}"
 fi
 
 # Add all .jar files from DRIVERS_PATH and its subdirectories to CLASSPATH

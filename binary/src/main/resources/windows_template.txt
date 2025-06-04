@@ -51,11 +51,14 @@ set CMD_LINE_ARGS=%*
 
 set CLASSPATH=%APP_HOME:"=%/lib/*
 
-set DRIVERS_PATH="%ROSETTA_DRIVERS%"
+set "DRIVERS_PATH=%ROSETTA_DRIVERS%"
 
-if "x%ROSETTA_DRIVERS%" == "x" (
-    set DRIVERS_PATH=%APP_HOME%/drivers/
-    if not exist %DRIVERS_PATH% mkdir "%DRIVERS_PATH%"
+if "%ROSETTA_DRIVERS%"=="" (
+    set "DRIVERS_PATH=%APP_HOME%\drivers"
+)
+
+if not exist "%DRIVERS_PATH%" (
+    mkdir "%DRIVERS_PATH%"
 )
 
 for /R "%DRIVERS_PATH%" %%f in (*.jar) do (
