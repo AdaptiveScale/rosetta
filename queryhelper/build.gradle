@@ -19,6 +19,9 @@ dependencies {
     implementation 'dev.langchain4j:langchain4j-open-ai:0.25.0'
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'com.github.jsqlparser:jsqlparser:4.9'
+
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.3'
+    implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: '2.13.3'   //debug only
 }
 
 test {

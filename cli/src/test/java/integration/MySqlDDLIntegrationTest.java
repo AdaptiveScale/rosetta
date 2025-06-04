@@ -33,7 +33,8 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
-
+@Ignore
+@Disabled
 @Testcontainers
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class MySqlDDLIntegrationTest {

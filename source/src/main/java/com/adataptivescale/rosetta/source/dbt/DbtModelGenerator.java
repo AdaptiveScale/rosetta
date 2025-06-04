@@ -64,7 +64,7 @@ public class DbtModelGenerator {
     });
   }
 
-  public static Map<String, String> dbtSQLGenerator(DbtModel dbtModel) {
+  public static Map<String, String> dbtSQLGenerator(DbtModel dbtModel, Boolean isIncremental) {
     Map<String, String> tables = new HashMap<>();
 
     dbtModel.getSources().forEach(dbtSource -> {
@@ -78,7 +78,9 @@ public class DbtModelGenerator {
         table.append(String.format("from {{ source('%s', '%s') }}", dbtSource.getName(), dbtTable.getName()));
         table.append("\n)\n\n");
         table.append("select * from ").append(dbtTable.getName());
+
         tables.put(String.format("%s_%s", dbtSource.getName(), dbtTable.getName()), String.valueOf(table));
+
       });
     });
 
