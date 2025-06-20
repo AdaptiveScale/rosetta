@@ -78,6 +78,10 @@ class Cli implements Callable<Void> {
     public static final String DEFAULT_MODEL_YAML = "model.yaml";
     public static final String DEFAULT_OUTPUT_DIRECTORY = "data";
     public static final String DEFAULT_DRIVERS_YAML = "drivers.yaml";
+    private static final String RAW_LAYER = "raw";
+    private static final String STAGING_LAYER = "staging";
+    private static final String ENHANCED_LAYER = "enhanced";
+    private static final String BUSINESS_LAYER = "business";
 
     @CommandLine.Spec
     CommandLine.Model.CommandSpec spec;
@@ -394,9 +398,8 @@ class Cli implements Callable<Void> {
             throw new RuntimeException(String.format("Cannot find directory: %s for source name: %s to find models", sourceWorkspace, sourceName));
         }
 
-        // Business models are created one at a time. It is expected to already have the incremental models generated.
         if (business) {
-            createBusinessLayerModels(source, sourceWorkspace, userPrompt);
+            createBusinessLayerModelsFromBestAvailable(source, sourceWorkspace, userPrompt);
             return;
         }
 
@@ -412,8 +415,8 @@ class Cli implements Callable<Void> {
                 stagingSqlFiles = sqlFiles.collect(Collectors.toList());
             }
             if (stagingSqlFiles.isEmpty()) {
-               log.info("No SQL models found in staging layer. You must create staging models first.");
-               return;
+                log.info("No SQL models found in staging layer. You must create staging models first.");
+                return;
             }
             generateEnhancedModels(source, sourceWorkspace, stagingSqlFiles);
             return;
@@ -482,26 +485,121 @@ class Cli implements Callable<Void> {
         return TemplateEngine.process("scala/scala_code", variables);
     }
 
-    private void generateStagingModels(Connection connection, Path sourceWorkspace) throws IOException {
+    /**
+     * Determines the most advanced available layer and creates business models from it
+     */
+    private void createBusinessLayerModelsFromBestAvailable(Connection connection, Path sourceWorkspace, String userPrompt) throws IOException {
         Path dbtWorkspace = sourceWorkspace.resolve("dbt").resolve("models");
-        Path stagingWorkspace = dbtWorkspace.resolve("staging");
+        String bestAvailableLayer = findBestAvailableLayer(dbtWorkspace, sourceWorkspace);
 
-        Files.createDirectories(stagingWorkspace);
+        log.info("Creating business layer models from {} layer", bestAvailableLayer.toUpperCase());
 
-        List<Database> databases = getDatabases(sourceWorkspace)
-                .map(AbstractMap.SimpleImmutableEntry::getValue)
-                .collect(Collectors.toList());
+        List<String> modelContents = getModelContentsFromLayer(dbtWorkspace, bestAvailableLayer, sourceWorkspace);
 
-        DbtModel dbtModel = DbtModelGenerator.dbtModelGenerator(databases);
+        if (modelContents.isEmpty()) {
+            throw new RuntimeException("No models found in any available layer to create business models from");
+        }
 
-        DbtYamlModelOutput dbtYamlModelOutput = new DbtYamlModelOutput(stagingWorkspace);
-        dbtYamlModelOutput.write(dbtModel);
+        Path targetWorkspace = dbtWorkspace.resolve(BUSINESS_LAYER);
+        Files.createDirectories(targetWorkspace);
 
-        Map<String, String> dbtSQLTables = DbtModelGenerator.dbtSQLGenerator(dbtModel, false);
-        DbtSqlModelOutput dbtSqlModelOutput = new DbtSqlModelOutput(stagingWorkspace);
-        dbtSqlModelOutput.write(dbtSQLTables);
+        String combinedModelContents = String.join("\n\n", modelContents);
 
-        log.info("Successfully written staging dbt models for database yaml.");
+        GenericResponse response = DbtAIService.generateBusinessModels(
+                config.getOpenAIApiKey(),
+                config.getOpenAIModel(),
+                targetWorkspace,
+                combinedModelContents,
+                userPrompt
+        );
+
+        if (response.getStatusCode() != 200) {
+            throw new RuntimeException("Failed to generate business layer models: " + response.getMessage());
+        }
+    }
+
+    /**
+     * Finds the most advanced available layer in order: ENHANCED -> STAGING -> RAW
+     */
+    private String findBestAvailableLayer(Path dbtWorkspace, Path sourceWorkspace) {
+        Path enhancedPath = dbtWorkspace.resolve(ENHANCED_LAYER);
+        if (hasValidModels(enhancedPath, sourceWorkspace)) {
+            return ENHANCED_LAYER;
+        }
+
+        Path stagingPath = dbtWorkspace.resolve(STAGING_LAYER);
+        if (hasValidModels(stagingPath, sourceWorkspace)) {
+            return STAGING_LAYER;
+        }
+
+        if (hasValidModels(null, sourceWorkspace)) {
+            return RAW_LAYER;
+        }
+
+
+        throw new RuntimeException("No valid models found in any layer (raw, staging, enhanced)");
+    }
+
+    /**
+     * Checks if a layer path exists and contains valid models
+     */
+    private boolean hasValidModels(Path layerPath, Path sourceWorkspace) {
+        if (layerPath == null) {
+            Path modelYamlPath = sourceWorkspace.resolve("model.yaml");
+            return Files.exists(modelYamlPath);
+        }
+
+        if (!Files.exists(layerPath) || !Files.isDirectory(layerPath)) {
+            return false;
+        }
+
+        // For other layers, check for SQL files
+        try (Stream<Path> files = Files.list(layerPath)) {
+            return files.anyMatch(path -> path.toString().endsWith(".sql"));
+        } catch (IOException e) {
+            log.warn("Error checking for models in path: {}", layerPath, e);
+            return false;
+        }
+    }
+
+    /**
+     * Gets model contents from the specified layer
+     */
+    private List<String> getModelContentsFromLayer(Path dbtWorkspace, String layer, Path sourceWorkspace) throws IOException {
+        List<String> modelContents = new ArrayList<>();
+        Path layerPath = dbtWorkspace.resolve(layer);
+
+        switch (layer) {
+            case RAW_LAYER:
+                Path modelYamlPath = sourceWorkspace.resolve("model.yaml");
+                if (!Files.exists(modelYamlPath)) {
+                    throw new RuntimeException("model.yaml not found in raw layer: " + modelYamlPath);
+                }
+                String yamlContent = new String(Files.readAllBytes(modelYamlPath));
+                modelContents.add("model.yaml\n" + yamlContent);
+                break;
+
+            case ENHANCED_LAYER:
+            case STAGING_LAYER:
+                // For enhanced and staging layers, read SQL files directly
+                Files.walk(layerPath)
+                        .filter(Files::isRegularFile)
+                        .filter(path -> path.toString().endsWith(".sql"))
+                        .forEach(file -> {
+                            try {
+                                String content = new String(Files.readAllBytes(file));
+                                modelContents.add(file.getFileName() + "\n" + content);
+                            } catch (IOException e) {
+                                log.error("Error reading file: {}", file, e);
+                            }
+                        });
+                break;
+
+            default:
+                throw new IllegalArgumentException("Unknown layer: " + layer);
+        }
+
+        return modelContents;
     }
 
     private void generateEnhancedModels(Connection connection, Path sourceWorkspace, List<Path> stagingSqlFiles) throws IOException {
@@ -527,33 +625,27 @@ class Cli implements Callable<Void> {
 
         log.info("Successfully written incremental dbt models based on existing staging models.");
     }
-    private void createBusinessLayerModels(Connection connection, Path sourceWorkspace, String userPrompt) throws IOException {
+
+    private void generateStagingModels(Connection connection, Path sourceWorkspace) throws IOException {
         Path dbtWorkspace = sourceWorkspace.resolve("dbt").resolve("models");
-        Path enhancedModelsPath = sourceWorkspace.resolve("dbt").resolve("models").resolve("enhanced");
-        List<String> modelContents = new ArrayList<>();
+        Path stagingWorkspace = dbtWorkspace.resolve("staging");
 
-        Path targetWorkspace = dbtWorkspace.resolve("business");
+        Files.createDirectories(stagingWorkspace);
 
-        Files.createDirectories(targetWorkspace);
+        List<Database> databases = getDatabases(sourceWorkspace)
+                .map(AbstractMap.SimpleImmutableEntry::getValue)
+                .collect(Collectors.toList());
 
-        Files.walk(enhancedModelsPath)
-                .filter(Files::isRegularFile)
-                .forEach(file -> {
-                    try {
-                        String content = new String(Files.readAllBytes(file));
-                        modelContents.add(file.getFileName() + "\n" + content);
-                    } catch (IOException e) {
-                        log.error("Error reading file: {}", file, e);
-                    }
-                });
+        DbtModel dbtModel = DbtModelGenerator.dbtModelGenerator(databases);
 
-        String combinedModelContents = String.join("\n\n", modelContents);
+        DbtYamlModelOutput dbtYamlModelOutput = new DbtYamlModelOutput(stagingWorkspace);
+        dbtYamlModelOutput.write(dbtModel);
 
-        GenericResponse response = DbtAIService.generateBusinessModels(config.getOpenAIApiKey(), config.getOpenAIModel(), sourceWorkspace.resolve("dbt/models/business"), combinedModelContents, userPrompt);
+        Map<String, String> dbtSQLTables = DbtModelGenerator.dbtSQLGenerator(dbtModel, false);
+        DbtSqlModelOutput dbtSqlModelOutput = new DbtSqlModelOutput(stagingWorkspace);
+        dbtSqlModelOutput.write(dbtSQLTables);
 
-        if (response.getStatusCode() != 200) {
-            throw new RuntimeException("Failed to generate business layer models: " + response.getMessage());
-        }
+        log.info("Successfully written staging dbt models for database yaml.");
     }
 
     @CommandLine.Command(name = "diff", description = "Show difference between local model and database", mixinStandardHelpOptions = true)
