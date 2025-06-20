@@ -494,7 +494,7 @@ class Cli implements Callable<Void> {
 
         log.info("Creating business layer models from {} layer", bestAvailableLayer.toUpperCase());
 
-        List<String> modelContents = getModelContentsFromLayer(dbtWorkspace, bestAvailableLayer);
+        List<String> modelContents = getModelContentsFromLayer(dbtWorkspace, bestAvailableLayer, sourceWorkspace);
 
         if (modelContents.isEmpty()) {
             throw new RuntimeException("No models found in any available layer to create business models from");
@@ -565,13 +565,13 @@ class Cli implements Callable<Void> {
     /**
      * Gets model contents from the specified layer
      */
-    private List<String> getModelContentsFromLayer(Path dbtWorkspace, String layer) throws IOException {
+    private List<String> getModelContentsFromLayer(Path dbtWorkspace, String layer, Path sourceWorkspace) throws IOException {
         List<String> modelContents = new ArrayList<>();
         Path layerPath = dbtWorkspace.resolve(layer);
 
         switch (layer) {
             case RAW_LAYER:
-                Path modelYamlPath = layerPath.resolve("model.yaml");
+                Path modelYamlPath = sourceWorkspace.resolve("model.yaml");
                 if (!Files.exists(modelYamlPath)) {
                     throw new RuntimeException("model.yaml not found in raw layer: " + modelYamlPath);
                 }
