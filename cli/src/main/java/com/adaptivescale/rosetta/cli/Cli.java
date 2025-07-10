@@ -38,6 +38,7 @@ import com.adataptivescale.rosetta.source.core.SourceGeneratorFactory;
 import com.adataptivescale.rosetta.source.dbt.DbtModelGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import lombok.Getter;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.LoggerFactory;
@@ -70,7 +71,10 @@ import static com.adaptivescale.rosetta.cli.helpers.DbtEnhancedModelTransformer.
 @CommandLine.Command(name = "cli",
         mixinStandardHelpOptions = true,
         version = "2.8.1",
-        description = "Declarative Database Management - DDL Transpiler"
+        description = "Declarative Database Management - DDL Transpiler",
+        subcommands = {
+                com.adaptivescale.rosetta.cli.DbtCommands.class
+        }
 )
 class Cli implements Callable<Void> {
     private static final Logger log = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
@@ -90,6 +94,7 @@ class Cli implements Callable<Void> {
             converter = ConfigYmlConverter.class,
             defaultValue = CONFIG_NAME,
             description = "YAML config file. If none is supplied it will use main.conf in the current directory if it exists.")
+    @Getter
     private Config config;
 
     @CommandLine.Option(names = {"-v", "--verbose"}, scope = CommandLine.ScopeType.INHERIT, description = "Enable Verbose output")
@@ -383,7 +388,7 @@ class Cli implements Callable<Void> {
         DriverHelper.getDriver(driversPath, driverId);
     }
 
-    @CommandLine.Command(name = "dbt", description = "Extract dbt models chosen from connection config.", mixinStandardHelpOptions = true)
+    @CommandLine.Command(name = "dbtold", description = "Extract dbt models chosen from connection config.", mixinStandardHelpOptions = true)
     private void dbt(
             @CommandLine.Option(names = {"-s", "--source"}, required = true) String sourceName,
             @CommandLine.Option(names = {"--incremental"}, description = "Enable incremental mode for dbt model generation.", defaultValue = "false") boolean incremental,
