@@ -42,4 +42,26 @@ public class PromptUtils {
                 "\nIMPORTANT: Do not use the enh_ prefix on the file name'.";
     }
 
+    public static String dbtBusinessLayerFromRawPrompt(String modelContents, String userPrompt) {
+        if (userPrompt == null || userPrompt.isEmpty()) {
+            userPrompt = "Generate exactly one business model from these raw layer tables.";
+        }
+        String yamlOutputFormat =
+                "  - fileName: {fileName}.sql  # Ensure the filename ends with .sql\n" +
+                        "    content: |\n";
+        return "You are an AI system that must generate and output ONLY ONE business layer DBT model in YAML format. " +
+                "DO NOT output anything else, including explanations or surrounding text.\n\n" +
+                "Your response MUST strictly follow the format below. The filename MUST always end in .sql.\n" +
+                "The model contents provided are from the RAW layer YAML configuration file containing source table definitions.\n" +
+                "You MUST refer to these tables as source tables using the format: {{ source('<SCHEMA_NAME>', '<TABLE_NAME>') }}.\n" +
+                "DO NOT use {{ ref() }} syntax since these are raw source tables, not DBT models.\n" +
+                "\n\n" + userPrompt + "\n" +
+                "Raw Layer YAML Contents:" + modelContents +
+                "\n\nDO NOT include the ```yaml block at the beginning or end. Only respond with valid YAML in the following format:\n" +
+                yamlOutputFormat +
+                "\nIMPORTANT: The {fileName} placeholder must always be replaced with an actual filename ending in '.sql'." +
+                "\nIMPORTANT: Use {{ source() }} syntax for referencing raw tables, NOT {{ ref() }}." +
+                "\nIMPORTANT: Extract schema and table names from the YAML configuration provided.";
+    }
+
 }
