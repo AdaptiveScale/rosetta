@@ -14,7 +14,7 @@ import java.util.*;
 import static com.adaptivescale.rosetta.cli.helpers.CliHelper.getConnection;
 import static com.adaptivescale.rosetta.cli.helpers.CliHelper.requireConfig;
 
-@CommandLine.Command(name = "dbt", description = "Commands for dbt model handling", subcommandsRepeatable = true)
+@CommandLine.Command(name = "new_dbt", description = "Commands for dbt model handling", subcommandsRepeatable = true)
 public class DbtCommands {
 
     private static final Logger log = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
@@ -29,6 +29,105 @@ public class DbtCommands {
 
     @CommandLine.Command(name = "staging", description = "Generate staging dbt models from connection config")
     public void staging(
+            @CommandLine.Option(names = {"-s", "--source"}, required = true) String sourceName,
+            @CommandLine.Option(names = {"-i", "--input"}, description = "Input files or folders (YAML/YML files only). If not specified, uses default source workspace.")
+            List<String> inputPaths,
+            @CommandLine.Option(names = {"-o", "--output"}, description = "Output directory path. If not specified, uses default staging layer path.")
+            String outputPath
+    ) throws Exception {
+        requireConfig(parent.getConfig());
+        Connection connection = getConnection(parent.getConfig(), sourceName);
+        Path sourceWorkspace = Paths.get("./", sourceName);
+
+        if (!Files.isDirectory(sourceWorkspace)) {
+            throw new RuntimeException(String.format("Cannot find directory: %s for source name: %s to find models", sourceWorkspace, sourceName));
+        }
+
+        if (inputPaths != null && !inputPaths.isEmpty()) {
+            log.info("Using specified input paths for staging: {}", inputPaths);
+            validateInputPaths(inputPaths, Arrays.asList("yaml", "yml"));
+        }
+
+        if (outputPath != null && !outputPath.isEmpty()) {
+            log.info("Using specified output path for staging: {}", outputPath);
+            validateOutputPath(outputPath);
+        }
+
+        dbtModelService.generateStagingModels(connection, sourceWorkspace, inputPaths, outputPath);
+    }
+
+    @CommandLine.Command(name = "incremental", description = "Generate enhanced dbt models from connection config")
+    public void incremental(
+            @CommandLine.Option(names = {"-s", "--source"}, required = true) String sourceName,
+            @CommandLine.Option(names = {"-i", "--input"}, description = "Input files or folders (SQL files only). If not specified, uses staging layer.")
+            List<String> inputPaths,
+            @CommandLine.Option(names = {"-o", "--output"}, description = "Output directory path. If not specified, uses default enhanced layer path.")
+            String outputPath
+    ) throws Exception {
+        requireConfig(parent.getConfig());
+        Connection connection = getConnection(parent.getConfig(), sourceName);
+        Path sourceWorkspace = Paths.get("./", sourceName);
+
+        if (inputPaths != null && !inputPaths.isEmpty()) {
+            log.info("Using specified input paths for incremental: {}", inputPaths);
+            validateInputPaths(inputPaths, Arrays.asList("sql"));
+        } else {
+            // Default behavior - check if staging exists
+            Path stagingPath = sourceWorkspace.resolve("dbt").resolve("models").resolve(DbtModelService.STAGING_LAYER);
+            if (!Files.exists(stagingPath)) {
+                log.info("Staging models not found. Run `dbt staging` first or specify input files with --input.");
+                return;
+            }
+
+            List<Path> stagingSqlFiles = dbtModelService.listSqlFiles(stagingPath);
+            if (stagingSqlFiles.isEmpty()) {
+                log.info("No .sql models found in staging layer.");
+                return;
+            }
+        }
+
+        if (outputPath != null && !outputPath.isEmpty()) {
+            log.info("Using specified output path for incremental: {}", outputPath);
+            validateOutputPath(outputPath);
+        }
+
+        dbtModelService.generateEnhancedModels(connection, sourceWorkspace, inputPaths, outputPath);
+    }
+
+    @CommandLine.Command(name = "business", description = "Generate business dbt models from connection config")
+    public void business(
+            @CommandLine.Option(names = {"-s", "--source"}, required = true) String sourceName,
+            @CommandLine.Option(names = {"-q", "--query"}, required = false) String userPrompt,
+            @CommandLine.Option(names = {"-i", "--input"}, description = "Input files or folders (SQL or YAML files). If not specified, uses best available layer.")
+            List<String> inputPaths,
+            @CommandLine.Option(names = {"-o", "--output"}, description = "Output directory path. If not specified, uses default business layer path.")
+            String outputPath
+    ) throws Exception {
+        requireConfig(parent.getConfig());
+        Connection connection = getConnection(parent.getConfig(), sourceName);
+        Path sourceWorkspace = Paths.get("./", sourceName);
+
+        if (inputPaths != null && !inputPaths.isEmpty()) {
+            log.info("Using specified input paths for business: {}", inputPaths);
+            validateInputPaths(inputPaths, Arrays.asList("sql", "yaml", "yml"));
+        }
+
+        if (outputPath != null && !outputPath.isEmpty()) {
+            log.info("Using specified output path for business: {}", outputPath);
+            validateOutputPath(outputPath);
+        }
+
+        dbtModelService.generateBusinessModels(connection, sourceWorkspace,
+                parent.getConfig().getOpenAIApiKey(),
+                parent.getConfig().getOpenAIModel(),
+                userPrompt,
+                inputPaths,
+                outputPath
+        );
+    }
+
+    @CommandLine.Command(name = "extract", description = "Generate dbt YAML models from connection config")
+    public void extract(
             @CommandLine.Option(names = {"-s", "--source"}, required = true) String sourceName
     ) throws Exception {
         requireConfig(parent.getConfig());
@@ -39,44 +138,51 @@ public class DbtCommands {
             throw new RuntimeException(String.format("Cannot find directory: %s for source name: %s to find models", sourceWorkspace, sourceName));
         }
 
-        dbtModelService.generateStagingModels(connection, sourceWorkspace);
+        dbtModelService.generateDBTYamlModels(connection, sourceWorkspace);
     }
 
-    @CommandLine.Command(name = "incremental", description = "Generate enhanced dbt models from connection config")
-    public void incremental(
-            @CommandLine.Option(names = {"-s", "--source"}, required = true) String sourceName
-    ) throws Exception {
-        requireConfig(parent.getConfig());
-        Connection connection = getConnection(parent.getConfig(), sourceName);
-        Path sourceWorkspace = Paths.get("./", sourceName);
+    /**
+     * Validate that input paths exist and contain files with allowed extensions
+     */
+    private void validateInputPaths(List<String> inputPaths, List<String> allowedExtensions) {
+        for (String inputPath : inputPaths) {
+            Path path = Paths.get(inputPath);
 
-        Path stagingPath = sourceWorkspace.resolve("dbt").resolve("models").resolve(DbtModelService.STAGING_LAYER);
-        if (!Files.exists(stagingPath)) {
-            log.info("Staging models not found. Run `dbt staging` first.");
-            return;
+            if (!Files.exists(path)) {
+                throw new RuntimeException("Input path does not exist: " + inputPath);
+            }
+
+            if (Files.isRegularFile(path)) {
+                String extension = getFileExtension(path.toString());
+                if (!allowedExtensions.stream().anyMatch(ext -> ext.equalsIgnoreCase(extension))) {
+                    throw new RuntimeException(String.format(
+                            "File %s has unsupported extension '%s'. Allowed extensions: %s",
+                            inputPath, extension, allowedExtensions));
+                }
+            }
         }
-
-        List<Path> stagingSqlFiles = dbtModelService.listSqlFiles(stagingPath);
-        if (stagingSqlFiles.isEmpty()) {
-            log.info("No .sql models found in staging layer.");
-            return;
-        }
-
-        dbtModelService.generateEnhancedModels(connection, sourceWorkspace, stagingSqlFiles);
     }
 
-    @CommandLine.Command(name = "business", description = "Generate business dbt models from connection config")
-    public void business(
-            @CommandLine.Option(names = {"-s", "--source"}, required = true) String sourceName,
-            @CommandLine.Option(names = {"-q", "--query"}, required = false) String userPrompt
-    ) throws Exception {
-        requireConfig(parent.getConfig());
-        Connection connection = getConnection(parent.getConfig(), sourceName);
-        Path sourceWorkspace = Paths.get("./", sourceName);
-        dbtModelService.generateBusinessModels(connection, sourceWorkspace,
-                parent.getConfig().getOpenAIApiKey(),
-                parent.getConfig().getOpenAIModel(),
-                userPrompt
-        );
+    private void validateOutputPath(String outputPath) {
+        Path path = Paths.get(outputPath);
+
+        // Check if parent directory exists or can be created
+        Path parentPath = path.getParent();
+        if (parentPath != null && !Files.exists(parentPath)) {
+            try {
+                Files.createDirectories(parentPath);
+            } catch (Exception e) {
+                throw new RuntimeException("Cannot create parent directories for output path: " + outputPath, e);
+            }
+        }
+        if (Files.exists(path) && Files.isRegularFile(path)) {
+            throw new RuntimeException("Output path must be a directory, not a file: " + outputPath);
+        }
+    }
+
+
+    private String getFileExtension(String fileName) {
+        int lastDotIndex = fileName.lastIndexOf('.');
+        return lastDotIndex > 0 ? fileName.substring(lastDotIndex + 1) : "";
     }
 }

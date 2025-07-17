@@ -388,7 +388,7 @@ class Cli implements Callable<Void> {
         DriverHelper.getDriver(driversPath, driverId);
     }
 
-    @CommandLine.Command(name = "dbtold", description = "Extract dbt models chosen from connection config.", mixinStandardHelpOptions = true)
+    @CommandLine.Command(name = "dbt", description = "Extract dbt models chosen from connection config.", mixinStandardHelpOptions = true)
     private void dbt(
             @CommandLine.Option(names = {"-s", "--source"}, required = true) String sourceName,
             @CommandLine.Option(names = {"--incremental"}, description = "Enable incremental mode for dbt model generation.", defaultValue = "false") boolean incremental,
@@ -508,6 +508,8 @@ class Cli implements Callable<Void> {
         Path targetWorkspace = dbtWorkspace.resolve(BUSINESS_LAYER);
         Files.createDirectories(targetWorkspace);
 
+        boolean isFromRawLayer = "raw".equalsIgnoreCase(bestAvailableLayer);
+
         String combinedModelContents = String.join("\n\n", modelContents);
 
         GenericResponse response = DbtAIService.generateBusinessModels(
@@ -515,7 +517,9 @@ class Cli implements Callable<Void> {
                 config.getOpenAIModel(),
                 targetWorkspace,
                 combinedModelContents,
-                userPrompt
+                userPrompt,
+                isFromRawLayer
+
         );
 
         if (response.getStatusCode() != 200) {

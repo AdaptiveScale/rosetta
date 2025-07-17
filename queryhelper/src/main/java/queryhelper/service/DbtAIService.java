@@ -21,11 +21,11 @@ import java.util.List;
 public class DbtAIService {
     private final static String AI_MODEL = "gpt-4o";
 
-    public static GenericResponse generateBusinessModels(String apiKey, String aiModel, Path outputDir, String modelContents, String userPrompt) throws JsonProcessingException {
+    public static GenericResponse generateBusinessModels(String apiKey, String aiModel, Path outputDir, String modelContents, String userPrompt, boolean isFromRawLayer) throws JsonProcessingException {
 
         GenericResponse response = new GenericResponse();
 
-        String outputAi = generateAIOutput(apiKey,aiModel,modelContents, userPrompt);
+        String outputAi = generateAIOutput(apiKey,aiModel,modelContents, userPrompt, isFromRawLayer);
         outputAi = outputAi.replace("```yaml", "").replace("```", "");
         List<DbtOutput> output = new ObjectMapper(new YAMLFactory()).readValue(outputAi, new TypeReference<List<DbtOutput>>(){});
 
@@ -46,7 +46,7 @@ public class DbtAIService {
         return response;
     }
 
-    public static String generateAIOutput(String apiKey, String aiModel, String combinedModelContents, String userPrompt) {
+    public static String generateAIOutput(String apiKey, String aiModel, String combinedModelContents, String userPrompt, boolean isFromRawLayer ) {
         String aiOutputStr;
 
         OpenAiChatModel.OpenAiChatModelBuilder model = OpenAiChatModel
@@ -59,7 +59,9 @@ public class DbtAIService {
             model.modelName(aiModel);
         }
 
-        String prompt = PromptUtils.dbtBusinessLayerPrompt(combinedModelContents, userPrompt);
+        String prompt = isFromRawLayer
+                ? PromptUtils.dbtBusinessLayerFromRawPrompt(combinedModelContents, userPrompt)
+                : PromptUtils.dbtBusinessLayerPrompt(combinedModelContents, userPrompt);
 
         try {
             aiOutputStr = model.build().generate(prompt);
