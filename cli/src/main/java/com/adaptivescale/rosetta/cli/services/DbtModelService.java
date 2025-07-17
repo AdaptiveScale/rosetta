@@ -69,7 +69,7 @@ public class DbtModelService {
         log.info("Written staging DBT models to {}", stagingPath);
     }
 
-    public void generateEnhancedModels(Connection connection, Path sourceWorkspace, List<String> inputPaths, String outputPath) throws IOException {
+    public void generateEnhancedModels(Connection connection, Path sourceWorkspace, List<String> inputPaths, String outputPath, String prefix) throws IOException {
         Path enhancedPath;
         if (outputPath != null && !outputPath.isEmpty()) {
             enhancedPath = Paths.get(outputPath);
@@ -86,9 +86,7 @@ public class DbtModelService {
             stagingSqlFiles = listSqlFiles(stagingPath);
         }
 
-        List<Database> databases = readYamlModels(sourceWorkspace);
-        DbtModel dbtModel = DbtModelGenerator.dbtModelGenerator(databases);
-        Map<String, String> enhancedSql = enhancedSQLGenerator(stagingSqlFiles, dbtModel);
+        Map<String, String> enhancedSql = enhancedSQLGenerator(stagingSqlFiles, prefix);
         new DbtSqlModelOutput(enhancedPath).write(enhancedSql);
 
         log.info("Written enhanced DBT models to {}", enhancedPath);

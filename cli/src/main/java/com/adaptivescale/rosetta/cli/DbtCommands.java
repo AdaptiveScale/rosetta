@@ -62,8 +62,10 @@ public class DbtCommands {
             @CommandLine.Option(names = {"-i", "--input"}, description = "Input files or folders (SQL files only). If not specified, uses staging layer.")
             List<String> inputPaths,
             @CommandLine.Option(names = {"-o", "--output"}, description = "Output directory path. If not specified, uses default enhanced layer path.")
-            String outputPath
+            String outputPath,
+            @CommandLine.Option(names = {"--prefix"}, description = "Prefix for generated sql files") String prefix
     ) throws Exception {
+        // TODO: fetch all files instead of only .sql files, if .yaml or .yml you generate sql first and then resume with rest of logic
         requireConfig(parent.getConfig());
         Connection connection = getConnection(parent.getConfig(), sourceName);
         Path sourceWorkspace = Paths.get("./", sourceName);
@@ -91,7 +93,7 @@ public class DbtCommands {
             validateOutputPath(outputPath);
         }
 
-        dbtModelService.generateEnhancedModels(connection, sourceWorkspace, inputPaths, outputPath);
+        dbtModelService.generateEnhancedModels(connection, sourceWorkspace, inputPaths, outputPath, prefix);
     }
 
     @CommandLine.Command(name = "business", description = "Generate business dbt models from connection config")
