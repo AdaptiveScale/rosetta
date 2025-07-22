@@ -132,6 +132,85 @@ public class DbtModelService {
     }
 
     /**
+     * Generate enhanced models directly from YAML files without persisting staging files
+     */
+    public void generateEnhancedModelsFromYaml(Connection connection, Path sourceWorkspace, List<String> yamlInputPaths, String outputPath, String prefix) throws IOException {
+        Path enhancedPath;
+        if (outputPath != null && !outputPath.isEmpty()) {
+            enhancedPath = Paths.get(outputPath);
+        } else {
+            enhancedPath = sourceWorkspace.resolve("dbt").resolve("models").resolve(ENHANCED_LAYER);
+        }
+        Files.createDirectories(enhancedPath);
+
+        List<DbtModel> dbtModels = readDbtModelYamls(sourceWorkspace, yamlInputPaths);
+
+        // Generate enhanced SQL directly from each DBT model
+        Map<String, String> enhancedSql = new HashMap<>();
+
+        for (DbtModel dbtModel : dbtModels) {
+            // Generate SQL models in memory for this DBT model
+            Map<String, String> sqlModels = DbtModelGenerator.dbtSQLGenerator(dbtModel, false);
+
+            // Generate enhanced SQL from the staging SQL content
+            Map<String, String> modelEnhancedSql = enhancedSQLGenerator(sqlModels, prefix);
+
+            // Add to the overall enhanced SQL map
+            enhancedSql.putAll(modelEnhancedSql);
+        }
+
+        // Write all enhanced models to the output path
+        new DbtSqlModelOutput(enhancedPath).write(enhancedSql);
+
+        log.info("Written {} enhanced DBT models from YAML to {}", enhancedSql.size(), enhancedPath);
+    }
+    private List<DbtModel> readDbtModelYamls(Path sourceWorkspace, List<String> userInputPaths) throws IOException {
+        List<Path> yamlFiles = new ArrayList<>();
+
+        if (userInputPaths != null && !userInputPaths.isEmpty()) {
+            yamlFiles = getFilesFromPaths(userInputPaths, Arrays.asList("yaml", "yml"));
+        } else {
+            Path dbtModelsPath = sourceWorkspace.resolve("dbt").resolve("models");
+            if (!Files.exists(dbtModelsPath)) {
+                throw new IOException("DBT models directory does not exist: " + dbtModelsPath);
+            }
+
+            // Find all YAML files in the dbt/models directory and subdirectories
+            try (Stream<Path> paths = Files.walk(dbtModelsPath)) {
+                yamlFiles = paths
+                        .filter(Files::isRegularFile)
+                        .filter(path -> {
+                            String fileName = path.getFileName().toString().toLowerCase();
+                            return fileName.endsWith(".yaml") || fileName.endsWith(".yml");
+                        })
+                        .collect(Collectors.toList());
+            }
+        }
+
+        if (yamlFiles.isEmpty()) {
+            throw new IOException("No YAML files found in the specified paths");
+        }
+
+        // Read each YAML file as a DbtModel
+        List<DbtModel> dbtModels = new ArrayList<>();
+        ObjectMapper yamlMapper = new ObjectMapper(new YAMLFactory());
+
+        for (Path yamlFile : yamlFiles) {
+            try {
+                String content = Files.readString(yamlFile);
+                DbtModel dbtModel = yamlMapper.readValue(content, DbtModel.class);
+                dbtModels.add(dbtModel);
+                log.debug("Successfully read DBT model from: {}", yamlFile);
+            } catch (IOException e) {
+                log.error("Failed to parse DBT model YAML file: {}", yamlFile, e);
+                throw new IOException("Failed to parse DBT model YAML file: " + yamlFile, e);
+            }
+        }
+
+        return dbtModels;
+    }
+
+    /**
      * Read YAML models from specific paths
      */
     private List<Database> readYamlModelsFromPaths(List<String> inputPaths, List<String> allowedExtensions) throws IOException {
