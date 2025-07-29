@@ -34,16 +34,25 @@ public class DbtModelService {
     public static final String RAW_LAYER = "raw";
 
     private final ObjectMapper yamlMapper = new ObjectMapper(new YAMLFactory());
+    private final RosettaService rosettaService = new RosettaService();
 
-    public void generateDBTYamlModels(Connection connection, Path sourceWorkspace) throws IOException {
-        Path dbtModelsPath = sourceWorkspace.resolve("dbt").resolve("models");
+    public void generateDBTYamlModels(Connection connection, Path sourceWorkspace, String outputPath) throws Exception {
+        rosettaService.extractModel(connection, sourceWorkspace, false);
+        Path dbtModelsPath;
+
+        if (outputPath != null && !outputPath.isEmpty()) {
+            dbtModelsPath = Paths.get(outputPath);
+        } else {
+            dbtModelsPath = sourceWorkspace.resolve("dbt").resolve("models");
+        }
+
         Files.createDirectories(dbtModelsPath);
 
         List<Database> databases = readYamlModels(sourceWorkspace);
         DbtModel dbtModel = DbtModelGenerator.dbtModelGenerator(databases);
 
         new DbtYamlModelOutput(dbtModelsPath).write(dbtModel);
-        log.info("Written DBT YAML models to {}", dbtModelsPath);
+        log.info("Successfully written dbt models ({}).", dbtModelsPath);
     }
 
     public void generateStagingModels(Connection connection, Path sourceWorkspace, List<String> inputPaths, String outputPath) throws IOException {
@@ -164,6 +173,7 @@ public class DbtModelService {
 
         log.info("Written {} enhanced DBT models from YAML to {}", enhancedSql.size(), enhancedPath);
     }
+
     private List<DbtModel> readDbtModelYamls(Path sourceWorkspace, List<String> userInputPaths) throws IOException {
         List<Path> yamlFiles = new ArrayList<>();
 

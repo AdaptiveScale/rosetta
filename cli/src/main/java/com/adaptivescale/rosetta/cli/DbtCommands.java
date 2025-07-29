@@ -36,25 +36,16 @@ public class DbtCommands {
     private List<String> resolvedInputPaths;
     private String resolvedOutputPath;
 
-    /**
-     * Initialize global variables with defaults based on command and user inputs
-     */
-    private void initializeGlobals(String sourceName, List<String> userInputPaths, String userOutputPath, CommandType commandType) throws Exception {
-        requireConfig(parent.getConfig());
-
-        this.sourceName = sourceName;
-        this.connection = getConnection(parent.getConfig(), sourceName);
-        this.sourceWorkspace = Paths.get("./", sourceName);
-
-        validateSourceWorkspace();
-
-        this.resolvedInputPaths = resolveInputPaths(userInputPaths, commandType);
-
-        this.resolvedOutputPath = resolveOutputPath(userOutputPath, commandType);
-
-        logResolvedPaths(commandType);
+    @CommandLine.Command(name = "extract", description = "Generate dbt YAML models from connection config")
+    public void extract(
+            @CommandLine.Option(names = {"-s", "--source"}, required = true)
+            String sourceName,
+            @CommandLine.Option(names = {"-o", "--output"}, description = "Output directory path. If not specified, uses default extract path.")
+            String outputPath
+    ) throws Exception {
+        initializeGlobals(sourceName, null, outputPath, CommandType.EXTRACT);
+        dbtModelService.generateDBTYamlModels(connection, sourceWorkspace, resolvedOutputPath);
     }
-
 
     @CommandLine.Command(name = "staging", description = "Generate staging dbt models from connection config")
     public void staging(
@@ -128,12 +119,25 @@ public class DbtCommands {
         );
     }
 
-    @CommandLine.Command(name = "extract", description = "Generate dbt YAML models from connection config")
-    public void extract(
-            @CommandLine.Option(names = {"-s", "--source"}, required = true) String sourceName
-    ) throws Exception {
-        initializeGlobals(sourceName, null, null, CommandType.EXTRACT);
-        dbtModelService.generateDBTYamlModels(connection, sourceWorkspace);
+    /**
+     * Initialize global variables with defaults based on command and user inputs
+     */
+    private void initializeGlobals(String sourceName, List<String> userInputPaths, String userOutputPath, CommandType commandType) throws Exception {
+        requireConfig(parent.getConfig());
+
+        this.sourceName = sourceName;
+        this.connection = getConnection(parent.getConfig(), sourceName);
+        this.sourceWorkspace = Paths.get("./", sourceName);
+
+        if (commandType != CommandType.EXTRACT) {
+            validateSourceWorkspace();
+        }
+
+        this.resolvedInputPaths = resolveInputPaths(userInputPaths, commandType);
+
+        this.resolvedOutputPath = resolveOutputPath(userOutputPath, commandType);
+
+        logResolvedPaths(commandType);
     }
 
     /**
