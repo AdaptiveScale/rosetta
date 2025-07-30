@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import queryhelper.pojo.GenericResponse;
 import queryhelper.service.DbtAIService;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -55,24 +56,27 @@ public class DbtModelService {
         log.info("Successfully written dbt models ({}).", dbtModelsPath);
     }
 
-    public void generateStagingModels(Connection connection, Path sourceWorkspace, List<String> inputPaths, String outputPath) throws IOException {
-        Path stagingPath;
-        if (outputPath != null && !outputPath.isEmpty()) {
-            stagingPath = Paths.get(outputPath);
-        } else {
-            stagingPath = sourceWorkspace.resolve("dbt").resolve("models").resolve(STAGING_LAYER);
-        }
+    public void generateStagingModels(Connection connection, Path sourceWorkspace, List<String> inputPaths, String outputPath) throws Exception {
+        Path stagingPath = (outputPath != null && !outputPath.isEmpty())
+                ? Paths.get(outputPath)
+                : sourceWorkspace.resolve("dbt").resolve("models").resolve(STAGING_LAYER);
+
         Files.createDirectories(stagingPath);
 
-        List<Database> databases;
+        List<DbtModel> dbtModels;
+
         if (inputPaths != null && !inputPaths.isEmpty()) {
-            databases = readYamlModelsFromPaths(inputPaths, Arrays.asList("yaml", "yml"));
+            dbtModels = readDbtModels(inputPaths);
         } else {
-            databases = readYamlModels(sourceWorkspace);
+            dbtModels = readDbtModels(sourceWorkspace.resolve("dbt").resolve("models"));
         }
 
-        DbtModel dbtModel = DbtModelGenerator.dbtModelGenerator(databases);
-        Map<String, String> sqlModels = DbtModelGenerator.dbtSQLGenerator(dbtModel, false);
+        if (dbtModels.isEmpty()) {
+            log.warn("No DBT models found to generate staging models.");
+            return;
+        }
+
+        Map<String, String> sqlModels = DbtModelGenerator.dbtSQLGenerator(dbtModels, false);
         new DbtSqlModelOutput(stagingPath).write(sqlModels);
 
         log.info("Written staging DBT models to {}", stagingPath);
@@ -307,6 +311,28 @@ public class DbtModelService {
                     }
                 })
                 .collect(Collectors.toList());
+    }
+
+    public List<DbtModel> readDbtModels(Path directory) throws IOException {
+        return Files.list(directory)
+                .filter(path -> FilenameUtils.getExtension(path.toString()).equalsIgnoreCase("yaml"))
+                .map(path -> {
+                    try {
+                        return yamlMapper.readValue(path.toFile(), DbtModel.class);
+                    } catch (IOException e) {
+                        throw new RuntimeException("Failed to parse " + path, e);
+                    }
+                })
+                .collect(Collectors.toList());
+    }
+
+    public List<DbtModel> readDbtModels(List<String> filePaths) throws IOException {
+        List<DbtModel> result = new ArrayList<>();
+        for (String filePath : filePaths) {
+            result.add(yamlMapper.readValue(new File(filePath), DbtModel.class));
+        }
+
+        return result;
     }
 
     public List<Path> listSqlFiles(Path directory) throws IOException {

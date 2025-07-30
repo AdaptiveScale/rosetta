@@ -86,4 +86,14 @@ public class DbtModelGenerator {
 
     return tables;
   }
+
+  public static Map<String, String> dbtSQLGenerator(List<DbtModel> dbtModels, Boolean isIncremental) {
+    Map<String, String> tables = new HashMap<>();
+
+    dbtModels.forEach(dbtModel -> {
+      tables.putAll(dbtSQLGenerator(dbtModel, isIncremental));
+    });
+
+    return tables;
+  }
 }
