@@ -64,25 +64,41 @@ public class DbtModelGenerator {
     });
   }
 
+
   public static Map<String, String> dbtSQLGenerator(DbtModel dbtModel, Boolean isIncremental) {
     Map<String, String> tables = new HashMap<>();
 
-    dbtModel.getSources().forEach(dbtSource -> {
-      dbtSource.getTables().forEach(dbtTable -> {
+    if (dbtModel.getSources() != null && !dbtModel.getSources().isEmpty()) {
+      dbtModel.getSources().forEach(dbtSource -> {
+        dbtSource.getTables().forEach(dbtTable -> {
+          StringBuilder table = new StringBuilder();
+          table.append("with ").append(dbtTable.getName()).append(" as (");
+          table.append("\n\t");
+          table.append("select\n\t\t");
+          table.append(dbtTable.getColumns().stream().map(DbtColumn::getName).collect(Collectors.joining(",\n\t\t")));
+          table.append("\n\t");
+          table.append(String.format("from {{ source('%s', '%s') }}", dbtSource.getName(), dbtTable.getName()));
+          table.append("\n)\n\n");
+          table.append("select * from ").append(dbtTable.getName());
+
+          tables.put(String.format("%s_%s", dbtSource.getName(), dbtTable.getName()), table.toString());
+        });
+      });
+    } else if (dbtModel.getModels() != null && !dbtModel.getModels().isEmpty()) {
+      dbtModel.getModels().forEach(dbtTable -> {
         StringBuilder table = new StringBuilder();
         table.append("with ").append(dbtTable.getName()).append(" as (");
         table.append("\n\t");
         table.append("select\n\t\t");
         table.append(dbtTable.getColumns().stream().map(DbtColumn::getName).collect(Collectors.joining(",\n\t\t")));
         table.append("\n\t");
-        table.append(String.format("from {{ source('%s', '%s') }}", dbtSource.getName(), dbtTable.getName()));
+        table.append(String.format("from {{ ref('%s') }}", dbtTable.getName()));
         table.append("\n)\n\n");
         table.append("select * from ").append(dbtTable.getName());
 
-        tables.put(String.format("%s_%s", dbtSource.getName(), dbtTable.getName()), String.valueOf(table));
-
+        tables.put(dbtTable.getName(), table.toString());
       });
-    });
+    }
 
     return tables;
   }
