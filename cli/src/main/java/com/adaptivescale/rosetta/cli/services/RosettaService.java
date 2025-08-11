@@ -14,6 +14,10 @@ import java.nio.file.Path;
 public class RosettaService {
     public static final String DEFAULT_MODEL_YAML = "model.yaml";
 
+    public void extractModel(Connection connection, Path sourceWorkspace) throws Exception {
+        extractModel(connection, sourceWorkspace, false);
+    }
+
     public void extractModel(Connection connection, Path sourceWorkspace, boolean forceDelete) throws Exception {
         Path modelYamlPath = sourceWorkspace.resolve(DEFAULT_MODEL_YAML);
 

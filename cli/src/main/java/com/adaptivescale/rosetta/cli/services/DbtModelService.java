@@ -38,7 +38,7 @@ public class DbtModelService {
     private final RosettaService rosettaService = new RosettaService();
 
     public void generateDBTYamlModels(Connection connection, Path sourceWorkspace, String outputPath) throws Exception {
-        rosettaService.extractModel(connection, sourceWorkspace, false);
+        rosettaService.extractModel(connection, sourceWorkspace);
         Path dbtModelsPath;
 
         if (outputPath != null && !outputPath.isEmpty()) {
