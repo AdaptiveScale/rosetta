@@ -314,16 +314,12 @@ public class DbtModelService {
     }
 
     public List<DbtModel> readDbtModels(Path directory) throws IOException {
-        return Files.list(directory)
-                .filter(path -> FilenameUtils.getExtension(path.toString()).equalsIgnoreCase("yaml"))
-                .map(path -> {
-                    try {
-                        return yamlMapper.readValue(path.toFile(), DbtModel.class);
-                    } catch (IOException e) {
-                        throw new RuntimeException("Failed to parse " + path, e);
-                    }
-                })
+        List<String> yamlFilePaths = Files.list(directory)
+                .map(Path::toString)
+                .filter(string -> FilenameUtils.getExtension(string).equalsIgnoreCase("yaml"))
                 .collect(Collectors.toList());
+
+        return readDbtModels(yamlFilePaths);
     }
 
     public List<DbtModel> readDbtModels(List<String> filePaths) throws IOException {
@@ -331,7 +327,6 @@ public class DbtModelService {
         for (String filePath : filePaths) {
             result.add(yamlMapper.readValue(new File(filePath), DbtModel.class));
         }
-
         return result;
     }
 
