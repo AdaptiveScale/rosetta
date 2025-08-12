@@ -70,7 +70,7 @@ import static com.adaptivescale.rosetta.cli.helpers.DbtEnhancedModelTransformer.
 
 @CommandLine.Command(name = "cli",
         mixinStandardHelpOptions = true,
-        version = "2.8.1",
+        version = "2.8.2",
         description = "Declarative Database Management - DDL Transpiler",
         subcommands = {
                 com.adaptivescale.rosetta.cli.DbtCommands.class
@@ -496,11 +496,9 @@ class Cli implements Callable<Void> {
     private void createBusinessLayerModelsFromBestAvailable(Connection connection, Path sourceWorkspace, String userPrompt) throws IOException {
         Path dbtWorkspace = sourceWorkspace.resolve("dbt").resolve("models");
         String bestAvailableLayer = findBestAvailableLayer(dbtWorkspace, sourceWorkspace);
-
         log.info("Creating business layer models from {} layer", bestAvailableLayer.toUpperCase());
 
         List<String> modelContents = getModelContentsFromLayer(dbtWorkspace, bestAvailableLayer, sourceWorkspace);
-
         if (modelContents.isEmpty()) {
             throw new RuntimeException("No models found in any available layer to create business models from");
         }
@@ -508,9 +506,10 @@ class Cli implements Callable<Void> {
         Path targetWorkspace = dbtWorkspace.resolve(BUSINESS_LAYER);
         Files.createDirectories(targetWorkspace);
 
-        boolean isFromRawLayer = "raw".equalsIgnoreCase(bestAvailableLayer);
-
         String combinedModelContents = String.join("\n\n", modelContents);
+
+        // Check if we're generating from RAW layer to use appropriate prompt
+        boolean isFromRawLayer = "raw".equalsIgnoreCase(bestAvailableLayer);
 
         GenericResponse response = DbtAIService.generateBusinessModels(
                 config.getOpenAIApiKey(),
@@ -518,8 +517,7 @@ class Cli implements Callable<Void> {
                 targetWorkspace,
                 combinedModelContents,
                 userPrompt,
-                isFromRawLayer
-
+                isFromRawLayer  // Pass the flag to indicate if it's from RAW layer
         );
 
         if (response.getStatusCode() != 200) {

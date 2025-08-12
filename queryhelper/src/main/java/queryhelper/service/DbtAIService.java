@@ -22,14 +22,10 @@ public class DbtAIService {
     private final static String AI_MODEL = "gpt-4o";
 
     public static GenericResponse generateBusinessModels(String apiKey, String aiModel, Path outputDir, String modelContents, String userPrompt, boolean isFromRawLayer) throws JsonProcessingException {
-
         GenericResponse response = new GenericResponse();
-
-        String outputAi = generateAIOutput(apiKey,aiModel,modelContents, userPrompt, isFromRawLayer);
+        String outputAi = generateAIOutput(apiKey, aiModel, modelContents, userPrompt, isFromRawLayer);
         outputAi = outputAi.replace("```yaml", "").replace("```", "");
         List<DbtOutput> output = new ObjectMapper(new YAMLFactory()).readValue(outputAi, new TypeReference<List<DbtOutput>>(){});
-
-
         try {
             for (DbtOutput modelFile : output) {
                 Path filePath = outputDir.resolve(modelFile.getFileName());
@@ -40,15 +36,13 @@ public class DbtAIService {
             response.setStatusCode(500);
             return response;
         }
-
         response.setMessage("Successfully generated business models.");
         response.setStatusCode(200);
         return response;
     }
 
-    public static String generateAIOutput(String apiKey, String aiModel, String combinedModelContents, String userPrompt, boolean isFromRawLayer ) {
+    public static String generateAIOutput(String apiKey, String aiModel, String combinedModelContents, String userPrompt, boolean isFromRawLayer) {
         String aiOutputStr;
-
         OpenAiChatModel.OpenAiChatModelBuilder model = OpenAiChatModel
             .builder()
             .temperature(0.0)
@@ -59,6 +53,7 @@ public class DbtAIService {
             model.modelName(aiModel);
         }
 
+        // Use different prompt based on whether it's from RAW layer or not
         String prompt = isFromRawLayer
                 ? PromptUtils.dbtBusinessLayerFromRawPrompt(combinedModelContents, userPrompt)
                 : PromptUtils.dbtBusinessLayerPrompt(combinedModelContents, userPrompt);
@@ -72,7 +67,6 @@ public class DbtAIService {
             GenericResponse genericResponse = ErrorUtils.openAIError(e);
             throw new RuntimeException(genericResponse.getMessage());
         }
-
         return aiOutputStr;
     }
-}
+    }
