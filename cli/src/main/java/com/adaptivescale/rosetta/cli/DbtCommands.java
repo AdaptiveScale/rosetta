@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 import static com.adaptivescale.rosetta.cli.helpers.CliHelper.getConnection;
 import static com.adaptivescale.rosetta.cli.helpers.CliHelper.requireConfig;
 
-@CommandLine.Command(name = "new_dbt", description = "Commands for dbt model handling", subcommandsRepeatable = true)
+@CommandLine.Command(name = "dbt-next", description = "Commands for dbt model handling", subcommandsRepeatable = true)
 public class DbtCommands {
 
     private static final Logger log = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
