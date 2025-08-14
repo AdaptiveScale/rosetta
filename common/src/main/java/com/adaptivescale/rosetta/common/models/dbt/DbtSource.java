@@ -1,10 +1,12 @@
 package com.adaptivescale.rosetta.common.models.dbt;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.Collection;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class DbtSource {
   private String name;
   private String description;
