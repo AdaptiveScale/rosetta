@@ -64,7 +64,7 @@ curl -L "https://github.com/AdaptiveScale/rosetta/releases/download/v2.8.4/roset
 Compatible with 64-bit Intel/AMD processors running Windows
 
 ```
-curl -L "https://github.com/AdaptiveScale/rosetta/releases/download/v2.8.3/rosetta_setup.bat" -o rosetta_setup.bat && .\rosetta_setup.bat
+curl -L "https://github.com/AdaptiveScale/rosetta/releases/download/v2.8.4/rosetta_setup.bat" -o rosetta_setup.bat && .\rosetta_setup.bat
 ```
 
 ### 2. Initialize a New Project
