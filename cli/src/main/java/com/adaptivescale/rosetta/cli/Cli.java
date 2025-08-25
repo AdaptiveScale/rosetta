@@ -70,7 +70,7 @@ import static com.adaptivescale.rosetta.cli.helpers.DbtEnhancedModelTransformer.
 
 @CommandLine.Command(name = "cli",
         mixinStandardHelpOptions = true,
-        version = "2.8.3",
+        version = "2.8.4",
         description = "Declarative Database Management - DDL Transpiler",
         subcommands = {
                 com.adaptivescale.rosetta.cli.DbtCommands.class
