@@ -127,7 +127,7 @@ public class DbtCommands {
 
         this.sourceName = sourceName;
         this.connection = getConnection(parent.getConfig(), sourceName);
-        this.sourceWorkspace = Paths.get("./", sourceName);
+        this.sourceWorkspace = Paths.get(".", sourceName);
 
         if (commandType != CommandType.EXTRACT) {
             validateSourceWorkspace();
