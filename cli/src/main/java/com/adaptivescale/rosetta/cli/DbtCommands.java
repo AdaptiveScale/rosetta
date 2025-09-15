@@ -41,10 +41,12 @@ public class DbtCommands {
             @CommandLine.Option(names = {"-s", "--source"}, required = true)
             String sourceName,
             @CommandLine.Option(names = {"-o", "--output"}, description = "Output directory path. If not specified, uses default extract path.")
-            String outputPath
+            String outputPath,
+            @CommandLine.Option(names = {"--include-views"}, description = "Include views in the generated dbt models")
+            boolean includeViews
     ) throws Exception {
         initializeGlobals(sourceName, null, outputPath, CommandType.EXTRACT);
-        dbtModelService.generateDBTYamlModels(connection, sourceWorkspace, resolvedOutputPath);
+        dbtModelService.generateDBTYamlModels(connection, sourceWorkspace, resolvedOutputPath, includeViews);
     }
 
     @CommandLine.Command(name = "staging", description = "Generate staging dbt models from connection config")

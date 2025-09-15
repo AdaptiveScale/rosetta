@@ -37,7 +37,7 @@ public class DbtModelService {
     private final ObjectMapper yamlMapper = new ObjectMapper(new YAMLFactory());
     private final RosettaService rosettaService = new RosettaService();
 
-    public void generateDBTYamlModels(Connection connection, Path sourceWorkspace, String outputPath) throws Exception {
+    public void generateDBTYamlModels(Connection connection, Path sourceWorkspace, String outputPath, boolean includeViews) throws Exception {
         rosettaService.extractModel(connection, sourceWorkspace);
         Path dbtModelsPath;
 
@@ -50,7 +50,7 @@ public class DbtModelService {
         Files.createDirectories(dbtModelsPath);
 
         List<Database> databases = readYamlModels(sourceWorkspace);
-        DbtModel dbtModel = DbtModelGenerator.dbtModelGenerator(databases);
+        DbtModel dbtModel = DbtModelGenerator.dbtModelGenerator(databases, includeViews);
 
         new DbtYamlModelOutput(dbtModelsPath).write(dbtModel);
         log.info("Successfully written dbt models ({}).", dbtModelsPath);
