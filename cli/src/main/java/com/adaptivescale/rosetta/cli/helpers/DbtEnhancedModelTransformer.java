@@ -76,10 +76,9 @@ public class DbtEnhancedModelTransformer {
                     .append("    )\n")
                     .append("}}\n\n");
 
-            // Replace source() with ref()
             String modifiedSql = stagingSqlContent.replaceAll(
                     "from \\{\\{\\s*source\\('([^']+)',\\s*'([^']+)'\\)\\s*\\}\\}",
-                    "from {{ ref('$1_$2') }}"
+                    "from {{ ref('" + modelName + "') }}"
             );
 
             // Add incremental logic if not already present
